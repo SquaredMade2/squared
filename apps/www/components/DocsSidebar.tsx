@@ -17,7 +17,7 @@ export async function DocsSidebar() {
 	const sidebarItems = await getAllPages();
 	const getPageDetails = (page: PageItem): PageItem => {
 		const subPages = sidebarItems
-			.filter((i) => i.data.parent.id === page.id)
+			.filter((i) => i.data.parent.link_type === "Document" && i.data.parent.id === page.id)
 			.map((item) => {
 				return {
 					id: item.id,
@@ -26,6 +26,7 @@ export async function DocsSidebar() {
 					subPages: [],
 				};
 			});
+
 		return {
 			id: page.id,
 			uid: page.uid,
@@ -38,9 +39,9 @@ export async function DocsSidebar() {
 					: [],
 		};
 	};
-
+	// parent is {link_type: "Any"} whenever the item doesn't have any actual valid parent items from prismic
 	const pages: PageItem[] = sidebarItems
-		.filter((item) => !item.data.parent.id)
+		.filter((item) => item.data.parent.link_type === "Any")
 		.map((item) => {
 			const details = {
 				id: item.id,

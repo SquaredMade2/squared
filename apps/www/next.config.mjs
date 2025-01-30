@@ -1,11 +1,11 @@
-import rehypePrism from "@mapbox/rehype-prism";
 import nextMDX from "@next/mdx";
+import rehypePrism from "@mapbox/rehype-prism";
 import remarkGfm from "remark-gfm";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	images: { domains: ["i.pravatar.cc", "images.unsplash.com"] },
-	pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+	pageExtensions: ["ts", "tsx", "mdx"],
 	output: "standalone",
 };
 
