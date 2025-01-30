@@ -9,7 +9,7 @@ export default async function Page() {
 	const page = await client.getByUID("doc", "index").catch(() => notFound());
 
 	return (
-		<div className="flex flex-col w-full max-w-[50vw] justify-self-center">
+		<div className="flex flex-col w-full max-w-4xl justify-self-center">
 			<SliceZone slices={page.data.slices} components={components} />
 		</div>
 	);

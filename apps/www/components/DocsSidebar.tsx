@@ -17,7 +17,11 @@ export async function DocsSidebar() {
 	const sidebarItems = await getAllPages();
 	const getPageDetails = (page: PageItem): PageItem => {
 		const subPages = sidebarItems
-			.filter((i) => i.data.parent.link_type === "Document" && i.data.parent.id === page.id)
+			.filter(
+				(i) =>
+					i.data.parent.link_type === "Document" &&
+					i.data.parent.id === page.id,
+			)
 			.map((item) => {
 				return {
 					id: item.id,
@@ -55,9 +59,7 @@ export async function DocsSidebar() {
 
 	return (
 		<nav className="w-64 border-r">
-			<div className="p-4">
-				<NestedLinks pages={pages} />
-			</div>
+			<NestedLinks pages={pages} />
 		</nav>
 	);
 }

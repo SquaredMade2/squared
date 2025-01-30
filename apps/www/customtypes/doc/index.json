@@ -17,10 +17,10 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "paragraph": {
+            "list": {
               "type": "SharedSlice"
             },
-            "bullet_points": {
+            "paragraph": {
               "type": "SharedSlice"
             },
             "header": {

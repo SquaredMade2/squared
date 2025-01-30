@@ -43,20 +43,19 @@ export default function NestedLinks({ pages }: SidebarProps) {
 				</Accordion>
 			);
 		}
-			return (
-				<Link
-					key={page.uid}
-					className={cn(
-						"flex w-full py-3",
-						params?.uid === page.uid &&
-							"font-medium text-blue-600 dark:text-blue-400",
-					)}
-					href={`/docs/${page.uid !== "index" && page.uid}`}
-				>
-					{page.data.title}
-				</Link>
-			);
+		return (
+			<Link
+				key={page.uid}
+				className={cn(
+					"flex w-full py-3",
+					params?.uid === page.uid && "text-link",
+				)}
+				href={`/docs/${page.uid !== "index" && page.uid}`}
+			>
+				{page.data.title}
+			</Link>
+		);
 	};
 
-	return <div>{pages.map(renderPageItem)}</div>;
+	return <div className="p-4">{pages.map(renderPageItem)}</div>;
 }

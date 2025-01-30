@@ -3,9 +3,8 @@
 import dynamic from "next/dynamic";
 
 export const components = {
-  accordion: dynamic(() => import("./Accordion")),
-  bullet_points: dynamic(() => import("./Lists")),
   header: dynamic(() => import("./Header")),
   link: dynamic(() => import("./Link")),
+  list: dynamic(() => import("./List")),
   paragraph: dynamic(() => import("./Paragraph")),
 };

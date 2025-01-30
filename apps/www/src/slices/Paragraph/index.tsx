@@ -11,7 +11,7 @@ export type ParagraphProps = SliceComponentProps<Content.ParagraphSlice>;
  */
 const Paragraph = ({ slice }: ParagraphProps) => {
 	return (
-		<p className="pt-2 text-muted-foreground [&>a]:text-blue-600 [&>a]:dark:text-blue-400">
+		<p className="pt-2 text-muted-foreground [&>a]:text-link">
 			{slice.primary.text}
 		</p>
 	);

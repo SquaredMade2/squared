@@ -4,10 +4,7 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type DocDocumentDataSlicesSlice =
-  | ParagraphSlice
-  | BulletPointsSlice
-  | HeaderSlice;
+type DocDocumentDataSlicesSlice = ListSlice | ParagraphSlice | HeaderSlice;
 
 /**
  * Content for doc documents
@@ -123,81 +120,6 @@ export type DocSidebarItemDocument<Lang extends string = string> =
   >;
 
 export type AllDocumentTypes = DocDocument | DocSidebarItemDocument;
-
-/**
- * Default variation for Accordion Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type AccordionSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Record<string, never>,
-  never
->;
-
-/**
- * Slice variation for *Accordion*
- */
-type AccordionSliceVariation = AccordionSliceDefault;
-
-/**
- * Accordion Shared Slice
- *
- * - **API ID**: `accordion`
- * - **Description**: Accordion
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type AccordionSlice = prismic.SharedSlice<
-  "accordion",
-  AccordionSliceVariation
->;
-
-/**
- * Primary content in *Lists → bullet → Primary*
- */
-export interface BulletPointsSliceDefaultPrimary {
-  /**
-   * bullet list field in *Lists → bullet → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_points.default.primary.bullet_list
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  bullet_list: prismic.RichTextField;
-}
-
-/**
- * bullet variation for Lists Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type BulletPointsSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<BulletPointsSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *Lists*
- */
-type BulletPointsSliceVariation = BulletPointsSliceDefault;
-
-/**
- * Lists Shared Slice
- *
- * - **API ID**: `bullet_points`
- * - **Description**: BulletPoints
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type BulletPointsSlice = prismic.SharedSlice<
-  "bullet_points",
-  BulletPointsSliceVariation
->;
 
 /**
  * Primary content in *Header → heading1 → Primary*
@@ -497,6 +419,76 @@ type LinkSliceVariation = LinkSliceDefault | LinkSliceAccordion;
 export type LinkSlice = prismic.SharedSlice<"link", LinkSliceVariation>;
 
 /**
+ * Primary content in *List → Bullet → Primary*
+ */
+export interface ListSliceDefaultPrimary {
+  /**
+   * text field in *List → Bullet → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: list.default.primary.text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+}
+
+/**
+ * Bullet variation for List Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ListSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<ListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Primary content in *List → Number → Primary*
+ */
+export interface ListSliceNumberPrimary {
+  /**
+   * text field in *List → Number → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: list.number.primary.text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+}
+
+/**
+ * Number variation for List Slice
+ *
+ * - **API ID**: `number`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ListSliceNumber = prismic.SharedSliceVariation<
+  "number",
+  Simplify<ListSliceNumberPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *List*
+ */
+type ListSliceVariation = ListSliceDefault | ListSliceNumber;
+
+/**
+ * List Shared Slice
+ *
+ * - **API ID**: `list`
+ * - **Description**: List
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ListSlice = prismic.SharedSlice<"list", ListSliceVariation>;
+
+/**
  * Primary content in *Paragraph → Default → Primary*
  */
 export interface ParagraphSliceDefaultPrimary {
@@ -568,13 +560,6 @@ declare module "@prismicio/client" {
       DocSidebarItemDocument,
       DocSidebarItemDocumentData,
       AllDocumentTypes,
-      AccordionSlice,
-      AccordionSliceVariation,
-      AccordionSliceDefault,
-      BulletPointsSlice,
-      BulletPointsSliceDefaultPrimary,
-      BulletPointsSliceVariation,
-      BulletPointsSliceDefault,
       HeaderSlice,
       HeaderSliceDefaultPrimary,
       HeaderSliceVeryLargePrimary,
@@ -592,6 +577,12 @@ declare module "@prismicio/client" {
       LinkSliceVariation,
       LinkSliceDefault,
       LinkSliceAccordion,
+      ListSlice,
+      ListSliceDefaultPrimary,
+      ListSliceNumberPrimary,
+      ListSliceVariation,
+      ListSliceDefault,
+      ListSliceNumber,
       ParagraphSlice,
       ParagraphSliceDefaultPrimary,
       ParagraphSliceVariation,

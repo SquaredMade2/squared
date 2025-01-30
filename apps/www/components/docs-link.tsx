@@ -8,7 +8,6 @@ export default function SingleLink({
 	slug,
 	text,
 }: { slug: string; text: string; }) {
-	"use client";
 	const params: {uid: string} | null = useParams();
 
 	return (
