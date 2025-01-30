@@ -27,10 +27,10 @@ export function TaskDesignationsContainer() {
 	];
 
 	return (
-		<div className="flex flex-col relative w-full z-1 rounded-xl p-5 gap-5 bg-card">
+		<div className="relative z-1 flex w-full flex-col gap-5 rounded-xl bg-card p-5">
 			{Designations.map((designation) => (
-				<div key={designation.name} className="flex flex-row w-full">
-					<div className="flex items-center shrink-0 text-muted-foreground text-sm font-semibold my-1 w-[95px]">
+				<div key={designation.name} className="flex w-full flex-row">
+					<div className="my-1 flex w-[95px] shrink-0 items-center font-semibold text-muted-foreground text-sm">
 						<span
 							className={`${designation.name === "Labels" && "self-start"}`}
 						>
@@ -50,7 +50,7 @@ export function TaskDesignationsContainer() {
 }
 export function MobileTaskSettings() {
 	return (
-		<div className="flex gap-2 md:hidden flex-wrap w-full">
+		<div className="flex w-full flex-wrap gap-2 md:hidden">
 			<StatusDropdown />
 			<PriorityDropdown />
 			<AssigneeCombobox />

@@ -14,13 +14,13 @@ export const SprintError = ({
 	teamIdentifier,
 }: SprintErrorProps) => {
 	return (
-		<div className="w-full h-full flex justify-center items-center">
-			<div className="text-center space-y-4 max-w-md">
-				<AlertTriangle className="h-12 w-12 text-destructive mx-auto" />
-				<h2 className="text-2xl font-semibold tracking-tight">
+		<div className="flex h-full w-full items-center justify-center">
+			<div className="max-w-md space-y-4 text-center">
+				<AlertTriangle className="mx-auto h-12 w-12 text-destructive" />
+				<h2 className="font-semibold text-2xl tracking-tight">
 					Error Loading Sprint
 				</h2>
-				<p className="text-muted-foreground break-words">{error}</p>
+				<p className="break-words text-muted-foreground">{error}</p>
 				<div className="flex justify-center space-x-4">
 					<Button variant="outline" asChild>
 						<Link href={`/${workspaceUrl}/team/${teamIdentifier}/all`}>

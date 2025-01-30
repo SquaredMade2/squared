@@ -61,12 +61,12 @@ const HiddenColumns = ({
 							<AccordionContent
 								ref={provided.innerRef}
 								{...provided.droppableProps}
-								className={`${snapshot.isDraggingOver && "h-full"} rounded pr-2 transition-all duration-500 ease-in-out py-2`}
+								className={`${snapshot.isDraggingOver && "h-full"} rounded py-2 pr-2 transition-all duration-500 ease-in-out`}
 							>
-								<div className="pr-2 bg-card rounded-lg">
-									<div className="flex flex-row justify-between transition-all px-2 h-10 mb-2 font-medium text-sm">
+								<div className="rounded-lg bg-card pr-2">
+									<div className="mb-2 flex h-10 flex-row justify-between px-2 font-medium text-sm transition-all">
 										<div className="flex items-center gap-4">
-											<div className="w-4 lg:mr-2 mr-1.5">
+											<div className="mr-1.5 w-4 lg:mr-2">
 												{groupTasksBy === "Status" ? (
 													<StatusIcon status={column as Status} />
 												) : groupTasksBy === "Priority" ? (

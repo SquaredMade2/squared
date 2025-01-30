@@ -10,7 +10,7 @@ export const Testimonials = () => {
 	return (
 		<div className="relative z-20 py-10 md:py-40">
 			<Heading as="h2">Powering Teams Across the Globe</Heading>
-			<Subheading className="text-center max-w-lg mx-auto">
+			<Subheading className="mx-auto max-w-lg text-center">
 				Squared is empowering teams and individuals around the world to achieve
 				more every day.
 			</Subheading>
@@ -229,15 +229,15 @@ function Testimonial({
 						alt={name}
 					/>
 					<div>
-						<h3 className="text-sm  font-medium text-neutral-500 dark:text-neutral-300">
+						<h3 className="font-medium text-neutral-500 text-sm dark:text-neutral-300">
 							{name}
 						</h3>
-						<p className="text-sm font-normal text-neutral-500 dark:text-neutral-300">
+						<p className="font-normal text-neutral-500 text-sm dark:text-neutral-300">
 							{designation}
 						</p>
 					</div>
 				</div>
-				<p className="text-base text-muted-foreground mt-4">{quote}</p>
+				<p className="mt-4 text-base text-muted-foreground">{quote}</p>
 			</div>
 		</figure>
 	);
@@ -264,8 +264,7 @@ function TestimonialColumn({
 						quote={testimonial.quote}
 						src={testimonial.src}
 						designation={testimonial.designation}
-						// biome-ignore lint/suspicious/noArrayIndexKey: Came with template
-						key={testimonialIndex}
+						key={testimonial.src}
 						className={containerClassName?.(
 							testimonialIndex % testimonials.length,
 						)}
@@ -299,7 +298,7 @@ function TestimonialGrid() {
 	// biome-ignore lint/style/useConst: came with template
 	let column3 = splitArray(columns[2], 2);
 	return (
-		<InViewDiv className="relative -mx-4 mt-16 grid h-[49rem] max-h-[150vh] grid-cols-1 items-start gap-8 overflow-hidden px-4 sm:mt-20 md:grid-cols-2 lg:grid-cols-3">
+		<InViewDiv className="-mx-4 relative mt-16 grid h-[49rem] max-h-[150vh] grid-cols-1 items-start gap-8 overflow-hidden px-4 sm:mt-20 md:grid-cols-2 lg:grid-cols-3">
 			<TestimonialColumn
 				testimonials={[...column1, ...column3.flat(), ...column2]}
 				containerClassName={(tIndex) =>

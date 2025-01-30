@@ -108,28 +108,28 @@ const Page = () => {
 
 	return (
 		<div className="container py-10">
-			<div className="max-w-4xl mx-auto space-y-8">
+			<div className="mx-auto max-w-4xl space-y-8">
 				<div>
-					<h1 className="text-3xl font-bold">Connected Accounts</h1>
+					<h1 className="font-bold text-3xl">Connected Accounts</h1>
 					<p className="text-muted-foreground">
 						Manage your connected accounts and integrations
 					</p>
 				</div>
 				<Separator />
 				<div className="space-y-6">
-					<h2 className="text-xl font-semibold">Account Connections</h2>
+					<h2 className="font-semibold text-xl">Account Connections</h2>
 					<div className="space-y-4">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
 								<GoogleIcon className="size-8" />
 								<div>
-									<h3 className="text-lg font-medium">Google</h3>
-									<p className="text-sm text-muted-foreground">
+									<h3 className="font-medium text-lg">Google</h3>
+									<p className="text-muted-foreground text-sm">
 										Connect your Google account for easier sign-in and access to
 										Google services
 									</p>
 									{hasGoogle && (
-										<p className="text-sm font-medium mt-1 text-foreground/80">
+										<p className="mt-1 font-medium text-foreground/80 text-sm">
 											Connected: {getAccountDetails("google")}
 										</p>
 									)}
@@ -154,15 +154,15 @@ const Page = () => {
 						<Separator />
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
-								<Github className="size-8 mr-2" />
+								<Github className="mr-2 size-8" />
 								<div>
-									<h3 className="text-lg font-medium">GitHub</h3>
-									<p className="text-sm text-muted-foreground">
+									<h3 className="font-medium text-lg">GitHub</h3>
+									<p className="text-muted-foreground text-sm">
 										Connect your GitHub account to access repositories and
 										collaborate on projects
 									</p>
 									{hasGithub && (
-										<p className="text-sm font-medium mt-1 text-foreground/80">
+										<p className="mt-1 font-medium text-foreground/80 text-sm">
 											Connected: {getAccountDetails("github")}
 										</p>
 									)}

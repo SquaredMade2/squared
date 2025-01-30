@@ -60,29 +60,29 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 					<span className="sr-only">Link</span>
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="!w-3/12 bg-popover p-5 pt-1 h-auto border border-secondary rounded-lg">
+			<DialogContent className="!w-3/12 h-auto rounded-lg border border-secondary bg-popover p-5 pt-1">
 				<DialogHeader className="ml-2">
 					<DialogTitle className="!mt-5 !text-2xl leading-3">
 						Insert Link
 					</DialogTitle>
 				</DialogHeader>
-				<div className="h-auto w-full mt-5">
+				<div className="mt-5 h-auto w-full">
 					<input
 						type="text"
-						className="bg-popover w-full h-10 border border-muted pl-5 py-2 text-md rounded-lg mb-4"
+						className="mb-4 h-10 w-full rounded-lg border border-muted bg-popover py-2 pl-5 text-md"
 						placeholder="Link text"
 						value={linkName}
 						onChange={(e) => setLinkName(e.target.value)}
 					/>
 					<input
 						type="text"
-						className="bg-popover w-full h-10 border border-secomutedndary pl-5 py-2 text-md rounded-lg mb-8"
+						className="mb-8 h-10 w-full rounded-lg border border-secomutedndary bg-popover py-2 pl-5 text-md"
 						placeholder="URL"
 						value={linkUrl}
 						onChange={(e) => setLinkUrl(e.target.value)}
 					/>
 					<Button
-						className="w-full h-10 mb-3"
+						className="mb-3 h-10 w-full"
 						onClick={handleInjectLinkContent}
 						disabled={!(linkName.length > 0 && linkUrl.length > 0)}
 					>

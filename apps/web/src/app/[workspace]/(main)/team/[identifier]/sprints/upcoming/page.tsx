@@ -30,9 +30,9 @@ export default function UpcomingSprints() {
 	);
 
 	return (
-		<ScrollArea className="container mx-auto p-4 py-8 overflow-y-auto h-[100vh]">
+		<ScrollArea className="container mx-auto h-[100vh] overflow-y-auto p-4 py-8">
 			<div>
-				<h1 className="text-3xl font-bold mb-6">Upcoming Sprints</h1>
+				<h1 className="mb-6 font-bold text-3xl">Upcoming Sprints</h1>
 				{team?.sprintsEnabled ? (
 					<>
 						<div className="flex flex-col gap-2">
@@ -41,13 +41,13 @@ export default function UpcomingSprints() {
 							))}
 						</div>
 						{upcomingSprints.length === 0 && (
-							<p className="text-center text-muted-foreground mt-8">
+							<p className="mt-8 text-center text-muted-foreground">
 								No upcoming sprints found.
 							</p>
 						)}
 					</>
 				) : (
-					<p className="text-center text-muted-foreground mt-8">
+					<p className="mt-8 text-center text-muted-foreground">
 						Sprints are not enabled for this team.
 					</p>
 				)}

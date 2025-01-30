@@ -1,9 +1,8 @@
-;
-import { css, keyframes } from "../../stitches.config";
-import { SIDE_OPTIONS, ALIGN_OPTIONS } from "../popper";
-import * as DialogPrimitive from "../dialog";
-import * as Tooltip from "../tooltip";
 import { useEffect, useRef, useState } from "react";
+import { css, keyframes } from "../../stitches.config";
+import * as DialogPrimitive from "../dialog";
+import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
+import * as Tooltip from "../tooltip";
 
 export default { title: "Components/Tooltip" };
 

@@ -11,9 +11,9 @@ export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 const Chevron = ({ orientation = "left", ...props }) => {
 	return orientation === "left" ? (
-		<ChevronLeft className="size-4 relative z-10" {...props} />
+		<ChevronLeft className="relative z-10 size-4" {...props} />
 	) : (
-		<ChevronRight className="size-4 relative z-10" {...props} />
+		<ChevronRight className="relative z-10 size-4" {...props} />
 	);
 };
 

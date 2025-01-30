@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
 	return (
-		<div className="relative overflow-hidden py-20 md:py-0 px-4 md:px-20 bg-background">
-			<div className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
+		<div className="relative overflow-hidden bg-background px-4 py-20 md:px-20 md:py-0">
+			<div className="relative grid min-h-screen w-full grid-cols-1 overflow-hidden md:grid-cols-2">
 				<Background />
 				<ContactForm />
 			</div>

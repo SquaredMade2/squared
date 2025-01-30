@@ -86,10 +86,10 @@ const AssigneeCombobox = () => {
 				<Button
 					variant="outline"
 					aria-expanded={open}
-					className="justify-between md:w-full h-8 md:h-10"
+					className="h-8 justify-between md:h-10 md:w-full"
 				>
 					{assignee ? (
-						<div className="flex items-center w-28">
+						<div className="flex w-28 items-center">
 							<Avatar className="size-6 text-xxs">
 								<AvatarImage src={assignee.avatarUrl ?? ""} />
 								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
@@ -100,14 +100,14 @@ const AssigneeCombobox = () => {
 						</div>
 					) : (
 						<div className="flex items-center">
-							<UserSearch className="size-4 mr-2" />
+							<UserSearch className="mr-2 size-4" />
 							<span>Unassigned</span>
 						</div>
 					)}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className={cn("p-0 w-[200px]")}>
+			<PopoverContent className={cn("w-[200px] p-0")}>
 				<Command>
 					<CommandInput placeholder="Search users..." />
 					<CommandList>
@@ -115,8 +115,8 @@ const AssigneeCombobox = () => {
 							<CommandEmpty>No user found.</CommandEmpty>
 							<CommandGroup>
 								<CommandItem onSelect={() => handleSelectAssignee(null)}>
-									<UserSearch className="size-4 mx-1" />
-									<span className="w-2/3 truncate ml-2">Unassigned</span>
+									<UserSearch className="mx-1 size-4" />
+									<span className="ml-2 w-2/3 truncate">Unassigned</span>
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
@@ -138,7 +138,7 @@ const AssigneeCombobox = () => {
 													{getInitials(user.name)}
 												</AvatarFallback>
 											</Avatar>
-											<span className="w-2/3 truncate ml-2">{user.name}</span>
+											<span className="ml-2 w-2/3 truncate">{user.name}</span>
 											<Check
 												className={cn(
 													"ml-auto h-4 w-4",

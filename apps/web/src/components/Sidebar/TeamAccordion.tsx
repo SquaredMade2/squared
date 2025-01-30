@@ -72,11 +72,11 @@ export function TeamAccordion({
 								)}
 							>
 								<div className="flex items-center gap-2">
-									<LayoutGrid className="text-primary h-4 w-4" />
-									<span className="text-sm font-medium">{team.name}</span>
+									<LayoutGrid className="h-4 w-4 text-primary" />
+									<span className="font-medium text-sm">{team.name}</span>
 								</div>
 							</AccordionTrigger>
-							<AccordionContent className="pl-6 pt-1">
+							<AccordionContent className="pt-1 pl-6">
 								<NavBarTeams
 									teamIdentifier={team.identifier}
 									currentPage={currentPage}
