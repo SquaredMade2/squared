@@ -103,7 +103,7 @@ interface DocSidebarItemDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
-  parent: prismic.LinkField;
+  parent: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
 }
 
 /**
@@ -406,7 +406,7 @@ export interface LinkSliceDefaultPrimary {
    * - **API ID Path**: link.default.primary.label
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
-  label: prismic.LinkField;
+  label: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
 
   /**
    * slug field in *Link → Default → Primary*

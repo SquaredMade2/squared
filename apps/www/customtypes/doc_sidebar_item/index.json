@@ -33,7 +33,7 @@
           "placeholder": "",
           "select": null,
           "allowTargetBlank": true,
-          "allowText": true,
+          "allowText": false,
           "repeat": false
         }
       }
