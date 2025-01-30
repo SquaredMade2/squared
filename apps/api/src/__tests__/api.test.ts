@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { app, db } from "@/api/app";
 import type { CreateFilterParams } from "@/services/filters/types";
-import type { Task, Team, User, Workspace, WorkspaceRole } from "@squared/db";
+import type { Team, User, Workspace } from "@squared/db";
 import {
 	type FilterCondition,
 	type SavedFilter,
 	eq,
+	githubRepoInfoTable,
 	inArray,
 	savedFiltersTable,
 	tasksTable,
@@ -282,16 +283,16 @@ describe("API Tests", () => {
 			getDefaultWorkspace: "/rpc/user/getDefaultWorkspace",
 			getUser: "/rpc/user/getUser",
 			getUserAvatars: "/rpc/user/getUserAvatars",
-			getUserWorkspaceRole: "/rpc/user/getUserWorkspaceRole",
 			getTeamUsers: "/rpc/user/getTeamUsers",
 			getUserTeams: "/rpc/user/getUserTeams",
+			getUserRepositories: "/rpc/user/getUserRepositories",
 			getWorkspaceUsers: "/rpc/user/getWorkspaceUsers",
-			getWorkspaceUsersWithRoles: "/rpc/user/getWorkspaceUsersWithRoles",
 			isUserAuthorized: "/rpc/user/isUserAuthorized",
 			onBoardUser: "/rpc/user/onBoardUser",
 			setLastViewedTask: "/rpc/user/setLastViewedTask",
 			updateUser: "/rpc/user/updateUser",
 			updateUserAvatar: "/rpc/user/updateUserAvatar",
+			updateUserNotifications: "/rpc/user/updateUserNotifications",
 		};
 
 		it("onboards a valid user", async () => {
@@ -355,6 +356,30 @@ describe("API Tests", () => {
 			expect(response.body.avatarUrl).toBe(updatedUser.avatarUrl);
 		});
 
+		it("updates a user's notification ids", async () => {
+			const user = await db.query.usersTable.findFirst();
+			if (!user) {
+				throw new Error("no users detected in database");
+			}
+
+			// array of 10 random uuids to serve as the notifications
+			const ids = Array.from(Array(10), (_) => randomUUID()).sort();
+			await db
+				.update(usersTable)
+				.set({ savedNotificationIds: ids })
+				.where(eq(usersTable.id, user.id));
+
+			const response: SuperResponse<User> = await request(app)
+				.post(endpoints.updateUserNotifications)
+				.send({
+					userId: user.externalId,
+					notificationIds: ids,
+				});
+
+			const got = response.body.savedNotificationIds.sort();
+			expect(got).toStrictEqual(ids);
+		});
+
 		it("gets a user by id", async () => {
 			const { userId } = await getUserAndTeamIDs();
 			const user = await db
@@ -371,75 +396,6 @@ describe("API Tests", () => {
 				.send({ userId });
 
 			expect(response.body).toMatchObject(serializeUserDates(user));
-		});
-
-		it("gets the role of a user in a workspace", async () => {
-			const user = await db.query.usersTable
-				.findMany({
-					with: {
-						userWorkspaces: true,
-					},
-				})
-				.then((result) =>
-					result.find((user) => user.userWorkspaces.length > 0),
-				);
-			if (!user) {
-				throw new Error("no users part of a workspace detected in database");
-			}
-
-			const { role, workspaceId } = user.userWorkspaces[0];
-			const response: SuperResponse<{ role: WorkspaceRole }> = await request(
-				app,
-			)
-				.post(endpoints.getUserWorkspaceRole)
-				.send({
-					userId: user.externalId,
-					workspaceId,
-				});
-
-			expect(role).toBe(response.body.role);
-		});
-
-		it("gets the roles of all users in a workspace", async () => {
-			const workspace = await db.query.workspacesTable.findFirst({
-				with: {
-					userWorkspaces: true,
-				},
-			});
-			if (!workspace) {
-				throw new Error("no workspaces detected in database");
-			}
-
-			const usersWithRoles = await db
-				.select()
-				.from(usersTable)
-				.where(
-					inArray(
-						usersTable.externalId,
-						workspace.userWorkspaces.map((uw) => uw.userId),
-					),
-				)
-				.then((result) => result.map(serializeUserDates))
-				.then((result) =>
-					result.map((user) => {
-						const roleInWorkspace = workspace.userWorkspaces.find(
-							(uw) => uw.userId === user.externalId,
-						)?.role;
-
-						return {
-							role: roleInWorkspace ?? "member",
-							...user,
-						};
-					}),
-				)
-				.then(sortById);
-
-			const response: SuperResponse<(User & { role: WorkspaceRole })[]> =
-				await request(app)
-					.post(endpoints.getWorkspaceUsersWithRoles)
-					.send({ workspaceId: workspace.id });
-			const got = sortById(response.body);
-			expect(got).toStrictEqual(usersWithRoles);
 		});
 
 		it("gets all users in a team", async () => {
@@ -526,8 +482,8 @@ describe("API Tests", () => {
 					eq(usersTable.externalId, userWorkspacesTable.userId),
 				)
 				.then((result) => result.map((union) => union.User).filter((u) => !!u))
-				.then((result) => sortById(result))
-				.then((result) => result.map(serializeUserDates));
+				.then((result) => result.map(serializeUserDates))
+				.then(sortById);
 
 			const response: SuperResponse<User[]> = await request(app)
 				.post(endpoints.getWorkspaceUsers)
@@ -575,6 +531,62 @@ describe("API Tests", () => {
 			expect(got).toStrictEqual(want);
 		});
 
+		it("gets connected github repository information", async () => {
+			const testUsername = "test_username";
+			const user = await db
+				.select()
+				.from(usersTable)
+				.limit(1)
+				.then((result) => result[0]);
+
+			await db
+				.update(usersTable)
+				.set({ githubUsername: testUsername })
+				.where(eq(usersTable.id, user.id));
+
+			const repoData = [
+				{
+					id: randomUUID(),
+					owner: testUsername,
+					repoName: "test_repo_one",
+				},
+				{
+					id: randomUUID(),
+					owner: testUsername,
+					repoName: "test_repo_two",
+				},
+			];
+			await db.insert(githubRepoInfoTable).values(repoData);
+
+			const response: SuperResponse<string[]> = await request(app)
+				.post(endpoints.getUserRepositories)
+				.send({ userId: user.externalId });
+
+			expect(response.body.sort()).toStrictEqual(
+				repoData.map((repo) => repo.repoName).sort(),
+			);
+		});
+
+		it("does not get github repositories if the user has no specified github username", async () => {
+			const user = await db
+				.select()
+				.from(usersTable)
+				.limit(1)
+				.then((result) => result[0]);
+
+			await db
+				.update(usersTable)
+				.set({ githubUsername: null })
+				.where(eq(usersTable.id, user.id));
+
+			const response: SuperResponse<{ message: string }> = await request(app)
+				.post(endpoints.getUserRepositories)
+				.send({ userId: user.externalId });
+
+			const re = /github username not found/gi;
+			expect(response.body.message).toMatch(re);
+		});
+
 		it("gets a specified default workspace", async () => {
 			const user = await db.query.usersTable
 				.findMany({
@@ -589,7 +601,7 @@ describe("API Tests", () => {
 				throw new Error("failed to find user that is in multiple workspaces");
 			}
 
-			// default workspace if not specified by user is the first workspace found when ordering them by descending id
+			// default workspace, if not specified by user, is the first workspace found when ordering them by descending id
 			// so to get an explicit test need to set the workspace to one different
 			const notFallbackWorkspace = await db
 				.select()
