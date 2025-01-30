@@ -42,7 +42,7 @@ describe("API Tests", () => {
 	}
 
 	// Dates sent via rpc are serialized and so are not instances of the Date class, but
-	// dates retrieved from drizzle are instances of the date class. So dates from the date class 
+	// dates retrieved from drizzle are instances of the date class. So dates from the date class
 	// need to be serialized to an ISO string to allow deep object comparison.
 	function serializeUserDates(user: User) {
 		return {
@@ -286,7 +286,7 @@ describe("API Tests", () => {
 			updateUserNotifications: "/rpc/user/updateUserNotifications",
 		};
 
-		it("onboards a valid user", async () => {
+		it("onboards user", async () => {
 			const { userId } = await getUserAndTeamIDs();
 
 			// make sure user is onboarding
@@ -305,7 +305,7 @@ describe("API Tests", () => {
 			});
 		});
 
-		it("updates a valid user's name and username", async () => {
+		it("updates a user's name and username", async () => {
 			const { userId } = await getUserAndTeamIDs();
 			const updatedUserArgs = {
 				name: "Updated User",
@@ -329,7 +329,7 @@ describe("API Tests", () => {
 			expect(response.body).toMatchObject(updatedUser);
 		});
 
-		it("updates a valid user avatar url", async () => {
+		it("updates a user's avatar url", async () => {
 			const { userId } = await getUserAndTeamIDs();
 			const newAvatarUrl =
 				"https://api.dicebear.com/9.x/thumbs/svg?eyes=variant9W16";
@@ -523,7 +523,7 @@ describe("API Tests", () => {
 			expect(got).toStrictEqual(want);
 		});
 
-		it("gets connected github repository information", async () => {
+		it("gets a user's connected github repository information", async () => {
 			const testUsername = "test_username";
 			const user = await db
 				.select()
@@ -576,6 +576,8 @@ describe("API Tests", () => {
 				.send({ userId: user.externalId });
 
 			const re = /github username not found/gi;
+			expect(response.statusCode).toBeGreaterThanOrEqual(400);
+			expect(response.statusCode).toBeLessThan(500);
 			expect(response.body.message).toMatch(re);
 		});
 
@@ -734,14 +736,17 @@ describe("API Tests", () => {
 				throw new Error("failed to isolate invalid team");
 			}
 
-			const response: SuperResponse<boolean> = await request(app)
+			const response: SuperResponse<{message: string}> = await request(app)
 				.post(endpoints.isUserAuthorized)
 				.send({
 					userId: user.externalId,
 					teamIdentifier: invalidTeamIdentifier,
 				});
 
-			expect(response.body).toBe(false);
+			const re = /not authorized/gi;
+			expect(response.statusCode).toBeGreaterThanOrEqual(400);
+			expect(response.statusCode).toBeLessThan(500);
+			expect(response.body.message).toMatch(re);
 		});
 	});
 });

@@ -379,7 +379,10 @@ export class UserService implements UserRpc {
 				)
 				.limit(1);
 
-			return userTeam.length > 0;
+			if (userTeam.length === 0) {
+				throw new Error("User is not authorized for this team");
+			}
+			return true;
 		});
 	}
 }
