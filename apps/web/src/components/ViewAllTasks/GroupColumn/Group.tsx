@@ -100,7 +100,7 @@ const Group = ({
 			}`}
 		>
 			<span
-				className={`text-accent-foreground truncate max-w-[250px] inline-block ${isListView ? "ml-10" : "ml-2"}`}
+				className={`inline-block max-w-[250px] truncate text-accent-foreground ${isListView ? "ml-10" : "ml-2"}`}
 			>
 				{parentTask?.identifier}: {parentTask?.title}
 			</span>

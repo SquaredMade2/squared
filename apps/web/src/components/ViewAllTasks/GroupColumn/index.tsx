@@ -17,7 +17,7 @@ const GroupColumn = ({
 	const isListView = view === "list";
 	return (
 		<div
-			className={isListView ? "mb-2 w-full" : "pb-2 pr-2 w-72 flex-shrink-0"}
+			className={isListView ? "mb-2 w-full" : "w-72 flex-shrink-0 pr-2 pb-2"}
 		>
 			<Droppable
 				droppableId={group}
@@ -33,12 +33,12 @@ const GroupColumn = ({
 					<div
 						className={cn(
 							isListView
-								? "flex flex-col z-30 w-full gap-2 items-start"
-								: "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-72 h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out",
+								? "z-30 flex w-full flex-col items-start gap-2"
+								: "9fr] mb-2 grid h-[calc(100vh-250px)] w-72 flex-grow grid-rows-[1fr rounded-lg bg-card transition-all duration-500 ease-in-out",
 							dropSnapshot.isDraggingOver && "bg-[#242d42]",
 						)}
 					>
-						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
+						<div className="scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent w-full overflow-auto">
 							<div
 								className={cn(
 									"w-full grow",
@@ -48,7 +48,7 @@ const GroupColumn = ({
 								<div
 									ref={dropProvided.innerRef}
 									{...dropProvided.droppableProps}
-									className="flex flex-col items-start w-full min-h-[60px]"
+									className="flex min-h-[60px] w-full flex-col items-start"
 								>
 									{showTasks && <Group tasks={tasks} isListView={isListView} />}
 									{dropProvided.placeholder}
