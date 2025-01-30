@@ -42,8 +42,8 @@ describe("API Tests", () => {
 	}
 
 	// Dates sent via rpc are serialized and so are not instances of the Date class, but
-	// dates retrieved from drizzle are instances of the date class. So dates need
-	// from the date class need to be serialized to an ISO string to allow deep object comparison.
+	// dates retrieved from drizzle are instances of the date class. So dates from the date class 
+	// need to be serialized to an ISO string to allow deep object comparison.
 	function serializeUserDates(user: User) {
 		return {
 			...user,
