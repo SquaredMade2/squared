@@ -41,10 +41,9 @@ describe("API Tests", () => {
 		return { teamId: team.Team.id, userId: team.UserTeam.userId };
 	}
 
-	// The dates are sent as strings in the response object because a
-	// date class instance is not serializable.
-	// Using drizzle, however, will instantiate a date instance so need to
-	// serialize those fields to strings if you want equality comparison.
+	// Dates sent via rpc are serialized and so are not instances of the Date class, but
+	// dates retrieved from drizzle are instances of the date class. So dates need
+	// from the date class need to be serialized to an ISO string to allow deep object comparison.
 	function serializeUserDates(user: User) {
 		return {
 			...user,
@@ -58,14 +57,6 @@ describe("API Tests", () => {
 			sprintStartDate: team.sprintStartDate.toISOString(),
 		};
 	}
-	// function serializeTaskDates(task: Task) {
-	// 	return {
-	// 		...task,
-	// 		dueDate: task.dueDate ? task.dueDate.toISOString() : null,
-	// 		dateCreated: task.dateCreated.toISOString(),
-	// 		updatedAt: task.updatedAt.toISOString(),
-	// 	};
-	// }
 	function serializeWorkspaceDates(workspace: Workspace) {
 		return {
 			...workspace,
@@ -386,7 +377,8 @@ describe("API Tests", () => {
 				.select()
 				.from(usersTable)
 				.where(eq(usersTable.externalId, userId))
-				.then((user) => user[0]);
+				.then((user) => user[0])
+				.then(serializeUserDates);
 			if (!user) {
 				throw new Error("failed to find user");
 			}
@@ -395,7 +387,7 @@ describe("API Tests", () => {
 				.post(endpoints.getUser)
 				.send({ userId });
 
-			expect(response.body).toMatchObject(serializeUserDates(user));
+			expect(response.body).toMatchObject(user);
 		});
 
 		it("gets all users in a team", async () => {
@@ -562,9 +554,9 @@ describe("API Tests", () => {
 				.post(endpoints.getUserRepositories)
 				.send({ userId: user.externalId });
 
-			expect(response.body.sort()).toStrictEqual(
-				repoData.map((repo) => repo.repoName).sort(),
-			);
+			const want = repoData.map((repo) => repo.repoName).sort();
+			const got = response.body.sort();
+			expect(got).toStrictEqual(want);
 		});
 
 		it("does not get github repositories if the user has no specified github username", async () => {
