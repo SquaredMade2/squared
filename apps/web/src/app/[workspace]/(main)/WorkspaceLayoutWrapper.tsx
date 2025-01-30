@@ -44,11 +44,11 @@ export default function WorkspaceLayoutWrapper({
 	}, [pathname, setLastVisitedPage]);
 
 	return (
-		<div className="flex h-screen overflow-hidden w-screen">
+		<div className="flex h-screen w-screen overflow-hidden">
 			<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
 				<SidebarNav />
 			</div>
-			<main className="flex-grow overflow-auto w-full h-full">
+			<main className="h-full w-full flex-grow overflow-auto">
 				<NewTaskModal />
 				{children}
 			</main>

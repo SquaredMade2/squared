@@ -87,15 +87,15 @@ const TaskColumnTitle = ({
 		<div
 			className={cn(
 				isListView ? "sticky top-0 z-10 bg-background" : "min-w-72",
-				isListView && "border-b border-border",
+				isListView && "border-border border-b",
 			)}
 		>
 			<div
 				className={cn(
 					"flex w-full items-center justify-between font-medium transition-all",
 					isListView
-						? "rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2"
-						: "flex-row rounded-lg px-2 h-10 mb-2 font-bold bg-secondary",
+						? "rounded-t-lg xs:px-5 py-2 sm:px-5 lg:px-[42px]"
+						: "mb-2 h-10 flex-row rounded-lg bg-secondary px-2 font-bold",
 					isListView && numberOfTasks === 0 ? "rounded-b-lg" : "",
 				)}
 			>
@@ -105,7 +105,7 @@ const TaskColumnTitle = ({
 							className={
 								isListView
 									? "flex items-center text-foreground text-sm"
-									: "flex items-center gap-4 text-foreground text-sm pr-8"
+									: "flex items-center gap-4 pr-8 text-foreground text-sm"
 							}
 						>
 							{groupTasksBy === "Status" ? (
@@ -122,8 +122,8 @@ const TaskColumnTitle = ({
 							) : (
 								<div />
 							)}
-							<div className="flex gap-2 items-center">
-								<span className="text-sm max-w-36 truncate">
+							<div className="flex items-center gap-2">
+								<span className="max-w-36 truncate text-sm">
 									{formatColumnTitle(title)}
 								</span>
 								<span className="ml-1 text-muted-foreground">
@@ -150,7 +150,7 @@ const TaskColumnTitle = ({
 						) : (
 							<div />
 						)}
-						<div className="flex gap-2 items-center">
+						<div className="flex items-center gap-2">
 							<span>{formatColumnTitle(title)}</span>
 							<span className="ml-2 text-muted-foreground">
 								{numberOfTasks}
@@ -175,7 +175,7 @@ const TaskColumnTitle = ({
 								size="icon"
 								aria-label="Show task visibility modal"
 							>
-								<EllipsisVertical className="cursor-pointer size-4" />
+								<EllipsisVertical className="size-4 cursor-pointer" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>

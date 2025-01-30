@@ -135,12 +135,12 @@ const TopNavBarDisplay = () => {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<div className="flex flex-col gap-2 items-end relative h-10 ">
+			<div className="relative flex h-10 flex-col items-end gap-2 ">
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button variant="ghost" className="gap-2">
 							<SlidersVertical className="size-4" />
-							<div className="hidden md:flex items-center gap-2">
+							<div className="hidden items-center gap-2 md:flex">
 								Display
 								<ChevronDown className="size-4" />
 							</div>
@@ -148,23 +148,23 @@ const TopNavBarDisplay = () => {
 					</PopoverTrigger>
 					<PopoverContent>
 						<div className="flex flex-col">
-							<div className="w-full items-center justify-between flex mb-3">
+							<div className="mb-3 flex w-full items-center justify-between">
 								<ToggleGroup
 									type="single"
 									value={view}
 									onValueChange={handleValueChange}
-									className="w-full flex"
+									className="flex w-full"
 								>
 									<ToggleGroupItem
 										value="list"
-										className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
+										className="flex h-14 flex-1 cursor-pointer flex-col gap-1 border-[1px] border-secondary p-1"
 									>
 										<AlignJustify />
 										List
 									</ToggleGroupItem>
 									<ToggleGroupItem
 										value="grid"
-										className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
+										className="flex h-14 flex-1 cursor-pointer flex-col gap-1 border-[1px] border-secondary p-1"
 									>
 										<LayoutGrid />
 										Grid
@@ -172,15 +172,15 @@ const TopNavBarDisplay = () => {
 								</ToggleGroup>
 							</div>
 							<Separator className="my-4" />
-							<div className="flex items-center justify-between mb-3">
-								<span className="text-xs text-foreground mr-4">Grouping</span>
+							<div className="mb-3 flex items-center justify-between">
+								<span className="mr-4 text-foreground text-xs">Grouping</span>
 								<Select
 									onValueChange={(value) => setOptions({ groupTasksBy: value })}
 									value={groupTasksBy}
 								>
 									<SelectTrigger>
 										<SelectValue>
-											<div className="w-full flex items-center justify-between">
+											<div className="flex w-full items-center justify-between">
 												<Layers className="size-4" />
 												<span className="mx-2 text-xs">{groupTasksBy}</span>
 											</div>
@@ -200,7 +200,7 @@ const TopNavBarDisplay = () => {
 								</Select>
 							</div>
 							<div className="flex items-center justify-between">
-								<span className="text-xs text-foreground">Ordering</span>
+								<span className="text-foreground text-xs">Ordering</span>
 								<div className="w-[120px]">
 									<Select
 										onValueChange={(value) =>
@@ -260,7 +260,7 @@ const TopNavBarDisplay = () => {
 							<Separator className="my-4" />
 
 							<div className="flex items-center justify-between">
-								<span className="text-xs text-foreground">Completed tasks</span>
+								<span className="text-foreground text-xs">Completed tasks</span>
 								<DropdownMenu>
 									<DropdownMenuTrigger asChild>
 										<Button
@@ -287,8 +287,8 @@ const TopNavBarDisplay = () => {
 									</DropdownMenuContent>
 								</DropdownMenu>
 							</div>
-							<div className="flex items-center justify-between w-full my-3">
-								<p className="text-foreground text-xs py-1">Show SubTasks</p>
+							<div className="my-3 flex w-full items-center justify-between">
+								<p className="py-1 text-foreground text-xs">Show SubTasks</p>
 								<Switch
 									checked={displayOptions.showSubTasks}
 									onCheckedChange={(checked) =>
@@ -300,8 +300,8 @@ const TopNavBarDisplay = () => {
 							<Separator className="my-4" />
 							<div>
 								<div>{view === "grid" ? "Grid" : "List"} options</div>
-								<div className="flex items-center justify-between w-full my-3">
-									<p className="text-foreground text-xs py-1">
+								<div className="my-3 flex w-full items-center justify-between">
+									<p className="py-1 text-foreground text-xs">
 										Show Empty Groups
 									</p>
 									<Switch
@@ -318,7 +318,7 @@ const TopNavBarDisplay = () => {
 										}
 									/>
 								</div>
-								<p className="text-foreground text-xs py-1 mb-2">
+								<p className="mb-2 py-1 text-foreground text-xs">
 									Display Properties
 								</p>
 								<ToggleGroup
@@ -339,7 +339,7 @@ const TopNavBarDisplay = () => {
 												<Button
 													variant={value ? "secondary" : "ghost"}
 													size="sm"
-													className="text-xs py-0 px-2 h-6"
+													className="h-6 px-2 py-0 text-xs"
 												>
 													{formatCamelCaseString(property)}
 												</Button>

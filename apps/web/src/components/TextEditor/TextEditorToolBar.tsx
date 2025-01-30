@@ -25,7 +25,7 @@ const TextEditorToolBar = ({
 	// Separator
 }: TextEditorToolBarProps) => {
 	return (
-		<div className="flex flex-row items-center shadow-md rounded-m p-2 p-10 h-16 border">
+		<div className="flex h-16 flex-row items-center rounded-m border p-10 p-2 shadow-md">
 			<Button
 				variant="ghost"
 				size="icon"
@@ -35,7 +35,7 @@ const TextEditorToolBar = ({
 					createLeaf("bold");
 				}}
 			>
-				<Bold className="w-4 h-4" />
+				<Bold className="h-4 w-4" />
 				<span className="sr-only">Bold</span>
 			</Button>
 
@@ -48,14 +48,14 @@ const TextEditorToolBar = ({
 					createLeaf("italic");
 				}}
 			>
-				<Italic className="w-4 h-4" />
+				<Italic className="h-4 w-4" />
 				<span className="sr-only">Italic</span>
 			</Button>
 
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ml-2 ${!markActiveChecks.isCodeActive() && "text-muted-foreground"}`}
+				className={`ml-2 size-8 ${!markActiveChecks.isCodeActive() && "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createLeaf("code");

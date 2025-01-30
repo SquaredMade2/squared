@@ -99,12 +99,12 @@ const EffortEstimateDropdown = () => {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"
-					className="flex items-center justify-between w-full"
+					className="flex w-full items-center justify-between"
 				>
-					<div className="flex gap-2 items-center">
+					<div className="flex items-center gap-2">
 						{effortEstimate ? showIcon(effortEstimate.value) : medium()}
 
-						<span className="text-sm font-semibold">
+						<span className="font-semibold text-sm">
 							{effortEstimate ? extractNumber(effortEstimate.text) : "Effort"}
 						</span>
 					</div>
@@ -118,10 +118,10 @@ const EffortEstimateDropdown = () => {
 						<DropdownMenuItem
 							key={estimateNumber}
 							onSelect={() => handleSelectEffortEstimate(effortEstimate)}
-							className="flex justify-between items-center"
+							className="flex items-center justify-between"
 						>
 							<div className="flex items-center gap-2">
-								<span className="w-4 h-4">{showIcon(estimateNumber)}</span>
+								<span className="h-4 w-4">{showIcon(estimateNumber)}</span>
 								<span>{estimateNumber}</span>
 							</div>
 						</DropdownMenuItem>

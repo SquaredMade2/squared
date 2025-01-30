@@ -129,8 +129,8 @@ export const NewTaskModal = () => {
 			<DialogContent className="max-w-full bg-popover">
 				<DialogHeader>
 					<div className="flex items-center">
-						<div className="inline-flex items-center justify-center text-muted-foreground border border-border rounded-md shadow-md px-2 py-0.5 mr-2">
-							<LayoutGrid className="text-[#9577FF] w-4 h-4" />
+						<div className="mr-2 inline-flex items-center justify-center rounded-md border border-border px-2 py-0.5 text-muted-foreground shadow-md">
+							<LayoutGrid className="h-4 w-4 text-[#9577FF]" />
 						</div>
 						<ChevronRight />
 						<DialogTitle className="text-sm">New Task</DialogTitle>
@@ -167,7 +167,7 @@ export const NewTaskModal = () => {
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-md resize-none"
+													className="resize-none text-md"
 													rows={4}
 													tabIndex={0}
 												/>
@@ -190,7 +190,7 @@ export const NewTaskModal = () => {
 						<DialogFooter className="mt-6">
 							<Button
 								onClick={handleDiscard}
-								className="hover:cursor-pointer bg-transparent text-foreground"
+								className="bg-transparent text-foreground hover:cursor-pointer"
 								variant="destructive"
 								type="button"
 							>

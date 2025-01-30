@@ -50,16 +50,16 @@ const Subtasks = () => {
 		<Collapsible
 			open={isSubtasksExpanded}
 			onOpenChange={setIsSubtasksExpanded}
-			className="mt-6 bg-background rounded-lg p-4 shadow-sm"
+			className="mt-6 rounded-lg bg-background p-4 shadow-sm"
 		>
 			<CollapsibleTrigger asChild>
-				<div className="flex items-center cursor-pointer mb-2">
+				<div className="mb-2 flex cursor-pointer items-center">
 					{isSubtasksExpanded ? (
-						<ChevronDown className="w-4 h-4 mr-2 transition-transform duration-200" />
+						<ChevronDown className="mr-2 h-4 w-4 transition-transform duration-200" />
 					) : (
-						<ChevronRight className="w-4 h-4 mr-2 transition-transform duration-200" />
+						<ChevronRight className="mr-2 h-4 w-4 transition-transform duration-200" />
 					)}
-					<h3 className="text-lg font-semibold">
+					<h3 className="font-semibold text-lg">
 						Subtasks ({subtasks.length})
 					</h3>
 				</div>
@@ -71,7 +71,7 @@ const Subtasks = () => {
 							<ul
 								{...provided.droppableProps}
 								ref={provided.innerRef}
-								className="space-y-2 my-4"
+								className="my-4 space-y-2"
 							>
 								{subtasks
 									.sort((a, b) => a.order - b.order)
@@ -125,28 +125,28 @@ const SubtaskList = ({ task, user }: SubtaskListProps) => {
 	)?.url;
 	return (
 		<Link
-			className="group/main grid grid-cols-24 items-center w-full py-2 bg-card border-t border-solid border-border hover:bg-accent"
+			className="group/main grid w-full grid-cols-24 items-center border-border border-t border-solid bg-card py-2 hover:bg-accent"
 			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<div className="col-span-1 min-h-9" />
-			<div className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0">
+			<div className="col-span-23 grid grid-cols-10 pr-6 pl-2 lg:pl-0">
 				<div className="col-span-10 text-foreground">
-					<div className="flex justify-between w-full">
-						<div className="flex items-center gap-2 text-base min-w-0">
+					<div className="flex w-full justify-between">
+						<div className="flex min-w-0 items-center gap-2 text-base">
 							<PriorityIcon priority={task.priority} />
-							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0 min-w-16">
+							<span className="xs:hidden min-w-16 flex-shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 								{task.identifier}
 							</span>
 							<Button
 								variant="ghost"
 								size="sm"
-								className="mx-1 p-0 flex-shrink-0"
+								className="mx-1 flex-shrink-0 p-0"
 							>
 								<StatusIcon status={task.status} />
 							</Button>
-							<span className="truncate min-w-0">{task.title}</span>
+							<span className="min-w-0 truncate">{task.title}</span>
 						</div>
-						<div className="flex col-span-4 items-center lg:pr-5 justify-end gap-2">
+						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{user ? (
 								<Avatar className="size-6 flex-shrink-0">
 									<AvatarImage src={user.avatarUrl ?? undefined} />
@@ -155,7 +155,7 @@ const SubtaskList = ({ task, user }: SubtaskListProps) => {
 									</AvatarFallback>
 								</Avatar>
 							) : (
-								<UserSearch className="size-6 text-[#9597AD] flex-shrink-0" />
+								<UserSearch className="size-6 flex-shrink-0 text-[#9597AD]" />
 							)}
 						</div>
 					</div>

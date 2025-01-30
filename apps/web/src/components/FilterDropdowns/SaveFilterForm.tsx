@@ -213,7 +213,7 @@ export function SaveFilterForm({
 
 	return (
 		<Form {...form}>
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-8">
+			<form onSubmit={handleSubmit(onSubmit)} className="mb-8 space-y-4">
 				<FormField
 					control={control}
 					name="title"

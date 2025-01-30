@@ -20,12 +20,12 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 
 	return (
 		<div
-			className="w-full h-screen text-3xl flex flex-col items-center justify-center text-foreground bg-background"
+			className="flex h-screen w-full flex-col items-center justify-center bg-background text-3xl text-foreground"
 			onClick={handleOffClick}
 		>
-			<div className="w-full h-1/2 flex flex-col items-center justify-around mb-20">
+			<div className="mb-20 flex h-1/2 w-full flex-col items-center justify-around">
 				<FileSearch className="size-16 text-[#717171]" />
-				<h1 className="text-5xl font-semibold">Workspace Not Found</h1>
+				<h1 className="font-semibold text-5xl">Workspace Not Found</h1>
 				<h2 className="text-gray-400">
 					The workspace you are looking for can&apos;t be found.
 				</h2>
@@ -33,27 +33,27 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 					type="button"
 					onClick={() => setMenuOpen(!menuOpen)}
 					className={
-						"w-1/7 h-20 duration-200 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-3xl cursor-pointer hover:shadow-glow text-2xl px-5 bg-blueGlowLight border border-blueGlow dark:bg-blueButton"
+						"h-20 w-1/7 cursor-pointer rounded border border-blueGlow bg-blueGlowLight px-5 text-2xl shadow-lg duration-200 hover:shadow-glow focus:shadow-sm focus:outline-none active:shadow-3xl dark:bg-blueButton"
 					}
 				>
 					Select Another Workspace
 				</button>
 				{user && (
 					<div
-						className={`w-64 mt-3 border border-border bg-popover z-40 rounded-lg pb-1 absolute transition-all duration-100 ${
+						className={`absolute z-40 mt-3 w-64 rounded-lg border border-border bg-popover pb-1 transition-all duration-100 ${
 							menuOpen
-								? "transform translate-y-0 scale-100 opacity-100 pointer-events-auto"
-								: "transform -translate-y-6 scale-95 opacity-0 pointer-events-none"
+								? "pointer-events-auto translate-y-0 scale-100 transform opacity-100"
+								: "-translate-y-6 pointer-events-none scale-95 transform opacity-0"
 						}`}
 					>
-						<div className="py-3 px-3.5">
+						<div className="px-3.5 py-3">
 							<p className="mb-3 text-muted-foreground text-sm">{user.email}</p>
 							<ul>
 								{workspaces.map((workspace: Workspace, index: number) => (
 									<Link
 										legacyBehavior
 										href={`workspace/${workspace.url}`}
-										className="px-3 py-1.5 flex items-center hover:bg-popoverHover rounded text-sm font-medium cursor-default justify-between"
+										className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
 										key={workspace.id}
 									>
 										<div>
@@ -72,11 +72,11 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 								))}
 							</ul>
 						</div>
-						<span className="w-full border-t border-border block pb-1" />
+						<span className="block w-full border-border border-t pb-1" />
 						<ul className="px-1.5">
 							<li
 								onClick={() => router.push("/join")}
-								className="px-2 py-1.5 hover:bg-popoverHover rounded text-sm text-popover-foreground cursor-default"
+								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 							>
 								Create or join a workspace
 							</li>

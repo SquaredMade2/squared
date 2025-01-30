@@ -1,7 +1,6 @@
-;
-import { css } from "../../stitches.config";
-import * as AlertDialog from ".";
 import { useState } from "react";
+import * as AlertDialog from ".";
+import { css } from "../../stitches.config";
 
 export default { title: "Components/AlertDialog" };
 
