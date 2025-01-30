@@ -46,27 +46,27 @@ const NavBarTeams = ({
 	if (!currentTeam) return null;
 
 	return (
-		<div className="w-full z-10 space-y-1 my-1 px-1">
+		<div className="z-10 my-1 w-full space-y-1 px-1">
 			<Button
 				variant={currentPage === "all" && active ? "secondary" : "ghost"}
 				onClick={() => handleActiveParams("all")}
-				className="w-full justify-start h-6"
+				className="h-6 w-full justify-start"
 			>
 				<Copy className="mr-2 size-4 text-muted-foreground" />
 				<p>Tasks</p>
 			</Button>
-			<div className="border-l border-border pl-2 ml-4 my-0.5">
+			<div className="my-0.5 ml-4 border-border border-l pl-2">
 				<Button
 					variant={currentPage === "active" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("active")}
-					className="w-full justify-start h-6 pl-3 pr-0"
+					className="h-6 w-full justify-start pr-0 pl-3"
 				>
 					Active
 				</Button>
 				<Button
 					variant={currentPage === "backlog" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("backlog")}
-					className="w-full justify-start h-6 pl-3 pr-0"
+					className="h-6 w-full justify-start pr-0 pl-3"
 				>
 					Backlog
 				</Button>
@@ -78,18 +78,18 @@ const NavBarTeams = ({
 							currentPage === "sprints" && active ? "secondary" : "ghost"
 						}
 						onClick={() => handleActiveParams("sprints")}
-						className="w-full justify-start h-6"
+						className="h-6 w-full justify-start"
 					>
 						<Activity className="mr-2 size-4 text-muted-foreground" />
 						<p>Sprints</p>
 					</Button>
-					<div className="border-l border-border pl-2 ml-4 my-0.5">
+					<div className="my-0.5 ml-4 border-border border-l pl-2">
 						<Button
 							variant={
 								currentPage === "current" && active ? "secondary" : "ghost"
 							}
 							onClick={() => handleActiveParams("sprints/current")}
-							className="w-full justify-start h-6 pl-3 pr-0"
+							className="h-6 w-full justify-start pr-0 pl-3"
 						>
 							Current Sprint
 						</Button>
@@ -98,7 +98,7 @@ const NavBarTeams = ({
 								currentPage === "upcoming" && active ? "secondary" : "ghost"
 							}
 							onClick={() => handleActiveParams("sprints/upcoming")}
-							className="w-full justify-start h-6 pl-3 pr-0"
+							className="h-6 w-full justify-start pr-0 pl-3"
 						>
 							Upcoming
 						</Button>
@@ -112,7 +112,7 @@ const NavBarTeams = ({
 				<Button
 					variant={currentPage === "views" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("views")}
-					className="w-full justify-start h-6"
+					className="h-6 w-full justify-start"
 				>
 					<Layers className="mr-2 size-4 text-muted-foreground" />
 					<p>Views</p>

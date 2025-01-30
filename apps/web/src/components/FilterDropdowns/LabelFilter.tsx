@@ -95,23 +95,23 @@ export default function LabelFilterDropDown({
 					<CommandList>
 						<CommandEmpty>No labels found.</CommandEmpty>
 						<ScrollArea
-							className={`w-full h-${filteredLabels.length > 12 ? "96" : "fit"} pr-${filteredLabels.length > 12 ? "6" : "0"}`}
+							className={`w-full h-${filteredLabels.length > 12 ? "96" : "fit"}pr-${filteredLabels.length > 12 ? "6" : "0"}`}
 						>
 							<CommandGroup>
 								{filteredLabels?.map((label) => (
 									<CommandItem
 										key={label.name}
 										onSelect={() => handleLabelChange(label)}
-										className="flex items-center space-x-2 cursor-pointer h-8"
+										className="flex h-8 cursor-pointer items-center space-x-2"
 									>
-										<div className="flex items-center flex-1 space-x-2">
+										<div className="flex flex-1 items-center space-x-2">
 											{selectedLabels.some((l) => l === label) ? (
-												<Check className="w-4 h-4" />
+												<Check className="h-4 w-4" />
 											) : (
-												<div className="w-4 h-4" />
+												<div className="h-4 w-4" />
 											)}
 											<div
-												className="w-3 h-3 rounded-full"
+												className="h-3 w-3 rounded-full"
 												style={{ backgroundColor: label.color }}
 											/>
 											<span>{label.name}</span>

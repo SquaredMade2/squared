@@ -56,7 +56,7 @@ export default function TokenVerificationPage(props: {
 	}, [isLoaded, isSignedIn]);
 
 	return (
-		<div className="w-full flex flex-col items-center justify-center gap-4 min-h-screen">
+		<div className="flex min-h-screen w-full flex-col items-center justify-center gap-4">
 			<SquaredLoader />
 			<p className="text-lg">Verifying invitation...</p>
 		</div>

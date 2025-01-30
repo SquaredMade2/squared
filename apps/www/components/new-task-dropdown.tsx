@@ -31,13 +31,13 @@ export const NewTaskDropDown = ({ options }: Props) => {
 			<button
 				type="button"
 				onClick={handleMenu}
-				className="relative bg-background-darkSecondary border border-[#2b2c3b] max-w-[220px] items-center rounded-md p-0.5 flex gap-2"
+				className="relative flex max-w-[220px] items-center gap-2 rounded-md border border-[#2b2c3b] bg-background-darkSecondary p-0.5"
 			>
 				{Icon}
 				{title}
 			</button>
 			<menu
-				className={`absolute ${openMenu ? "flex" : "hidden"} flex-col top-[318px] border-[#2b2c3b] border rounded-md bg-background-darkSecondary`}
+				className={`absolute ${openMenu ? "flex" : "hidden"} top-[318px] flex-col rounded-md border border-[#2b2c3b] bg-background-darkSecondary`}
 			>
 				{options.map((option) => {
 					return (

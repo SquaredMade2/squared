@@ -51,7 +51,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<Tag className="cursor-pointer size-4" />
+					<Tag className="size-4 cursor-pointer" />
 				</div>
 				Label
 			</ContextMenuSubTrigger>

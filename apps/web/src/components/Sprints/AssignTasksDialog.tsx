@@ -138,19 +138,19 @@ export function AssignTasksDialog({
 			<DialogTrigger asChild>
 				<Button>Assign Tasks</Button>
 			</DialogTrigger>
-			<DialogContent className="h-[90vh] flex flex-col p-0">
+			<DialogContent className="flex h-[90vh] flex-col p-0">
 				<DialogHeader className="p-6 pb-2">
 					<DialogTitle>Assign Tasks to Sprint</DialogTitle>
 					<DialogDescription>
 						Select tasks and assign them to a sprint.
 					</DialogDescription>
 				</DialogHeader>
-				<div className="flex flex-col gap-4 px-6 flex-grow overflow-hidden">
-					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-						<div className="flex items-center gap-2 w-full mt-2">
+				<div className="flex flex-grow flex-col gap-4 overflow-hidden px-6">
+					<div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+						<div className="mt-2 flex w-full items-center gap-2">
 							<Label
 								htmlFor="sprint"
-								className="whitespace-nowrap ml-auto hidden sm:block"
+								className="ml-auto hidden whitespace-nowrap sm:block"
 							>
 								Sprint
 							</Label>
@@ -174,7 +174,7 @@ export function AssignTasksDialog({
 							</Select>
 						</div>
 					</div>
-					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+					<div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
 						<Input
 							placeholder="Search tasks..."
 							value={searchQuery}
@@ -182,7 +182,7 @@ export function AssignTasksDialog({
 							className="flex-grow"
 						/>
 
-						<div className="flex items-center gap-2 w-full sm:w-auto">
+						<div className="flex w-full items-center gap-2 sm:w-auto">
 							<Select
 								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}
@@ -235,7 +235,7 @@ export function AssignTasksDialog({
 					<Tabs
 						value={viewMode}
 						onValueChange={(value) => setViewMode(value as "list" | "grid")}
-						className="flex-grow flex flex-col overflow-hidden"
+						className="flex flex-grow flex-col overflow-hidden"
 					>
 						<TabsList className="grid w-full grid-cols-2">
 							<TabsTrigger value="list">List View</TabsTrigger>
@@ -243,11 +243,11 @@ export function AssignTasksDialog({
 						</TabsList>
 						<TabsContent
 							value="list"
-							className="flex-grow overflow-hidden mt-0"
+							className="mt-0 flex-grow overflow-hidden"
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="p-4">
-									<div className="group flex items-center w-full rounded py-2 px-4 border-b border-border hover:bg-accent">
+									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">
 										<Checkbox
 											id="select-all"
 											checked={selectedTasks.length === filteredTasks.length}
@@ -264,9 +264,9 @@ export function AssignTasksDialog({
 										return (
 											<div
 												key={task.id}
-												className="group flex items-center justify-between w-full py-2 px-4 border-b border-border rounded hover:bg-accent"
+												className="group flex w-full items-center justify-between rounded border-border border-b px-4 py-2 hover:bg-accent"
 											>
-												<div className="shrink min-w-0 flex items-center gap-2">
+												<div className="flex min-w-0 shrink items-center gap-2">
 													<Checkbox
 														id={task.id}
 														checked={selectedTasks.includes(task)}
@@ -275,11 +275,11 @@ export function AssignTasksDialog({
 													/>
 													<PriorityIcon priority={task.priority} />
 													<StatusIcon status={task.status} />
-													<span className="text-sm font-medium truncate max-w-64">
+													<span className="max-w-64 truncate font-medium text-sm">
 														{task.title}
 													</span>
 												</div>
-												<div className="flex-shrink-0 flex items-center justify-end gap-2 ml-2">
+												<div className="ml-2 flex flex-shrink-0 items-center justify-end gap-2">
 													<div className="flex flex-row">
 														{taskLabels?.map((label) => (
 															<div key={label.name} className="mx-0.5">
@@ -288,7 +288,7 @@ export function AssignTasksDialog({
 														))}
 													</div>
 													{task.dueDate && (
-														<span className="text-xs text-muted-foreground whitespace-nowrap">
+														<span className="whitespace-nowrap text-muted-foreground text-xs">
 															{new Date(task.dueDate).toLocaleDateString(
 																"en-US",
 																{
@@ -307,11 +307,11 @@ export function AssignTasksDialog({
 						</TabsContent>
 						<TabsContent
 							value="grid"
-							className="flex-grow overflow-hidden mt-0"
+							className="mt-0 flex-grow overflow-hidden"
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="p-4">
-									<div className="flex items-center mb-2">
+									<div className="mb-2 flex items-center">
 										<Checkbox
 											id="select-all-grid"
 											checked={selectedTasks.length === filteredTasks.length}
@@ -321,7 +321,7 @@ export function AssignTasksDialog({
 											Select All
 										</Label>
 									</div>
-									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 										{filteredTasks.map((task) => {
 											const taskLabels = workspace?.labels.filter((label) =>
 												task.labels.includes(label),
@@ -329,9 +329,9 @@ export function AssignTasksDialog({
 											return (
 												<div
 													key={task.id}
-													className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
+													className="group flex flex-col rounded-lg border p-4 hover:bg-accent"
 												>
-													<div className="flex items-center justify-between mb-2">
+													<div className="mb-2 flex items-center justify-between">
 														<Checkbox
 															id={task.id}
 															checked={selectedTasks.includes(task)}
@@ -342,21 +342,21 @@ export function AssignTasksDialog({
 															<StatusIcon status={task.status} />
 														</div>
 													</div>
-													<span className="text-sm font-medium mb-2 line-clamp-2">
+													<span className="mb-2 line-clamp-2 font-medium text-sm">
 														{task.title}
 													</span>
-													<div className="flex flex-wrap mb-1">
+													<div className="mb-1 flex flex-wrap">
 														{taskLabels?.map((label) => (
 															<span
 																key={label.name}
-																className="flex-shrink mb-1"
+																className="mb-1 flex-shrink"
 															>
 																<LabelBadge label={label} />
 															</span>
 														))}
 													</div>
 													{task.dueDate && (
-														<span className="text-xs text-muted-foreground">
+														<span className="text-muted-foreground text-xs">
 															Due:{" "}
 															{new Date(task.dueDate).toLocaleDateString(
 																"en-US",

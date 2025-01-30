@@ -201,6 +201,7 @@ jobs:
           EMAIL_PASSWORD: H=3x=_uhQa
           POSTGRES_PORT: 5434
           NODE_ENV: test
+          LOCAL_DB: true
           RUNNING_TESTS: true
           LOCAL_DB: true
       - name: Build API

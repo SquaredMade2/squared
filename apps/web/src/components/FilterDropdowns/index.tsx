@@ -47,7 +47,7 @@ const filterOptions: FilterOption[] = [
 	{
 		id: 3,
 		name: "Labels",
-		svg: <Tag className="cursor-pointer size-4" />,
+		svg: <Tag className="size-4 cursor-pointer" />,
 		group: "Labels",
 		menuContent: (filterOption) => (
 			<LabelFilterDropDown filterOption={filterOption} />
@@ -56,7 +56,7 @@ const filterOptions: FilterOption[] = [
 	{
 		id: 4,
 		name: "Due Date",
-		svg: <Calendar className="cursor-pointer size-4" />,
+		svg: <Calendar className="size-4 cursor-pointer" />,
 		group: "Due Date",
 		menuContent: (filterOption) => (
 			<DueDateFilterDropDown filterOption={filterOption} />
@@ -65,7 +65,7 @@ const filterOptions: FilterOption[] = [
 	{
 		id: 5,
 		name: "Effort",
-		svg: <Clock className="cursor-pointer size-4" />,
+		svg: <Clock className="size-4 cursor-pointer" />,
 		group: "effortEstimate",
 		menuContent: (filterOption) => (
 			<EffortFilterDropDown filterOption={filterOption} />
@@ -74,7 +74,7 @@ const filterOptions: FilterOption[] = [
 	{
 		id: 6,
 		name: "Assignee",
-		svg: <User className="cursor-pointer size-4" />,
+		svg: <User className="size-4 cursor-pointer" />,
 		group: "Assignee",
 		menuContent: (filterOption) => (
 			<AssigneeFilterDropDown filterOption={filterOption} />
@@ -98,13 +98,13 @@ const FilterDropDown: React.FunctionComponent = () => {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost">
-						<div className="flex gap-2 items-center">
+						<div className="flex items-center gap-2">
 							<Filter className="size-5" />
 							Filter
 						</div>
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent className="w-60 ml-32">
+				<DropdownMenuContent className="ml-32 w-60">
 					{filterOptions.map((item) => (
 						<div key={item.name}>{item.menuContent(item)}</div>
 					))}

@@ -48,7 +48,7 @@ export const Features = () => {
 			</Subheading>
 
 			<div className="relative">
-				<div className="grid grid-cols-1 md:grid-cols-6 mt-12">
+				<div className="mt-12 grid grid-cols-1 md:grid-cols-6">
 					{features.map((feature) => (
 						<FeatureCard key={feature.title} className={feature.className}>
 							<FeatureTitle>{feature.title}</FeatureTitle>
@@ -100,7 +100,7 @@ const FeatureCard = ({
 	className?: string;
 }) => {
 	return (
-		<div className={cn("p-4 sm:p-8 relative overflow-hidden", className)}>
+		<div className={cn("relative overflow-hidden p-4 sm:p-8", className)}>
 			{children}
 		</div>
 	);
@@ -116,7 +116,7 @@ const FeatureTitle = ({ children }: { children?: React.ReactNode }) => {
 
 const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
 	return (
-		<Subheading className="text-left max-w-sm mx-0 md:text-sm my-2">
+		<Subheading className="mx-0 my-2 max-w-sm text-left md:text-sm">
 			{children}
 		</Subheading>
 	);
