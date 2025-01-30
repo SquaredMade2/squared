@@ -38,7 +38,7 @@ export default function FilterViewPage() {
 				});
 				setSavedFilters(filters);
 				const filterId = parseParams(params.filterId);
-				const filterSlug = filterId.split("-").pop();
+				const filterSlug = filterId?.split("-").pop();
 				const foundFilter = filters.find((f) =>
 					f.id.startsWith(filterSlug || ""),
 				);
@@ -68,7 +68,7 @@ export default function FilterViewPage() {
 
 	if (loading || teamLoading || isLoading) {
 		return (
-			<div className="w-full flex justify-center items-center">
+			<div className="flex w-full items-center justify-center">
 				<SquaredLoader />
 			</div>
 		);

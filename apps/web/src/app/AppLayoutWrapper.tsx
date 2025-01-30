@@ -1,6 +1,5 @@
 "use client";
 
-import ErrorBoundary from "@/components/ErrorBoundary";
 import {
 	TaskSelector,
 	WorkspaceInviteModal,
@@ -16,15 +15,15 @@ import {
 	QueryClientProvider,
 } from "@tanstack/react-query";
 import { HTTPException } from "hono/http-exception";
-import type { ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ClientLayoutWrapper({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const [mounted, setMounted] = useState(false);
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
@@ -44,33 +43,35 @@ export default function ClientLayoutWrapper({
 				}),
 			}),
 	);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) return null;
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ClerkProvider>
-				<ErrorBoundary>
-					<SquaredStoreProvider>
-						<ThemeProvider
-							attribute="class"
-							defaultTheme="system"
-							enableSystem
-							disableTransitionOnChange
-						>
-							<WorkspaceInviteModal />
-							<SearchCommand />
-							<WorkspaceSwitcher />
-							<TaskSelector />
-							<div className="h-full flex flex-row overflow-hidden">
+				<SquaredStoreProvider>
+					<NextThemesProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						{mounted && (
+							<>
+								<WorkspaceInviteModal />
+								<SearchCommand />
+								<WorkspaceSwitcher />
+								<TaskSelector />
 								{children}
-							</div>
-						</ThemeProvider>
-						<Toaster />
-					</SquaredStoreProvider>
-				</ErrorBoundary>
+							</>
+						)}
+					</NextThemesProvider>
+					<Toaster />
+				</SquaredStoreProvider>
 			</ClerkProvider>
 		</QueryClientProvider>
 	);
-}
-
-function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-	return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

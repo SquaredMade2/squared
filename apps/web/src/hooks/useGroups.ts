@@ -6,6 +6,7 @@ import {
 } from "@/store";
 import type { CompletedTaskPeriod, TaskGroup } from "@/store/views";
 import { Priority, Status, type Task } from "@squared/db";
+import { isAfter, startOfDay, subDays, subMonths } from "date-fns";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { tasks } = useTaskStore((state) => state);
@@ -44,7 +45,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				];
 				break;
 			case "Label": {
-				const workspaceLabels = workspace?.Labels.map((l) => l.id) || [];
+				const workspaceLabels = workspace?.labels.map((l) => l.id) || [];
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}
@@ -84,27 +85,31 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		}
 	};
 
-	const filterTasksByPeriod = (tasks: Task[], period: CompletedTaskPeriod) => {
+	const filterTasksByPeriod = (
+		tasks: Task[],
+		period: CompletedTaskPeriod,
+	): Task[] => {
 		const now = new Date();
+
 		switch (period) {
-			case "Past day":
-				return tasks.filter(
-					(task) =>
-						new Date(task.updatedAt) >=
-						new Date(now.setDate(now.getDate() - 1)),
+			case "Past day": {
+				const oneDayAgo = startOfDay(subDays(now, 1));
+				return tasks.filter((task) =>
+					isAfter(new Date(task.updatedAt), oneDayAgo),
 				);
-			case "Past week":
-				return tasks.filter(
-					(task) =>
-						new Date(task.updatedAt) >=
-						new Date(now.setDate(now.getDate() - 7)),
+			}
+			case "Past week": {
+				const oneWeekAgo = subDays(now, 7);
+				return tasks.filter((task) =>
+					isAfter(new Date(task.updatedAt), oneWeekAgo),
 				);
-			case "Past month":
-				return tasks.filter(
-					(task) =>
-						new Date(task.updatedAt) >=
-						new Date(now.setMonth(now.getMonth() - 1)),
+			}
+			case "Past month": {
+				const oneMonthAgo = subMonths(now, 1);
+				return tasks.filter((task) =>
+					isAfter(new Date(task.updatedAt), oneMonthAgo),
 				);
+			}
 			case "None":
 				return []; // If period is 'None', return no tasks
 			default:

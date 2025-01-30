@@ -183,13 +183,12 @@ func getPapertrailAddr(isStaging bool) string {
 func formatLog(log VercelLog) string {
 	var status int
 	var builder strings.Builder
-	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format("Jan 02 15:04:05")
 	coloredLogLevel := colorize(log.Level)
 
 	// Common parts for all log levels
 	builder.WriteString(fmt.Sprintf(
-		"%s %s ",
-		timestamp, coloredLogLevel,
+		"%s ",
+		coloredLogLevel,
 	))
 
 	if log.Level == "error" {
@@ -260,12 +259,12 @@ func getColorForLevel(level LogLevel) string {
 }
 
 func colorize(level LogLevel) string {
-	return fmt.Sprintf("%s%s:%s", getColorForLevel(level), level, resetColor)
+	return fmt.Sprintf("%s%s%s:", getColorForLevel(level), level, resetColor)
 }
 
 func sendToPapertrail(writer *syslog.Writer, log VercelLog, message string) error {
-	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format(time.RFC3339)
-	logMessage := fmt.Sprintf("%s: %s", timestamp, message)
+	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format("Jan 02 15:04:05")
+	logMessage := fmt.Sprintf("%s %s", timestamp, message)
 
 	logFunc := getLogFunc(writer, log.Level)
 	if err := logFunc(logMessage); err != nil {

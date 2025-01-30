@@ -24,7 +24,7 @@ export const PriorityDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full">
+				<Button variant="outline" className="w-full max-w-full">
 					<span className="cursor-pointer">
 						<PriorityIcon priority={newTaskPriority || "noPriority"} />
 					</span>
@@ -49,7 +49,7 @@ export const PriorityDropdownButton = () => {
 						<DropdownMenuItem
 							key={priority}
 							onSelect={() => handleSelectPriority(priority as Priority)}
-							className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
+							className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 						>
 							<div className="flex items-center ">
 								<PriorityIcon priority={priority} />

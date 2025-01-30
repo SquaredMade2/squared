@@ -22,21 +22,21 @@ function Password(props: PasswordProps) {
 			<input
 				id="password"
 				autoComplete="current-password"
-				className="block w-full bg-brand-dark-input rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-zinc-800 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6"
+				className="block w-full rounded-md border-0 bg-brand-dark-input py-1.5 text-white shadow-sm ring-1 ring-zinc-800 ring-inset placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 sm:text-sm sm:leading-6"
 				{...props}
 				type={show ? "text" : "password"}
 			/>
-			<div className="absolute right-3 top-[30%]">
+			<div className="absolute top-[30%] right-3">
 				{!show && (
 					<EyeIcon
 						onClick={() => setShow(true)}
-						className="text-gray-400 cursor-pointer h-4"
+						className="h-4 cursor-pointer text-gray-400"
 					/>
 				)}
 				{show && (
 					<EyeOffIcon
 						onClick={() => setShow(false)}
-						className="text-gray-400 cursor-pointer h-4"
+						className="h-4 cursor-pointer text-gray-400"
 					/>
 				)}
 			</div>

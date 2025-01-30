@@ -1,7 +1,6 @@
-import * as React from "react";
-
 import * as DialogPrimitive from "../dialog";
 
+import { useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Components/Dialog" };
@@ -59,7 +58,7 @@ export const NonModal = () => (
 );
 
 export const Controlled = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<DialogPrimitive.Root open={open} onOpenChange={setOpen}>
 			<DialogPrimitive.Trigger>
@@ -107,8 +106,8 @@ export const FocusTrap = () => (
 );
 
 export const CustomFocus = () => {
-	const firstNameRef = React.useRef<HTMLInputElement>(null);
-	const searchFieldRef = React.useRef<HTMLInputElement>(null);
+	const firstNameRef = useRef<HTMLInputElement>(null);
+	const searchFieldRef = useRef<HTMLInputElement>(null);
 	return (
 		<>
 			<DialogPrimitive.Root>
@@ -196,8 +195,9 @@ export const NoPointerDownOutsideDismiss = () => (
 );
 
 export const WithPortalContainer = () => {
-	const [portalContainer, setPortalContainer] =
-		React.useState<HTMLDivElement | null>(null);
+	const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+		null,
+	);
 	return (
 		<>
 			<DialogPrimitive.Root>
@@ -577,10 +577,10 @@ export const Chromatic = () => (
 Chromatic.parameters = { chromatic: { disable: false } };
 
 export const Cypress = () => {
-	const [modal, setModal] = React.useState(true);
-	const [animated, setAnimated] = React.useState(false);
-	const [count, setCount] = React.useState(0);
-	const [hasDestroyButton, setHasDestroyButton] = React.useState(true);
+	const [modal, setModal] = useState(true);
+	const [animated, setAnimated] = useState(false);
+	const [count, setCount] = useState(0);
+	const [hasDestroyButton, setHasDestroyButton] = useState(true);
 
 	return (
 		<>
@@ -646,9 +646,13 @@ export const Cypress = () => {
 
 			<br />
 
-			<label>
+			<label htmlFor="count">
 				count up{" "}
-				<button type="button" onClick={() => setCount((count) => count + 1)}>
+				<button
+					type="button"
+					onClick={() => setCount((count) => count + 1)}
+					id="count"
+				>
 					{count}
 				</button>
 			</label>

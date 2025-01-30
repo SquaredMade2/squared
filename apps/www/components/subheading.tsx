@@ -3,6 +3,8 @@ import type { AnimationProps, MotionProps } from "framer-motion";
 import type React from "react";
 import Balancer from "react-wrap-balancer";
 
+import type { JSX } from "react";
+
 export const Subheading = ({
 	className,
 	as: Tag = "h2",
@@ -16,8 +18,8 @@ export const Subheading = ({
 	return (
 		<Tag
 			className={cn(
-				"text-sm md:text-base  max-w-4xl text-left my-4 mx-auto",
-				"text-muted-foreground text-center font-normal",
+				"mx-auto my-4 max-w-4xl text-left text-sm md:text-base",
+				"text-center font-normal text-muted-foreground",
 				className,
 			)}
 		>

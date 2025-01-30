@@ -1,7 +1,7 @@
-import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
-import { SIDE_OPTIONS, ALIGN_OPTIONS } from "../popper";
 import * as DialogPrimitive from "../dialog";
+import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 import * as Tooltip from "../tooltip";
 
 export default { title: "Components/Tooltip" };
@@ -23,7 +23,7 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = useState(true);
 	return (
 		<Tooltip.TooltipProvider>
 			<Tooltip.Tooltip open={open} onOpenChange={setOpen}>
@@ -598,9 +598,9 @@ export const WithText = () => (
 );
 
 export const WithExternalRef = () => {
-	const buttonRef = React.useRef<HTMLButtonElement>(null);
+	const buttonRef = useRef<HTMLButtonElement>(null);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (buttonRef.current) {
 			buttonRef.current.style.boxShadow = "0 0 0 2px red";
 		}
@@ -622,7 +622,7 @@ export const WithExternalRef = () => {
 };
 
 export const Unmount = () => {
-	const [isMounted, setIsMounted] = React.useState(true);
+	const [isMounted, setIsMounted] = useState(true);
 	return (
 		<Tooltip.TooltipProvider>
 			<ul>
@@ -720,7 +720,7 @@ export const WithinDialog = () => (
 );
 
 export const KeepOpenOnActivation = () => {
-	const triggerRef = React.useRef(null);
+	const triggerRef = useRef(null);
 
 	return (
 		<Tooltip.TooltipProvider>

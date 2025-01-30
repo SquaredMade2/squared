@@ -1,5 +1,11 @@
-import * as React from "react";
-
+import {
+	Component,
+	type ComponentProps,
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type ReactNode,
+	forwardRef,
+} from "react";
 import { Slot, Slottable } from "../slot";
 
 export default { title: "Utilities/Slot" };
@@ -256,7 +262,7 @@ Chromatic.parameters = { chromatic: { disable: false } };
 
 /* ---------------------------------------------------------------------------------------------- */
 
-class ErrorBoundary extends React.Component<any, { hasError: boolean }> {
+class ErrorBoundary extends Component<any, { hasError: boolean }> {
 	constructor(props: any) {
 		super(props);
 		this.state = { hasError: false };
@@ -279,9 +285,9 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean }> {
 }
 
 /* Also verifying that props and ref types don't error */
-const SlotWithoutSlottable = React.forwardRef<
+const SlotWithoutSlottable = forwardRef<
 	HTMLDivElement,
-	React.ComponentPropsWithoutRef<"div">
+	ComponentPropsWithoutRef<"div">
 >((props, forwardedRef) => (
 	<Slot {...props} className="test" ref={forwardedRef} />
 ));
@@ -323,12 +329,12 @@ const SlotWithoutPreventableEvent = (props: any) => (
 	/>
 );
 
-const Button = React.forwardRef<
-	React.ElementRef<"button">,
-	React.ComponentProps<"button"> & {
+const Button = forwardRef<
+	ElementRef<"button">,
+	ComponentProps<"button"> & {
 		asChild?: boolean;
-		iconLeft?: React.ReactNode;
-		iconRight?: React.ReactNode;
+		iconLeft?: ReactNode;
+		iconRight?: ReactNode;
 	}
 >(
 	(
@@ -362,24 +368,23 @@ const Button = React.forwardRef<
 	},
 );
 
-const MockIcon = React.forwardRef<
-	React.ElementRef<"span">,
-	React.ComponentProps<"span">
->(({ color = "tomato", ...props }, forwardedRef) => (
-	<span
-		ref={forwardedRef}
-		{...props}
-		style={{
-			display: "inline-block",
-			width: 10,
-			height: 10,
-			backgroundColor: color,
-			...props.style,
-		}}
-	/>
-));
+const MockIcon = forwardRef<ElementRef<"span">, ComponentProps<"span">>(
+	({ color = "tomato", ...props }, forwardedRef) => (
+		<span
+			ref={forwardedRef}
+			{...props}
+			style={{
+				display: "inline-block",
+				width: 10,
+				height: 10,
+				backgroundColor: color,
+				...props.style,
+			}}
+		/>
+	),
+);
 
-const MockTag = React.forwardRef(({ onDelete, ...props }: any, ref) => {
+const MockTag = forwardRef(({ onDelete, ...props }: any, ref) => {
 	return (
 		<div {...props} ref={ref}>
 			{props.children}{" "}

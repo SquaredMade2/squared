@@ -1,7 +1,6 @@
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import type { Workspace } from "@/store/workspaces";
 import { useClerk } from "@clerk/nextjs";
-import type { Team } from "@squared/db";
+import type { Team, WorkspaceLabel } from "@squared/db";
 import {
 	ArrowLeftRight,
 	ArrowRight,
@@ -25,7 +24,7 @@ import type { SearchbarStructure } from "./interfaces";
 export class CommandSchema {
 	router: ReturnType<typeof useRouter>;
 	pathname: string;
-	workspace: Workspace | null;
+	workspace: WorkspaceLabel | null;
 	team: Team | null;
 	setShowNewTask: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;
@@ -91,7 +90,7 @@ export class CommandSchema {
 			},
 			Project: {
 				createNewProject: {
-					icon: <Box className="size-4 mr-2" />,
+					icon: <Box className="mr-2 size-4" />,
 					text: "Create new project...",
 					function: () => {
 						/* This is for the future functionality */
@@ -99,7 +98,7 @@ export class CommandSchema {
 					shortcut: ["P", "then", "C"],
 				},
 				createNewProjectFromTemplate: {
-					icon: <Box className="size-4 mr-2" />,
+					icon: <Box className="mr-2 size-4" />,
 					text: "Create new project from template...",
 					function: () => {
 						/* This is for the future functionality */
@@ -109,7 +108,7 @@ export class CommandSchema {
 			},
 			View: {
 				createNewView: {
-					icon: <Layers className="size-4 mr-2" />,
+					icon: <Layers className="mr-2 size-4" />,
 					text: "Create new view",
 					function: () => {
 						this.clearFilter();
@@ -126,7 +125,7 @@ export class CommandSchema {
 			},
 			Templates: {
 				createNewTaskTemplate: {
-					icon: <Copy className="size-4 mr-2" />,
+					icon: <Copy className="mr-2 size-4" />,
 					text: "Create new task template...",
 					function: () => {
 						/* This is for the future functionality */
@@ -134,7 +133,7 @@ export class CommandSchema {
 					shortcut: [],
 				},
 				createNewDocumentTemplate: {
-					icon: <Copy className="size-4 mr-2" />,
+					icon: <Copy className="mr-2 size-4" />,
 					text: "Create new document template...",
 					function: () => {
 						/* This is for the future functionality */
@@ -142,7 +141,7 @@ export class CommandSchema {
 					shortcut: [],
 				},
 				createNewProjectTemplate: {
-					icon: <Copy className="size-4 mr-2" />,
+					icon: <Copy className="mr-2 size-4" />,
 					text: "Create new project template...",
 					function: () => {
 						/* This is for the future functionality */
@@ -152,7 +151,7 @@ export class CommandSchema {
 			},
 			Navigation: {
 				openTask: {
-					icon: <Circle className="size-4 mr-2" />,
+					icon: <Circle className="mr-2 size-4" />,
 					text: "Open task...",
 					function: () => {
 						this.setShowTaskSelector(true);
@@ -160,7 +159,7 @@ export class CommandSchema {
 					shortcut: ["O", "then", "I"],
 				},
 				openLastViewedTask: {
-					icon: <ChevronRight className="size-4 mr-2" />,
+					icon: <ChevronRight className="mr-2 size-4" />,
 					text: "Open last viewed task",
 					function: () => {
 						/* This is for the future functionality */
@@ -280,7 +279,7 @@ export class CommandSchema {
 					shortcut: [],
 				},
 				"Go to recently deleted projects": {
-					icon: <Trash2 className="mr-2 w-4 h-4" />,
+					icon: <Trash2 className="mr-2 h-4 w-4" />,
 					text: "Go to recently deleted projects",
 					function: () => {
 						/* this is for the future functionality */

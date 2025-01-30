@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useUserStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
-import { TooltipContent } from "@repo/ui/tooltip";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { ThumbsUp } from "lucide-react";
 
 export const RetroItemCard = ({
@@ -37,7 +37,7 @@ export const RetroItemCard = ({
 					{...provided.dragHandleProps}
 				>
 					<Card>
-						<CardContent className="p-2 flex justify-between">
+						<CardContent className="flex justify-between p-2">
 							<div className="flex flex-col">
 								<div>{item.content}</div>
 								{author && (

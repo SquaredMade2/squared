@@ -48,13 +48,13 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	const currentSavedFilter = pathname.split("/").includes("views")
 		? savedFilters.filter((filter) => {
-			const filterSlugArray = filter.id.split("-");
-			const filterSlug = filterSlugArray[0];
+				const filterSlugArray = filter.id.split("-");
+				const filterSlug = filterSlugArray[0];
 
-			const pathNameSlug = pathname.split("-").pop();
+				const pathNameSlug = pathname.split("-").pop();
 
-			return filterSlug === pathNameSlug;
-		})[0]
+				return filterSlug === pathNameSlug;
+			})[0]
 		: null;
 
 	const getParentTaskIds = () => {
@@ -148,8 +148,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
-					className={`mt-1 bg-secondary dark:bg-secondary/30 ${isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
-						}`}
+					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+						isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
+					}`}
 				>
 					{subtasks.map((subtask, subIndex) => (
 						<TaskCard
@@ -169,11 +170,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
 		<div
 			key={parentTask?.id}
-			className={`mt-1 bg-secondary dark:bg-secondary/30 ${isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
-				}`}
+			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
+			}`}
 		>
 			<span
-				className={`text-accent-foreground truncate max-w-[250px] inline-block ${isListView ? "ml-10" : "ml-2"}`}
+				className={`inline-block max-w-[250px] truncate text-accent-foreground ${isListView ? "ml-10" : "ml-2"}`}
 			>
 				{parentTask?.identifier}: {parentTask?.title}
 			</span>
@@ -270,7 +272,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	return (
 		<div
 			className={
-				isListView ? "mb-2 w-full" : "pb-2 pr-2 w-[300px] flex-shrink-0"
+				isListView ? "mb-2 w-full" : "w-[300px] flex-shrink-0 pr-2 pb-2"
 			}
 		>
 			<TaskColumnTitle
@@ -293,18 +295,19 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				) => (
 					<div
 						className={`
-							${view === "grid"
-								? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
-								: "flex flex-col z-30 w-full gap-2 items-center h-full"
+							${
+								view === "grid"
+									? "9fr] mb-2 grid h-[calc(100vh-250px)] w-full flex-grow grid-rows-[1fr rounded-lg bg-card transition-all duration-500 ease-in-out"
+									: "z-30 flex h-full w-full flex-col items-center gap-2"
 							}
 							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
 							`}
 					>
-						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
-							<div className="w-full grow inline-flex">
+						<div className="scrollbar-thin scrollbar-thumb-[#DBE0E3] scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent w-full overflow-auto">
+							<div className="inline-flex w-full grow">
 								<div
 									ref={dropProvided.innerRef}
-									className="flex flex-col items-start w-full min-w-[200px] min-h-[60px]"
+									className="flex min-h-[60px] w-full min-w-[200px] flex-col items-start"
 								>
 									{showTasks && renderGroup(tasks)}
 									{dropProvided.placeholder}

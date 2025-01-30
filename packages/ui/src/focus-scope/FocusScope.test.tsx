@@ -1,8 +1,7 @@
-import type React from "react";
-
-import { render, waitFor } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ComponentProps } from "react";
 import { FocusScope } from "../focus-scope";
 
 const INNER_NAME_INPUT_LABEL = "Name";
@@ -137,7 +136,7 @@ describe("FocusScope", () => {
 function TestField({
 	label,
 	...props
-}: { label: string } & React.ComponentProps<"input">) {
+}: { label: string } & ComponentProps<"input">) {
 	return (
 		<label>
 			<span>{label}</span>

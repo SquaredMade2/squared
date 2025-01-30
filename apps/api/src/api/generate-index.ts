@@ -27,21 +27,18 @@ import type { Route } from "./route";
 		.map((p) => p.replace(__dirname, "."))
 		.filter((p) => p !== ".");
 
-	const filenameHashes: string[] = [];
+	// Sort files to ensure consistent order
+	files.sort();
 
 	for (let i = 0; i < files.length; i++) {
-		const hash = createHash("sha1").update(files[i]).digest().subarray(-3);
-		while (filenameHashes.includes(hash.toString("hex"))) {
-			hash[0]++;
-		}
-		filenameHashes.push(hash.toString("hex"));
-
-		writeLn(`import * as $${filenameHashes[i]} from "${files[i]}";`);
+		const hash = createRouteHash(files[i]);
+		writeLn(`import * as ${hash} from "${files[i]}";`);
 	}
 
 	writeLn("\nexport type AllRouteDeps =");
 	for (let i = 0; i < files.length; i++) {
-		writeLn(`  & Parameters<typeof $${filenameHashes[i]}.createRoute>[0]`);
+		const hash = createRouteHash(files[i]);
+		writeLn(`  & Parameters<typeof ${hash}.createRoute>[0]`);
 	}
 
 	writeLn(`
@@ -55,11 +52,12 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 			.replace(routeRe, "/api/$1")
 			.replace(routeParamsRe, ":$1");
 		const typeProps = routeParams.map((p) => `${p}: string`).join("; ");
+		const hash = createRouteHash(files[i]);
 
 		writeLn(`
   {
     type Params = { ${typeProps} };
-    const r: Route<Params> = $${filenameHashes[i]}.createRoute(deps);
+    const r: Route<Params> = ${hash}.createRoute(deps);
 
     router.get("${route}", toQueryHandler(r.GET));
     router.post("${route}", toMutationHandler(r.POST));
@@ -84,8 +82,6 @@ function getRoutes(dir: string): string[] {
 
 	logger.info("Checking directory: %s", dir);
 
-	files.sort().reverse();
-
 	for (const file of files) {
 		const path = `${dir}/${file}`;
 		const stat = fs.statSync(path);
@@ -97,6 +93,12 @@ function getRoutes(dir: string): string[] {
 		}
 	}
 	return routes;
+}
+
+function createRouteHash(route: string): string {
+	// Create a deterministic hash based on the route name
+	const hash = createHash("sha256").update(route).digest("hex").slice(0, 8);
+	return `route_${hash}`;
 }
 
 // Call the function to generate the index

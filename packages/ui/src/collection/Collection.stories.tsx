@@ -1,5 +1,12 @@
-import * as React from "react";
-
+import {
+	type ComponentPropsWithRef,
+	type ElementRef,
+	type FC,
+	type ReactNode,
+	memo,
+	useEffect,
+	useState,
+} from "react";
 import { createCollection } from "../collection";
 
 export default { title: "Utilities/Collection" };
@@ -55,8 +62,8 @@ export const WithFragment = () => {
 };
 
 export const DynamicInsertion = () => {
-	const [hasTomato, setHasTomato] = React.useState(false);
-	const [, forceUpdate] = React.useState<any>();
+	const [hasTomato, setHasTomato] = useState(false);
+	const [, forceUpdate] = useState<any>();
 	return (
 		<>
 			<button onClick={() => setHasTomato(!hasTomato)}>
@@ -86,7 +93,7 @@ function WrappedItems({ hasTomato }: any) {
 }
 
 export const WithChangingItem = () => {
-	const [isDisabled, setIsDisabled] = React.useState(false);
+	const [isDisabled, setIsDisabled] = useState(false);
 	return (
 		<>
 			<button onClick={() => setIsDisabled(!isDisabled)}>
@@ -127,11 +134,11 @@ export const Nested = () => (
 type ItemData = { disabled: boolean };
 
 const [Collection, useCollection] = createCollection<
-	React.ElementRef<typeof Item>,
+	ElementRef<typeof Item>,
 	ItemData
 >("List");
 
-const List: React.FC<{ children: React.ReactNode }> = (props) => {
+const List: FC<{ children: ReactNode }> = (props) => {
 	return (
 		<Collection.Provider scope={undefined}>
 			<Collection.Slot scope={undefined}>
@@ -141,8 +148,8 @@ const List: React.FC<{ children: React.ReactNode }> = (props) => {
 	);
 };
 
-type ItemProps = React.ComponentPropsWithRef<"li"> & {
-	children: React.ReactNode;
+type ItemProps = ComponentPropsWithRef<"li"> & {
+	children: ReactNode;
 	disabled?: boolean;
 };
 
@@ -161,11 +168,11 @@ function Item({ disabled = false, ...props }: ItemProps) {
 }
 
 // Ensure that our implementation doesn't break if the item list/item is memoized
-const MemoItem = React.memo(Item);
-const MemoItems = React.memo(WrappedItems);
+const MemoItem = memo(Item);
+const MemoItems = memo(WrappedItems);
 
 function LogItems({ name = "items" }: { name?: string }) {
 	const getItems = useCollection(undefined);
-	React.useEffect(() => console.log(name, getItems()));
+	useEffect(() => console.log(name, getItems()));
 	return null;
 }

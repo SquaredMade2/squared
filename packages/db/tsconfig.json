@@ -1,6 +1,6 @@
 {
-  "extends": "@repo/typescript-config/base.json",
-  "compilerOptions": {
-    "types": ["node"]
-  }
+	"extends": "@squared/typescript-config/base.json",
+	"compilerOptions": {
+		"types": ["node"]
+	}
 }

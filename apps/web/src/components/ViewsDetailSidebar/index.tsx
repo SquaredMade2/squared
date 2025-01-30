@@ -44,7 +44,7 @@ const ViewsDetailSidebar = ({
 	const { tasks } = useTaskStore((state) => state);
 	const { deleteSavedFilter } = useFilterStore((state) => state);
 	const filteredTasks = filterTasksWithFilter(tasks);
-	const allLabels = workspace?.Labels;
+	const allLabels = workspace?.labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const author = users.find((u) => u.externalId === filter.authorId);
@@ -87,7 +87,7 @@ const ViewsDetailSidebar = ({
 		<div>
 			<Card className="w-[300px]">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-					<CardTitle className="text-sm font-medium flex items-center gap-2">
+					<CardTitle className="flex items-center gap-2 font-medium text-sm">
 						<Info className="h-4 w-4" />
 						{filter.name}
 					</CardTitle>
@@ -96,17 +96,17 @@ const ViewsDetailSidebar = ({
 					</Button>
 				</CardHeader>
 				<CardContent>
-					<p className="text-xs text-muted-foreground mb-4">
+					<p className="mb-4 text-muted-foreground text-xs">
 						{filter.description}
 					</p>
 					<div className="space-y-4">
-						<div className="flex justify-between items-center">
+						<div className="flex items-center justify-between">
 							<span className="text-xs">Visibility</span>
 							<Badge variant="outline" className="">
 								{team?.name}
 							</Badge>
 						</div>
-						<div className="flex justify-between items-center">
+						<div className="flex items-center justify-between">
 							<span className="text-xs">Owner</span>
 							<div className="flex items-center gap-2">
 								<Avatar className="size-6 flex-shrink-0">

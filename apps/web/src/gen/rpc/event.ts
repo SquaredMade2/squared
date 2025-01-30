@@ -64,6 +64,7 @@ export type GetNotificationsResponse = {
 		admins: string[];
 		avatarUrl: string | null;
 		companySize: number | null;
+		createdAt: Date;
 		defaultView: string | null;
 		id: string;
 		name: string;

@@ -192,55 +192,55 @@ const Join = () => {
 	}
 
 	return (
-		<div className="w-screen h-screen">
+		<div className="h-screen w-screen">
 			{!user?.onBoarding && workspaces && workspaces.length > 0 && (
-				<div className="w-screen absolute top-0 p-10 flex justify-between">
+				<div className="absolute top-0 flex w-screen justify-between p-10">
 					<div className="flex flex-col text-sm">
-						<span className="text-xs text-muted-foreground">Logged in as:</span>
+						<span className="text-muted-foreground text-xs">Logged in as:</span>
 						<span className="text-foreground">{user?.email}</span>
 					</div>
 					<div className="flex items-center space-x-1 text-foreground">
-						<ChevronLeft className="text-[#858699] size-5" />
+						<ChevronLeft className="size-5 text-[#858699]" />
 						<a href={`/${workspaces[0].url}`}>Back to Squared</a>
 					</div>
 				</div>
 			)}
-			<Card className="p-8 flex flex-col space-y-6 w-5/6 lg:w-1/2 mx-auto mt-32">
+			<Card className="mx-auto mt-32 flex w-5/6 flex-col space-y-6 p-8 lg:w-1/2">
 				<div className="text-center">
-					<span className="text-2xl text-foreground font-medium">
+					<span className="font-medium text-2xl text-foreground">
 						Create a new workspace
 					</span>
 				</div>
 				<div className="text-center">
-					<span className="text-muted-foreground text-md">
+					<span className="text-md text-muted-foreground">
 						Workspaces are shared environments where teams can work on projects,
 						cycles and tasks.
 					</span>
 				</div>
 				<form
-					className="flex flex-col space-y-6 text-foreground items-center"
+					className="flex flex-col items-center space-y-6 text-foreground"
 					onSubmit={handleSubmit}
 				>
-					<div className="w-full shadow-[0_3px_15px_5px_rgb(0,0,0,0.1)] p-7 rounded-xl flex flex-col space-y-7 bg-accent">
-						<div className="flex flex-col space-y-1 text-foreground relative">
+					<div className="flex w-full flex-col space-y-7 rounded-xl bg-accent p-7 shadow-[0_3px_15px_5px_rgb(0,0,0,0.1)]">
+						<div className="relative flex flex-col space-y-1 text-foreground">
 							<Label>Workspace Name</Label>
 							<Input
 								type="text"
 								id="workSpace"
 								autoComplete="off"
-								className="bg-card xs:pl-0 xs:indent-2 relative"
+								className="relative bg-card xs:pl-0 xs:indent-2"
 								value={inputValue}
 								onChange={(e) => setInputValue(e.target.value)}
 							/>
 						</div>
-						<div className="flex flex-col space-y-1 text-foreground relative">
+						<div className="relative flex flex-col space-y-1 text-foreground">
 							<Label>Workspace URL</Label>
-							<div className="flex flex-col space-y-1 text-foreground relative">
-								<span className="absolute z-10 bottom-3 left-2 text-muted-foreground xs:hidden">
+							<div className="relative flex flex-col space-y-1 text-foreground">
+								<span className="absolute bottom-3 left-2 z-10 xs:hidden text-muted-foreground">
 									app.squaredmade.com/
 								</span>
 								<Input
-									className="pl-44 bg-card xs:pl-0 xs:indent-2 relative"
+									className="relative bg-card pl-44 xs:pl-0 xs:indent-2"
 									id="workSpaceUrl"
 									autoComplete="off"
 									value={urlInputValue}

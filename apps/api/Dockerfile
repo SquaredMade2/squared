@@ -17,8 +17,7 @@ RUN apk add --no-cache libc6-compat python3 make g++ openssl
 
 WORKDIR /app
 
-# Copy Prisma schema files separately to ensure they are available
-COPY packages/db/prisma ./packages/db/prisma
+# Copy the package.json and lockfile of the isolated subworkspace
 COPY --from=builder /app/apps/api /app/apps/api
 COPY --from=builder /app/packages/builder /app/packages/builder
 COPY --from=builder /app/packages/context /app/packages/context
@@ -32,11 +31,6 @@ RUN npm install -g turbo pnpm ts-node tsconfig-paths
 
 RUN pnpm install
 
-# Generate Prisma client
-RUN apk add --no-cache openssl
-ENV PRISMA_BINARY_TARGET="linux-musl-openssl-3.0.x"
-RUN cd packages/db && pnpm run db:gen
-
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
 
@@ -49,7 +43,7 @@ ARG GITHUB_CLIENT_ID
 ARG GITHUB_CLIENT_SECRET
 ARG EMAIL_USERNAME
 ARG EMAIL_PASSWORD
-ARG POSTGRES_PRISMA_URL
+ARG DATABASE_URL
 
 # Set build arguments as environment variables
 ENV NODE_ENV=${NODE_ENV}
@@ -60,10 +54,10 @@ ENV GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
 ENV GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
 ENV EMAIL_USERNAME=${EMAIL_USERNAME}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
-ENV POSTGRES_PRISMA_URL=${POSTGRES_PRISMA_URL}
+ENV DATABASE_URL=${DATABASE_URL}
 
 RUN pnpm turbo build --filter=api...
-RUN pnpm db:deploy
+RUN pnpm db:migrate
 
 FROM base AS runner
 WORKDIR /app

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 
 /** Number of components which have requested interest to have focus guards */
 let count = 0;
@@ -13,7 +13,7 @@ function FocusGuards(props: any) {
  * to ensure `focusin` & `focusout` events can be caught consistently.
  */
 function useFocusGuards() {
-	React.useEffect(() => {
+	useEffect(() => {
 		const edgeGuards = document.querySelectorAll("[data-squared-focus-guard]");
 		document.body.insertAdjacentElement(
 			"afterbegin",
@@ -42,8 +42,10 @@ function createFocusGuard() {
 	const element = document.createElement("span");
 	element.setAttribute("data-squared-focus-guard", "");
 	element.tabIndex = 0;
-	element.style.cssText =
-		"outline: none; opacity: 0; position: fixed; pointer-events: none";
+	element.style.outline = "none";
+	element.style.opacity = "0";
+	element.style.position = "fixed";
+	element.style.pointerEvents = "none";
 	return element;
 }
 

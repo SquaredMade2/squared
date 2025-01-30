@@ -18,7 +18,7 @@ export const HorizontalGradient = ({
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={cn(
-				"absolute w-full object-contain pointer-events-none",
+				"pointer-events-none absolute w-full object-contain",
 				className,
 			)}
 			{...props}
