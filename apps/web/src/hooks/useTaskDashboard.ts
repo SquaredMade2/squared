@@ -1,15 +1,15 @@
 import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
 import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { TODO } from "@squared/context";
 import type { Status, Task } from "@squared/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
-import { TODO } from "@squared/context";
 
 export function useTaskDashboard() {
 	const {
@@ -82,7 +82,6 @@ export function useTaskDashboard() {
 		},
 	});
 
-
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
 		source,
@@ -93,8 +92,14 @@ export function useTaskDashboard() {
 		const draggedTask = tasks.find((task) => task.id === draggableId);
 		if (!draggedTask) return;
 		/// If the dragged task is in the same column and its a subtask, reorder the subtask
-		if (destination.droppableId === source.droppableId && draggedTask.parentId && team) {
-			const items = tasks.filter((task) => task.parentId === draggedTask.parentId)
+		if (
+			destination.droppableId === source.droppableId &&
+			draggedTask.parentId &&
+			team
+		) {
+			const items = tasks.filter(
+				(task) => task.parentId === draggedTask.parentId,
+			);
 			const [reorderedItem] = items.splice(source.index, 1);
 			items.splice(destination.index, 0, reorderedItem);
 			const subtasks = await taskService.reorderSubtasks(TODO, {
@@ -102,16 +107,16 @@ export function useTaskDashboard() {
 				newOrder: items.map((item) => item.id),
 			});
 			const teamTasksReq = await client.task.getAllTasks.$get({
-				teamId: team.id
-			})
+				teamId: team.id,
+			});
 			const teamTasks = await teamTasksReq.json();
 			const updatedTasks = teamTasks.map((task) => {
 				for (const subtask of subtasks) {
-					if (task.id === subtask.id) task.order = subtask.order
+					if (task.id === subtask.id) task.order = subtask.order;
 				}
-				return task
-			})
-			setTasks(updatedTasks)
+				return task;
+			});
+			setTasks(updatedTasks);
 			return;
 		}
 		updateTaskMutation.mutate({

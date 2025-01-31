@@ -149,25 +149,29 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<Droppable droppableId={`${task.title}Subtasks`}>
 					{(provided) => (
-				<div
-				{...provided.droppableProps}
-				ref={provided.innerRef}
-				className={`mt-1 bg-secondary dark:bg-secondary/30 ${
-					isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
-				}`}
-			>
-				{subtasks.map((subtask, subIndex) => (
-					<TaskCard
-						key={subtask.id}
-						task={subtask}
-						index={subIndex}
-						location={"dashboard"}
-						isSubtask={true}
-						isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
-					/>
-				))}
-				{provided.placeholder}
-			</div>
+						<div
+							{...provided.droppableProps}
+							ref={provided.innerRef}
+							className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+								isListView
+									? "w-full rounded-b-lg px-2 pb-2"
+									: "w-72 rounded-lg p-2"
+							}`}
+						>
+							{subtasks.map((subtask, subIndex) => (
+								<TaskCard
+									key={subtask.id}
+									task={subtask}
+									index={subIndex}
+									location={"dashboard"}
+									isSubtask={true}
+									isDisabled={
+										!!allBlockedTaskIds.find((id) => id === subtask.id)
+									}
+								/>
+							))}
+							{provided.placeholder}
+						</div>
 					)}
 				</Droppable>
 			)}
