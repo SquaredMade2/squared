@@ -72,7 +72,9 @@ const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
 	return (
 		<SidebarMenuSubItem>
 			<SidebarMenuSubButton asChild isActive={isActive}>
-				<Link href={`/docs/${page.uid}`}>{page.title}</Link>
+				<Link href={`/docs/${page.uid}`} className="h-fit">
+					{page.title}
+				</Link>
 			</SidebarMenuSubButton>
 		</SidebarMenuSubItem>
 	);

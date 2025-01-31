@@ -16,7 +16,7 @@ export async function getPrismicDocStructure(client: Client) {
 		id: doc.id,
 		uid: doc.uid ?? "",
 		title: doc.data.title as string,
-		parent: doc.data.parent?.id ?? null,
+		parent: doc.data.parent_page?.id ?? null,
 		order: doc.data.order as number,
 		children: [],
 	}));

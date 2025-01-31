@@ -14,7 +14,7 @@ export type StepByStepGuideProps =
  */
 const StepByStepGuide: FC<StepByStepGuideProps> = ({ slice }) => {
 	return (
-		<div className="my-12 rounded-lg bg-muted p-8">
+		<div className="my-12 rounded-lg bg-secondary/30 p-8">
 			<h2 className="mb-8 text-center font-bold text-3xl text-foreground">
 				{slice.primary.guide_title}
 			</h2>
