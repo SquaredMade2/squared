@@ -21,8 +21,8 @@ const StepByStepGuide: FC<StepByStepGuideProps> = ({ slice }) => {
 			<ol className="relative border-border border-l">
 				{slice.primary.steps.map((step, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: This is a static list
-					<li key={index} className="mb-10 ml-6">
-						<span className="-left-4 absolute flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 ring-4 ring-background">
+					<li key={index} className="mb-10 ml-8">
+						<span className="-left-4 absolute flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 ring-4">
 							<span className="font-semibold text-primary">{index + 1}</span>
 						</span>
 						<h3 className="mb-2 flex items-center font-semibold text-foreground text-lg">
