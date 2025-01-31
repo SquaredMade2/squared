@@ -23,7 +23,7 @@ export function useTaskDashboard() {
 		workspace,
 		error: workspaceError,
 	} = useWorkspaces();
-	const { tasks, setTasks, updateTask, setAllBlockedTaskIds, setSubtasks } = useTaskStore(
+	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
 		(state) => state,
 	);
 
