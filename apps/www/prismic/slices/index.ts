@@ -4,7 +4,4 @@ import dynamic from "next/dynamic";
 
 export const components = {
   header: dynamic(() => import("./Header")),
-  link: dynamic(() => import("./Link")),
-  list: dynamic(() => import("./List")),
-  paragraph: dynamic(() => import("./Paragraph")),
 };

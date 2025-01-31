@@ -1,5 +1,5 @@
 {
-  "repositoryName": "squared",
+  "repositoryName": "squaredmade",
   "adapter": "@slicemachine/adapter-next",
   "libraries": ["./prismic/slices"],
   "localSliceSimulatorURL": "http://localhost:4000/slice-simulator"

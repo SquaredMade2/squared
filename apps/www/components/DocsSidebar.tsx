@@ -1,65 +1,77 @@
-import { createClient } from "@/prismic/prismicio";
-import NestedLinks, { type PageItem } from "./nested-docsidebar-links";
+"use client";
 
-export const client = createClient();
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React from "react";
 
-export async function getAllPages() {
-	const pages = await client.getAllByType("doc_sidebar_item", {
-		orderings: {
-			field: "my.doc_sidebar_item.order",
-			direction: "asc",
-		},
-	});
-	return pages;
-}
+type DocPage = {
+	id: string;
+	uid: string;
+	title: string;
+	children: DocPage[];
+};
 
-export async function DocsSidebar() {
-	const sidebarItems = await getAllPages();
-	const getPageDetails = (page: PageItem): PageItem => {
-		const subPages = sidebarItems
-			.filter(
-				(i) =>
-					i.data.parent.link_type === "Document" &&
-					i.data.parent.id === page.id,
-			)
-			.map((item) => {
-				return {
-					id: item.id,
-					uid: item.uid,
-					data: { title: item.data.title as string },
-					subPages: [],
-				};
-			});
+type DocSidebarProps = {
+	structure: DocPage[];
+};
 
-		return {
-			id: page.id,
-			uid: page.uid,
-			data: { title: page.data.title },
-			subPages:
-				subPages.length > 0
-					? subPages.map((subItem) => {
-							return getPageDetails(subItem);
-						})
-					: [],
-		};
-	};
-	// parent is {link_type: "Any"} whenever the item doesn't have any actual valid parent items from prismic
-	const pages: PageItem[] = sidebarItems
-		.filter((item) => item.data.parent.link_type === "Any")
-		.map((item) => {
-			const details = {
-				id: item.id,
-				uid: item.uid,
-				data: { title: item.data.title as string },
-				subPages: [],
-			};
-
-			return getPageDetails(details);
-		});
+const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
+	page,
+	level,
+}) => {
+	const pathname = usePathname();
+	const isActive = pathname === `/docs/${page.uid}`;
+	const hasChildren = page.children.length > 0;
+	const [isOpen, setIsOpen] = React.useState(false);
 
 	return (
-		<nav className="w-64 border-r">
-			<NestedLinks pages={pages} />
+		<li className={`pl-${level * 4}`}>
+			{hasChildren ? (
+				<Collapsible open={isOpen} onOpenChange={setIsOpen}>
+					<CollapsibleTrigger className="flex w-full items-center py-2 text-left">
+						<ChevronRight
+							className={`mr-2 h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`}
+						/>
+						<span className={isActive ? "font-bold" : ""}>{page.title}</span>
+					</CollapsibleTrigger>
+					<CollapsibleContent>
+						<ul>
+							{page.children.map((childPage) => (
+								<DocSidebarItem
+									key={childPage.id}
+									page={childPage}
+									level={level + 1}
+								/>
+							))}
+						</ul>
+					</CollapsibleContent>
+				</Collapsible>
+			) : (
+				<Link
+					href={`/docs/${page.uid}`}
+					className={`block py-2 ${isActive ? "font-bold" : ""}`}
+				>
+					{page.title}
+				</Link>
+			)}
+		</li>
+	);
+};
+
+export const DocSidebar: React.FC<DocSidebarProps> = ({ structure }) => {
+	return (
+		<nav className="h-screen w-64 overflow-y-auto bg-card p-4">
+			<ul>
+				{structure.map((page) => (
+					<DocSidebarItem key={page.id} page={page} level={0} />
+				))}
+			</ul>
 		</nav>
 	);
-}
+};

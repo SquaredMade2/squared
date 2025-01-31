@@ -16,18 +16,18 @@ const Header = ({ slice }: HeaderProps) => {
 				field={slice.primary.title}
 				components={{
 					heading1: ({ children }) => (
-						<h1 className="text-4xl font-bold my-3">
+						<h1 className="my-3 font-bold text-4xl">
 							{children}
 						</h1>
 					),
 					heading2: ({ children }) => (
-						<h2 className="text-3xl font-bold my-3">{children}</h2>
+						<h2 className="my-3 font-bold text-3xl">{children}</h2>
 					),
 					heading3: ({ children }) => (
-						<h3 className="text-2xl font-bold my-3">{children}</h3>
+						<h3 className="my-3 font-bold text-2xl">{children}</h3>
 					),
 					heading4: ({ children }) => (
-						<h4 className="text-xl font-bold my-3">{children}</h4>
+						<h4 className="my-3 font-bold text-xl">{children}</h4>
 					),
 				}}
 			/>

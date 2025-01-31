@@ -17,8 +17,8 @@
 		"@mdx-js/react": "^3.0.1",
 		"@next/mdx": "15.1.6",
 		"@prismicio/client": "^7.15.1",
-		"@prismicio/next": "^1.7.1",
-		"@prismicio/react": "^2.9.1",
+		"@prismicio/next": "^2.0.0",
+		"@prismicio/react": "^3.0.0",
 		"@radix-ui/react-label": "^2.0.2",
 		"@radix-ui/react-slot": "^1.0.2",
 		"@squared/fonts": "workspace:*",
@@ -47,14 +47,14 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@slicemachine/adapter-next": "^0.3.64",
+		"@slicemachine/adapter-next": "^0.3.66",
 		"@squared/typescript-config": "workspace:*",
 		"@types/node": "^22.0.0",
 		"@types/react": "19.0.8",
 		"@types/react-dom": "19.0.3",
 		"acorn": "8",
 		"postcss": "^8",
-		"slice-machine-ui": "^2.12.2",
+		"slice-machine-ui": "^2.12.3",
 		"tailwindcss": "^3.4.1",
 		"typescript": "^5"
 	}
