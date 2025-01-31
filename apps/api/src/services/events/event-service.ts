@@ -223,6 +223,23 @@ export class EventService implements EventRpc {
 
 				if (formattedOldValue !== formattedNewValue) {
 					const formattedKey = `${key[0].toUpperCase()}${key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}`;
+					if (formattedKey === "Parent Id" && changes.parentId) {
+						if (previousTask.parentId) {
+							const parentIds = [previousTask.parentId, changes.parentId];
+							const parentTitles = await this.db
+								.select({ title: tasksTable.title })
+								.from(tasksTable)
+								.where(inArray(tasksTable.id, parentIds));
+							return `Parent Task changed from ${parentTitles[0].title} to ${parentTitles[1].title}`;
+						}
+						const parentId = changes.parentId;
+						const parentTitle = await this.db
+							.select({ title: tasksTable.title })
+							.from(tasksTable)
+							.where(eq(tasksTable.id, parentId))
+							.limit(1);
+						return `Parent Task changed to ${parentTitle[0].title}`;
+					}
 					const diffString =
 						formattedKey === "Title" ||
 						formattedKey === "Description" ||
