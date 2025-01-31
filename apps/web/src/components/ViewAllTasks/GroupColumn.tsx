@@ -147,7 +147,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
 			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
-				<Droppable droppableId="subtasks">
+				<Droppable droppableId={`${task.title}Subtasks`}>
 					{(provided) => (
 				<div
 				{...provided.droppableProps}
@@ -166,9 +166,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
 					/>
 				))}
+				{provided.placeholder}
 			</div>
 					)}
-
 				</Droppable>
 			)}
 		</div>

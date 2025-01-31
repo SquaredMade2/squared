@@ -92,7 +92,8 @@ export function useTaskDashboard() {
 
 		const draggedTask = tasks.find((task) => task.id === draggableId);
 		if (!draggedTask) return;
-		if (destination.droppableId === source.droppableId && draggedTask.parentId) {
+		/// If the dragged task is in the same column and its a subtask, reorder the subtask
+		if (destination.droppableId === source.droppableId && draggedTask.parentId && team) {
 			const items = tasks.filter((task) => task.parentId === draggedTask.parentId)
 			const [reorderedItem] = items.splice(source.index, 1);
 			items.splice(destination.index, 0, reorderedItem);
@@ -100,15 +101,14 @@ export function useTaskDashboard() {
 				parentId: draggedTask.parentId ?? "",
 				newOrder: items.map((item) => item.id),
 			});
-			const teamTasks = await taskService.getTeamTasks(TODO, {
-				teamId: team?.id
+			const teamTasksReq = await client.task.getAllTasks.$get({
+				teamId: team.id
 			})
+			const teamTasks = await teamTasksReq.json();
 			const updatedTasks = teamTasks.map((task) => {
-				subtasks.forEach((subtask) => {
-					if (task.id === subtask.id) {
-						task.order = subtask.order
-					}
-				})
+				for (const subtask of subtasks) {
+					if (task.id === subtask.id) task.order = subtask.order
+				}
 				return task
 			})
 			setTasks(updatedTasks)
