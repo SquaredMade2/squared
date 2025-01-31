@@ -75,7 +75,7 @@ export const LabelDropdownButton = () => {
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full mr-2">
+				<Button variant="outline" className="mr-2 w-full max-w-full">
 					{renderLabelButton()}
 				</Button>
 			</PopoverTrigger>
@@ -90,7 +90,7 @@ export const LabelDropdownButton = () => {
 									key={label.id}
 									value={label.name}
 									onSelect={() => handleSelectLabels(label)}
-									className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
+									className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 								>
 									<LabelBadge label={label} />
 									{newTaskLabels.includes(label) && (

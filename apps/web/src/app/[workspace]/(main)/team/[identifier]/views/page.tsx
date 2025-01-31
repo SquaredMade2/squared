@@ -40,7 +40,7 @@ export default function ViewsPage() {
 
 	if (isLoading || teamLoading) {
 		return (
-			<div className="flex justify-center items-center h-screen">
+			<div className="flex h-screen items-center justify-center">
 				Loading...
 			</div>
 		);
@@ -48,7 +48,7 @@ export default function ViewsPage() {
 
 	if (!isLoading && !team) {
 		return (
-			<div className="flex justify-center items-center h-screen">
+			<div className="flex h-screen items-center justify-center">
 				<p>
 					You are not part of any team. Please join a team to access this page.
 				</p>
@@ -58,14 +58,14 @@ export default function ViewsPage() {
 
 	return (
 		<div className="container mx-auto p-4">
-			<div className="flex justify-between items-center mb-6">
-				<h1 className="text-2xl font-bold">Saved Views</h1>
+			<div className="mb-6 flex items-center justify-between">
+				<h1 className="font-bold text-2xl">Saved Views</h1>
 			</div>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 				{savedFilters.map((filter) => (
 					<Card
 						key={filter.id}
-						className="cursor-pointer hover:shadow-lg hover:bg-primary/10 transition-shadow"
+						className="cursor-pointer transition-shadow hover:bg-primary/10 hover:shadow-lg"
 						onClick={() => handleFilterSelect(filter)}
 					>
 						<CardHeader>
@@ -75,7 +75,7 @@ export default function ViewsPage() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<p className="text-sm text-muted-foreground">
+							<p className="text-muted-foreground text-sm">
 								{filter.filter.length} filter
 								{filter.filter.length !== 1 ? "s" : ""} applied
 							</p>
@@ -84,7 +84,7 @@ export default function ViewsPage() {
 				))}
 			</div>
 			{savedFilters.length === 0 && (
-				<p className="text-center text-muted-foreground mt-8">
+				<p className="mt-8 text-center text-muted-foreground">
 					No saved views found. Create a new view from the task dashboard to get
 					started.
 				</p>

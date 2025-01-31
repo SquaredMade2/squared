@@ -1,8 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const deploymentUrl = process.env.VERCEL_URL
-	? `https://${process.env.VERCEL_URL}`
-	: process.env.NEXT_PUBLIC_URL;
+const getDeploymentUrl = () => {
+	if (process.env.VERCEL_TARGET_ENV === "preview") {
+		return `https://${process.env.VERCEL_URL}`;
+	}
+	return process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+};
+
+const deploymentUrl = getDeploymentUrl();
 
 export default clerkMiddleware(
 	async (auth, request) => {

@@ -1,4 +1,10 @@
-import { type ComponentProps, type ReactNode, useCallback, useRef, useState } from "react";
+import {
+	type ComponentProps,
+	type ReactNode,
+	useCallback,
+	useRef,
+	useState,
+} from "react";
 import * as ReactDOM from "react-dom/client";
 import { RemoveScroll } from "react-remove-scroll";
 import { Fragment } from "react/jsx-runtime";
@@ -24,8 +30,7 @@ export const Basic = () => {
 	const [dismissOnEscape, setDismissOnEscape] = useState(false);
 	const [dismissOnPointerDownOutside, setDismissOnPointerDownOutside] =
 		useState(false);
-	const [dismissOnFocusOutside, setDismissOnFocusOutside] =
-		useState(false);
+	const [dismissOnFocusOutside, setDismissOnFocusOutside] = useState(false);
 	const [disabledOutsidePointerEvents, setDisableOutsidePointerEvents] =
 		useState(false);
 

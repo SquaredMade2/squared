@@ -28,7 +28,7 @@ export default function ArchiveNavbar() {
 	);
 
 	return (
-		<div className="flex justify-start space-x-4 my-4 items-center">
+		<div className="my-4 flex items-center justify-start space-x-4">
 			<Button
 				size="icon"
 				variant="ghost"

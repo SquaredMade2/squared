@@ -493,6 +493,7 @@
 		"react-remove-scroll": "2.6.2"
 	},
 	"devDependencies": {
+		"@squared/builder": "workspace:*",
 		"@stitches/core": "^1.2.8",
 		"@storybook/addon-essentials": "^8.2.9",
 		"@storybook/addon-storysource": "^8.2.9",
@@ -501,14 +502,13 @@
 		"@storybook/react-webpack5": "^8.2.9",
 		"@storybook/test": "^8.2.9",
 		"@storybook/theming": "^8.3.5",
-		"@squared/builder": "workspace:*",
 		"@testing-library/dom": "^10.2.0",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^16.0.0",
 		"@testing-library/user-event": "^14.5.2",
 		"@types/jest": "^29.5.12",
 		"@types/jest-axe": "^3.5.9",
-		"@types/node": "~22.8.0",
+		"@types/node": "~22.8.7",
 		"@types/react": "^19.0.3",
 		"@types/react-dom": "^19.0.3",
 		"babel-jest": "^29.7.0",

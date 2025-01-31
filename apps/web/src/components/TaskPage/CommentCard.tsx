@@ -134,8 +134,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	// MDX
 
 	return (
-		<div className="flex flex-col px-8 m-5">
-			<div className="flex flex-row items-center my-5">
+		<div className="m-5 flex flex-col px-8">
+			<div className="my-5 flex flex-row items-center">
 				<div className="mr-4 text-muted-foreground">
 					{formatDate(comment.date, "dd MMM yyyy h:mm a")}
 				</div>
@@ -146,9 +146,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 					</AvatarFallback>
 				</Avatar>
 
-				<p className="text-foreground ml-2 mr-4">{authorName}</p>
+				<p className="mr-4 ml-2 text-foreground">{authorName}</p>
 			</div>
-			<p className="markdown-content flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md">
+			<p className="markdown-content flex min-h-20 min-w-60 flex-col rounded-md bg-secondary p-3">
 				{"compiledSource" in commentData && <MDXRemote {...commentData} />}
 			</p>
 		</div>

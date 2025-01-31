@@ -60,12 +60,12 @@ export function ContactForm() {
 
 	return (
 		<Form {...form}>
-			<div className="mx-auto w-full max-w-xl z-20 mt-28 mr-8">
+			<div className="z-20 mx-auto mt-28 mr-8 w-full max-w-xl">
 				<div>
-					<h1 className="mt-8 text-4xl font-bold leading-9 tracking-tight text-black dark:text-white">
+					<h1 className="mt-8 font-bold text-4xl text-black leading-9 tracking-tight dark:text-white">
 						Contact Us
 					</h1>
-					<p className="mt-4 text-muted-foreground text-sm max-w-sm">
+					<p className="mt-4 max-w-sm text-muted-foreground text-sm">
 						We'd love to hear from you! Send us a message, and we'll respond as
 						soon as possible.
 					</p>
@@ -81,7 +81,7 @@ export function ContactForm() {
 									<FormItem>
 										<label
 											htmlFor="name"
-											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
 										>
 											Full Name
 										</label>
@@ -91,7 +91,7 @@ export function ContactForm() {
 													id="name"
 													type="name"
 													placeholder="Full Name"
-													className="block w-full px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white dark:bg-background-darkAccent bg-neutral-100"
+													className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
 													{...field}
 												/>
 											</div>
@@ -107,7 +107,7 @@ export function ContactForm() {
 									<FormItem>
 										<label
 											htmlFor="email"
-											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
 										>
 											Email address
 										</label>
@@ -117,7 +117,7 @@ export function ContactForm() {
 													id="email"
 													type="email"
 													placeholder="Email"
-													className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white \"
+													className="\ block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
 													{...field}
 												/>
 											</div>
@@ -133,7 +133,7 @@ export function ContactForm() {
 									<FormItem>
 										<label
 											htmlFor="company"
-											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
 										>
 											Company
 										</label>
@@ -143,7 +143,7 @@ export function ContactForm() {
 													id="company"
 													type="company"
 													placeholder="Company"
-													className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+													className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
 													{...field}
 												/>
 											</div>
@@ -159,7 +159,7 @@ export function ContactForm() {
 									<FormItem>
 										<label
 											htmlFor="message"
-											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
 										>
 											Message
 										</label>
@@ -169,7 +169,7 @@ export function ContactForm() {
 													rows={5}
 													id="message"
 													placeholder="Enter your message here"
-													className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+													className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
 													{...field}
 												/>
 											</div>

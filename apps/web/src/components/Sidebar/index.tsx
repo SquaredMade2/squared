@@ -133,7 +133,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					/>
 				</SidebarContainer>
 			)}
-			<SidebarFooter className="space-y-2 px-2 mt-auto">
+			<SidebarFooter className="mt-auto space-y-2 px-2">
 				<IconButton
 					icon={theme === "dark" ? Moon : Sun}
 					label={
@@ -155,7 +155,7 @@ export function SidebarNav() {
 			<SidebarProvider className={"relative"}>
 				<Sidebar
 					collapsible="icon"
-					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+					className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 				>
 					<SidebarContent workspace={workspace} />
 				</Sidebar>
@@ -217,7 +217,7 @@ function IconButton({
 					<span
 						className={`ml-2 transition-all duration-300 ${
 							state === "collapsed"
-								? "w-0 opacity-0 overflow-hidden"
+								? "w-0 overflow-hidden opacity-0"
 								: "w-auto opacity-100"
 						}`}
 					>
@@ -225,7 +225,7 @@ function IconButton({
 					</span>
 					{!!(notificationCount && notificationCount > 0) && (
 						<div
-							className={`absolute h-2 w-2 bg-primary rounded-full ${
+							className={`absolute h-2 w-2 rounded-full bg-primary ${
 								state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"
 							}`}
 							aria-hidden="true"

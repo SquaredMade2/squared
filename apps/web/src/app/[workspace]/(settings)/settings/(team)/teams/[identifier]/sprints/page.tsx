@@ -143,12 +143,12 @@ export default function SprintSettings() {
 
 	if (teamLoading)
 		return (
-			<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
-				<h1 className="text-3xl font-bold mb-2">Sprints</h1>
-				<p className="text-muted-foreground mb-6">
+			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
+				<h1 className="mb-2 font-bold text-3xl">Sprints</h1>
+				<p className="mb-6 text-muted-foreground">
 					Organize your team's work into time-boxed iterations
 				</p>
-				<div className="flex justify-center items-center w-full h-64">
+				<div className="flex h-64 w-full items-center justify-center">
 					<SquaredLoader />
 				</div>
 			</div>
@@ -157,15 +157,15 @@ export default function SprintSettings() {
 	const { sprintDuration } = team;
 
 	return (
-		<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
-			<h1 className="text-3xl font-bold mb-2">Sprints</h1>
-			<p className="text-muted-foreground mb-6">
+		<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
+			<h1 className="mb-2 font-bold text-3xl">Sprints</h1>
+			<p className="mb-6 text-muted-foreground">
 				Organize your team's work into time-boxed iterations
 			</p>
 
 			<Card className="mb-6">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-					<CardTitle className="text-2xl font-bold">
+					<CardTitle className="font-bold text-2xl">
 						What is a Sprint?
 					</CardTitle>
 					<Button
@@ -210,8 +210,8 @@ export default function SprintSettings() {
 					)}
 					{isSprintInfoExpanded && (
 						<Link href="www.squaredmade.com/docs/sprints" passHref>
-							<Button variant="link" className="p-0 h-auto mt-4">
-								Read more <ChevronRight className="h-4 w-4 ml-2" />
+							<Button variant="link" className="mt-4 h-auto p-0">
+								Read more <ChevronRight className="ml-2 h-4 w-4" />
 							</Button>
 						</Link>
 					)}
@@ -220,9 +220,9 @@ export default function SprintSettings() {
 
 			<Separator className="my-6" />
 
-			<div className="flex items-center justify-between mb-6">
+			<div className="mb-6 flex items-center justify-between">
 				<div>
-					<h2 className="text-lg font-semibold mb-2">Enable Sprints</h2>
+					<h2 className="mb-2 font-semibold text-lg">Enable Sprints</h2>
 					<p className="text-muted-foreground">
 						Turn on sprint functionality for your team
 					</p>
@@ -248,7 +248,7 @@ export default function SprintSettings() {
 				<>
 					<Card className="py-6">
 						<CardContent className="space-y-4">
-							<div className="flex justify-between items-center w-full">
+							<div className="flex w-full items-center justify-between">
 								<Label htmlFor="sprintDuration">
 									Each sprint lasts (weeks)
 								</Label>
@@ -270,7 +270,7 @@ export default function SprintSettings() {
 									</SelectContent>
 								</Select>
 							</div>
-							<div className="flex justify-between items-start w-full">
+							<div className="flex w-full items-start justify-between">
 								<Label htmlFor="sprintStartDate" className="mt-4">
 									Sprints start on
 								</Label>
@@ -279,7 +279,7 @@ export default function SprintSettings() {
 										<Button
 											variant={"secondary"}
 											className={cn(
-												"w-60 justify-start text-left font-normal pr-3",
+												"w-60 justify-start pr-3 text-left font-normal",
 												!sprintStartDate && "text-muted-foreground",
 											)}
 										>
@@ -294,7 +294,7 @@ export default function SprintSettings() {
 											) : (
 												<span>Pick a date</span>
 											)}
-											<ChevronDown className="ml-auto mr-0 text-muted-foreground h-4 w-4" />
+											<ChevronDown className="mr-0 ml-auto h-4 w-4 text-muted-foreground" />
 										</Button>
 									</PopoverTrigger>
 									<PopoverContent className="w-auto p-0">
@@ -310,7 +310,7 @@ export default function SprintSettings() {
 									</PopoverContent>
 								</Popover>
 							</div>
-							<p className="text-sm text-muted-foreground">
+							<p className="text-muted-foreground text-sm">
 								Current pending sprints: {pendingSprints}
 							</p>
 						</CardContent>
@@ -323,7 +323,7 @@ export default function SprintSettings() {
 									<Label htmlFor="addActiveTasks" className="mb-2">
 										Add active tasks to current sprint
 									</Label>
-									<p className="text-sm text-muted-foreground w-11/12">
+									<p className="w-11/12 text-muted-foreground text-sm">
 										Add all unassigned active tasks (To Do, In Progress, In
 										Review) to the current sprint.
 									</p>

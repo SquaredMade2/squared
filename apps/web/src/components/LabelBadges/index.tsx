@@ -66,7 +66,7 @@ export default function LabelBadge({ label }: { label: Label }) {
 				<TooltipTrigger asChild>
 					<span
 						className={cn(
-							"inline-flex items-center px-1.5 py-0 text-[10px] font-medium rounded-full cursor-default",
+							"inline-flex cursor-default items-center rounded-full px-1.5 py-0 font-medium text-[10px]",
 							"border dark:border-opacity-30",
 							"transition-colors duration-200",
 						)}

@@ -23,7 +23,7 @@ export default function RootLayout({
 	return (
 		<ViewTransitions>
 			<html lang="en">
-				<body className={"antialiased h-full w-full"}>
+				<body className={"h-full w-full antialiased"}>
 					<ThemeProvider
 						attribute="class"
 						enableSystem

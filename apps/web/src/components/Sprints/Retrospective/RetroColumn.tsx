@@ -23,17 +23,17 @@ export const RetroColumn = ({
 	onLikeItem,
 }: RetroColumnProps) => {
 	return (
-		<Card className="h-full flex flex-col bg-background">
+		<Card className="flex h-full flex-col bg-background">
 			<CardHeader>
 				<CardTitle>{title}</CardTitle>
 			</CardHeader>
-			<CardContent className="flex-grow flex flex-col">
+			<CardContent className="flex flex-grow flex-col">
 				<Droppable droppableId={type}>
 					{(provided) => (
 						<div
 							{...provided.droppableProps}
 							ref={provided.innerRef}
-							className="flex-grow mb-4 space-y-2 min-h-[200px]"
+							className="mb-4 min-h-[200px] flex-grow space-y-2"
 						>
 							{items.map((item, index) => {
 								return (

@@ -42,7 +42,7 @@ export function WorkspaceDropdown() {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"
-					className={`w-full justify-start items-center gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" && "px-0 border-none"}`}
+					className={`w-full items-center justify-start gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" && "border-none px-0"}`}
 				>
 					<Avatar className="h-8 w-8 shrink-0">
 						<AvatarFallback>
@@ -58,7 +58,7 @@ export function WorkspaceDropdown() {
 							</span>
 							<ChevronDown
 								className={
-									"h-4 w-4 shrink-0 opacity-50 ml-auto transition-all duration-300 ease-in-out"
+									"ml-auto h-4 w-4 shrink-0 opacity-50 transition-all duration-300 ease-in-out"
 								}
 							/>
 						</>
@@ -74,7 +74,7 @@ export function WorkspaceDropdown() {
 							updatePathWithWorkspace(workspace);
 						}}
 					>
-						<Avatar className="h-6 w-6 mr-2">
+						<Avatar className="mr-2 h-6 w-6">
 							<AvatarFallback>{getInitials(workspace.name)}</AvatarFallback>
 						</Avatar>
 						<span className="truncate">{workspace.name}</span>

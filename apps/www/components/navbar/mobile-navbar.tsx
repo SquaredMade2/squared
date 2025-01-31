@@ -31,19 +31,19 @@ export const MobileNavbar = ({
 	return (
 		<div
 			className={cn(
-				"flex justify-between bg-white dark:bg-neutral-900 items-center w-full rounded-full px-2.5 py-1.5 transition duration-200",
+				"flex w-full items-center justify-between rounded-full bg-white px-2.5 py-1.5 transition duration-200 dark:bg-neutral-900",
 				showBackground &&
-					"bg-neutral-50 dark:bg-neutral-900 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
+					"bg-neutral-50 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:bg-neutral-900 dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
 			)}
 		>
 			<Logo />
 			<IoIosMenu
-				className="text-black dark:text-white h-6 w-6"
+				className="h-6 w-6 text-black dark:text-white"
 				onClick={() => setOpen(!open)}
 			/>
 			{open && (
-				<div className="fixed inset-0 bg-white dark:bg-black z-50 flex flex-col items-start justify-start space-y-10  pt-5  text-xl text-zinc-600  transition duration-200 hover:text-zinc-800">
-					<div className="flex items-center justify-between w-full px-5">
+				<div className="fixed inset-0 z-50 flex flex-col items-start justify-start space-y-10 bg-white pt-5 text-xl text-zinc-600 transition duration-200 hover:text-zinc-800 dark:bg-black">
+					<div className="flex w-full items-center justify-between px-5">
 						<Logo />
 						<div className="flex items-center space-x-2">
 							<ModeToggle />
@@ -69,7 +69,7 @@ export const MobileNavbar = ({
 							</>
 						))}
 					</div>
-					<div className="flex flex-row w-full items-start gap-2.5  px-8 py-4 ">
+					<div className="flex w-full flex-row items-start gap-2.5 px-8 py-4 ">
 						<Button
 							as={Link}
 							href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}

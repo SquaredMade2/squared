@@ -26,7 +26,7 @@ export const TaskBreadcrumbs = () => {
 	return (
 		<>
 			<Breadcrumb className="ml-4">
-				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
+				<BreadcrumbList className="flex w-full items-center gap-2 whitespace-nowrap text-foreground">
 					<BreadcrumbItem>
 						{workspace && (
 							<Link
@@ -45,7 +45,7 @@ export const TaskBreadcrumbs = () => {
 						)}
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
-					<BreadcrumbItem className="truncate max-w-full">
+					<BreadcrumbItem className="max-w-full truncate">
 						{task?.title ?? ""}
 					</BreadcrumbItem>
 				</BreadcrumbList>

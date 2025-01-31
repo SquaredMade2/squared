@@ -36,9 +36,9 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 	return (
 		<div
 			className={cn(
-				"w-full flex relative justify-between px-4 py-2 rounded-3xl bg-transparent transition duration-200",
+				"relative flex w-full justify-between rounded-3xl bg-transparent px-4 py-2 transition duration-200",
 				showBackground &&
-					"bg-neutral-50 dark:bg-background-darkSecondary shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
+					"bg-neutral-50 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:bg-background-darkSecondary dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
 			)}
 		>
 			<AnimatePresence>
@@ -50,11 +50,11 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 						transition={{
 							duration: 1,
 						}}
-						className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-background-darkSecondary pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-3xl"
+						className="pointer-events-none absolute inset-0 h-full w-full rounded-3xl bg-neutral-100 [mask-image:linear-gradient(to_bottom,white,transparent,white)] dark:bg-background-darkSecondary"
 					/>
 				)}
 			</AnimatePresence>
-			<div className="flex flex-row gap-2 items-center">
+			<div className="flex flex-row items-center gap-2">
 				<Logo />
 				<div className="flex items-center gap-1.5">
 					{navItems.map((item) => (
@@ -64,7 +64,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 					))}
 				</div>
 			</div>
-			<div className="flex space-x-2 items-center">
+			<div className="flex items-center space-x-2">
 				<ModeToggle />
 				<Button
 					variant="simple"
