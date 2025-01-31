@@ -29,7 +29,7 @@ export interface DocsDocumentDataFeaturedSectionsItem {
   description: prismic.KeyTextField;
 }
 
-type DocsDocumentDataSlicesSlice = never;
+type DocsDocumentDataSlicesSlice = TextSectionSlice | StepByStepGuideSlice;
 
 /**
  * Content for Docs Landing Page documents
@@ -382,14 +382,24 @@ export type FeatureHighlightSlice = prismic.SharedSlice<
  */
 export interface StepByStepGuideSliceDefaultPrimaryStepsItem {
   /**
-   * Step field in *StepByStepGuide → Default → Primary → Steps*
+   * Step Title field in *StepByStepGuide → Default → Primary → Steps*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Step Title
+   * - **API ID Path**: step_by_step_guide.default.primary.steps[].step_title
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  step_title: prismic.KeyTextField;
+
+  /**
+   * Step Description field in *StepByStepGuide → Default → Primary → Steps*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: Describe this step...
-   * - **API ID Path**: step_by_step_guide.default.primary.steps[].step
+   * - **API ID Path**: step_by_step_guide.default.primary.steps[].step_description
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
-  step: prismic.RichTextField;
+  step_description: prismic.RichTextField;
 
   /**
    * Step Image field in *StepByStepGuide → Default → Primary → Steps*

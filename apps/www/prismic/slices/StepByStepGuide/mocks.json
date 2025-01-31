@@ -47,7 +47,30 @@
 				"value": [
 					{
 						"__TYPE__": "GroupItemContent",
-						"value": []
+						"value": [
+							[
+								"step_description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Aliqua deserunt excepteur aliquip sint in tempor nisi consectetur sint eu duis sunt nisi."
+											}
+										}
+									]
+								}
+							],
+							[
+								"step_title",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "almost",
+									"type": "Text"
+								}
+							]
+						]
 					}
 				]
 			}

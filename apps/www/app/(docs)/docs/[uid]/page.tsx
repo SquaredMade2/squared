@@ -1,5 +1,5 @@
-import { createClient } from "@/prismic/prismicio";
 import { components } from "@/prismic/slices";
+import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

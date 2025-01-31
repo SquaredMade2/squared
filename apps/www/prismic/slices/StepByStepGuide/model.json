@@ -25,10 +25,17 @@
             "label": "Steps",
             "repeat": true,
             "fields": {
-              "step": {
+              "step_title": {
+                "type": "Text",
+                "config": {
+                  "label": "Step Title",
+                  "placeholder": "Step Title"
+                }
+              },
+              "step_description": {
                 "type": "StructuredText",
                 "config": {
-                  "label": "Step",
+                  "label": "Step Description",
                   "placeholder": "Describe this step...",
                   "allowTargetBlank": true,
                   "multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"

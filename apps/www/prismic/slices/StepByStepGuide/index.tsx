@@ -14,20 +14,33 @@ export type StepByStepGuideProps =
  */
 const StepByStepGuide: FC<StepByStepGuideProps> = ({ slice }) => {
 	return (
-		<div className="my-8">
-			<h3 className="mb-4 font-bold text-2xl">{slice.primary.guide_title}</h3>
-			<ol className="list-inside list-decimal space-y-6">
-				{slice.primary.steps.map((item, index) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: This is okay because the index is stable.
-					<li key={index} className="ml-6">
-						<div className="inline-block">
-							<PrismicRichText field={item.step} />
+		<div className="my-12 rounded-lg bg-muted p-8">
+			<h2 className="mb-8 text-center font-bold text-3xl text-foreground">
+				{slice.primary.guide_title}
+			</h2>
+			<ol className="relative border-border border-l">
+				{slice.primary.steps.map((step, index) => (
+					// biome-ignore lint/suspicious/noArrayIndexKey: This is a static list
+					<li key={index} className="mb-10 ml-6">
+						<span className="-left-4 absolute flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 ring-4 ring-background">
+							<span className="font-semibold text-primary">{index + 1}</span>
+						</span>
+						<h3 className="mb-2 flex items-center font-semibold text-foreground text-lg">
+							{step.step_title}
+						</h3>
+						<div className="mb-4 font-normal text-base text-muted-foreground">
+							<PrismicRichText field={step.step_description} />
 						</div>
-						{item.step_image.url && (
-							<PrismicNextImage
-								field={item.step_image}
-								className="mt-2 rounded-lg"
-							/>
+						{step.step_image.url && (
+							<div className="mb-4">
+								<PrismicNextImage
+									field={step.step_image}
+									className="rounded-lg shadow-md"
+									width={600}
+									height={400}
+									imgixParams={{ fit: "crop" }}
+								/>
+							</div>
 						)}
 					</li>
 				))}

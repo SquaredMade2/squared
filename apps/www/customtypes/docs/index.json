@@ -51,7 +51,14 @@
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
-          "choices": {}
+          "choices": {
+            "text_section": {
+              "type": "SharedSlice"
+            },
+            "step_by_step_guide": {
+              "type": "SharedSlice"
+            }
+          }
         }
       }
     },
