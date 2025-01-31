@@ -39,7 +39,23 @@
         "type": "Slices",
         "fieldset": "Slice Zone",
         "config": {
-          "choices": {}
+          "choices": {
+            "tips_and_tricks": {
+              "type": "SharedSlice"
+            },
+            "step_by_step_guide": {
+              "type": "SharedSlice"
+            },
+            "faq_section": {
+              "type": "SharedSlice"
+            },
+            "text_section": {
+              "type": "SharedSlice"
+            },
+            "feature_highlight": {
+              "type": "SharedSlice"
+            }
+          }
         }
       }
     },
