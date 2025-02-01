@@ -14,6 +14,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
+
 import {
 	Select,
 	SelectContent,
@@ -21,6 +29,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
@@ -34,20 +43,13 @@ import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Sprint, Task } from "@squared/db";
 import { Priority, Status } from "@squared/db";
-import { ChevronDown } from "lucide-react";
+
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { toast } from "../ui/use-toast";
 
-// todo add ascending/descending
+import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;
@@ -240,7 +242,21 @@ export function AssignTasksDialog({
 		});
 	};
 
-	console.log(orderTasks(filteredTasks));
+	const tooltipContent = (): string => {
+		return ["Title", "Status", "Assignee"].includes(taskOrder.orderBy)
+			? taskOrder.orderAscending
+				? "A-Z"
+				: "Z-A"
+			: ["Priority", "Effort"].includes(taskOrder.orderBy)
+				? taskOrder.orderAscending
+					? "Ascending"
+					: "Descending"
+				: ["Due Date", "Updated", "Created"].includes(taskOrder.orderBy)
+					? taskOrder.orderAscending
+						? "Oldest first"
+						: "Newest first"
+					: "";
+	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -291,57 +307,6 @@ export function AssignTasksDialog({
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
 						<div className="flex items-center gap-2 w-full sm:w-auto">
-							{/* <Select
-								value={filterPriority}
-								onValueChange={(value) => {
-									setOptions({ taskOrder: { ...taskOrder, orderBy: value } });
-								}}
-							>
-								<SelectTrigger className="w-full sm:w-[150px]">
-									<SelectValue placeholder="Sorting Options" />
-								</SelectTrigger>
-								<SelectContent>
-									{orderByOptions
-										.filter((option: string) => option !== groupTasksBy)
-										.map((option) => {
-											return (
-												<SelectItem key={option} value={option}>
-													{option}
-												</SelectItem>
-											);
-										})}
-								</SelectContent>
-							</Select> */}
-							<div className="w-full sm:w-[150px]">
-								<Select
-									onValueChange={(value) =>
-										setOptions({
-											taskOrder: { ...taskOrder, orderBy: value },
-										})
-									}
-									value={taskOrder.orderBy}
-								>
-									<SelectTrigger>
-										<SelectValue className=" justify-between">
-											<span className="text-xs">{taskOrder.orderBy}</span>
-										</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{orderByOptions
-											.filter((option) => option !== groupTasksBy)
-											.map((option) => (
-												<SelectItem
-													key={option}
-													value={option}
-													className="text-xs"
-												>
-													{option}
-												</SelectItem>
-											))}
-									</SelectContent>
-								</Select>
-							</div>
-
 							<Select
 								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}
@@ -389,6 +354,67 @@ export function AssignTasksDialog({
 									))}
 								</SelectContent>
 							</Select>
+
+							<div className="w-full sm:w-[150px] flex gap-2">
+								<div className="border-l-2 border-border h-10" />
+
+								<Select
+									onValueChange={(value) =>
+										setOptions({
+											taskOrder: { ...taskOrder, orderBy: value },
+										})
+									}
+									value={taskOrder.orderBy}
+								>
+									<TooltipProvider delayDuration={0}>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<SelectTrigger>
+													<SelectValue className="justify-between">
+														<span>{taskOrder.orderBy}</span>
+													</SelectValue>
+												</SelectTrigger>
+											</TooltipTrigger>
+											<TooltipContent>{"Order By"}</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+
+									<SelectContent>
+										{orderByOptions
+											.filter((option) => option !== groupTasksBy)
+											.map((option) => (
+												<SelectItem key={option} value={option}>
+													{option}
+												</SelectItem>
+											))}
+									</SelectContent>
+								</Select>
+							</div>
+							<TooltipProvider delayDuration={0}>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() =>
+												setOptions({
+													taskOrder: {
+														...taskOrder,
+														orderAscending: !taskOrder.orderAscending,
+													},
+												})
+											}
+										>
+											{taskOrder.orderAscending ? (
+												<ArrowUpWideNarrow className="size-4" />
+											) : (
+												<ArrowDownWideNarrow className="size-4" />
+											)}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>{tooltipContent()}</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						</div>
 					</div>
 					<Tabs
@@ -416,8 +442,8 @@ export function AssignTasksDialog({
 											Select All
 										</Label>
 									</div>
-									{/* todo change from filtered tasks to orderTasks */}
-									{filteredTasks.map((task) => {
+
+									{orderTasks(filteredTasks).map((task: Task) => {
 										const taskLabels = workspace?.Labels.filter((label) =>
 											task.labels.includes(label.id),
 										);
