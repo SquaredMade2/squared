@@ -375,7 +375,7 @@ export function AssignTasksDialog({
 													</SelectValue>
 												</SelectTrigger>
 											</TooltipTrigger>
-											<TooltipContent>{"Order By"}</TooltipContent>
+											<TooltipContent>{"Order by"}</TooltipContent>
 										</Tooltip>
 									</TooltipProvider>
 
