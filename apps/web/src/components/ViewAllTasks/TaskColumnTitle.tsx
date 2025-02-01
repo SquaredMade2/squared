@@ -84,13 +84,18 @@ const TaskColumnTitle = ({
 	};
 
 	return (
-		<div className={isListView ? "" : "min-w-64"}>
+		<div
+			className={cn(
+				isListView ? "sticky top-0 z-10 bg-background" : "min-w-72",
+				isListView && "border-border border-b",
+			)}
+		>
 			<div
 				className={cn(
-					"flex w-full items-center justify-between bg-secondary font-medium transition-all",
+					"flex w-full items-center justify-between font-medium transition-all",
 					isListView
 						? "rounded-t-lg xs:px-5 py-2 sm:px-5 lg:px-[42px]"
-						: "mb-2 h-10 flex-row rounded-lg px-2 font-bold",
+						: "mb-2 h-10 flex-row rounded-lg bg-secondary px-2 font-bold",
 					isListView && numberOfTasks === 0 ? "rounded-b-lg" : "",
 				)}
 			>
