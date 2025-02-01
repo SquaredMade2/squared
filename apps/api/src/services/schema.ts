@@ -11,7 +11,7 @@ import type {
 	Workspace,
 	WorkspaceRole,
 } from "@squared/db";
-import { createSchema } from "@squared/rpc";
+import { createEnumSchema, createSchema } from "@squared/rpc";
 import z from "zod";
 
 export const labelSchema = createSchema<Label>()(
@@ -114,7 +114,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
-export const workspaceRoleEnum = createSchema<WorkspaceRole>()(
+export const workspaceRoleEnum = createEnumSchema<WorkspaceRole>()(
 	z.enum(["owner", "admin", "member"]),
 );
 
