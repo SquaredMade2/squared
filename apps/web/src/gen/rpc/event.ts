@@ -42,7 +42,11 @@ export type GetNotificationsResponse = {
 		effortEstimate: number | null;
 		id: string;
 		identifier: string;
-		labels: string[];
+		labels: {
+			color: string;
+			description: string | null;
+			name: string;
+		}[];
 		order: number;
 		parentId: string | null;
 		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -67,6 +71,11 @@ export type GetNotificationsResponse = {
 		createdAt: Date;
 		defaultView: string | null;
 		id: string;
+		labels: {
+			color: string;
+			description: string | null;
+			name: string;
+		}[];
 		name: string;
 		tasksCreated: number;
 		universalTokenLinkId: string | null;
@@ -98,7 +107,11 @@ export type CreateLogEventRequest = {
 		effortEstimate: number | null;
 		id: string;
 		identifier: string;
-		labels: string[];
+		labels: {
+			color: string;
+			description: string | null;
+			name: string;
+		}[];
 		order: number;
 		parentId: string | null;
 		priority: "noPriority" | "urgent" | "high" | "medium" | "low";

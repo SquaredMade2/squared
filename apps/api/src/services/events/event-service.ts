@@ -9,7 +9,6 @@ import {
 	commitsTable,
 	eq,
 	inArray,
-	labelsTable,
 	notificationsTable,
 	sprintsTable,
 	taskEventsTable,
@@ -335,15 +334,7 @@ export class EventService implements EventRpc {
 
 		// Handle labels array
 		if (Array.isArray(value) && key === "labels") {
-			const labelIds = value as string[];
-			if (labelIds.length === 0) {
-				return "No labels";
-			}
-			const labels = await this.db
-				.select({ name: labelsTable.name })
-				.from(labelsTable)
-				.where(inArray(labelsTable.id, labelIds));
-			return labels.map((l) => l.name).join(", ");
+			return value.map((l) => l.name).join(", ");
 		}
 
 		// Handle effort estimate

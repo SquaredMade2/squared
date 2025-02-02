@@ -16,6 +16,12 @@ const statusEnum = z.enum([
 
 const priorityEnum = z.enum(["noPriority", "low", "medium", "high", "urgent"]);
 
+const labelSchema = z.object({
+	name: z.string(),
+	description: z.string().optional().nullable(),
+	color: z.string(),
+});
+
 export const taskRouter = router({
 	getTaskByIdentifier: privateProcedure
 		.input(z.object({ identifier: z.string(), workspaceId: z.string() }))
@@ -145,7 +151,7 @@ export const taskRouter = router({
 				description: z.string().optional(),
 				status: statusEnum.optional(),
 				priority: priorityEnum.optional(),
-				labels: z.array(z.string()).optional(),
+				labels: z.array(labelSchema).optional(),
 				dueDate: z.date().nullable().optional(),
 				effortEstimate: z.number().nullable().optional(),
 				teamId: z.string(),
@@ -259,16 +265,16 @@ export const taskRouter = router({
 		.input(
 			z.object({
 				taskId: z.string(),
-				labelIds: z.array(z.string()),
+				labels: z.array(labelSchema),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService, user } = ctx;
-			const { taskId, labelIds } = input;
+			const { taskId, labels } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					labels: labelIds,
+					labels: labels,
 					updaterId: user.id,
 				}),
 			);

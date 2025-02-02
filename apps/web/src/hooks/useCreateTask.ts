@@ -1,6 +1,6 @@
 import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
-import type { Priority, Status } from "@squared/db";
+import type { Label, Priority, Status } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type CreateTaskInput = {
@@ -8,7 +8,7 @@ type CreateTaskInput = {
 	description?: string;
 	status?: Status;
 	priority?: Priority;
-	labels?: string[];
+	labels?: Label[];
 	dueDate?: Date | null;
 	effortEstimate?: number | null;
 	teamId: string;
