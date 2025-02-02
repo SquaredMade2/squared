@@ -1,5 +1,5 @@
 import { client } from "@/lib/client";
-import { useCommentStore, useModalStore, useUserStore } from "@/store";
+import { useCommentStore, useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
@@ -47,7 +47,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentUser = useUserStore((state) => state.user);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -57,13 +56,12 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["addComment", task?.id],
 		mutationFn: async () => {
-			if (currentUser && task) {
+			if (task) {
 				if (checkIfSlateEmpty(editor)) {
 					return;
 				}
 				const newComment = {
 					comment: handleFormatSlateToComment(editorContent),
-					authorId: currentUser.id,
 					date: new Date(),
 					taskId: task.id,
 				};
