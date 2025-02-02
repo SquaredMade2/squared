@@ -9,5 +9,6 @@ module.exports = {
 	transform: {
 		"^.+\\.ts$": "ts-jest",
 	},
-	setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+	globalSetup: "<rootDir>/jest.setup.js",
+	globalTeardown: "<rootDir>/jest.teardown.js",
 };
