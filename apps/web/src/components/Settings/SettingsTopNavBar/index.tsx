@@ -14,7 +14,7 @@ const SettingsTopNavBar = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-between px-4 border-b shadow md:hidden min-w-[100vw] h-12 fixed top-0">
+		<div className="fixed top-0 flex h-12 min-w-[100vw] items-center justify-between border-b px-4 shadow md:hidden">
 			<Button
 				variant="ghost"
 				size="icon"
@@ -24,15 +24,15 @@ const SettingsTopNavBar = () => {
 			>
 				<PanelLeft className="h-5 w-5 text-muted-foreground" />
 			</Button>
-			<h1 className="text-lg font-semibold">Settings</h1>
+			<h1 className="font-semibold text-lg">Settings</h1>
 			<Button
 				variant="ghost"
 				size="sm"
 				className="flex items-center p-2"
 				onClick={handleBackClick}
 			>
-				<ChevronLeft className="h-4 w-4 mr-1 text-muted-foreground" />
-				<span className="text-sm font-medium">Back</span>
+				<ChevronLeft className="mr-1 h-4 w-4 text-muted-foreground" />
+				<span className="font-medium text-sm">Back</span>
 			</Button>
 		</div>
 	);

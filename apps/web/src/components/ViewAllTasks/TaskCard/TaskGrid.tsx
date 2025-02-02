@@ -33,10 +33,10 @@ const TaskGrid = ({
 			className="cursor-pointer"
 		>
 			<Card className={`w-full ${isSubtask ? "bg-secondary/30" : ""}`}>
-				<CardContent className="p-4 space-y-4">
-					<div className="flex justify-between h-[20px] w-full cursor-pointer">
+				<CardContent className="space-y-4 p-4">
+					<div className="flex h-[20px] w-full cursor-pointer justify-between">
 						{showIdentifier ? (
-							<p className="text-xs text-muted-foreground">{task.identifier}</p>
+							<p className="text-muted-foreground text-xs">{task.identifier}</p>
 						) : (
 							<div />
 						)}
@@ -53,13 +53,13 @@ const TaskGrid = ({
 							))}
 					</div>
 
-					<div className="text-sm pr-8 w-full flex items-center gap-2">
+					<div className="flex w-full items-center gap-2 pr-8 text-sm">
 						<StatusIcon status={task.status} />
 						{truncateString(task.title, 70)}
 					</div>
-					<div className="flex flex-wrap w-full items-center gap-1 -my-1">
+					<div className="-my-1 flex w-full flex-wrap items-center gap-1">
 						{showDueDate && task.dueDate && (
-							<div className="flex items-center gap-2 text-sm bg-background border border-border rounded-md w-fit p-1 mb-1">
+							<div className="mb-1 flex w-fit items-center gap-2 rounded-md border border-border bg-background p-1 text-sm">
 								<Calendar className="size-4" />
 								{task.dueDate
 									? formatDate(new Date(task.dueDate), "MMM dd")
@@ -68,7 +68,7 @@ const TaskGrid = ({
 						)}
 
 						{showPriority && (
-							<div className="bg-background border border-border rounded-md p-1 mb-1">
+							<div className="mb-1 rounded-md border border-border bg-background p-1">
 								<PriorityIcon priority={task.priority} />
 							</div>
 						)}

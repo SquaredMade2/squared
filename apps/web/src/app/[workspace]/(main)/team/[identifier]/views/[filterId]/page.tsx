@@ -68,7 +68,7 @@ export default function FilterViewPage() {
 
 	if (loading || teamLoading || isLoading) {
 		return (
-			<div className="w-full flex justify-center items-center">
+			<div className="flex w-full items-center justify-center">
 				<SquaredLoader />
 			</div>
 		);

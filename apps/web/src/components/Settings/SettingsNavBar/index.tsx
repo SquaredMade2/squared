@@ -59,7 +59,7 @@ function SettingsNavbarContent() {
 						router.push(`/${workspace?.url}/team/${teams[0].identifier}/all`)
 					}
 					size="sm"
-					className="py-px gap-2 text-muted-foreground text-sm"
+					className="gap-2 py-px text-muted-foreground text-sm"
 				>
 					<ChevronLeft />
 					Back to Dashboard
@@ -70,11 +70,11 @@ function SettingsNavbarContent() {
 					<div className="space-y-4 p-4">
 						<div className="space-y-4">
 							<div>
-								<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
+								<h2 className="mb-2 flex items-center font-medium text-muted-foreground text-sm">
 									<BriefcaseBusiness className="mr-2 h-4 w-4" />
 									Workspace
 								</h2>
-								<div className="space-y-1 ml-6">
+								<div className="ml-6 space-y-1">
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
@@ -102,11 +102,11 @@ function SettingsNavbarContent() {
 							<Separator />
 
 							<div>
-								<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
+								<h2 className="mb-2 flex items-center font-medium text-muted-foreground text-sm">
 									<CircleUser className="mr-2 h-4 w-4" />
 									My Account
 								</h2>
-								<div className="space-y-1 ml-6">
+								<div className="ml-6 space-y-1">
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
@@ -127,7 +127,7 @@ function SettingsNavbarContent() {
 							<Separator />
 
 							<div>
-								<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
+								<h2 className="mb-2 flex items-center font-medium text-muted-foreground text-sm">
 									<Users className="mr-2 h-4 w-4" />
 									Teams
 								</h2>
@@ -212,7 +212,7 @@ export default function SettingsNavBar() {
 		<TooltipProvider delayDuration={0}>
 			<Sidebar
 				collapsible="offcanvas"
-				className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+				className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 			>
 				<SettingsNavbarContent />
 			</Sidebar>

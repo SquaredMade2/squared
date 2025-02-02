@@ -47,7 +47,7 @@ export function DatePicker({
 					variant="outline"
 					size="sm"
 					className={cn(
-						"inline-flex items-center justify-start w-full text-left font-normal h-10 px-4 py-2",
+						"inline-flex h-10 w-full items-center justify-start px-4 py-2 text-left font-normal",
 						!date && "text-muted-foreground",
 						className,
 					)}
@@ -63,7 +63,7 @@ export function DatePicker({
 					onSelect={handleSelectDate}
 					initialFocus
 				/>
-				<div className="flex justify-end gap-2 p-3 border-t border-border">
+				<div className="flex justify-end gap-2 border-border border-t p-3">
 					<Button
 						size="sm"
 						variant="outline"

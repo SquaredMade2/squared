@@ -38,11 +38,11 @@ const EffortModal = () => {
 					const effortEstimateKey = index;
 					return (
 						<div
-							className="flex justify-between space-x-14 w-full"
+							className="flex w-full justify-between space-x-14"
 							key={effortEstimateKey}
 						>
 							<div className="flex flex-row items-center">
-								<span className={`${"w-4 h-4 cursor-pointer"} mr-2`}>
+								<span className={`${"h-4 w-4 cursor-pointer"} mr-2`}>
 									{estimateNumber > 3
 										? high()
 										: estimateNumber > 2
@@ -51,7 +51,7 @@ const EffortModal = () => {
 								</span>
 								<span className="text-foreground">{effortEstimate.text}</span>
 							</div>
-							<div className="text-muted-foreground mr-2">
+							<div className="mr-2 text-muted-foreground">
 								{complexityScale[index]}
 							</div>
 						</div>

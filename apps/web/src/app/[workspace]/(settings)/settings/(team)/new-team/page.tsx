@@ -108,18 +108,18 @@ export default function CreateTeam() {
 
 	if (workspaceLoading || teamLoading)
 		return (
-			<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
-				<h1 className="text-3xl font-bold mb-2">New Team Settings</h1>
-				<p className="text-muted-foreground mb-6">Create a new team</p>
-				<div className="flex justify-center items-center w-full h-64">
+			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
+				<h1 className="mb-2 font-bold text-3xl">New Team Settings</h1>
+				<p className="mb-6 text-muted-foreground">Create a new team</p>
+				<div className="flex h-64 w-full items-center justify-center">
 					<SquaredLoader />
 				</div>
 			</div>
 		);
 
 	return (
-		<div className="flex bg-background text-foreground mdsm:flex-col w-[80vw]">
-			<div className="w-full pt-20 flex justify-center">
+		<div className="flex w-[80vw] bg-background text-foreground mdsm:flex-col">
+			<div className="flex w-full justify-center pt-20">
 				<Card className="w-full max-w-lg">
 					<CardHeader>
 						<CardTitle>Create Team</CardTitle>
@@ -132,7 +132,7 @@ export default function CreateTeam() {
 						<Form {...form}>
 							<form
 								onSubmit={form.handleSubmit((values) => onSubmit(values))}
-								className="space-y-6 mt-4"
+								className="mt-4 space-y-6"
 							>
 								<FormField
 									control={form.control}

@@ -42,10 +42,10 @@ export const CreatedByInformation = () => {
 									{getInitials(eventAuthor?.name)}
 								</AvatarFallback>
 							</Avatar>
-							<p className="text-foreground ml-2 mr-4">
+							<p className="mr-4 ml-2 text-foreground">
 								{eventAuthor?.name || "Unknown Author"}
 							</p>
-							<p className="text-sm text-muted-foreground">{event.message}</p>
+							<p className="text-muted-foreground text-sm">{event.message}</p>
 						</div>
 					);
 				})}
@@ -56,8 +56,8 @@ export const CreatedByInformation = () => {
 					<AvatarImage src={foundUser?.avatarUrl ?? ""} />
 					<AvatarFallback>{getInitials(foundUser?.name)}</AvatarFallback>
 				</Avatar>
-				<p className="text-foreground ml-2 mr-4">{foundUser?.name}</p>
-				<p className="text-sm text-muted-foreground">created the task</p>
+				<p className="mr-4 ml-2 text-foreground">{foundUser?.name}</p>
+				<p className="text-muted-foreground text-sm">created the task</p>
 			</div>
 		</div>
 	);

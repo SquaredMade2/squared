@@ -39,10 +39,10 @@ export const EffortDropdownButton = () => {
 
 	const buttonContent = (effortEstimate: number | null | undefined) => (
 		<>
-			<span className="w-4 h-4 mr-2 inline-block cursor-pointer">
+			<span className="mr-2 inline-block h-4 w-4 cursor-pointer">
 				{effortEstimate ? showIcon(effortEstimate) : medium()}
 			</span>
-			<span className="text-sm font-medium cursor-pointer">
+			<span className="cursor-pointer font-medium text-sm">
 				{effortEstimate || "Effort"}
 			</span>
 		</>
@@ -51,7 +51,7 @@ export const EffortDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full">
+				<Button variant="outline" className="w-full max-w-full">
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
@@ -62,7 +62,7 @@ export const EffortDropdownButton = () => {
 					return (
 						<DropdownMenuItem
 							key={effortLevel.value}
-							className="flex gap-2 items-center cursor-pointer"
+							className="flex cursor-pointer items-center gap-2"
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
 							<div>{showIcon(estimateNumber)}</div>

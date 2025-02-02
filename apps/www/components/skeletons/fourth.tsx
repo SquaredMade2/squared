@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Globe } from "../globe";
 export const SkeletonFour = () => {
 	return (
-		<div className="h-full  flex flex-col items-center relative bg-white dark:bg-background mt-10">
+		<div className="relative mt-10 flex h-full flex-col items-center bg-white dark:bg-background">
 			<InfiniteMovingCards speed="fast" direction="left">
 				<MovingGrid />
 			</InfiniteMovingCards>
@@ -14,17 +14,17 @@ export const SkeletonFour = () => {
 				<MovingGrid />
 			</InfiniteMovingCards>
 
-			<Globe className="absolute -right-2 md:-right-40 -bottom-40" />
+			<Globe className="-right-2 md:-right-40 -bottom-40 absolute" />
 		</div>
 	);
 };
 
 const MovingGrid = () => {
 	return (
-		<div className="flex space-x-4 flex-shrink-0 mb-4 relative z-40 p-2">
+		<div className="relative z-40 mb-4 flex flex-shrink-0 space-x-4 p-2">
 			<span
 				className={cn(
-					"space-x-1 min-w-24 flex justify-center items-center bg-neutral-100 dark:bg-background-darkSecondary  px-2 py-1 p-3 text-sm rounded-xl",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
 				)}
 			>
 				<svg
@@ -45,7 +45,7 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					"space-x-1 min-w-24 flex justify-center items-center bg-neutral-100 dark:bg-background-darkSecondary px-2 py-1 p-3 text-sm rounded-xl",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
 				)}
 			>
 				<svg
@@ -67,7 +67,7 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					"space-x-1 min-w-24 flex justify-center items-center bg-neutral-100 dark:bg-background-darkSecondary px-2 py-1 p-3 text-sm rounded-xl",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
 				)}
 			>
 				<svg
@@ -132,21 +132,21 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					" space-x-1 min-w-24 px-2 py-1 p-3 bg-neutral-100 dark:bg-background-darkSecondary  text-sm rounded-xl flex justify-center items-center",
+					" flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
 				)}
 			>
 				<VercelLogo /> <span>Vercel</span>
 			</span>
 			<span
 				className={cn(
-					"min-w-24 flex justify-center bg-neutral-100 dark:bg-background-darkSecondary  items-center px-2 py-1 p-3 space-x-1 text-sm rounded-xl",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
 				)}
 			>
 				<AWSLogo /> <span>AWS</span>
 			</span>
 			<span
 				className={cn(
-					"space-x-1 min-w-24 flex justify-center items-center bg-neutral-100 dark:bg-background-darkSecondary  px-2 py-1 p-3 text-sm rounded-xl",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
 				)}
 			>
 				<GitHubLogo /> <span>GitHub</span>

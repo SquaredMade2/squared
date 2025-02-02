@@ -73,8 +73,8 @@ export const TaskSidebarTopRow = () => {
 	}, [handleKeyDown]);
 
 	return (
-		<div className="w-full px-5 relative flex items-center justify-between bg-popover h-10 text-muted-foreground rounded-lg min-w-[300px]">
-			<div className="text-muted-foreground text-sm font-semibold w-24 pr-2">
+		<div className="relative flex h-10 w-full min-w-[300px] items-center justify-between rounded-lg bg-popover px-5 text-muted-foreground">
+			<div className="w-24 pr-2 font-semibold text-muted-foreground text-sm">
 				{identifier}
 			</div>
 			<div className="flex h-full items-center">
@@ -90,7 +90,7 @@ export const TaskSidebarTopRow = () => {
 								<Link className="size-4" />
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent className="flex gap-4 items-center">
+						<TooltipContent className="flex items-center gap-4">
 							<span className="text-xs">Copy Task URL</span>
 							<div className="flex gap-1">
 								<KeyboardShortcut>Ctrl</KeyboardShortcut>
@@ -110,7 +110,7 @@ export const TaskSidebarTopRow = () => {
 								<Copy className="size-4" />
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent className="flex gap-4 items-center">
+						<TooltipContent className="flex items-center gap-4">
 							<span className="text-xs">Copy Task ID</span>
 							<div className="flex gap-1">
 								<KeyboardShortcut>Ctrl</KeyboardShortcut>
@@ -129,7 +129,7 @@ export const TaskSidebarTopRow = () => {
 								<GitPullRequestArrow className="size-4" />
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent className="flex gap-4 items-center">
+						<TooltipContent className="flex items-center gap-4">
 							<span className="text-xs">Copy Git Branch Name</span>
 							<div className="flex gap-1">
 								<KeyboardShortcut>Ctrl</KeyboardShortcut>
@@ -146,5 +146,5 @@ export const TaskSidebarTopRow = () => {
 };
 
 const KeyboardShortcut = ({ children }: { children: React.ReactNode }) => {
-	return <span className="flex border px-1 rounded">{children}</span>;
+	return <span className="flex rounded border px-1">{children}</span>;
 };

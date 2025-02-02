@@ -1,4 +1,4 @@
-import { useRef, useState, type RefObject } from "react";
+import { type RefObject, useRef, useState } from "react";
 
 import { FocusScope } from "../focus-scope";
 
@@ -181,7 +181,11 @@ export const WithOptions = () => {
 							type="checkbox"
 							checked={focusOnMount !== true}
 							onChange={(event) =>
-								setFocusOnMount(event.target.checked ? (ageFieldRef as RefObject<HTMLElement>) : true)
+								setFocusOnMount(
+									event.target.checked
+										? (ageFieldRef as RefObject<HTMLElement>)
+										: true,
+								)
 							}
 						/>{" "}
 						on "age" field?
@@ -214,7 +218,11 @@ export const WithOptions = () => {
 							type="checkbox"
 							checked={focusOnUnmount !== true}
 							onChange={(event) =>
-								setFocusOnUnmount(event.target.checked ? (nextButtonRef as RefObject<HTMLElement>) : true)
+								setFocusOnUnmount(
+									event.target.checked
+										? (nextButtonRef as RefObject<HTMLElement>)
+										: true,
+								)
 							}
 						/>{" "}
 						on "next" button?

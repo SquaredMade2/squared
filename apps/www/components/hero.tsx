@@ -22,7 +22,7 @@ export const Hero = () => {
 	}, []);
 
 	return (
-		<div className="flex flex-col min-h-screen pt-20 md:pt-40 relative overflow-hidden">
+		<div className="relative flex min-h-screen flex-col overflow-hidden pt-20 md:pt-40">
 			<motion.div
 				initial={{
 					y: 40,
@@ -59,7 +59,7 @@ export const Hero = () => {
 					ease: "easeOut",
 					duration: 0.5,
 				}}
-				className="text-2xl md:text-4xl lg:text-8xl font-semibold max-w-6xl mx-auto text-center mt-6 relative z-10"
+				className="relative z-10 mx-auto mt-6 max-w-6xl text-center font-semibold text-2xl md:text-4xl lg:text-8xl"
 			>
 				<Balancer>Elevate product development with Squared</Balancer>
 			</motion.h1>
@@ -77,7 +77,7 @@ export const Hero = () => {
 					duration: 0.5,
 					delay: 0.2,
 				}}
-				className="text-center mt-6 text-base md:text-xl text-foreground max-w-3xl mx-auto relative z-10"
+				className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-foreground md:text-xl"
 			>
 				<Balancer>
 					Squared the the new way to develop software. Create new tasks, plan
@@ -98,7 +98,7 @@ export const Hero = () => {
 					duration: 0.5,
 					delay: 0.4,
 				}}
-				className="flex items-center gap-4 justify-center mt-6 relative z-10"
+				className="relative z-10 mt-6 flex items-center justify-center gap-4"
 			>
 				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
 					Get started
@@ -107,15 +107,15 @@ export const Hero = () => {
 					variant="simple"
 					as={Link}
 					href="/contact"
-					className="flex space-x-2 items-center group font-semibold"
+					className="group flex items-center space-x-2 font-semibold"
 				>
 					<span>Contact us</span>
-					<HiArrowRight className="text-foreground group-hover:translate-x-1 stroke-[1px] h-3 w-3 transition-transform duration-200 dark:text-muted-dark" />
+					<HiArrowRight className="h-3 w-3 stroke-[1px] text-foreground transition-transform duration-200 group-hover:translate-x-1 dark:text-muted-dark" />
 				</Button>
 			</motion.div>
-			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative">
-				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background dark:to-background scale-[1.1] pointer-events-none" />
-				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
+			<div className="relative mt-20 rounded-[32px] border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
+				<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full scale-[1.1] bg-gradient-to-b from-transparent via-white to-white dark:via-background dark:to-background" />
+				<div className="rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
 					{mounted && (
 						<Image
 							src={
