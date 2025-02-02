@@ -174,6 +174,7 @@ export const workspacesTable = pgTable(
 		admins: text().array().default([]).notNull(),
 		defaultView: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		labels: jsonb().$type<Label[]>().default([]).notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
@@ -254,7 +255,7 @@ export const tasksTable = pgTable(
 		effortEstimate: integer(),
 		teamId: uuid().notNull(),
 		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
-		labels: uuid().array().default([]).notNull(),
+		labels: jsonb().$type<Label[]>().default([]).notNull(),
 		workspaceId: uuid().notNull(),
 		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		deleted: boolean().default(false).notNull(),
@@ -319,26 +320,6 @@ export const tasksTable = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("set null"),
-	],
-);
-
-export const labelsTable = pgTable(
-	"Label",
-	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		description: text(),
-		color: text().notNull(),
-		workspaceId: uuid().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
-			name: "Label_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
@@ -662,7 +643,11 @@ export type Branch = typeof branchesTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
 export type Commit = typeof commitsTable.$inferSelect;
 export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;
-export type Label = typeof labelsTable.$inferSelect;
+export type Label = {
+	name: string;
+	description?: string | null;
+	color: string;
+};
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Project = typeof projectsTable.$inferSelect;
 export type RetrospectiveItem = typeof retrospectiveItemsTable.$inferSelect;
@@ -676,6 +661,5 @@ export type User = typeof usersTable.$inferSelect;
 export type UserTeam = typeof userTeamsTable.$inferSelect;
 export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;
 export type Workspace = typeof workspacesTable.$inferSelect;
-export type WorkspaceLabel = Workspace & { labels: Label[] };
 export type WorkspaceRepositories =
 	typeof workspaceRepositoriesTable.$inferSelect;

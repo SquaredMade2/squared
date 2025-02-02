@@ -117,7 +117,11 @@ export function AssignTasksDialog({
 			.filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()))
 			.filter((t) => filterPriority === "all" || t.priority === filterPriority)
 			.filter((t) => filterStatus === "all" || t.status === filterStatus)
-			.filter((t) => filterLabel === "all" || t.labels.includes(filterLabel))
+			.filter(
+				(t) =>
+					filterLabel === "all" ||
+					t.labels.map((l) => l.name).includes(filterLabel),
+			)
 			.sort((a, b) => {
 				const priorityDiff = mapPriority(b.priority) - mapPriority(a.priority);
 				if (priorityDiff !== 0) return priorityDiff;
@@ -220,7 +224,7 @@ export function AssignTasksDialog({
 								<SelectContent>
 									<SelectItem value="all">All Labels</SelectItem>
 									{workspace?.labels.map((label) => (
-										<SelectItem key={label.id} value={label.id}>
+										<SelectItem key={label.name} value={label.name}>
 											{label.name}
 										</SelectItem>
 									))}
@@ -255,7 +259,7 @@ export function AssignTasksDialog({
 									</div>
 									{filteredTasks.map((task) => {
 										const taskLabels = workspace?.labels.filter((label) =>
-											task.labels.includes(label.id),
+											task.labels.includes(label),
 										);
 										return (
 											<div
@@ -278,7 +282,7 @@ export function AssignTasksDialog({
 												<div className="ml-2 flex flex-shrink-0 items-center justify-end gap-2">
 													<div className="flex flex-row">
 														{taskLabels?.map((label) => (
-															<div key={label.id} className="mx-0.5">
+															<div key={label.name} className="mx-0.5">
 																<LabelBadge label={label} />
 															</div>
 														))}
@@ -320,7 +324,7 @@ export function AssignTasksDialog({
 									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 										{filteredTasks.map((task) => {
 											const taskLabels = workspace?.labels.filter((label) =>
-												task.labels.includes(label.id),
+												task.labels.includes(label),
 											);
 											return (
 												<div
@@ -343,7 +347,10 @@ export function AssignTasksDialog({
 													</span>
 													<div className="mb-1 flex flex-wrap">
 														{taskLabels?.map((label) => (
-															<span key={label.id} className="mb-1 flex-shrink">
+															<span
+																key={label.name}
+																className="mb-1 flex-shrink"
+															>
 																<LabelBadge label={label} />
 															</span>
 														))}

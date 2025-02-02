@@ -1,0 +1,44 @@
+{
+	"id": "tips_and_tricks",
+	"type": "SharedSlice",
+	"name": "TipsAndTricks",
+	"description": "TipsAndTricks",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {
+				"section_title": {
+					"type": "Text",
+					"config": {
+						"label": "Section Title",
+						"placeholder": "e.g., Tips and Tricks"
+					}
+				},
+				"tip": {
+					"type": "Group",
+					"config": {
+						"label": "Tip",
+						"repeat": true,
+						"fields": {
+							"tip": {
+								"type": "StructuredText",
+								"config": {
+									"label": "Tip",
+									"placeholder": "Describe a helpful tip...",
+									"allowTargetBlank": true,
+									"multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"
+								}
+							}
+						}
+					}
+				}
+			},
+			"items": {}
+		}
+	]
+}

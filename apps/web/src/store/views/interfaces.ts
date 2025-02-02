@@ -14,7 +14,8 @@ export const TaskOrderOptions = [
 	"Due Date",
 	"Updated",
 	"Created",
-];
+] as const;
+
 export type TaskOrder = (typeof TaskOrderOptions)[number];
 
 export const TaskGroupOptions = [

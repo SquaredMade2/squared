@@ -31,14 +31,17 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useTeamStore, useWorkspaceStore } from "@/store";
+import { useTeams } from "@/hooks/useTeams";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { useTeamStore } from "@/store";
 import type { Team } from "@squared/db";
 
 function SettingsNavbarContent() {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
-	const { setTeam, teams } = useTeamStore((state) => state);
-	const { workspace } = useWorkspaceStore((state) => state);
+	const { teams } = useTeams();
+	const { workspace } = useWorkspaces();
+	const { setTeam } = useTeamStore((state) => state);
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/${workspace?.url}/settings/${targetRoute}`);

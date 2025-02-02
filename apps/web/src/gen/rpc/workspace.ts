@@ -20,9 +20,7 @@ export type CreateWorkspaceResponse = {
 	labels: {
 		color: string;
 		description: string | null;
-		id: string;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
@@ -44,9 +42,7 @@ export type GetWorkspaceResponse = {
 	labels: {
 		color: string;
 		description: string | null;
-		id: string;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
@@ -68,9 +64,7 @@ export type GetWorkspaceByUrlResponse = {
 	labels: {
 		color: string;
 		description: string | null;
-		id: string;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
@@ -97,9 +91,7 @@ export type UpdateWorkspaceResponse = {
 	labels: {
 		color: string;
 		description: string | null;
-		id: string;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
@@ -125,9 +117,7 @@ export type GetUserWorkspacesResponse = {
 	labels: {
 		color: string;
 		description: string | null;
-		id: string;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
@@ -136,6 +126,7 @@ export type GetUserWorkspacesResponse = {
 }[];
 
 export type JoinWorkspaceRequest = {
+	role?: "owner" | "admin" | "member";
 	token: string;
 	userId: string;
 };
@@ -150,9 +141,7 @@ export type JoinWorkspaceResponse = {
 	labels: {
 		color: string;
 		description: string | null;
-		id: string;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
