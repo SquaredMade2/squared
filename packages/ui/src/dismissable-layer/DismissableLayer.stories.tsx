@@ -1,17 +1,22 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-import * as React from "react";
-
+import {
+	type ComponentProps,
+	type ReactNode,
+	useCallback,
+	useRef,
+	useState,
+} from "react";
+import * as ReactDOM from "react-dom/client";
+import { RemoveScroll } from "react-remove-scroll";
+import { Fragment } from "react/jsx-runtime";
 import { DismissableLayer } from "../dismissable-layer";
 import { FocusGuards } from "../focus-guards";
 import { FocusScope } from "../focus-scope";
 import * as Popper from "../popper";
 import { Portal } from "../portal";
 import { Slot } from "../slot";
-import * as ReactDOM from "react-dom/client";
-import { RemoveScroll } from "react-remove-scroll";
 
-type DismissableLayerProps = React.ComponentProps<typeof DismissableLayer>;
-type FocusScopeProps = React.ComponentProps<typeof FocusScope>;
+type DismissableLayerProps = ComponentProps<typeof DismissableLayer>;
+type FocusScopeProps = ComponentProps<typeof FocusScope>;
 
 export default { title: "Utilities/DismissableLayer" };
 
@@ -19,16 +24,15 @@ const SYSTEM_FONT =
 	'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 export const Basic = () => {
-	const [open, setOpen] = React.useState(false);
-	const openButtonRef = React.useRef(null);
+	const [open, setOpen] = useState(false);
+	const openButtonRef = useRef(null);
 
-	const [dismissOnEscape, setDismissOnEscape] = React.useState(false);
+	const [dismissOnEscape, setDismissOnEscape] = useState(false);
 	const [dismissOnPointerDownOutside, setDismissOnPointerDownOutside] =
-		React.useState(false);
-	const [dismissOnFocusOutside, setDismissOnFocusOutside] =
-		React.useState(false);
+		useState(false);
+	const [dismissOnFocusOutside, setDismissOnFocusOutside] = useState(false);
 	const [disabledOutsidePointerEvents, setDisableOutsidePointerEvents] =
-		React.useState(false);
+		useState(false);
 
 	return (
 		<div style={{ fontFamily: "sans-serif", textAlign: "center" }}>
@@ -152,8 +156,8 @@ export const Nested = () => {
 };
 
 export const WithFocusScope = () => {
-	const [open, setOpen] = React.useState(false);
-	const openButtonRef = React.useRef(null);
+	const [open, setOpen] = useState(false);
+	const openButtonRef = useRef(null);
 
 	return (
 		<div style={{ fontFamily: "sans-serif", textAlign: "center" }}>
@@ -211,8 +215,8 @@ export const WithFocusScope = () => {
 type DismissableBoxProps = Omit<DismissableLayerProps, "children">;
 
 function DismissableBox(props: DismissableBoxProps) {
-	const [open, setOpen] = React.useState(false);
-	const openButtonRef = React.useRef(null);
+	const [open, setOpen] = useState(false);
+	const openButtonRef = useRef(null);
 
 	return (
 		<DismissableLayer
@@ -322,8 +326,8 @@ export const PopoverFullyModal = () => (
 );
 
 export const PopoverSemiModal = () => {
-	const [color, setColor] = React.useState("royalblue");
-	const changeColorButtonRef = React.useRef(null);
+	const [color, setColor] = useState("royalblue");
+	const changeColorButtonRef = useRef(null);
 	return (
 		<div style={{ height: "300vh", fontFamily: SYSTEM_FONT }}>
 			<h1>Popover (semi-modal example)</h1>
@@ -536,7 +540,7 @@ export const PopoverNested = () => (
  * -----------------------------------------------------------------------------------------------*/
 
 type DummyDialogProps = {
-	children?: React.ReactNode;
+	children?: ReactNode;
 	openLabel?: string;
 	closeLabel?: string;
 };
@@ -546,7 +550,7 @@ function DummyDialog({
 	openLabel = "Open",
 	closeLabel = "Close",
 }: DummyDialogProps) {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<>
 			<button type="button" onClick={() => setOpen((prevOpen) => !prevOpen)}>
@@ -611,7 +615,7 @@ function DummyDialog({
 }
 
 type DummyPopoverOwnProps = {
-	children?: React.ReactNode;
+	children?: ReactNode;
 	openLabel?: string;
 	closeLabel?: string;
 	color?: string;
@@ -634,10 +638,10 @@ function DummyPopover({
 	disableOutsidePointerEvents = false,
 	preventScroll = false,
 }: DummyPopoverProps) {
-	const [skipUnmountAutoFocus, setSkipUnmountAutoFocus] = React.useState(false);
-	const [open, setOpen] = React.useState(false);
-	const openButtonRef = React.useRef(null);
-	const ScrollContainer = preventScroll ? RemoveScroll : React.Fragment;
+	const [skipUnmountAutoFocus, setSkipUnmountAutoFocus] = useState(false);
+	const [open, setOpen] = useState(false);
+	const openButtonRef = useRef(null);
+	const ScrollContainer = preventScroll ? RemoveScroll : Fragment;
 	const scrollLockWrapperProps = preventScroll ? { as: Slot } : undefined;
 
 	return (
@@ -720,7 +724,7 @@ function DummyPopover({
 }
 
 export const InPopupWindow = () => {
-	const handlePopupClick = React.useCallback(() => {
+	const handlePopupClick = useCallback(() => {
 		const popupWindow = window.open(
 			undefined,
 			undefined,

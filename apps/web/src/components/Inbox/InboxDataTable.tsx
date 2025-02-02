@@ -210,12 +210,22 @@ export function InboxDataTable({
 
 	return (
 		<div className="w-full md:container">
-			<div className="items-center justify-start gap-4 py-4 hidden md:flex">
-				<div className="border border-border rounded-md bg-card dark:bg-transparent w-36 flex">
+			<div className="hidden items-center justify-start gap-4 py-4 md:flex">
+				<Input
+					placeholder="Filter notifications..."
+					value={
+						(table.getColumn("taskTitle")?.getFilterValue() as string) ?? ""
+					}
+					onChange={(event) =>
+						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
+					}
+					className="bg-card"
+				/>
+				<div className="flex w-36 rounded-md border border-border bg-card dark:bg-transparent">
 					<Button
 						variant={showUnreadOnly ? "secondary" : "outline"}
 						onClick={() => setShowUnreadOnly(false)}
-						className="rounded-r-none w-full"
+						className="w-full rounded-r-none"
 					>
 						All
 					</Button>
@@ -227,21 +237,11 @@ export function InboxDataTable({
 						Unread
 					</Button>
 				</div>
-				<Input
-					placeholder="Filter notifications..."
-					value={
-						(table.getColumn("taskTitle")?.getFilterValue() as string) ?? ""
-					}
-					onChange={(event) =>
-						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
-					}
-					className="bg-card"
-				/>
 			</div>
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader className="bg-popover">
-						<TableRow className="hover:bg-popover h-14">
+						<TableRow className="h-14 hover:bg-popover">
 							<TableHead className="w-12">
 								<Checkbox
 									checked={
@@ -392,9 +392,7 @@ export function InboxDataTable({
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
 									className={`
-										${row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}
-										transition-colors
-									`}
+										${row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}transition-colors`}
 									onMouseEnter={() => setHoveredRowId(row.id)}
 									onMouseLeave={() => setHoveredRowId(null)}
 								>
@@ -422,12 +420,12 @@ export function InboxDataTable({
 				</Table>
 			</div>
 			<div className="flex items-center justify-end space-x-2 py-4">
-				<div className="flex-1 text-sm text-muted-foreground">
+				<div className="flex-1 text-muted-foreground text-sm">
 					{table.getFilteredSelectedRowModel().rows.length} of{" "}
 					{table.getFilteredRowModel().rows.length} row(s) selected.
 				</div>
 				<div className="flex items-center space-x-2">
-					<span className="text-sm text-muted-foreground">
+					<span className="text-muted-foreground text-sm">
 						Page {table.getState().pagination.pageIndex + 1} of{" "}
 						{table.getPageCount() || 1}
 					</span>

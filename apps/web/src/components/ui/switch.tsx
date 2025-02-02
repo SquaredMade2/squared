@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import * as SwitchPrimitives from "@repo/ui/switch";
+import * as SwitchPrimitives from "@squaredmade/ui/switch";
 import * as React from "react";
 
 const Switch = React.forwardRef<

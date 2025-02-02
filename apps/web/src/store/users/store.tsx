@@ -9,7 +9,7 @@ type UserStoreApi = ReturnType<typeof createUserStore>;
 const UserStoreContext = createContext<UserStoreApi | undefined>(undefined);
 
 export const UserStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<UserStoreApi>();
+	const storeRef = useRef<UserStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createUserStore();
 	}

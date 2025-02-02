@@ -1,5 +1,13 @@
-import * as React from "react";
-
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type PointerEvent,
+	forwardRef,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
 import type { Scope } from "../context";
@@ -57,15 +65,15 @@ type ScrollAreaContextValue = {
 const [ScrollAreaProvider, useScrollAreaContext] =
 	createScrollAreaContext<ScrollAreaContextValue>(SCROLL_AREA_NAME);
 
-type ScrollAreaElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type ScrollAreaElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface ScrollAreaProps extends PrimitiveDivProps {
 	type?: ScrollAreaContextValue["type"];
 	dir?: ScrollAreaContextValue["dir"];
 	scrollHideDelay?: number;
 }
 
-const ScrollArea = React.forwardRef<ScrollAreaElement, ScrollAreaProps>(
+const ScrollArea = forwardRef<ScrollAreaElement, ScrollAreaProps>(
 	(props: ScopedProps<ScrollAreaProps>, forwardedRef) => {
 		const {
 			__scopeScrollArea,
@@ -74,19 +82,21 @@ const ScrollArea = React.forwardRef<ScrollAreaElement, ScrollAreaProps>(
 			scrollHideDelay = 600,
 			...scrollAreaProps
 		} = props;
-		const [scrollArea, setScrollArea] =
-			React.useState<ScrollAreaElement | null>(null);
-		const [viewport, setViewport] =
-			React.useState<ScrollAreaViewportElement | null>(null);
-		const [content, setContent] = React.useState<HTMLDivElement | null>(null);
+		const [scrollArea, setScrollArea] = useState<ScrollAreaElement | null>(
+			null,
+		);
+		const [viewport, setViewport] = useState<ScrollAreaViewportElement | null>(
+			null,
+		);
+		const [content, setContent] = useState<HTMLDivElement | null>(null);
 		const [scrollbarX, setScrollbarX] =
-			React.useState<ScrollAreaScrollbarElement | null>(null);
+			useState<ScrollAreaScrollbarElement | null>(null);
 		const [scrollbarY, setScrollbarY] =
-			React.useState<ScrollAreaScrollbarElement | null>(null);
-		const [cornerWidth, setCornerWidth] = React.useState(0);
-		const [cornerHeight, setCornerHeight] = React.useState(0);
-		const [scrollbarXEnabled, setScrollbarXEnabled] = React.useState(false);
-		const [scrollbarYEnabled, setScrollbarYEnabled] = React.useState(false);
+			useState<ScrollAreaScrollbarElement | null>(null);
+		const [cornerWidth, setCornerWidth] = useState(0);
+		const [cornerHeight, setCornerHeight] = useState(0);
+		const [scrollbarXEnabled, setScrollbarXEnabled] = useState(false);
+		const [scrollbarYEnabled, setScrollbarYEnabled] = useState(false);
 		const composedRefs = useComposedRefs(forwardedRef, (node) =>
 			setScrollArea(node),
 		);
@@ -139,18 +149,18 @@ ScrollArea.displayName = SCROLL_AREA_NAME;
 
 const VIEWPORT_NAME = "ScrollAreaViewport";
 
-type ScrollAreaViewportElement = React.ElementRef<typeof Primitive.div>;
+type ScrollAreaViewportElement = ElementRef<typeof Primitive.div>;
 interface ScrollAreaViewportProps extends PrimitiveDivProps {
 	nonce?: string;
 }
 
-const ScrollAreaViewport = React.forwardRef<
+const ScrollAreaViewport = forwardRef<
 	ScrollAreaViewportElement,
 	ScrollAreaViewportProps
 >((props: ScopedProps<ScrollAreaViewportProps>, forwardedRef) => {
 	const { __scopeScrollArea, children, nonce, ...viewportProps } = props;
 	const context = useScrollAreaContext(VIEWPORT_NAME, __scopeScrollArea);
-	const ref = React.useRef<ScrollAreaViewportElement>(null);
+	const ref = useRef<ScrollAreaViewportElement>(null);
 	const composedRefs = useComposedRefs(
 		forwardedRef,
 		ref,
@@ -163,7 +173,7 @@ const ScrollAreaViewport = React.forwardRef<
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{
 					__html:
-						"[data-squared-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-squared-scroll-area-viewport]::-webkit-scrollbar{display:none}",
+						"[data-loke-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-loke-scroll-area-viewport]::-webkit-scrollbar{display:none}",
 				}}
 				nonce={nonce}
 			/>
@@ -219,7 +229,7 @@ interface ScrollAreaScrollbarProps extends ScrollAreaScrollbarVisibleProps {
 	forceMount?: true;
 }
 
-const ScrollAreaScrollbar = React.forwardRef<
+const ScrollAreaScrollbar = forwardRef<
 	ScrollAreaScrollbarElement,
 	ScrollAreaScrollbarProps
 >((props: ScopedProps<ScrollAreaScrollbarProps>, forwardedRef) => {
@@ -228,7 +238,7 @@ const ScrollAreaScrollbar = React.forwardRef<
 	const { onScrollbarXEnabledChange, onScrollbarYEnabledChange } = context;
 	const isHorizontal = props.orientation === "horizontal";
 
-	React.useEffect(() => {
+	useEffect(() => {
 		isHorizontal
 			? onScrollbarXEnabledChange(true)
 			: onScrollbarYEnabledChange(true);
@@ -271,15 +281,15 @@ interface ScrollAreaScrollbarHoverProps extends ScrollAreaScrollbarAutoProps {
 	forceMount?: true;
 }
 
-const ScrollAreaScrollbarHover = React.forwardRef<
+const ScrollAreaScrollbarHover = forwardRef<
 	ScrollAreaScrollbarHoverElement,
 	ScrollAreaScrollbarHoverProps
 >((props: ScopedProps<ScrollAreaScrollbarHoverProps>, forwardedRef) => {
 	const { forceMount, ...scrollbarProps } = props;
 	const context = useScrollAreaContext(SCROLLBAR_NAME, props.__scopeScrollArea);
-	const [visible, setVisible] = React.useState(false);
+	const [visible, setVisible] = useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const scrollArea = context.scrollArea;
 		let hideTimer = 0;
 		if (scrollArea) {
@@ -320,7 +330,7 @@ interface ScrollAreaScrollbarScrollProps
 	forceMount?: true;
 }
 
-const ScrollAreaScrollbarScroll = React.forwardRef<
+const ScrollAreaScrollbarScroll = forwardRef<
 	ScrollAreaScrollbarScrollElement,
 	ScrollAreaScrollbarScrollProps
 >((props: ScopedProps<ScrollAreaScrollbarScrollProps>, forwardedRef) => {
@@ -347,7 +357,7 @@ const ScrollAreaScrollbarScroll = React.forwardRef<
 		},
 	});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (state === "idle") {
 			const hideTimer = window.setTimeout(
 				() => send("HIDE"),
@@ -357,7 +367,7 @@ const ScrollAreaScrollbarScroll = React.forwardRef<
 		}
 	}, [state, context.scrollHideDelay, send]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const viewport = context.viewport;
 		const scrollDirection = isHorizontal ? "scrollLeft" : "scrollTop";
 
@@ -399,13 +409,13 @@ interface ScrollAreaScrollbarAutoProps extends ScrollAreaScrollbarVisibleProps {
 	forceMount?: true;
 }
 
-const ScrollAreaScrollbarAuto = React.forwardRef<
+const ScrollAreaScrollbarAuto = forwardRef<
 	ScrollAreaScrollbarAutoElement,
 	ScrollAreaScrollbarAutoProps
 >((props: ScopedProps<ScrollAreaScrollbarAutoProps>, forwardedRef) => {
 	const context = useScrollAreaContext(SCROLLBAR_NAME, props.__scopeScrollArea);
 	const { forceMount, ...scrollbarProps } = props;
-	const [visible, setVisible] = React.useState(false);
+	const [visible, setVisible] = useState(false);
 	const isHorizontal = props.orientation === "horizontal";
 	const handleResize = useDebounceCallback(() => {
 		if (context.viewport) {
@@ -442,15 +452,15 @@ interface ScrollAreaScrollbarVisibleProps
 	orientation?: "horizontal" | "vertical";
 }
 
-const ScrollAreaScrollbarVisible = React.forwardRef<
+const ScrollAreaScrollbarVisible = forwardRef<
 	ScrollAreaScrollbarVisibleElement,
 	ScrollAreaScrollbarVisibleProps
 >((props: ScopedProps<ScrollAreaScrollbarVisibleProps>, forwardedRef) => {
 	const { orientation = "vertical", ...scrollbarProps } = props;
 	const context = useScrollAreaContext(SCROLLBAR_NAME, props.__scopeScrollArea);
-	const thumbRef = React.useRef<ScrollAreaThumbElement | null>(null);
-	const pointerOffsetRef = React.useRef(0);
-	const [sizes, setSizes] = React.useState<Sizes>({
+	const thumbRef = useRef<ScrollAreaThumbElement | null>(null);
+	const pointerOffsetRef = useRef(0);
+	const [sizes, setSizes] = useState<Sizes>({
 		content: 0,
 		viewport: 0,
 		scrollbar: { size: 0, paddingStart: 0, paddingEnd: 0 },
@@ -566,22 +576,21 @@ interface ScrollAreaScrollbarAxisProps
 		>,
 		ScrollAreaScrollbarAxisPrivateProps {}
 
-const ScrollAreaScrollbarX = React.forwardRef<
+const ScrollAreaScrollbarX = forwardRef<
 	ScrollAreaScrollbarAxisElement,
 	ScrollAreaScrollbarAxisProps
 >((props: ScopedProps<ScrollAreaScrollbarAxisProps>, forwardedRef) => {
 	const { sizes, onSizesChange, ...scrollbarProps } = props;
 	const context = useScrollAreaContext(SCROLLBAR_NAME, props.__scopeScrollArea);
-	const [computedStyle, setComputedStyle] =
-		React.useState<CSSStyleDeclaration>();
-	const ref = React.useRef<ScrollAreaScrollbarAxisElement>(null);
+	const [computedStyle, setComputedStyle] = useState<CSSStyleDeclaration>();
+	const ref = useRef<ScrollAreaScrollbarAxisElement>(null);
 	const composeRefs = useComposedRefs(
 		forwardedRef,
 		ref,
 		context.onScrollbarXChange,
 	);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (ref.current) setComputedStyle(getComputedStyle(ref.current));
 	}, []);
 
@@ -631,22 +640,21 @@ const ScrollAreaScrollbarX = React.forwardRef<
 	);
 });
 
-const ScrollAreaScrollbarY = React.forwardRef<
+const ScrollAreaScrollbarY = forwardRef<
 	ScrollAreaScrollbarAxisElement,
 	ScrollAreaScrollbarAxisProps
 >((props: ScopedProps<ScrollAreaScrollbarAxisProps>, forwardedRef) => {
 	const { sizes, onSizesChange, ...scrollbarProps } = props;
 	const context = useScrollAreaContext(SCROLLBAR_NAME, props.__scopeScrollArea);
-	const [computedStyle, setComputedStyle] =
-		React.useState<CSSStyleDeclaration>();
-	const ref = React.useRef<ScrollAreaScrollbarAxisElement>(null);
+	const [computedStyle, setComputedStyle] = useState<CSSStyleDeclaration>();
+	const ref = useRef<ScrollAreaScrollbarAxisElement>(null);
 	const composeRefs = useComposedRefs(
 		forwardedRef,
 		ref,
 		context.onScrollbarYChange,
 	);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (ref.current) setComputedStyle(getComputedStyle(ref.current));
 	}, []);
 
@@ -709,7 +717,7 @@ type ScrollbarContext = {
 const [ScrollbarProvider, useScrollbarContext] =
 	createScrollAreaContext<ScrollbarContext>(SCROLLBAR_NAME);
 
-type ScrollAreaScrollbarImplElement = React.ElementRef<typeof Primitive.div>;
+type ScrollAreaScrollbarImplElement = ElementRef<typeof Primitive.div>;
 type ScrollAreaScrollbarImplPrivateProps = {
 	sizes: Sizes;
 	hasThumb: boolean;
@@ -725,7 +733,7 @@ interface ScrollAreaScrollbarImplProps
 	extends Omit<PrimitiveDivProps, keyof ScrollAreaScrollbarImplPrivateProps>,
 		ScrollAreaScrollbarImplPrivateProps {}
 
-const ScrollAreaScrollbarImpl = React.forwardRef<
+const ScrollAreaScrollbarImpl = forwardRef<
 	ScrollAreaScrollbarImplElement,
 	ScrollAreaScrollbarImplProps
 >((props: ScopedProps<ScrollAreaScrollbarImplProps>, forwardedRef) => {
@@ -743,19 +751,20 @@ const ScrollAreaScrollbarImpl = React.forwardRef<
 		...scrollbarProps
 	} = props;
 	const context = useScrollAreaContext(SCROLLBAR_NAME, __scopeScrollArea);
-	const [scrollbar, setScrollbar] =
-		React.useState<ScrollAreaScrollbarElement | null>(null);
+	const [scrollbar, setScrollbar] = useState<ScrollAreaScrollbarElement | null>(
+		null,
+	);
 	const composeRefs = useComposedRefs(forwardedRef, (node) =>
 		setScrollbar(node),
 	);
-	const rectRef = React.useRef<ClientRect | null>(null);
-	const prevWebkitUserSelectRef = React.useRef<string>("");
+	const rectRef = useRef<DOMRect | null>(null);
+	const prevWebkitUserSelectRef = useRef<string>("");
 	const maxScrollPos = sizes.content - sizes.viewport;
 	const handleWheelScroll = useCallbackRef(onWheelScroll);
 	const handleThumbPositionChange = useCallbackRef(onThumbPositionChange);
 	const handleResize = useDebounceCallback(onResize, 10);
 
-	function handleDragScroll(event: React.PointerEvent<HTMLElement>) {
+	function handleDragScroll(event: PointerEvent<HTMLElement>) {
 		if (rectRef.current) {
 			const x = event.clientX - rectRef.current.left;
 			const y = event.clientY - rectRef.current.top;
@@ -767,7 +776,7 @@ const ScrollAreaScrollbarImpl = React.forwardRef<
 	 * We bind wheel event imperatively so we can switch off passive
 	 * mode for document wheel event to allow it to be prevented
 	 */
-	React.useEffect(() => {
+	useEffect(() => {
 		const handleWheel = (event: WheelEvent) => {
 			const element = event.target as HTMLElement;
 			const isScrollbarWheel = scrollbar?.contains(element);
@@ -785,7 +794,7 @@ const ScrollAreaScrollbarImpl = React.forwardRef<
 	/**
 	 * Update thumb position on sizes change
 	 */
-	React.useEffect(handleThumbPositionChange, []);
+	useEffect(handleThumbPositionChange, []);
 
 	useResizeObserver(scrollbar, handleResize);
 	useResizeObserver(context.content, handleResize);
@@ -854,7 +863,7 @@ interface ScrollAreaThumbProps extends ScrollAreaThumbImplProps {
 	forceMount?: true;
 }
 
-const ScrollAreaThumb = React.forwardRef<
+const ScrollAreaThumb = forwardRef<
 	ScrollAreaThumbElement,
 	ScrollAreaThumbProps
 >((props: ScopedProps<ScrollAreaThumbProps>, forwardedRef) => {
@@ -870,10 +879,10 @@ const ScrollAreaThumb = React.forwardRef<
 	);
 });
 
-type ScrollAreaThumbImplElement = React.ElementRef<typeof Primitive.div>;
+type ScrollAreaThumbImplElement = ElementRef<typeof Primitive.div>;
 interface ScrollAreaThumbImplProps extends PrimitiveDivProps {}
 
-const ScrollAreaThumbImpl = React.forwardRef<
+const ScrollAreaThumbImpl = forwardRef<
 	ScrollAreaThumbImplElement,
 	ScrollAreaThumbImplProps
 >((props: ScopedProps<ScrollAreaThumbImplProps>, forwardedRef) => {
@@ -884,7 +893,7 @@ const ScrollAreaThumbImpl = React.forwardRef<
 	const composedRef = useComposedRefs(forwardedRef, (node) =>
 		scrollbarContext.onThumbChange(node),
 	);
-	const removeUnlinkedScrollListenerRef = React.useRef<() => void>();
+	const removeUnlinkedScrollListenerRef = useRef<() => void>(undefined);
 	const debounceScrollEnd = useDebounceCallback(() => {
 		if (removeUnlinkedScrollListenerRef.current) {
 			removeUnlinkedScrollListenerRef.current();
@@ -892,7 +901,7 @@ const ScrollAreaThumbImpl = React.forwardRef<
 		}
 	}, 100);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const viewport = scrollAreaContext.viewport;
 		if (viewport) {
 			/**
@@ -958,7 +967,7 @@ const CORNER_NAME = "ScrollAreaCorner";
 type ScrollAreaCornerElement = ScrollAreaCornerImplElement;
 interface ScrollAreaCornerProps extends ScrollAreaCornerImplProps {}
 
-const ScrollAreaCorner = React.forwardRef<
+const ScrollAreaCorner = forwardRef<
 	ScrollAreaCornerElement,
 	ScrollAreaCornerProps
 >((props: ScopedProps<ScrollAreaCornerProps>, forwardedRef) => {
@@ -976,17 +985,17 @@ ScrollAreaCorner.displayName = CORNER_NAME;
 
 /* -----------------------------------------------------------------------------------------------*/
 
-type ScrollAreaCornerImplElement = React.ElementRef<typeof Primitive.div>;
+type ScrollAreaCornerImplElement = ElementRef<typeof Primitive.div>;
 interface ScrollAreaCornerImplProps extends PrimitiveDivProps {}
 
-const ScrollAreaCornerImpl = React.forwardRef<
+const ScrollAreaCornerImpl = forwardRef<
 	ScrollAreaCornerImplElement,
 	ScrollAreaCornerImplProps
 >((props: ScopedProps<ScrollAreaCornerImplProps>, forwardedRef) => {
 	const { __scopeScrollArea, ...cornerProps } = props;
 	const context = useScrollAreaContext(CORNER_NAME, __scopeScrollArea);
-	const [width, setWidth] = React.useState(0);
-	const [height, setHeight] = React.useState(0);
+	const [width, setWidth] = useState(0);
+	const [height, setHeight] = useState(0);
 	const hasSize = Boolean(width && height);
 
 	useResizeObserver(context.scrollbarX, () => {
@@ -1119,12 +1128,9 @@ const addUnlinkedScrollListener = (node: HTMLElement, handler = () => {}) => {
 
 function useDebounceCallback(callback: () => void, delay: number) {
 	const handleCallback = useCallbackRef(callback);
-	const debounceTimerRef = React.useRef(0);
-	React.useEffect(
-		() => () => window.clearTimeout(debounceTimerRef.current),
-		[],
-	);
-	return React.useCallback(() => {
+	const debounceTimerRef = useRef(0);
+	useEffect(() => () => window.clearTimeout(debounceTimerRef.current), []);
+	return useCallback(() => {
 		window.clearTimeout(debounceTimerRef.current);
 		debounceTimerRef.current = window.setTimeout(handleCallback, delay);
 	}, [handleCallback, delay]);

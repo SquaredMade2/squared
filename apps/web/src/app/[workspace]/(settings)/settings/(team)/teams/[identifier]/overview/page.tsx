@@ -30,15 +30,15 @@ import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
+import type { Effort } from "@squared/db";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
-} from "@repo/ui/dropdown-menu";
-import { TODO } from "@squared/context";
-import type { Effort } from "@squared/db";
+} from "@squaredmade/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -198,25 +198,25 @@ export default function TeamsSetting() {
 
 	if (teamLoading || workspaceLoading)
 		return (
-			<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
-				<h1 className="text-3xl font-bold mb-2">Team Settings</h1>
-				<p className="text-muted-foreground mb-6">Manage team settings</p>
-				<div className="flex justify-center items-center w-full h-64">
+			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
+				<h1 className="mb-2 font-bold text-3xl">Team Settings</h1>
+				<p className="mb-6 text-muted-foreground">Manage team settings</p>
+				<div className="flex h-64 w-full items-center justify-center">
 					<SquaredLoader />
 				</div>
 			</div>
 		);
 
 	return (
-		<div className="container mx-auto py-10 md:w-3/4 w-full">
-			<h1 className="text-3xl font-bold mb-2">{team.name}</h1>
-			<p className="text-muted-foreground mb-6">Manage team settings</p>
+		<div className="container mx-auto w-full py-10 md:w-3/4">
+			<h1 className="mb-2 font-bold text-3xl">{team.name}</h1>
+			<p className="mb-6 text-muted-foreground">Manage team settings</p>
 
 			<Separator className="my-6" />
 
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
 							name="name"
@@ -255,7 +255,7 @@ export default function TeamsSetting() {
 							>
 								<DropdownMenuTrigger>
 									<menu
-										className="border flex items-center text-left px-3 rounded-md w-40 h-10 justify-between hover:cursor-pointer"
+										className="flex h-10 w-40 items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
 										aria-label="Effort style dropdown menu"
 										aria-hidden="true"
 									>
@@ -265,11 +265,11 @@ export default function TeamsSetting() {
 										/>
 									</menu>
 								</DropdownMenuTrigger>
-								<DropdownMenuContent className="w-52 p-0 mr-48 mt-3 z-10 rounded-md">
+								<DropdownMenuContent className="z-10 mt-3 mr-48 w-52 rounded-md p-0">
 									<DropdownMenuRadioGroup
 										value={selectedEffort?.listOption as string}
 										onValueChange={handleEffortSelection}
-										className="bg-secondary hover:cursor-pointer z-50 rounded-md"
+										className="z-50 rounded-md bg-secondary hover:cursor-pointer"
 									>
 										{effortType.map((item, index) => (
 											<DropdownMenuRadioItem
@@ -278,7 +278,7 @@ export default function TeamsSetting() {
 												className="hover:cursor-pointer"
 											>
 												<div
-													className={`${index === 1 ? "border-y-2" : ""} flex items-center space-x-2 p-3 z-10`}
+													className={`${index === 1 ? "border-y-2" : ""} z-10 flex items-center space-x-2 p-3`}
 												>
 													<span className="hover:cursor-pointer">
 														{item.listOption}
@@ -299,9 +299,9 @@ export default function TeamsSetting() {
 
 			<Separator className="my-6" />
 
-			<div className="bg-destructive/10 p-6 rounded-lg">
-				<h2 className="text-xl font-semibold mb-4">Delete Team</h2>
-				<p className="text-muted-foreground mb-4">
+			<div className="rounded-lg bg-destructive/10 p-6">
+				<h2 className="mb-4 font-semibold text-xl">Delete Team</h2>
+				<p className="mb-4 text-muted-foreground">
 					<span className="font-medium">Warning: </span>
 					Deleting the team will also permanently delete any tasks associated
 					with it. This can't be undone and your data cannot be recovered by

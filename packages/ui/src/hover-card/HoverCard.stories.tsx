@@ -1,8 +1,8 @@
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
-import * as Dialog from "@radix-ui/react-dialog";
-import { SIDE_OPTIONS, ALIGN_OPTIONS } from "../popper";
+import * as Dialog from "../dialog";
 import * as HoverCard from "../hover-card";
+import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 
 export default { title: "Components/HoverCard" };
 
@@ -164,11 +164,11 @@ export const ContainTextSelection = () => {
 };
 
 export const AsyncUpdate = () => {
-	const [open, setOpen] = React.useState(false);
-	const [contentLoaded, setContentLoaded] = React.useState(false);
-	const timerRef = React.useRef(0);
+	const [open, setOpen] = useState(false);
+	const [contentLoaded, setContentLoaded] = useState(false);
+	const timerRef = useRef(0);
 
-	const handleOpenChange = React.useCallback((open: boolean) => {
+	const handleOpenChange = useCallback((open: boolean) => {
 		clearTimeout(timerRef.current);
 
 		if (open) {
@@ -182,7 +182,7 @@ export const AsyncUpdate = () => {
 		setOpen(open);
 	}, []);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		return () => {
 			clearTimeout(timerRef.current);
 		};
@@ -249,7 +249,7 @@ export const CustomDurations = () => (
 );
 
 export const Controlled = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 
 	return (
 		<div style={{ padding: 50, display: "flex", justifyContent: "center" }}>

@@ -1,16 +1,23 @@
-import * as React from "react";
-
+import {
+	type ComponentProps,
+	type ComponentPropsWithRef,
+	type Dispatch,
+	type SetStateAction,
+	createContext,
+	useContext,
+	useState,
+} from "react";
 import { composeEventHandlers } from "../primitive";
 import * as RovingFocusGroup from "../roving-focus";
 
-type RovingFocusGroupProps = React.ComponentProps<
+type RovingFocusGroupProps = ComponentProps<
 	typeof RovingFocusGroup.RovingFocusGroup
 >;
 
 export default { title: "Utilities/RovingFocusGroup" };
 
 export const Basic = () => {
-	const [dir, setDir] = React.useState<RovingFocusGroupProps["dir"]>("ltr");
+	const [dir, setDir] = useState<RovingFocusGroupProps["dir"]>("ltr");
 
 	return (
 		<div dir={dir}>
@@ -117,10 +124,10 @@ export const Nested = () => (
 );
 
 export const EdgeCases = () => {
-	const [extra, setExtra] = React.useState(false);
-	const [disabled, setDisabled] = React.useState(false);
-	const [hidden, setHidden] = React.useState(false);
-	const [disabled3To5, setDisabled3To5] = React.useState(false);
+	const [extra, setExtra] = useState(false);
+	const [disabled, setDisabled] = useState(false);
+	const [hidden, setHidden] = useState(false);
+	const [disabled3To5, setDisabled3To5] = useState(false);
 
 	return (
 		<>
@@ -167,19 +174,16 @@ export const EdgeCases = () => {
 	);
 };
 
-const ButtonGroupContext = React.createContext<{
+const ButtonGroupContext = createContext<{
 	value?: string;
-	setValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setValue: Dispatch<SetStateAction<string | undefined>>;
 }>({} as any);
 
-type ButtonGroupProps = Omit<
-	React.ComponentPropsWithRef<"div">,
-	"defaultValue"
-> &
+type ButtonGroupProps = Omit<ComponentPropsWithRef<"div">, "defaultValue"> &
 	RovingFocusGroupProps & { defaultValue?: string };
 
 const ButtonGroup = ({ defaultValue, ...props }: ButtonGroupProps) => {
-	const [value, setValue] = React.useState(defaultValue);
+	const [value, setValue] = useState(defaultValue);
 	return (
 		<ButtonGroupContext.Provider value={{ value, setValue }}>
 			<RovingFocusGroup.RovingFocusGroup
@@ -195,13 +199,12 @@ const ButtonGroup = ({ defaultValue, ...props }: ButtonGroupProps) => {
 	);
 };
 
-type ButtonProps = Omit<React.ComponentPropsWithRef<"button">, "value"> & {
+type ButtonProps = Omit<ComponentPropsWithRef<"button">, "value"> & {
 	value?: string;
 };
 
 const Button = (props: ButtonProps) => {
-	const { value: contextValue, setValue } =
-		React.useContext(ButtonGroupContext);
+	const { value: contextValue, setValue } = useContext(ButtonGroupContext);
 	const isSelected =
 		contextValue !== undefined &&
 		props.value !== undefined &&

@@ -1,7 +1,11 @@
-import * as React from "react";
-
 import * as ReactDOM from "react-dom";
 
+import {
+	type ComponentPropsWithRef,
+	type ElementType,
+	type ForwardRefExoticComponent,
+	forwardRef,
+} from "react";
 import { Slot } from "../slot";
 
 const NODES = [
@@ -26,20 +30,19 @@ const NODES = [
 type Primitives = {
 	[E in (typeof NODES)[number]]: PrimitiveForwardRefComponent<E>;
 };
-type PrimitivePropsWithRef<E extends React.ElementType> =
-	React.ComponentPropsWithRef<E> & {
-		asChild?: boolean;
-	};
+type PrimitivePropsWithRef<E extends ElementType> = ComponentPropsWithRef<E> & {
+	asChild?: boolean;
+};
 
-interface PrimitiveForwardRefComponent<E extends React.ElementType>
-	extends React.ForwardRefExoticComponent<PrimitivePropsWithRef<E>> {}
+interface PrimitiveForwardRefComponent<E extends ElementType>
+	extends ForwardRefExoticComponent<PrimitivePropsWithRef<E>> {}
 
 /* -------------------------------------------------------------------------------------------------
  * Primitive
  * -----------------------------------------------------------------------------------------------*/
 
 const Primitive = NODES.reduce((primitive, node) => {
-	const Node = React.forwardRef(
+	const Node = forwardRef(
 		(props: PrimitivePropsWithRef<typeof node>, forwardedRef: any) => {
 			const { asChild, ...primitiveProps } = props;
 			const Comp: any = asChild ? Slot : node;
@@ -54,7 +57,7 @@ const Primitive = NODES.reduce((primitive, node) => {
 
 	Node.displayName = `Primitive.${node}`;
 
-	return { ...primitive, [node]: Node };
+	return Object.assign(primitive, { [node]: Node });
 }, {} as Primitives);
 
 /* -------------------------------------------------------------------------------------------------

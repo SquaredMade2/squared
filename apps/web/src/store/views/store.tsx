@@ -9,7 +9,7 @@ type ViewStoreApi = ReturnType<typeof createViewStore>;
 const ViewStoreContext = createContext<ViewStoreApi | undefined>(undefined);
 
 export const ViewStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<ViewStoreApi>();
+	const storeRef = useRef<ViewStoreApi>(undefined);
 
 	if (!storeRef.current) {
 		storeRef.current = createViewStore();

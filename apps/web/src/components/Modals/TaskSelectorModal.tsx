@@ -2,7 +2,7 @@
 
 import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
 import {

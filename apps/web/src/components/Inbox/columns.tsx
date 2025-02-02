@@ -1,9 +1,9 @@
 import { eventService, userService, workspaceService } from "@/lib/services";
 import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { TooltipContent } from "@repo/ui/tooltip";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
@@ -84,13 +84,13 @@ export const columns: ColumnDef<
 
 			return (
 				<div
-					className="flex items-start sm:items-center gap-4 w-full cursor-pointer"
+					className="flex w-full cursor-pointer items-start gap-4 sm:items-center"
 					onClick={handleClick}
 				>
-					<div className="flex items-center h-full mt-2 sm:mt-0">
+					<div className="mt-2 flex h-full items-center sm:mt-0">
 						<StatusIcon status={row.original.Task.status} />
 					</div>
-					<div className="flex flex-col sm:flex-row justify-between w-full">
+					<div className="flex w-full flex-col justify-between sm:flex-row">
 						<div
 							className={`flex flex-col ${!read ? "text-muted-foreground" : ""}`}
 						>
@@ -102,8 +102,8 @@ export const columns: ColumnDef<
 						</div>
 
 						<div className="flex items-center gap-2">
-							<div className="text-xs lowercase hidden sm:block">{type}</div>
-							<div className="flex -space-x-6">
+							<div className="hidden text-xs lowercase sm:block">{type}</div>
+							<div className="-space-x-6 flex">
 								{avatars?.map((avatar) => (
 									<Avatar key={avatar.id} className="border-2 border-border">
 										<AvatarImage src={avatar.avatarUrl ?? ""} />
@@ -111,7 +111,7 @@ export const columns: ColumnDef<
 									</Avatar>
 								))}
 							</div>
-							<div className="text-xs lowercase block sm:hidden">{type}</div>
+							<div className="block text-xs lowercase sm:hidden">{type}</div>
 						</div>
 					</div>
 				</div>
@@ -178,9 +178,9 @@ export const columns: ColumnDef<
 			};
 
 			return (
-				<div className="flex justify-end items-center h-full">
+				<div className="flex h-full items-center justify-end">
 					{!isRowHovered ? (
-						<div className="text-muted-foreground text-xs text-right whitespace-nowrap">
+						<div className="whitespace-nowrap text-right text-muted-foreground text-xs">
 							{formattedDate}
 						</div>
 					) : (

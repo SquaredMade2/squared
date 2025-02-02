@@ -1,36 +1,37 @@
 {
-  "name": "@squared/builder",
-  "version": "0.0.0",
-  "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "squared-build": "./dist/cli.js"
-  },
-  ".": {
-    "import": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    },
-    "require": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "ts-node ./build.ts",
-    "postinstall": "pnpm run build",
-    "prebuild": "rimraf ./dist"
-  },
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@squared/logger": "workspace:*",
-    "esbuild": "^0.24.0",
-    "glob": "^11.0.0",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.2"
-  },
-  "dependencies": {
-    "tslib": "^2.7.0"
-  }
+	"name": "@squared/builder",
+	"version": "0.0.0",
+	"private": true,
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"bin": {
+		"squared-build": "./dist/cli.js"
+	},
+	".": {
+		"import": {
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
+		},
+		"require": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "ts-node ./build.ts",
+		"postinstall": "pnpm run build",
+		"prebuild": "rimraf ./dist"
+	},
+	"devDependencies": {
+		"@squared/typescript-config": "workspace:*",
+		"@squared/logger": "workspace:*",
+		"@types/node": "^22.10.10",
+		"esbuild": "^0.24.0",
+		"glob": "^11.0.0",
+		"ts-node": "^10.9.2",
+		"tsup": "^8.0.2"
+	},
+	"dependencies": {
+		"tslib": "^2.7.0"
+	}
 }

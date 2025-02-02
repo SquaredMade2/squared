@@ -9,7 +9,7 @@ type TeamStoreApi = ReturnType<typeof createTeamStore>;
 const TeamStoreContext = createContext<TeamStoreApi | undefined>(undefined);
 
 export const TeamStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<TeamStoreApi>();
+	const storeRef = useRef<TeamStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createTeamStore();
 	}

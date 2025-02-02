@@ -1,14 +1,13 @@
-import * as React from "react";
-
 import * as Popper from "../popper";
 import { Portal } from "../portal";
 
+import { useEffect, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Utilities/Popper" };
 
 export const Styled = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<Scrollable>
 			<Popper.Popper>
@@ -35,7 +34,7 @@ export const Styled = () => {
 };
 
 export const WithCustomArrow = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<Scrollable>
 			<Popper.Popper>
@@ -64,7 +63,7 @@ export const WithCustomArrow = () => {
 };
 
 export const Animated = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 
 	return (
 		<Scrollable>
@@ -98,7 +97,7 @@ export const Animated = () => {
 };
 
 export const WithPortal = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<Scrollable>
 			<Popper.Popper>
@@ -127,9 +126,9 @@ export const WithPortal = () => {
 };
 
 export const WithUpdatePositionStrategyAlways = () => {
-	const [open, setOpen] = React.useState(false);
-	const [left, setLeft] = React.useState(0);
-	React.useEffect(() => {
+	const [open, setOpen] = useState(false);
+	const [left, setLeft] = useState(0);
+	useEffect(() => {
 		const intervalId = setInterval(() => {
 			setLeft((prev) => (prev + 50) % 300);
 		}, 500);
@@ -169,9 +168,9 @@ export const WithUpdatePositionStrategyAlways = () => {
 
 export const Chromatic = () => {
 	const [scrollContainer1, setScrollContainer1] =
-		React.useState<HTMLDivElement | null>(null);
+		useState<HTMLDivElement | null>(null);
 	const [scrollContainer2, setScrollContainer2] =
-		React.useState<HTMLDivElement | null>(null);
+		useState<HTMLDivElement | null>(null);
 
 	return (
 		<div style={{ paddingBottom: 500 }}>

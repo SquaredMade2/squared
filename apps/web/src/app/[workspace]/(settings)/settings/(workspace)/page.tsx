@@ -89,15 +89,22 @@ export default function WorkspaceSettings() {
 	const updateValues = () => {
 		if (workspace) {
 			setValue("name", workspace.name);
-      setValue("url", workspace.url.replace("https://app.squaredmade.com/", ""));
+			setValue(
+				"url",
+				workspace.url.replace("https://app.squaredmade.com/", ""),
+			);
 		}
 	};
 
 	useEffect(() => {
 		if (!workspace) return;
 
-    //on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
-		if (form.getValues("name") !== workspace.name || form.getValues("url") !== workspace.url.replace("https://app.squaredmade.com/", "")) {
+		//on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
+		if (
+			form.getValues("name") !== workspace.name ||
+			form.getValues("url") !==
+				workspace.url.replace("https://app.squaredmade.com/", "")
+		) {
 			updateValues();
 		}
 		const subscription = watch((value) => {
@@ -155,23 +162,23 @@ export default function WorkspaceSettings() {
 
 	if (workspaceLoading)
 		return (
-			<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
-				<h1 className="text-3xl font-bold mb-2">Team Settings</h1>
-				<p className="text-muted-foreground mb-6">Manage team settings</p>
-				<div className="flex justify-center items-center w-full h-64">
+			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
+				<h1 className="mb-2 font-bold text-3xl">Team Settings</h1>
+				<p className="mb-6 text-muted-foreground">Manage team settings</p>
+				<div className="flex h-64 w-full items-center justify-center">
 					<SquaredLoader />
 				</div>
 			</div>
 		);
 
 	return (
-		<div className="container mx-auto py-10 md:w-3/4 w-full ">
-			<h1 className="text-3xl font-bold mb-2">Workspace</h1>
-			<p className="text-muted-foreground mb-6">
+		<div className="container mx-auto w-full py-10 md:w-3/4 ">
+			<h1 className="mb-2 font-bold text-3xl">Workspace</h1>
+			<p className="mb-6 text-muted-foreground">
 				Manage your workspace settings
 			</p>
 
-			<div className="flex items-center space-x-4 mb-6">
+			<div className="mb-6 flex items-center space-x-4">
 				<Avatar className="size-28">
 					<AvatarImage src={workspace.avatarUrl ?? ""} alt="Workspace Logo" />
 					<AvatarFallback className="text-5xl">
@@ -179,7 +186,7 @@ export default function WorkspaceSettings() {
 					</AvatarFallback>
 				</Avatar>
 				<div>
-					<h2 className="text-xl font-semibold">{workspace.name}</h2>
+					<h2 className="font-semibold text-xl">{workspace.name}</h2>
 					<p className="text-muted-foreground">{workspace.url}</p>
 				</div>
 			</div>
@@ -188,10 +195,10 @@ export default function WorkspaceSettings() {
 
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
-              defaultValue = {""}
+							defaultValue={""}
 							name="name"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
@@ -205,19 +212,19 @@ export default function WorkspaceSettings() {
 						/>
 						<FormField
 							control={form.control}
-              defaultValue = {""}
+							defaultValue={""}
 							name="url"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
 									<FormLabel>Workspace URL</FormLabel>
 									<FormControl>
 										<div className="flex">
-											<span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-transparent text-sm mr-0 pr-0 text-muted-foreground">
+											<span className="mr-0 inline-flex items-center rounded-l-md border border-input border-r-0 bg-transparent px-3 pr-0 text-muted-foreground text-sm">
 												https://app.squaredmade.com/
 											</span>
 											<Input
 												{...field}
-												className="rounded-l-none border-l-0 ml-0 pl-0 focus-visible:ring-offset-0 focus-visible:ring-0"
+												className="ml-0 rounded-l-none border-l-0 pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
 											/>
 										</div>
 									</FormControl>
@@ -281,9 +288,9 @@ export default function WorkspaceSettings() {
 
 			<Separator className="my-6" />
 
-			<div className="bg-destructive/10 p-6 rounded-lg">
-				<h2 className="text-xl font-semibold mb-4">Delete Workspace</h2>
-				<p className="text-muted-foreground mb-4">
+			<div className="rounded-lg bg-destructive/10 p-6">
+				<h2 className="mb-4 font-semibold text-xl">Delete Workspace</h2>
+				<p className="mb-4 text-muted-foreground">
 					Permanently delete your workspace and all of its contents from the
 					platform. This action is not reversible, so please continue with
 					caution.

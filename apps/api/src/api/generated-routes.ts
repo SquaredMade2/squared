@@ -5,26 +5,16 @@ import { setupSwagger } from "../../swagger";
 import { toMutationHandler, toQueryHandler } from "./route";
 import type { Route } from "./route";
 
-import * as $8b611e from "./integration/github/oauth";
-import * as $bbf840 from "./integration/github/webhook";
+import * as route_c86f40f2 from "./integration/github/oauth";
+import * as route_3e90eb93 from "./integration/github/webhook";
 
-export type AllRouteDeps = Parameters<typeof $bbf840.createRoute>[0] &
-	Parameters<typeof $8b611e.createRoute>[0];
+export type AllRouteDeps = Parameters<typeof route_c86f40f2.createRoute>[0] &
+	Parameters<typeof route_3e90eb93.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
 	{
 		type Params = {};
-		const r: Route<Params> = $bbf840.createRoute(deps);
-
-		router.get("/api/integration/github/webhook", toQueryHandler(r.GET));
-		router.post("/api/integration/github/webhook", toMutationHandler(r.POST));
-		router.put("/api/integration/github/webhook", toMutationHandler(r.PUT));
-		router.delete("/api/integration/github/webhook", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = {};
-		const r: Route<Params> = $8b611e.createRoute(deps);
+		const r: Route<Params> = route_c86f40f2.createRoute(deps);
 
 		router.get("/api/integration/github/oauth", toQueryHandler(r.GET));
 		router.post("/api/integration/github/oauth", toMutationHandler(r.POST));
@@ -32,8 +22,18 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 		router.delete("/api/integration/github/oauth", toQueryHandler(r.DELETE));
 	}
 
+	{
+		type Params = {};
+		const r: Route<Params> = route_3e90eb93.createRoute(deps);
+
+		router.get("/api/integration/github/webhook", toQueryHandler(r.GET));
+		router.post("/api/integration/github/webhook", toMutationHandler(r.POST));
+		router.put("/api/integration/github/webhook", toMutationHandler(r.PUT));
+		router.delete("/api/integration/github/webhook", toQueryHandler(r.DELETE));
+	}
+
 	// Setup Swagger documentation
-	if (process.env.NODE_ENV === "test") {
+	if (process.env.NODE_ENV !== "test") {
 		setupSwagger(router);
 	}
 }

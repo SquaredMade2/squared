@@ -1,290 +1,559 @@
 {
-  "name": "@repo/ui",
-  "version": "0.0.0",
-  "exports": {
-    "./accordion": {
-      "import": "./src/accordion/index.ts",
-      "require": "./src/accordion/index.ts"
-    },
-    "./alert-dialog": {
-      "import": "./src/alert-dialog/index.ts",
-      "require": "./src/alert-dialog/index.ts"
-    },
-    "./arrow": {
-      "import": "./src/arrow/index.ts",
-      "require": "./src/arrow/index.ts"
-    },
-    "./avatar": {
-      "import": "./src/avatar/index.ts",
-      "require": "./src/avatar/index.ts"
-    },
-    "./checkbox": {
-      "import": "./src/checkbox/index.ts",
-      "require": "./src/checkbox/index.ts"
-    },
-    "./collapsible": {
-      "import": "./src/collapsible/index.ts",
-      "require": "./src/collapsible/index.ts"
-    },
-    "./collection": {
-      "import": "./src/collection/index.ts",
-      "require": "./src/collection/index.ts"
-    },
-    "./compose-refs": {
-      "import": "./src/compose-refs/index.ts",
-      "require": "./src/compose-refs/index.ts"
-    },
-    "./context": {
-      "import": "./src/context/index.ts",
-      "require": "./src/context/index.ts"
-    },
-    "./context-menu": {
-      "import": "./src/context-menu/index.ts",
-      "require": "./src/context-menu/index.ts"
-    },
-    "./dialog": {
-      "import": "./src/dialog/index.ts",
-      "require": "./src/dialog/index.ts"
-    },
-    "./direction": {
-      "import": "./src/direction/index.ts",
-      "require": "./src/direction/index.ts"
-    },
-    "./dismissable-layer": {
-      "import": "./src/dismissable-layer/index.ts",
-      "require": "./src/dismissable-layer/index.ts"
-    },
-    "./dropdown-menu": {
-      "import": "./src/dropdown-menu/index.ts",
-      "require": "./src/dropdown-menu/index.ts"
-    },
-    "./focus-guards": {
-      "import": "./src/focus-guards/index.ts",
-      "require": "./src/focus-guards/index.ts"
-    },
-    "./focus-scope": {
-      "import": "./src/focus-scope/index.ts",
-      "require": "./src/focus-scope/index.ts"
-    },
-    "./hover-card": {
-      "import": "./src/hover-card/index.ts",
-      "require": "./src/hover-card/index.ts"
-    },
-    "./icons": {
-      "import": "./src/icons/components/index.ts",
-      "require": "./src/icons/components/index.ts"
-    },
-    "./id": {
-      "import": "./src/id/index.ts",
-      "require": "./src/id/index.ts"
-    },
-    "./label": {
-      "import": "./src/label/index.ts",
-      "require": "./src/label/index.ts"
-    },
-    "./menu": {
-      "import": "./src/menu/index.ts",
-      "require": "./src/menu/index.ts"
-    },
-    "./number": {
-      "import": "./src/number/index.ts",
-      "require": "./src/number/index.ts"
-    },
-    "./popover": {
-      "import": "./src/popover/index.ts",
-      "require": "./src/popover/index.ts"
-    },
-    "./popper": {
-      "import": "./src/popper/index.ts",
-      "require": "./src/popper/index.ts"
-    },
-    "./portal": {
-      "import": "./src/portal/index.ts",
-      "require": "./src/portal/index.ts"
-    },
-    "./presence": {
-      "import": "./src/presence/index.ts",
-      "require": "./src/presence/index.ts"
-    },
-    "./primitive": {
-      "import": "./src/primitive/index.ts",
-      "require": "./src/primitive/index.ts"
-    },
-    "./progress": {
-      "import": "./src/progress/index.ts",
-      "require": "./src/progress/index.ts"
-    },
-    "./react-primitive": {
-      "import": "./src/react-primitive/index.ts",
-      "require": "./src/react-primitive/index.ts"
-    },
-    "./rect": {
-      "import": "./src/rect/index.ts",
-      "require": "./src/rect/index.ts"
-    },
-    "./roving-focus": {
-      "import": "./src/roving-focus/index.ts",
-      "require": "./src/roving-focus/index.ts"
-    },
-    "./scroll-area": {
-      "import": "./src/scroll-area/index.ts",
-      "require": "./src/scroll-area/index.ts"
-    },
-    "./select": {
-      "import": "./src/select/index.ts",
-      "require": "./src/select/index.ts"
-    },
-    "./separator": {
-      "import": "./src/separator/index.ts",
-      "require": "./src/separator/index.ts"
-    },
-    "./slot": {
-      "import": "./src/slot/index.ts",
-      "require": "./src/slot/index.ts"
-    },
-    "./switch": {
-      "import": "./src/switch/index.ts",
-      "require": "./src/switch/index.ts"
-    },
-    "./tabs": {
-      "import": "./src/tabs/index.ts",
-      "require": "./src/tabs/index.ts"
-    },
-    "./toast": {
-      "import": "./src/toast/index.ts",
-      "require": "./src/toast/index.ts"
-    },
-    "./toggle": {
-      "import": "./src/toggle/index.ts",
-      "require": "./src/toggle/index.ts"
-    },
-    "./toggle-group": {
-      "import": "./src/toggle-group/index.ts",
-      "require": "./src/toggle-group/index.ts"
-    },
-    "./tooltip": {
-      "import": "./src/tooltip/index.ts",
-      "require": "./src/tooltip/index.ts"
-    },
-    "./use-callback-ref": {
-      "import": "./src/use-callback-ref/index.ts",
-      "require": "./src/use-callback-ref/index.ts"
-    },
-    "./use-controllable-state": {
-      "import": "./src/use-controllable-state/index.ts",
-      "require": "./src/use-controllable-state/index.ts"
-    },
-    "./use-escape-keydown": {
-      "import": "./src/use-escape-keydown/index.ts",
-      "require": "./src/use-escape-keydown/index.ts"
-    },
-    "./use-layout-effect": {
-      "import": "./src/use-layout-effect/index.ts",
-      "require": "./src/use-layout-effect/index.ts"
-    },
-    "./use-previous": {
-      "import": "./src/use-previous/index.ts",
-      "require": "./src/use-previous/index.ts"
-    },
-    "./use-size": {
-      "import": "./src/use-size/index.ts",
-      "require": "./src/use-size/index.ts"
-    },
-    "./visually-hidden": {
-      "import": "./src/visually-hidden/index.ts",
-      "require": "./src/visually-hidden/index.ts"
-    }
-  },
-  "scripts": {
-    "build": "pnpm --prefix ./src/icons run build",
-    "build:stories": "storybook build",
-    "check-types": "tsc --skipLibCheck --noEmit",
-    "sb": "pnpm storybook",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "format:write": "biome format --write .",
-    "format:check": "biome format .",
-    "test": "jest --ci",
-    "storybook": "cross-env BROWSER=none storybook dev -p 9009"
-  },
-  "dependencies": {
-    "@floating-ui/react-dom": "^2.1.1",
-    "@radix-ui/react-dialog": "^1.1.1",
-    "aria-hidden": "^1.2.4",
-    "cross-env": "^7.0.3",
-    "date-fns": "^4.0.0",
-    "fs-extra": "^11.2.0",
-    "glob": "^11.0.0",
-    "lucide-react": "^0.471.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-remove-scroll": "2.6.2",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.7.0"
-  },
-  "devDependencies": {
-    "@stitches/core": "^1.2.8",
-    "@storybook/addon-essentials": "^8.2.9",
-    "@storybook/addon-storysource": "^8.2.9",
-    "@storybook/manager-api": "^8.3.5",
-    "@storybook/react": "^8.2.9",
-    "@storybook/react-webpack5": "^8.2.9",
-    "@storybook/test": "^8.2.9",
-    "@storybook/theming": "^8.3.5",
-    "@testing-library/dom": "^10.2.0",
-    "@testing-library/jest-dom": "^6.5.0",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/jest": "^29.5.12",
-    "@types/jest-axe": "^3.5.9",
-    "@types/node": "~22.8.0",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
-    "babel-jest": "^29.7.0",
-    "jest": "^29.0.0",
-    "jest-axe": "^9.0.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "jest-watch-typeahead": "^2.2.0",
-    "storybook": "^8.2.9",
-    "ts-jest": "^29.2.5",
-    "typescript": "^5.5.4"
-  },
-  "peerDependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
-    "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
-  },
-  "peerDependenciesMeta": {
-    "@types/react": {
-      "optional": true
-    },
-    "@types/react-dom": {
-      "optional": true
-    }
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "testMatch": [
-      "**/?(*.)+(test).+(ts|tsx|js)"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "moduleNameMapper": {
-      "@squared-ui/react-(.+)$": "<rootDir>/src/react/$1/src",
-      "@squared-ui/(.+)$": "<rootDir>src/core/$1/src"
-    },
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/scripts/setup-tests.ts",
-      "jest-axe/extend-expect"
-    ]
-  }
+	"name": "@squaredmade/ui",
+	"version": "2.0.0-rc.2",
+	"exports": {
+		"./accordion": {
+			"import": {
+				"types": "./dist/accordion/index.d.mts",
+				"default": "./dist/accordion/index.mjs"
+			},
+			"require": {
+				"types": "./dist/accordion/index.d.ts",
+				"default": "./dist/accordion/index.js"
+			}
+		},
+		"./alert-dialog": {
+			"import": {
+				"types": "./dist/alert-dialog/index.d.mts",
+				"default": "./dist/alert-dialog/index.mjs"
+			},
+			"require": {
+				"types": "./dist/alert-dialog/index.d.ts",
+				"default": "./dist/alert-dialog/index.js"
+			}
+		},
+		"./arrow": {
+			"import": {
+				"types": "./dist/arrow/index.d.mts",
+				"default": "./dist/arrow/index.mjs"
+			},
+			"require": {
+				"types": "./dist/arrow/index.d.ts",
+				"default": "./dist/arrow/index.js"
+			}
+		},
+		"./avatar": {
+			"import": {
+				"types": "./dist/avatar/index.d.mts",
+				"default": "./dist/avatar/index.mjs"
+			},
+			"require": {
+				"types": "./dist/avatar/index.d.ts",
+				"default": "./dist/avatar/index.js"
+			}
+		},
+		"./checkbox": {
+			"import": {
+				"types": "./dist/checkbox/index.d.mts",
+				"default": "./dist/checkbox/index.mjs"
+			},
+			"require": {
+				"types": "./dist/checkbox/index.d.ts",
+				"default": "./dist/checkbox/index.js"
+			}
+		},
+		"./collapsible": {
+			"import": {
+				"types": "./dist/collapsible/index.d.mts",
+				"default": "./dist/collapsible/index.mjs"
+			},
+			"require": {
+				"types": "./dist/collapsible/index.d.ts",
+				"default": "./dist/collapsible/index.js"
+			}
+		},
+		"./collection": {
+			"import": {
+				"types": "./dist/collection/index.d.mts",
+				"default": "./dist/collection/index.mjs"
+			},
+			"require": {
+				"types": "./dist/collection/index.d.ts",
+				"default": "./dist/collection/index.js"
+			}
+		},
+		"./compose-refs": {
+			"import": {
+				"types": "./dist/compose-refs/index.d.mts",
+				"default": "./dist/compose-refs/index.mjs"
+			},
+			"require": {
+				"types": "./dist/compose-refs/index.d.ts",
+				"default": "./dist/compose-refs/index.js"
+			}
+		},
+		"./context": {
+			"import": {
+				"types": "./dist/context/index.d.mts",
+				"default": "./dist/context/index.mjs"
+			},
+			"require": {
+				"types": "./dist/context/index.d.ts",
+				"default": "./dist/context/index.js"
+			}
+		},
+		"./context-menu": {
+			"import": {
+				"types": "./dist/context-menu/index.d.mts",
+				"default": "./dist/context-menu/index.mjs"
+			},
+			"require": {
+				"types": "./dist/context-menu/index.d.ts",
+				"default": "./dist/context-menu/index.js"
+			}
+		},
+		"./dialog": {
+			"import": {
+				"types": "./dist/dialog/index.d.mts",
+				"default": "./dist/dialog/index.mjs"
+			},
+			"require": {
+				"types": "./dist/dialog/index.d.ts",
+				"default": "./dist/dialog/index.js"
+			}
+		},
+		"./direction": {
+			"import": {
+				"types": "./dist/direction/index.d.mts",
+				"default": "./dist/direction/index.mjs"
+			},
+			"require": {
+				"types": "./dist/direction/index.d.ts",
+				"default": "./dist/direction/index.js"
+			}
+		},
+		"./dismissable-layer": {
+			"import": {
+				"types": "./dist/dismissable-layer/index.d.mts",
+				"default": "./dist/dismissable-layer/index.mjs"
+			},
+			"require": {
+				"types": "./dist/dismissable-layer/index.d.ts",
+				"default": "./dist/dismissable-layer/index.js"
+			}
+		},
+		"./dropdown-menu": {
+			"import": {
+				"types": "./dist/dropdown-menu/index.d.mts",
+				"default": "./dist/dropdown-menu/index.mjs"
+			},
+			"require": {
+				"types": "./dist/dropdown-menu/index.d.ts",
+				"default": "./dist/dropdown-menu/index.js"
+			}
+		},
+		"./focus-guards": {
+			"import": {
+				"types": "./dist/focus-guards/index.d.mts",
+				"default": "./dist/focus-guards/index.mjs"
+			},
+			"require": {
+				"types": "./dist/focus-guards/index.d.ts",
+				"default": "./dist/focus-guards/index.js"
+			}
+		},
+		"./focus-scope": {
+			"import": {
+				"types": "./dist/focus-scope/index.d.mts",
+				"default": "./dist/focus-scope/index.mjs"
+			},
+			"require": {
+				"types": "./dist/focus-scope/index.d.ts",
+				"default": "./dist/focus-scope/index.js"
+			}
+		},
+		"./hover-card": {
+			"import": {
+				"types": "./dist/hover-card/index.d.mts",
+				"default": "./dist/hover-card/index.mjs"
+			},
+			"require": {
+				"types": "./dist/hover-card/index.d.ts",
+				"default": "./dist/hover-card/index.js"
+			}
+		},
+		"./id": {
+			"import": {
+				"types": "./dist/id/index.d.mts",
+				"default": "./dist/id/index.mjs"
+			},
+			"require": {
+				"types": "./dist/id/index.d.ts",
+				"default": "./dist/id/index.js"
+			}
+		},
+		"./label": {
+			"import": {
+				"types": "./dist/label/index.d.mts",
+				"default": "./dist/label/index.mjs"
+			},
+			"require": {
+				"types": "./dist/label/index.d.ts",
+				"default": "./dist/label/index.js"
+			}
+		},
+		"./menu": {
+			"import": {
+				"types": "./dist/menu/index.d.mts",
+				"default": "./dist/menu/index.mjs"
+			},
+			"require": {
+				"types": "./dist/menu/index.d.ts",
+				"default": "./dist/menu/index.js"
+			}
+		},
+		"./number": {
+			"import": {
+				"types": "./dist/number/index.d.mts",
+				"default": "./dist/number/index.mjs"
+			},
+			"require": {
+				"types": "./dist/number/index.d.ts",
+				"default": "./dist/number/index.js"
+			}
+		},
+		"./popover": {
+			"import": {
+				"types": "./dist/popover/index.d.mts",
+				"default": "./dist/popover/index.mjs"
+			},
+			"require": {
+				"types": "./dist/popover/index.d.ts",
+				"default": "./dist/popover/index.js"
+			}
+		},
+		"./popper": {
+			"import": {
+				"types": "./dist/popper/index.d.mts",
+				"default": "./dist/popper/index.mjs"
+			},
+			"require": {
+				"types": "./dist/popper/index.d.ts",
+				"default": "./dist/popper/index.js"
+			}
+		},
+		"./portal": {
+			"import": {
+				"types": "./dist/portal/index.d.mts",
+				"default": "./dist/portal/index.mjs"
+			},
+			"require": {
+				"types": "./dist/portal/index.d.ts",
+				"default": "./dist/portal/index.js"
+			}
+		},
+		"./presence": {
+			"import": {
+				"types": "./dist/presence/index.d.mts",
+				"default": "./dist/presence/index.mjs"
+			},
+			"require": {
+				"types": "./dist/presence/index.d.ts",
+				"default": "./dist/presence/index.js"
+			}
+		},
+		"./primitive": {
+			"import": {
+				"types": "./dist/primitive/index.d.mts",
+				"default": "./dist/primitive/index.mjs"
+			},
+			"require": {
+				"types": "./dist/primitive/index.d.ts",
+				"default": "./dist/primitive/index.js"
+			}
+		},
+		"./progress": {
+			"import": {
+				"types": "./dist/progress/index.d.mts",
+				"default": "./dist/progress/index.mjs"
+			},
+			"require": {
+				"types": "./dist/progress/index.d.ts",
+				"default": "./dist/progress/index.js"
+			}
+		},
+		"./react-primitive": {
+			"import": {
+				"types": "./dist/react-primitive/index.d.mts",
+				"default": "./dist/react-primitive/index.mjs"
+			},
+			"require": {
+				"types": "./dist/react-primitive/index.d.ts",
+				"default": "./dist/react-primitive/index.js"
+			}
+		},
+		"./rect": {
+			"import": {
+				"types": "./dist/rect/index.d.mts",
+				"default": "./dist/rect/index.mjs"
+			},
+			"require": {
+				"types": "./dist/rect/index.d.ts",
+				"default": "./dist/rect/index.js"
+			}
+		},
+		"./roving-focus": {
+			"import": {
+				"types": "./dist/roving-focus/index.d.mts",
+				"default": "./dist/roving-focus/index.mjs"
+			},
+			"require": {
+				"types": "./dist/roving-focus/index.d.ts",
+				"default": "./dist/roving-focus/index.js"
+			}
+		},
+		"./scroll-area": {
+			"import": {
+				"types": "./dist/scroll-area/index.d.mts",
+				"default": "./dist/scroll-area/index.mjs"
+			},
+			"require": {
+				"types": "./dist/scroll-area/index.d.ts",
+				"default": "./dist/scroll-area/index.js"
+			}
+		},
+		"./select": {
+			"import": {
+				"types": "./dist/select/index.d.mts",
+				"default": "./dist/select/index.mjs"
+			},
+			"require": {
+				"types": "./dist/select/index.d.ts",
+				"default": "./dist/select/index.js"
+			}
+		},
+		"./separator": {
+			"import": {
+				"types": "./dist/separator/index.d.mts",
+				"default": "./dist/separator/index.mjs"
+			},
+			"require": {
+				"types": "./dist/separator/index.d.ts",
+				"default": "./dist/separator/index.js"
+			}
+		},
+		"./slot": {
+			"import": {
+				"types": "./dist/slot/index.d.mts",
+				"default": "./dist/slot/index.mjs"
+			},
+			"require": {
+				"types": "./dist/slot/index.d.ts",
+				"default": "./dist/slot/index.js"
+			}
+		},
+		"./switch": {
+			"import": {
+				"types": "./dist/switch/index.d.mts",
+				"default": "./dist/switch/index.mjs"
+			},
+			"require": {
+				"types": "./dist/switch/index.d.ts",
+				"default": "./dist/switch/index.js"
+			}
+		},
+		"./tabs": {
+			"import": {
+				"types": "./dist/tabs/index.d.mts",
+				"default": "./dist/tabs/index.mjs"
+			},
+			"require": {
+				"types": "./dist/tabs/index.d.ts",
+				"default": "./dist/tabs/index.js"
+			}
+		},
+		"./toast": {
+			"import": {
+				"types": "./dist/toast/index.d.mts",
+				"default": "./dist/toast/index.mjs"
+			},
+			"require": {
+				"types": "./dist/toast/index.d.ts",
+				"default": "./dist/toast/index.js"
+			}
+		},
+		"./toggle": {
+			"import": {
+				"types": "./dist/toggle/index.d.mts",
+				"default": "./dist/toggle/index.mjs"
+			},
+			"require": {
+				"types": "./dist/toggle/index.d.ts",
+				"default": "./dist/toggle/index.js"
+			}
+		},
+		"./toggle-group": {
+			"import": {
+				"types": "./dist/toggle-group/index.d.mts",
+				"default": "./dist/toggle-group/index.mjs"
+			},
+			"require": {
+				"types": "./dist/toggle-group/index.d.ts",
+				"default": "./dist/toggle-group/index.js"
+			}
+		},
+		"./tooltip": {
+			"import": {
+				"types": "./dist/tooltip/index.d.mts",
+				"default": "./dist/tooltip/index.mjs"
+			},
+			"require": {
+				"types": "./dist/tooltip/index.d.ts",
+				"default": "./dist/tooltip/index.js"
+			}
+		},
+		"./use-callback-ref": {
+			"import": {
+				"types": "./dist/use-callback-ref/index.d.mts",
+				"default": "./dist/use-callback-ref/index.mjs"
+			},
+			"require": {
+				"types": "./dist/use-callback-ref/index.d.ts",
+				"default": "./dist/use-callback-ref/index.js"
+			}
+		},
+		"./use-controllable-state": {
+			"import": {
+				"types": "./dist/use-controllable-state/index.d.mts",
+				"default": "./dist/use-controllable-state/index.mjs"
+			},
+			"require": {
+				"types": "./dist/use-controllable-state/index.d.ts",
+				"default": "./dist/use-controllable-state/index.js"
+			}
+		},
+		"./use-escape-keydown": {
+			"import": {
+				"types": "./dist/use-escape-keydown/index.d.mts",
+				"default": "./dist/use-escape-keydown/index.mjs"
+			},
+			"require": {
+				"types": "./dist/use-escape-keydown/index.d.ts",
+				"default": "./dist/use-escape-keydown/index.js"
+			}
+		},
+		"./use-layout-effect": {
+			"import": {
+				"types": "./dist/use-layout-effect/index.d.mts",
+				"default": "./dist/use-layout-effect/index.mjs"
+			},
+			"require": {
+				"types": "./dist/use-layout-effect/index.d.ts",
+				"default": "./dist/use-layout-effect/index.js"
+			}
+		},
+		"./use-previous": {
+			"import": {
+				"types": "./dist/use-previous/index.d.mts",
+				"default": "./dist/use-previous/index.mjs"
+			},
+			"require": {
+				"types": "./dist/use-previous/index.d.ts",
+				"default": "./dist/use-previous/index.js"
+			}
+		},
+		"./use-size": {
+			"import": {
+				"types": "./dist/use-size/index.d.mts",
+				"default": "./dist/use-size/index.mjs"
+			},
+			"require": {
+				"types": "./dist/use-size/index.d.ts",
+				"default": "./dist/use-size/index.js"
+			}
+		},
+		"./visually-hidden": {
+			"import": {
+				"types": "./dist/visually-hidden/index.d.mts",
+				"default": "./dist/visually-hidden/index.mjs"
+			},
+			"require": {
+				"types": "./dist/visually-hidden/index.d.ts",
+				"default": "./dist/visually-hidden/index.js"
+			}
+		}
+	},
+	"files": ["dist"],
+	"scripts": {
+		"build:ui": "node build.mjs",
+		"build:stories": "storybook build",
+		"check-types": "tsc --skipLibCheck --noEmit",
+		"sb": "pnpm storybook",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint --write .",
+		"format:write": "biome format --write .",
+		"format:check": "biome format .",
+		"test": "jest --ci",
+		"storybook": "cross-env BROWSER=none storybook dev -p 9009"
+	},
+	"dependencies": {
+		"@floating-ui/react-dom": "^2.1.1",
+		"aria-hidden": "^1.2.4",
+		"date-fns": "^4.0.0",
+		"react-remove-scroll": "2.6.2"
+	},
+	"devDependencies": {
+		"@squared/builder": "workspace:*",
+		"@stitches/core": "^1.2.8",
+		"@storybook/addon-essentials": "^8.2.9",
+		"@storybook/addon-storysource": "^8.2.9",
+		"@storybook/manager-api": "^8.3.5",
+		"@storybook/react": "^8.2.9",
+		"@storybook/react-webpack5": "^8.2.9",
+		"@storybook/test": "^8.2.9",
+		"@storybook/theming": "^8.3.5",
+		"@testing-library/dom": "^10.2.0",
+		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/react": "^16.0.0",
+		"@testing-library/user-event": "^14.5.2",
+		"@types/jest": "^29.5.12",
+		"@types/jest-axe": "^3.5.9",
+		"@types/node": "~22.8.7",
+		"@types/react": "^19.0.3",
+		"@types/react-dom": "^19.0.3",
+		"babel-jest": "^29.7.0",
+		"cross-env": "^7.0.3",
+		"jest": "^29.0.0",
+		"jest-axe": "^9.0.0",
+		"jest-environment-jsdom": "^29.7.0",
+		"jest-watch-typeahead": "^2.2.0",
+		"storybook": "^8.2.9",
+		"ts-jest": "^29.2.5",
+		"tslib": "^2.7.0",
+		"typescript": "^5.5.4"
+	},
+	"peerDependencies": {
+		"@types/react": "*",
+		"@types/react-dom": "*",
+		"react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
+		"react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
+	},
+	"peerDependenciesMeta": {
+		"@types/react": {
+			"optional": true
+		},
+		"@types/react-dom": {
+			"optional": true
+		}
+	},
+	"jest": {
+		"testEnvironment": "jsdom",
+		"roots": ["<rootDir>/src"],
+		"testMatch": ["**/?(*.)+(test).+(ts|tsx|js)"],
+		"transform": {
+			"^.+\\.(ts|tsx)$": "ts-jest"
+		},
+		"moduleNameMapper": {
+			"@squared-ui/react-(.+)$": "<rootDir>/src/react/$1/src",
+			"@squared-ui/(.+)$": "<rootDir>src/core/$1/src"
+		},
+		"watchPlugins": [
+			"jest-watch-typeahead/filename",
+			"jest-watch-typeahead/testname"
+		],
+		"setupFilesAfterEnv": [
+			"<rootDir>/scripts/setup-tests.ts",
+			"jest-axe/extend-expect"
+		]
+	}
 }

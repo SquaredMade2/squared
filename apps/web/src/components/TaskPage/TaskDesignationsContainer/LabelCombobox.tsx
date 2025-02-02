@@ -33,7 +33,7 @@ const LabelCombobox = () => {
 
 	const { id: taskId, labels } = currentTask;
 
-	const allLabels = useMemo(() => workspace?.Labels || [], [workspace]);
+	const allLabels = useMemo(() => workspace?.labels || [], [workspace]);
 
 	const taskLabels = useMemo(
 		() => allLabels.filter((label) => labels.includes(label.id)),
@@ -107,11 +107,11 @@ const LabelCombobox = () => {
 				<PopoverTrigger asChild>
 					<Button
 						variant="outline"
-						className="md:w-full justify-start w-fit h-8 md:h-10"
+						className="h-8 w-fit justify-start md:h-10 md:w-full"
 					>
 						<>
-							<div className="hidden md:flex item">
-								<Plus className="size-4 mr-2" />
+							<div className="item hidden md:flex">
+								<Plus className="mr-2 size-4" />
 								<span>Add label</span>
 							</div>
 							<div className="md:hidden">{renderLabelButton()}</div>
@@ -134,7 +134,7 @@ const LabelCombobox = () => {
 										key={label.id}
 										value={label.name}
 										onSelect={() => handleSelectLabels(label)}
-										className="flex justify-between items-center px-2 py-1.5"
+										className="flex items-center justify-between px-2 py-1.5"
 									>
 										<div className="flex items-center">
 											<LabelColor label={label} />
@@ -150,8 +150,8 @@ const LabelCombobox = () => {
 					</Command>
 				</PopoverContent>
 			</Popover>
-			<div className="hidden md:block w-full mt-2">
-				<div className="mb-2 flex flex-wrap space-x-1 space-y-2 items-center ">
+			<div className="mt-2 hidden w-full md:block">
+				<div className="mb-2 flex flex-wrap items-center space-x-1 space-y-2 ">
 					{taskLabels.map((label: Label, index: number) => (
 						<span key={label.id} className={index === 0 ? "mt-2" : ""}>
 							<LabelBadge label={label} />

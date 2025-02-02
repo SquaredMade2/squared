@@ -8,7 +8,7 @@ const AddTeamButton = ({ workspaceUrl }: { workspaceUrl: string }) => {
 	return (
 		<Button
 			variant="ghost"
-			className="w-full justify-start mt-2"
+			className="mt-2 w-full justify-start"
 			onClick={() => router.replace(`${workspaceUrl}/settings/new-team`)}
 		>
 			<Plus className="mr-2 h-4 w-4" />

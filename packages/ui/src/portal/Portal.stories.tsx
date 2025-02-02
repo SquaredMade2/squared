@@ -1,5 +1,4 @@
-import * as React from "react";
-
+import { useState } from "react";
 import { Portal } from "../portal";
 
 export default { title: "Utilities/Portal" };
@@ -33,8 +32,9 @@ export const Base = () => (
 );
 
 export const CustomContainer = () => {
-	const [portalContainer, setPortalContainer] =
-		React.useState<HTMLDivElement | null>(null);
+	const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+		null,
+	);
 
 	return (
 		<>
@@ -72,8 +72,9 @@ export const CustomContainer = () => {
 };
 
 export const Chromatic = () => {
-	const [portalContainer, setPortalContainer] =
-		React.useState<HTMLDivElement | null>(null);
+	const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+		null,
+	);
 
 	return (
 		<div style={{ padding: 150 }}>

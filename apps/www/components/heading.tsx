@@ -3,6 +3,8 @@ import type { AnimationProps, MotionProps } from "framer-motion";
 import type React from "react";
 import Balancer from "react-wrap-balancer";
 
+import type { JSX } from "react";
+
 export const Heading = ({
 	className,
 	as: Tag = "h2",
@@ -24,7 +26,7 @@ export const Heading = ({
 	return (
 		<Tag
 			className={cn(
-				"text-3xl md:text-5xl md:leading-tight max-w-5xl mx-auto text-center tracking-tight",
+				"mx-auto max-w-5xl text-center text-3xl tracking-tight md:text-5xl md:leading-tight",
 				"font-medium",
 				"text-black dark:text-white",
 				sizeVariants[size],

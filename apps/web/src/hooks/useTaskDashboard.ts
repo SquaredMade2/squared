@@ -1,5 +1,5 @@
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
@@ -24,10 +24,9 @@ export function useTaskDashboard() {
 	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
 		(state) => state,
 	);
-	const user = useUserStore((state) => state.user);
 
 	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier);
+	const teamIdentifier = parseParams(params.identifier) ?? "";
 
 	const queryClient = useQueryClient();
 
@@ -68,7 +67,6 @@ export function useTaskDashboard() {
 			taskId,
 			status,
 		}: { taskId: string; status: Status }) => {
-			if (!user) throw new Error("User not found");
 			const res = await client.task.updateStatus.$post({
 				taskId,
 				status,

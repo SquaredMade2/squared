@@ -56,10 +56,10 @@ export default function JoinWorkspace() {
 	}
 
 	return (
-		<div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-background to-secondary/20">
+		<div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/20">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<CardTitle className="text-2xl font-bold text-center">
+					<CardTitle className="text-center font-bold text-2xl">
 						Join Workspace
 					</CardTitle>
 				</CardHeader>

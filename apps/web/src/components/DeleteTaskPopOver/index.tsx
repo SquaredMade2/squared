@@ -17,7 +17,7 @@ export default function DeleteTaskPopOver({ task }: { task: Task }) {
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-24 p-0">
-				<div className="text-xs text-center flex items-center justify-center p-0">
+				<div className="flex items-center justify-center p-0 text-center text-xs">
 					<DeleteTaskModal task={task} />
 				</div>
 			</PopoverContent>

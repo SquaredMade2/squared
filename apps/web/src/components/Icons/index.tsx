@@ -24,25 +24,25 @@ export const PriorityIcon = ({
 			case "low":
 				return (
 					<ArrowDown
-						className={cn("size-4 text-blue-500 shrink-0", className)}
+						className={cn("size-4 shrink-0 text-blue-500", className)}
 					/>
 				);
 			case "medium":
 				return (
 					<ArrowRight
-						className={cn("size-4 text-yellow-500 shrink-0", className)}
+						className={cn("size-4 shrink-0 text-yellow-500", className)}
 					/>
 				);
 			case "high":
 				return (
 					<ArrowUp
-						className={cn("size-4 text-orange-500 shrink-0", className)}
+						className={cn("size-4 shrink-0 text-orange-500", className)}
 					/>
 				);
 			case "urgent":
 				return (
 					<AlertTriangle
-						className={cn("size-4 text-destructive shrink-0", className)}
+						className={cn("size-4 shrink-0 text-destructive", className)}
 					/>
 				);
 			default:

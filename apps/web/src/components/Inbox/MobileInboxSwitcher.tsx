@@ -10,8 +10,8 @@ import {
 	CommandSeparator,
 } from "@/components/ui/command";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { DialogTitle } from "@repo/ui/dialog";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,
@@ -102,18 +102,18 @@ export function MobileInboxSwitcher({
 		<CommandItem
 			value={type}
 			onSelect={handleSelect}
-			className="flex items-center justify-between relative"
+			className="relative flex items-center justify-between"
 		>
 			<div className="flex items-center gap-2">
 				{filterType === type && (
-					<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+					<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
 				)}
 				<Icon className="h-5 w-5" />
 				{label}
 			</div>
 			{unreadCount !== undefined && unreadCount > 0 && (
 				<div
-					className={`rounded-full w-7 ${filterType === type ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
+					className={`w-7 rounded-full ${filterType === type ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
 				>
 					{unreadCount}
 				</div>
@@ -129,17 +129,17 @@ export function MobileInboxSwitcher({
 		<CommandItem
 			value={id}
 			onSelect={handleSelect}
-			className="flex items-center justify-between relative"
+			className="relative flex items-center justify-between"
 		>
 			<div>
 				{workspace === id && filterType === "WORKSPACE" && (
-					<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+					<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
 				)}
 				{name}
 			</div>
 			{unreadCount > 0 && (
 				<div
-					className={`rounded-full w-7 ${workspace === id && filterType === "WORKSPACE" ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
+					className={`w-7 rounded-full ${workspace === id && filterType === "WORKSPACE" ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
 				>
 					{unreadCount}
 				</div>
@@ -148,7 +148,7 @@ export function MobileInboxSwitcher({
 	);
 
 	return (
-		<div className="w-full flex gap-2 md:hidden">
+		<div className="flex w-full gap-2 lg:hidden">
 			<Button
 				variant="secondary"
 				className="w-full justify-between"
@@ -190,9 +190,9 @@ export function MobileInboxSwitcher({
 					<DialogTitle>Switch Inbox</DialogTitle>
 				</VisuallyHidden>
 				<div className="flex flex-col">
-					<div className="flex-1 p-4 border-b">
-						<h2 className="text-lg font-semibold">Switch Inbox</h2>
-						<p className="text-sm text-muted-foreground">
+					<div className="flex-1 border-b p-4">
+						<h2 className="font-semibold text-lg">Switch Inbox</h2>
+						<p className="text-muted-foreground text-sm">
 							Select a filter or workspace
 						</p>
 					</div>

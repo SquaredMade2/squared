@@ -254,9 +254,9 @@ export default function SprintDashboard() {
 	};
 
 	return (
-		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh] w-full">
+		<ScrollArea className="container mx-auto h-[100vh] w-full overflow-y-auto p-4">
 			<div className="space-y-6">
-				<h1 className="text-3xl font-bold ml-8">Sprint Dashboard</h1>
+				<h1 className="ml-8 font-bold text-3xl">Sprint Dashboard</h1>
 				{sprint && (
 					<Card>
 						<CardHeader>
@@ -268,7 +268,7 @@ export default function SprintDashboard() {
 						</CardHeader>
 						<CardContent>
 							<Progress value={calculateProgress(sprint)} className="w-full" />
-							<p className="mt-2 text-sm text-muted-foreground">
+							<p className="mt-2 text-muted-foreground text-sm">
 								{Math.round(calculateProgress(sprint))}% Complete
 							</p>
 						</CardContent>
@@ -332,8 +332,8 @@ export default function SprintDashboard() {
 							<CardTitle>Velocity</CardTitle>
 						</CardHeader>
 						<CardContent>
-							<p className="text-4xl font-bold">{getVelocity().toFixed(1)}</p>
-							<p className="text-sm text-muted-foreground">Tasks per sprint</p>
+							<p className="font-bold text-4xl">{getVelocity().toFixed(1)}</p>
+							<p className="text-muted-foreground text-sm">Tasks per sprint</p>
 						</CardContent>
 					</Card>
 					<Card>
@@ -341,15 +341,15 @@ export default function SprintDashboard() {
 							<CardTitle>Capacity</CardTitle>
 						</CardHeader>
 						<CardContent>
-							<p className="text-4xl font-bold">{getCapacity()}</p>
-							<p className="text-sm text-muted-foreground">
+							<p className="font-bold text-4xl">{getCapacity()}</p>
+							<p className="text-muted-foreground text-sm">
 								Tasks in current sprint
 							</p>
 						</CardContent>
 					</Card>
 				</div>
-				<div className="flex justify-between items-center">
-					<h2 className="text-2xl font-semibold">Task Assignment</h2>
+				<div className="flex items-center justify-between">
+					<h2 className="font-semibold text-2xl">Task Assignment</h2>
 					<div className="space-x-2">
 						<AssignTasksDialog
 							activeSprint={sprint || null}
@@ -408,7 +408,7 @@ export default function SprintDashboard() {
 						</DialogHeader>
 						<ScrollArea className="h-[200px] w-full rounded-md border p-4">
 							{tasksToAutoAssign.map((task) => (
-								<div key={task.id} className="flex items-center space-x-2 mb-2">
+								<div key={task.id} className="mb-2 flex items-center space-x-2">
 									<PriorityIcon priority={task.priority} />
 									<span className="text-sm">{task.title}</span>
 								</div>

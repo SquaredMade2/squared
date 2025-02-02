@@ -13,7 +13,7 @@ const WorkspaceStoreContext = createContext<WorkspaceStoreApi | undefined>(
 export const WorkspaceStoreProvider = ({
 	children,
 }: { children: ReactNode }) => {
-	const storeRef = useRef<WorkspaceStoreApi>();
+	const storeRef = useRef<WorkspaceStoreApi>(undefined);
 
 	if (!storeRef.current) {
 		storeRef.current = createWorkspaceStore();

@@ -1,7 +1,6 @@
-import * as React from "react";
-
 import * as ContextMenuPrimitive from "../context-menu";
 
+import { useState } from "react";
 import { css, keyframes } from "../../stitches.config";
 import { foodGroups } from "../../test-data/foods";
 import { TickIcon, classes } from "../menu/Menu.stories";
@@ -340,7 +339,7 @@ export const Modality = () => (
 );
 
 export const Submenus = () => {
-	const [rtl, setRtl] = React.useState(false);
+	const [rtl, setRtl] = useState(false);
 
 	return (
 		<div
@@ -597,7 +596,7 @@ export const WithLabels = () => (
 
 export const CheckboxItems = () => {
 	const checkboxItems = ["Bold", "Italic", "Underline"];
-	const [selection, setSelection] = React.useState<string[]>([]);
+	const [selection, setSelection] = useState<string[]>([]);
 
 	return (
 		<div style={{ textAlign: "center", padding: 50 }}>
@@ -664,7 +663,7 @@ export const CheckboxItems = () => {
 
 export const RadioItems = () => {
 	const files = ["README.md", "index.js", "page.css"];
-	const [file, setFile] = React.useState(files[1]);
+	const [file, setFile] = useState(files[1]);
 
 	return (
 		<div style={{ textAlign: "center", padding: 50 }}>
@@ -754,10 +753,10 @@ export const PreventClosing = () => (
 );
 
 export const Multiple = () => {
-	const [customColors, setCustomColors] = React.useState<{
+	const [customColors, setCustomColors] = useState<{
 		[index: number]: string;
 	}>({});
-	const [fadedIndexes, setFadedIndexes] = React.useState<number[]>([]);
+	const [fadedIndexes, setFadedIndexes] = useState<number[]>([]);
 	return (
 		<div
 			style={{ display: "flex", flexWrap: "wrap", gap: 10 }}

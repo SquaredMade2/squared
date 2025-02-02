@@ -20,7 +20,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
-		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [],
+		workspace?.labels.filter((label) => task.labels.includes(label.id)) || [],
 	);
 
 	const { mutate: updateLabels } = useMutation({
@@ -49,12 +49,12 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<Tag className="cursor-pointer size-4" />
+					<Tag className="size-4 cursor-pointer" />
 				</div>
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{workspace?.Labels.map((label) => {
+				{workspace?.labels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
 							key={label.id}
