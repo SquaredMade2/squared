@@ -1,4 +1,5 @@
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { DEFAULT_LABELS } from "@/test/mocks";
 import type { TaskEvent } from "@squared/db";
 import { type EventStore, createEventStore } from ".";
 
@@ -52,6 +53,7 @@ describe("Event Store", () => {
 					companySize: null,
 					id: "",
 					name: "",
+					labels: DEFAULT_LABELS,
 					tasksCreated: 0,
 					universalTokenLinkId: null,
 					url: "",
@@ -96,6 +98,7 @@ describe("Event Store", () => {
 					admins: [],
 					avatarUrl: null,
 					companySize: null,
+					labels: DEFAULT_LABELS,
 					id: "",
 					name: "",
 					tasksCreated: 0,
@@ -200,6 +203,7 @@ describe("Event Store", () => {
 					avatarUrl: null,
 					companySize: null,
 					id: "",
+					labels: DEFAULT_LABELS,
 					name: "",
 					tasksCreated: 0,
 					universalTokenLinkId: null,
@@ -266,6 +270,7 @@ describe("Event Store", () => {
 					avatarUrl: null,
 					companySize: null,
 					id: "",
+					labels: DEFAULT_LABELS,
 					name: "",
 					tasksCreated: 0,
 					universalTokenLinkId: null,

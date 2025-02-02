@@ -7,7 +7,11 @@ export type CreateTaskRequest = {
 	description?: string;
 	dueDate: Date | null;
 	effortEstimate: number | null;
-	labels?: string[];
+	labels?: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	parentId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId?: string | null;
@@ -33,7 +37,11 @@ export type CreateTaskResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -58,7 +66,11 @@ export type UpdateTaskRequest = {
 	dueDate?: Date | null;
 	effortEstimate?: number;
 	id: string;
-	labels?: string[];
+	labels?: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	parentId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId?: string | null;
@@ -84,7 +96,11 @@ export type UpdateTaskResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -125,7 +141,11 @@ export type GetTaskResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -159,7 +179,11 @@ export type GetTaskByIdentifierResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -192,7 +216,11 @@ export type GetTeamTasksResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -239,7 +267,11 @@ export type ReorderSubtasksResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -274,7 +306,11 @@ export type UpdateBlockedOrBlockingTasksResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -308,7 +344,11 @@ export type GetTaskBlockedByAndBlockingResponse = {
 		effortEstimate: number | null;
 		id: string;
 		identifier: string;
-		labels: string[];
+		labels: {
+			color: string;
+			description?: string | null;
+			name: string;
+		}[];
 		order: number;
 		parentId: string | null;
 		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -349,7 +389,11 @@ export type GetSubtasksResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";

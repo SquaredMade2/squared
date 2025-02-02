@@ -20,7 +20,9 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
-		workspace?.labels.filter((label) => task.labels.includes(label.id)) || [],
+		workspace?.labels.filter((label) =>
+			task.labels.map((l) => l.name).includes(label.name),
+		) || [],
 	);
 
 	const { mutate: updateLabels } = useMutation({
@@ -28,7 +30,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 		mutationFn: async (updatedLabels: Label[]) => {
 			const res = await client.task.updateLabels.$post({
 				taskId: task.id,
-				labelIds: updatedLabels.map((l) => l.id),
+				labels: updatedLabels,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
@@ -39,7 +41,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const handleLabelChange = (label: Label, checked: boolean) => {
 		const updatedLabels = checked
 			? [...labels, label]
-			: labels.filter((l) => l.id !== label.id);
+			: labels.filter((l) => l !== label);
 
 		setLabels(updatedLabels);
 		updateLabels(updatedLabels);
@@ -57,8 +59,8 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 				{workspace?.labels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
-							key={label.id}
-							checked={labels.some((l) => l.id === label.id)}
+							key={label.name}
+							checked={labels.some((l) => l === label)}
 							onCheckedChange={(checked) => handleLabelChange(label, checked)}
 						>
 							<div className="mr-2">
