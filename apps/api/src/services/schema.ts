@@ -9,11 +9,18 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
-	WorkspaceLabel,
 	WorkspaceRole,
 } from "@squared/db";
-import { createSchema } from "@squared/rpc";
+import { createEnumSchema, createSchema } from "@squared/rpc";
 import z from "zod";
+
+export const labelSchema = createSchema<Label>()(
+	z.object({
+		name: z.string(),
+		description: z.string().nullable().optional(),
+		color: z.string(),
+	}),
+);
 
 export const taskSchema = createSchema<Task>()(
 	z.object({
@@ -39,7 +46,7 @@ export const taskSchema = createSchema<Task>()(
 		priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
 		dateCreated: z.date(),
 		assigneeId: z.string().nullable(),
-		labels: z.array(z.string()),
+		labels: z.array(labelSchema),
 		workspaceId: z.string(),
 		parentId: z.string().nullable(),
 		deleted: z.boolean(),
@@ -103,10 +110,11 @@ export const workspaceSchema = createSchema<Workspace>()(
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
 		createdAt: z.date(),
+		labels: z.array(labelSchema),
 	}),
 );
 
-export const workspaceRoleEnum = createSchema<WorkspaceRole>()(
+export const workspaceRoleEnum = createEnumSchema<WorkspaceRole>()(
 	z.enum(["owner", "admin", "member"]),
 );
 
@@ -128,17 +136,7 @@ export const commentSchema = createSchema<Comment>()(
 	}),
 );
 
-export const labelSchema = createSchema<Label>()(
-	z.object({
-		id: z.string(),
-		name: z.string(),
-		description: z.string().nullable(),
-		color: z.string(),
-		workspaceId: z.string(),
-	}),
-);
-
-export const workspaceLabelSchema = createSchema<WorkspaceLabel>()(
+export const workspaceLabelSchema = createSchema<Workspace>()(
 	z.object({
 		id: z.string(),
 		name: z.string(),

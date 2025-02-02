@@ -10,7 +10,6 @@ import {
 	commentsTable,
 	createDb,
 	eq,
-	labelsTable,
 	notificationsTable,
 	sql,
 	tasksTable,
@@ -140,15 +139,6 @@ async function addWorkspace(tx: TransactionClient) {
 	const workspaceName = faker.internet.domainWord();
 	const workspaceCompanySize = faker.number.int({ max: 1000 });
 
-	const [workspace] = await tx
-		.insert(workspacesTable)
-		.values({
-			name: workspaceName,
-			companySize: workspaceCompanySize,
-			url: workspaceName.split(" ").join("-").toLowerCase(),
-		})
-		.returning();
-
 	const defaultLabels = [
 		{ name: "Feature", description: "New feature", color: "#FF5733" },
 		{ name: "Bug", description: "Bug fix", color: "#C70039" },
@@ -159,12 +149,15 @@ async function addWorkspace(tx: TransactionClient) {
 		{ name: "Design", description: "Design related task", color: "#33FFBD" },
 	];
 
-	await tx.insert(labelsTable).values(
-		defaultLabels.map((label) => ({
-			...label,
-			workspaceId: workspace.id,
-		})),
-	);
+	const [workspace] = await tx
+		.insert(workspacesTable)
+		.values({
+			name: workspaceName,
+			companySize: workspaceCompanySize,
+			url: workspaceName.split(" ").join("-").toLowerCase(),
+			labels: defaultLabels,
+		})
+		.returning();
 
 	return workspace;
 }
@@ -196,10 +189,7 @@ async function addTeam(
 
 const getRandomLabels = (labels: Label[]) => {
 	const numLabels = faker.number.int({ min: 1, max: labels.length });
-	return faker.helpers
-		.shuffle(labels)
-		.slice(0, numLabels)
-		.map((label) => label.id);
+	return faker.helpers.shuffle(labels).slice(0, numLabels);
 };
 
 async function addTask(
@@ -225,10 +215,7 @@ async function addTask(
 		Priority.low,
 	]);
 
-	const taskLabels = await tx
-		.select()
-		.from(labelsTable)
-		.where(eq(labelsTable.workspaceId, workspace.id));
+	const taskLabels = workspace.labels;
 
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);
