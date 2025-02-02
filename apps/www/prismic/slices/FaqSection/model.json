@@ -1,51 +1,51 @@
 {
-  "id": "faq_section",
-  "type": "SharedSlice",
-  "name": "FaqSection",
-  "description": "FaqSection",
-  "variations": [
-    {
-      "id": "default",
-      "name": "Default",
-      "docURL": "...",
-      "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
-      "primary": {
-        "section_title": {
-          "type": "Text",
-          "config": {
-            "label": "Section Title",
-            "placeholder": "e.g., Frequently Asked Questions"
-          }
-        },
-        "questions": {
-          "type": "Group",
-          "config": {
-            "label": "Questions",
-            "repeat": true,
-            "fields": {
-              "question": {
-                "type": "Text",
-                "config": {
-                  "label": "Question",
-                  "placeholder": "Enter the question"
-                }
-              },
-              "answer": {
-                "type": "StructuredText",
-                "config": {
-                  "label": "Answer",
-                  "placeholder": "Provide the answer...",
-                  "allowTargetBlank": true,
-                  "multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"
-                }
-              }
-            }
-          }
-        }
-      },
-      "items": {}
-    }
-  ]
+	"id": "faq_section",
+	"type": "SharedSlice",
+	"name": "FaqSection",
+	"description": "FaqSection",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {
+				"section_title": {
+					"type": "Text",
+					"config": {
+						"label": "Section Title",
+						"placeholder": "e.g., Frequently Asked Questions"
+					}
+				},
+				"questions": {
+					"type": "Group",
+					"config": {
+						"label": "Questions",
+						"repeat": true,
+						"fields": {
+							"question": {
+								"type": "Text",
+								"config": {
+									"label": "Question",
+									"placeholder": "Enter the question"
+								}
+							},
+							"answer": {
+								"type": "StructuredText",
+								"config": {
+									"label": "Answer",
+									"placeholder": "Provide the answer...",
+									"allowTargetBlank": true,
+									"multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"
+								}
+							}
+						}
+					}
+				}
+			},
+			"items": {}
+		}
+	]
 }

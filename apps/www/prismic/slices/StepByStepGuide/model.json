@@ -1,59 +1,59 @@
 {
-  "id": "step_by_step_guide",
-  "type": "SharedSlice",
-  "name": "StepByStepGuide",
-  "description": "StepByStepGuide",
-  "variations": [
-    {
-      "id": "default",
-      "name": "Default",
-      "docURL": "...",
-      "version": "initial",
-      "description": "Default",
-      "imageUrl": "",
-      "primary": {
-        "guide_title": {
-          "type": "Text",
-          "config": {
-            "label": "Guide Title",
-            "placeholder": "Enter the title of the guide"
-          }
-        },
-        "steps": {
-          "type": "Group",
-          "config": {
-            "label": "Steps",
-            "repeat": true,
-            "fields": {
-              "step_title": {
-                "type": "Text",
-                "config": {
-                  "label": "Step Title",
-                  "placeholder": "Step Title"
-                }
-              },
-              "step_description": {
-                "type": "StructuredText",
-                "config": {
-                  "label": "Step Description",
-                  "placeholder": "Describe this step...",
-                  "allowTargetBlank": true,
-                  "multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"
-                }
-              },
-              "step_image": {
-                "type": "Image",
-                "config": {
-                  "label": "Step Image",
-                  "constraint": {},
-                  "thumbnails": []
-                }
-              }
-            }
-          }
-        }
-      },
-      "items": {}
-    }
-  ]
+	"id": "step_by_step_guide",
+	"type": "SharedSlice",
+	"name": "StepByStepGuide",
+	"description": "StepByStepGuide",
+	"variations": [
+		{
+			"id": "default",
+			"name": "Default",
+			"docURL": "...",
+			"version": "initial",
+			"description": "Default",
+			"imageUrl": "",
+			"primary": {
+				"guide_title": {
+					"type": "Text",
+					"config": {
+						"label": "Guide Title",
+						"placeholder": "Enter the title of the guide"
+					}
+				},
+				"steps": {
+					"type": "Group",
+					"config": {
+						"label": "Steps",
+						"repeat": true,
+						"fields": {
+							"step_title": {
+								"type": "Text",
+								"config": {
+									"label": "Step Title",
+									"placeholder": "Step Title"
+								}
+							},
+							"step_description": {
+								"type": "StructuredText",
+								"config": {
+									"label": "Step Description",
+									"placeholder": "Describe this step...",
+									"allowTargetBlank": true,
+									"multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"
+								}
+							},
+							"step_image": {
+								"type": "Image",
+								"config": {
+									"label": "Step Image",
+									"constraint": {},
+									"thumbnails": []
+								}
+							}
+						}
+					}
+				}
+			},
+			"items": {}
+		}
+	]
 }
