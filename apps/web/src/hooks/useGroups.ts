@@ -45,7 +45,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				];
 				break;
 			case "Label": {
-				const workspaceLabels = workspace?.labels.map((l) => l.id) || [];
+				const workspaceLabels = workspace?.labels.map((l) => l.name) || [];
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}
@@ -68,7 +68,9 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			case "Priority":
 				return taskFilter.filter((task) => task.priority === group);
 			case "Label":
-				return taskFilter.filter((task) => task.labels.includes(group));
+				return taskFilter.filter((task) =>
+					task.labels.map((l) => l.name).includes(group),
+				);
 			// case "Parent Task": {
 			// 	const hasParentTask = taskFilter.filter(
 			// 		(task) => task.parentId === group,

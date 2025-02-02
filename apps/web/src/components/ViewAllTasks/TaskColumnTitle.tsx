@@ -37,7 +37,7 @@ const TaskColumnTitle = ({
 	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
 	const assignee = users.find((u) => u.externalId === title);
-	const label = workspace?.labels.find((l) => l.id === title);
+	const label = workspace?.labels.find((l) => l.name === title);
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
