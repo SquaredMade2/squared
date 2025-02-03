@@ -59,7 +59,7 @@ class BaseClient {
 				this.mapError(this.serviceName, methodName, errorData, response.status); // Fixed: Added 'this.' to call the class method
 			}
 
-			const responseText = await response.text();
+			const responseText = await response.json();
 			return superjson.parse(responseText); // Use SuperJSON to parse response
 		} catch (error) {
 			if (error instanceof Error) {

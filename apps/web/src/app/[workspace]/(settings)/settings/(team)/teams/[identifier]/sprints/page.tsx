@@ -87,7 +87,6 @@ export default function SprintSettings() {
 	) => {
 		try {
 			if (!team) throw new Error("No team found");
-			console.log("Type of Start Date: ", data.sprintStartDate instanceof Date);
 			const updatedTeam = await teamService.updateTeamSprints(TODO, {
 				id: team.id,
 				...data,

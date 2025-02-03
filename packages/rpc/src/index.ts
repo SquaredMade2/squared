@@ -120,13 +120,7 @@ export function createRequestHandler(
 					res.on("finish", () => abortable?.abort());
 
 					requestContexts.set(req, ctx);
-
-					console.log("req.body", req.body);
-
-					// Parse the request body using SuperJSON
-					const parsedBody = superjson.parse(req.body);
-
-					const result = await methodFn(parsedBody);
+					const result = await methodFn(superjson.deserialize(req.body));
 
 					// Stringify the result using SuperJSON
 					res.json(superjson.stringify(result));
