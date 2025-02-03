@@ -2,6 +2,7 @@ import type { Task } from "@squared/db";
 import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import { checkCondition } from "./helpers";
+
 import type {
 	FilterCondition,
 	FilterState,
@@ -17,6 +18,7 @@ export const createFilterStore = (
 		currentFilterTypes: [],
 		savedFilters: [],
 		showSaveForm: false,
+		searchFilterValue: '',
 	},
 ) => {
 	return createStore<FilterStore>()(
@@ -26,6 +28,18 @@ export const createFilterStore = (
 				setCurrentFilter: (filter): void => {
 					set({ currentFilters: filter });
 				},
+				setSearchFilter: (input: string): void => {
+					set({searchFilterValue: input})
+				},
+				filterSearchTasks: (tasks: Task[]): Task[] => {
+					const filterValue = get().searchFilterValue;
+					if (!filterValue) {
+					  return tasks;
+					}
+		  
+					return tasks.filter((task) =>
+					  task.title.toLowerCase().includes(filterValue.toLowerCase()));
+				  },
 				setShowSaveForm: (input): void => {
 					set({ showSaveForm: input });
 				},
