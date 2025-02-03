@@ -25,11 +25,12 @@
 	"dependencies": {
 		"@squared/context": "workspace:*",
 		"@squared/logger": "workspace:*",
+		"superjson": "^2.2.2",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
 		"@squared/builder": "workspace:*",
+		"@squared/typescript-config": "workspace:*",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.6",
 		"@types/node": "^22.0.0",

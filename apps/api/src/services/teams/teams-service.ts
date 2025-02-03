@@ -90,6 +90,10 @@ export class TeamService implements TeamRpc {
 		...args
 	}: UpdateTeamSprintsParams): Promise<Team> {
 		this.logger.info("Updating team sprints: %s", id);
+		this.logger.debug(
+			"SprintStartDate Type: %o",
+			args.sprintStartDate instanceof Date,
+		);
 		return await this.db.transaction(async (tx) => {
 			const [updatedTeam] = await tx
 				.update(teamsTable)

@@ -15,6 +15,7 @@ import {
 	requestContexts,
 } from "./rpc-types";
 export * from "./rpc-types";
+import superjson from "superjson";
 
 export class RpcError extends Error {
 	constructor(
@@ -68,7 +69,7 @@ export function createRequestHandler(
 	};
 
 	getHandlers.set("/", (_, res) => {
-		res.json(meta);
+		res.json(superjson.stringify(meta));
 	});
 
 	for (const service of services) {
@@ -78,7 +79,7 @@ export function createRequestHandler(
 		);
 
 		getHandlers.set(`/${serviceName}`, (_, res) => {
-			res.json(serviceMeta);
+			res.json(superjson.stringify(serviceMeta));
 		});
 
 		for (const methodDef of service.meta.expose) {
@@ -88,7 +89,7 @@ export function createRequestHandler(
 			);
 
 			const getHandler: RequestHandler = (_, res) => {
-				res.json(methodMeta);
+				res.json(superjson.stringify(methodMeta));
 			};
 			getHandlers.set(`/${serviceName}/${methodName}`, getHandler);
 
@@ -119,8 +120,16 @@ export function createRequestHandler(
 					res.on("finish", () => abortable?.abort());
 
 					requestContexts.set(req, ctx);
-					const result = await methodFn(req.body);
-					res.json(result);
+
+					console.log("req.body", req.body);
+
+					// Parse the request body using SuperJSON
+					const parsedBody = superjson.parse(req.body);
+
+					const result = await methodFn(parsedBody);
+
+					// Stringify the result using SuperJSON
+					res.json(superjson.stringify(result));
 
 					// biome-ignore lint/suspicious/noExplicitAny: Error has to be any
 				} catch (err: any) {

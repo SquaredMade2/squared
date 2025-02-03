@@ -22,11 +22,12 @@
 		"prepare": "pnpm run build"
 	},
 	"dependencies": {
-		"@squared/context": "workspace:*"
+		"@squared/context": "workspace:*",
+		"superjson": "^2.2.2"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
 		"@squared/builder": "workspace:*",
+		"@squared/typescript-config": "workspace:*",
 		"@types/node": "^22.10.10",
 		"typescript": "^5.2.2"
 	}

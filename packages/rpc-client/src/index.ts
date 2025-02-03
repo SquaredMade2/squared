@@ -1,4 +1,5 @@
 import * as context from "@squared/context";
+import superjson from "superjson";
 
 export interface RequestOptions {
 	timeout?: number;
@@ -48,16 +49,18 @@ class BaseClient {
 			const response = await fetch(url, {
 				method: "POST",
 				headers,
-				body: JSON.stringify(params),
+				body: superjson.stringify(params), // Use SuperJSON to stringify
 				signal: contextWithSignal.signal,
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json();
-				mapError(this.serviceName, methodName, errorData, response.status);
+				const errorText = await response.text();
+				const errorData = superjson.parse(errorText); // Use SuperJSON to parse error data
+				this.mapError(this.serviceName, methodName, errorData, response.status); // Fixed: Added 'this.' to call the class method
 			}
 
-			return await response.json();
+			const responseText = await response.text();
+			return superjson.parse(responseText); // Use SuperJSON to parse response
 		} catch (error) {
 			if (error instanceof Error) {
 				throw error;
@@ -69,32 +72,34 @@ class BaseClient {
 			}
 		}
 	}
-}
 
-function mapError(
-	serviceName: string,
-	methodName: string,
-	// biome-ignore lint/suspicious/noExplicitAny: Error response can have varying structures
-	errResult: any,
-	status: number,
-) {
-	const source = `${serviceName}/${methodName}`;
+	private mapError(
+		serviceName: string,
+		methodName: string,
+		// biome-ignore lint/suspicious/noExplicitAny: Error response can have varying structures
+		errResult: any,
+		status: number,
+	) {
+		const source = `${serviceName}/${methodName}`;
 
-	if (!errResult.type) {
-		const newErr = new Error(errResult.message || "Unknown error") as Error & {
-			code?: string | number;
-			expose?: boolean;
-			source: string[];
-			status: number;
-		};
-		newErr.code = errResult.code;
-		newErr.expose = errResult.expose;
-		newErr.source = [source];
-		newErr.status = status;
-		throw newErr;
+		if (!errResult.type) {
+			const newErr = new Error(
+				errResult.message || "Unknown error",
+			) as Error & {
+				code?: string | number;
+				expose?: boolean;
+				source: string[];
+				status: number;
+			};
+			newErr.code = errResult.code;
+			newErr.expose = errResult.expose;
+			newErr.source = [source];
+			newErr.status = status;
+			throw newErr;
+		}
+
+		throw new RpcResponseError(source, errResult, status);
 	}
-
-	throw new RpcResponseError(source, errResult, status);
 }
 
 export class RpcResponseError extends Error {
