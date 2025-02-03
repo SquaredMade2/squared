@@ -155,7 +155,7 @@ export function InboxDataTable({
 	const { mutate: handleMarkAsDismissed } = useMutation({
 		mutationKey: ["markAsDismissed", selectedNotificationIds],
 		mutationFn: async () => {
-			return await client.notification.markAsRead
+			return await client.notification.dismiss
 				.$post({
 					notificationIds: selectedNotificationIds,
 				})

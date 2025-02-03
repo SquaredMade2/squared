@@ -128,7 +128,7 @@ export const columns: ColumnDef<
 			const { mutate: handleMarkAsDismissed } = useMutation({
 				mutationKey: ["markAsDismissed", row.original.id],
 				mutationFn: async () => {
-					return await client.notification.markAsRead
+					return await client.notification.dismiss
 						.$post({
 							notificationIds: [row.original.id],
 						})

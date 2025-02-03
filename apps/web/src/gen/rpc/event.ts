@@ -44,7 +44,7 @@ export type GetNotificationsResponse = {
 		identifier: string;
 		labels: {
 			color: string;
-			description: string | null;
+			description?: string | null;
 			name: string;
 		}[];
 		order: number;
@@ -73,7 +73,7 @@ export type GetNotificationsResponse = {
 		id: string;
 		labels: {
 			color: string;
-			description: string | null;
+			description?: string | null;
 			name: string;
 		}[];
 		name: string;
@@ -109,7 +109,7 @@ export type CreateLogEventRequest = {
 		identifier: string;
 		labels: {
 			color: string;
-			description: string | null;
+			description?: string | null;
 			name: string;
 		}[];
 		order: number;
@@ -179,7 +179,11 @@ export type ToggleNotificationResponse = {
 		effortEstimate: number | null;
 		id: string;
 		identifier: string;
-		labels: string[];
+		labels: {
+			color: string;
+			description?: string | null;
+			name: string;
+		}[];
 		order: number;
 		parentId: string | null;
 		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
@@ -204,6 +208,11 @@ export type ToggleNotificationResponse = {
 		createdAt: Date;
 		defaultView: string | null;
 		id: string;
+		labels: {
+			color: string;
+			description?: string | null;
+			name: string;
+		}[];
 		name: string;
 		tasksCreated: number;
 		universalTokenLinkId: string | null;
