@@ -1,15 +1,29 @@
 {
-	"extends": "@squared/typescript-config/nextjs.json",
+	"extends": "@repo/typescript-config/nextjs.json",
 	"compilerOptions": {
+		"jsx": "preserve", // Enable JSX syntax support
+		"allowSyntheticDefaultImports": true,
 		"outDir": "dist/",
 		"baseUrl": "src",
 		"paths": {
-			"@/*": ["*"]
+			"@/*": [
+				"*"
+			]
 		},
 		"moduleResolution": "bundler",
 		"module": "esnext",
-		"types": ["jest", "jest-extended"]
+		"types": [
+			"jest",
+			"jest-extended"
+		]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-	"exclude": [".next"]
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts"
+	],
+	"exclude": [
+		".next"
+	]
 }
