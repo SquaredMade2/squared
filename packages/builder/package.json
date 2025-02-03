@@ -19,7 +19,7 @@
 	},
 	"scripts": {
 		"build": "ts-node ./build.ts",
-		"prepare": "pnpm run build",
+		"postinstall": "pnpm run build",
 		"prebuild": "rimraf ./dist"
 	},
 	"devDependencies": {
