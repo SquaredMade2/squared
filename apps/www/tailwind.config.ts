@@ -6,6 +6,7 @@ const config: Config = {
 		"./components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./app/**/*.{js,ts,jsx,tsx,mdx}",
 		"./layouts/**/*.{js,ts,jsx,tsx,mdx}",
+		"./prismic/slices/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	darkMode: "class",
 	theme: {
@@ -24,6 +25,7 @@ const config: Config = {
 					DEFAULT: "hsl(var(--primary))",
 					foreground: "hsl(var(--primary-foreground))",
 				},
+				link: "#2196F3",
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
 					foreground: "hsl(var(--secondary-foreground))",

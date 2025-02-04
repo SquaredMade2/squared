@@ -2,18 +2,13 @@ import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
 import {
 	type DBClient,
-	type Label,
-	type SQL,
 	type Team,
 	type User,
 	type Workspace,
-	type WorkspaceLabel,
 	type WorkspaceRole,
 	and,
 	eq,
 	inArray,
-	labelsTable,
-	sql,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -58,8 +53,8 @@ export class WorkspaceService implements WorkspaceRpc {
 	async createWorkspace({
 		userId,
 		workspace,
-	}: CreateWorkspaceParams): Promise<WorkspaceLabel> {
-		console.info(
+	}: CreateWorkspaceParams): Promise<Workspace> {
+		this.logger.info(
 			"Creating workspace for user %s and payload %o",
 			userId,
 			workspace,
@@ -80,6 +75,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				.insert(workspacesTable)
 				.values({
 					...workspace,
+					labels: DEFAULT_LABELS,
 					admins: [userId],
 				})
 				.returning();
@@ -88,53 +84,48 @@ export class WorkspaceService implements WorkspaceRpc {
 				throw new Error("Workspace not created");
 			}
 
-			await tx.insert(userWorkspacesTable).values({
-				userId: userId,
-				workspaceId: newWorkspace.id,
-				role: "owner",
-			});
+			const [_, [newTeam]] = await Promise.all([
+				tx.insert(userWorkspacesTable).values({
+					userId: userId,
+					workspaceId: newWorkspace.id,
+					role: "owner",
+				}),
 
-			const newLabels = await tx
-				.insert(labelsTable)
-				.values(
-					DEFAULT_LABELS.map((label) => ({
-						name: label.name,
-						description: label.description,
-						color: label.color,
+				tx
+					.insert(teamsTable)
+					.values({
 						workspaceId: newWorkspace.id,
-					})),
-				)
-				.returning();
-
-			await tx.insert(teamsTable).values({
-				workspaceId: newWorkspace.id,
-				name: newWorkspace.name,
-				identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
-			});
-
-			await tx.insert(userTeamsTable).values({
+						name: newWorkspace.name,
+						identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
+					})
+					.returning(),
+			]);
+			tx.insert(userTeamsTable).values({
 				userId: userId,
-				teamId: newWorkspace.id,
+				teamId: newTeam.id,
 			});
 
-			return {
-				...newWorkspace,
-				labels: newLabels,
-			};
+			return newWorkspace;
 		});
 	}
 	async getWorkspace({
 		workspaceId,
-	}: { workspaceId: string }): Promise<WorkspaceLabel | null> {
-		console.info("Getting workspace with id %s", workspaceId);
-		return await this.getWorkspaceWithLabels(eq(workspacesTable, workspaceId));
+	}: { workspaceId: string }): Promise<Workspace | null> {
+		this.logger.info("Getting workspace with id %s", workspaceId);
+		return await this.db
+			.select()
+			.from(workspacesTable)
+			.where(eq(workspacesTable.id, workspaceId))
+			.then((results) => results[0]);
 	}
 
-	async getWorkspaceByUrl({
-		url,
-	}: { url: string }): Promise<WorkspaceLabel | null> {
-		console.info("Getting workspace with url %s", url);
-		return await this.getWorkspaceWithLabels(eq(workspacesTable.url, url));
+	async getWorkspaceByUrl({ url }: { url: string }): Promise<Workspace | null> {
+		this.logger.info("Getting workspace with url %s", url);
+		return await this.db
+			.select()
+			.from(workspacesTable)
+			.where(eq(workspacesTable.url, url))
+			.then((results) => results[0]);
 	}
 
 	async updateWorkspace({
@@ -143,77 +134,50 @@ export class WorkspaceService implements WorkspaceRpc {
 	}: {
 		workspaceId: string;
 		workspace: WorkspaceParams;
-	}): Promise<WorkspaceLabel> {
-		console.info(
+	}): Promise<Workspace> {
+		this.logger.info(
 			"Updating workspace with id %s and payload %o",
 			workspaceId,
 			workspace,
 		);
 
-		return await this.db.transaction(async (tx) => {
-			const [updatedWorkspace] = await tx
-				.update(workspacesTable)
-				.set(workspace)
-				.where(eq(workspacesTable.id, workspaceId))
-				.returning();
-
-			if (!updatedWorkspace) {
-				throw new Error("Workspace not found");
-			}
-
-			const workspaceLabels = await tx
-				.select()
-				.from(labelsTable)
-				.where(eq(labelsTable.workspaceId, workspaceId));
-
-			return { ...updatedWorkspace, labels: workspaceLabels };
-		});
+		return await this.db
+			.update(workspacesTable)
+			.set(workspace)
+			.where(eq(workspacesTable.id, workspaceId))
+			.returning()
+			.then((results) => results[0]);
 	}
 
 	async deleteWorkspace({
 		workspaceId,
 	}: { workspaceId: string }): Promise<void> {
-		console.info("Deleting workspace with id %s", workspaceId);
+		this.logger.info("Deleting workspace with id %s", workspaceId);
 
-		await this.db.transaction(async (tx) => {
-			// Delete associated labels first
-			await tx
-				.delete(labelsTable)
-				.where(eq(labelsTable.workspaceId, workspaceId));
-
-			// Then delete the workspace
-			await tx
-				.delete(workspacesTable)
-				.where(eq(workspacesTable.id, workspaceId));
-		});
+		await this.db
+			.delete(workspacesTable)
+			.where(eq(workspacesTable.id, workspaceId));
 	}
+
 	async getUserWorkspaces({
 		userId,
-	}: { userId: string }): Promise<WorkspaceLabel[]> {
+	}: { userId: string }): Promise<Workspace[]> {
 		this.logger.info("Getting workspaces for user %s", userId);
 		const workspaces = await this.db
-			.select({
-				workspace: workspacesTable,
-				labels: sql<Label[] | null>`json_agg(${labelsTable})`.as("labels"),
-			})
+			.select()
 			.from(workspacesTable)
-			.leftJoin(labelsTable, eq(labelsTable.workspaceId, workspacesTable.id))
 			.innerJoin(
 				userWorkspacesTable,
 				eq(userWorkspacesTable.workspaceId, workspacesTable.id),
 			)
-			.where(eq(userWorkspacesTable.userId, userId))
-			.groupBy(workspacesTable.id);
+			.where(eq(userWorkspacesTable.userId, userId));
 
-		return workspaces.map((result) => ({
-			...result.workspace,
-			labels: result.labels || [],
-		}));
+		return workspaces.map((workspace) => workspace.Workspace);
 	}
 	async joinWorkspace({
 		token,
 		userId,
-	}: { token: string; userId: string }): Promise<WorkspaceLabel | null> {
+	}: { token: string; userId: string }): Promise<Workspace | null> {
 		this.logger.info(`User ${userId} attempting to join workspace with token`);
 
 		const workspaceId = this.verifyToken(token);
@@ -393,8 +357,12 @@ export class WorkspaceService implements WorkspaceRpc {
 					.limit(1)
 					.then((results) => results[0]),
 
-				// Query 2: Find workspace with labels
-				this.getWorkspaceWithLabels(eq(workspacesTable.id, workspaceId)),
+				// Query 2: Find workspace
+				tx
+					.select()
+					.from(workspacesTable)
+					.where(eq(workspacesTable.id, workspaceId))
+					.then((results) => results[0]),
 
 				// Query 3: Find user
 				tx
@@ -458,29 +426,5 @@ export class WorkspaceService implements WorkspaceRpc {
 				.set({ onBoarding: false })
 				.where(eq(usersTable.externalId, user.id));
 		}
-	}
-	private async getWorkspaceWithLabels(
-		where: SQL<unknown>,
-	): Promise<WorkspaceLabel | null> {
-		const results = await this.db
-			.select()
-			.from(workspacesTable)
-			.leftJoin(labelsTable, eq(workspacesTable.id, labelsTable.workspaceId))
-			.where(where);
-
-		const workspaceWithLabels = results.reduce(
-			(acc, row) => {
-				if (!acc.workspace) {
-					acc.workspace = { ...row.Workspace, labels: [] };
-				}
-				if (row.Label) {
-					acc.workspace.labels.push(row.Label);
-				}
-				return acc;
-			},
-			{ workspace: null as WorkspaceLabel | null },
-		).workspace;
-
-		return workspaceWithLabels;
 	}
 }

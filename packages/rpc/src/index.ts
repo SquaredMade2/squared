@@ -1,10 +1,9 @@
-import "tslib";
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
-import type { ErrorRequestHandler, RequestHandler } from "express";
-import { z } from "zod";
-
 import type { Logger } from "@squared/logger";
+import type { ErrorRequestHandler, RequestHandler } from "express";
+import "tslib";
+import { z } from "zod";
 import {
 	type Method,
 	type MethodDetails,
@@ -15,7 +14,6 @@ import {
 	ValidationError,
 	requestContexts,
 } from "./rpc-types";
-
 export * from "./rpc-types";
 
 export class RpcError extends Error {
@@ -195,10 +193,16 @@ function first(s: string | string[] | undefined) {
 	return Array.isArray(s) ? s[0] : s;
 }
 
-type SchemaFor<T> = z.ZodType<T, z.ZodTypeDef, T>;
-
 export function createSchema<T>() {
-	return <S extends SchemaFor<T>>(schema: S) => schema;
+	return <
+		S extends z.ZodType<T> & z.ZodObject<{ [K in keyof T]: z.ZodTypeAny }>,
+	>(
+		schema: S,
+	): S => schema;
+}
+
+export function createEnumSchema<T extends string>() {
+	return <S extends z.ZodEnum<[T, ...T[]]>>(schema: S): S => schema;
 }
 
 export function createServiceSchema<T>() {
