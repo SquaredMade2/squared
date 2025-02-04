@@ -84,24 +84,26 @@ export class WorkspaceService implements WorkspaceRpc {
 				throw new Error("Workspace not created");
 			}
 
-			await Promise.all([
+			const [_, [newTeam]] = await Promise.all([
 				tx.insert(userWorkspacesTable).values({
 					userId: userId,
 					workspaceId: newWorkspace.id,
 					role: "owner",
 				}),
 
-				tx.insert(teamsTable).values({
-					workspaceId: newWorkspace.id,
-					name: newWorkspace.name,
-					identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
-				}),
-
-				tx.insert(userTeamsTable).values({
-					userId: userId,
-					teamId: newWorkspace.id,
-				}),
+				tx
+					.insert(teamsTable)
+					.values({
+						workspaceId: newWorkspace.id,
+						name: newWorkspace.name,
+						identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
+					})
+					.returning(),
 			]);
+			tx.insert(userTeamsTable).values({
+				userId: userId,
+				teamId: newTeam.id,
+			});
 
 			return newWorkspace;
 		});
