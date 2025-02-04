@@ -1,4 +1,8 @@
-import type { CustomDescendant, CustomElement } from "@/components/TextEditor";
+import type {
+	CustomDescendant,
+	CustomElement,
+	CustomText,
+} from "@/components/TextEditor";
 import { Element, Transforms } from "slate";
 import { Editor, type Editor as EditorType } from "slate";
 import { Node, Range } from "slate";
@@ -96,15 +100,13 @@ export const injectMentionConfirm = (editor: EditorType, newText: string) => {
 	{ type: "paragraph", children: [{ text: "@something", mention: true }] },
 ];
 
-export const getMentionsFromSlate = (editorContent: CustomDescendant[]): string[] => {
-  return editorContent
-    .flatMap((block) => 
-      'children' in block
-        ? (block as CustomElement).children
-        : []
-    )
-    .filter((leaf: CustomText) => 
-      leaf.mentionConfirm && leaf.text.length > 0
-    )
-    .map((leaf: CustomText) => leaf.text.slice(1));
+export const getMentionsFromSlate = (
+	editorContent: CustomDescendant[],
+): string[] => {
+	return editorContent
+		.flatMap((block) =>
+			"children" in block ? (block as CustomElement).children : [],
+		)
+		.filter((leaf: CustomText) => leaf.mentionConfirm && leaf.text.length > 0)
+		.map((leaf: CustomText) => leaf.text.slice(1));
 };
