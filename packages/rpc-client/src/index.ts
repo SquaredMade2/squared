@@ -19,7 +19,8 @@ class BaseClient {
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
 		params: Record<string, any>,
-	) {
+		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
+	): Promise<any> {
 		const url = `${this.baseURL}/${this.serviceName}/${methodName}`;
 
 		const headers: Record<string, string> = {
@@ -59,6 +60,7 @@ class BaseClient {
 				this.mapError(this.serviceName, methodName, errorData, response.status); // Fixed: Added 'this.' to call the class method
 			}
 
+			if (!response.body) return;
 			const responseText = await response.json();
 			return superjson.parse(responseText); // Use SuperJSON to parse response
 		} catch (error) {
