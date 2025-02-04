@@ -10,6 +10,7 @@ import {
 } from "@/utils/testHelpers";
 import type { Team, User, Workspace } from "@squared/db";
 import {
+	desc,
 	eq,
 	githubRepoInfoTable,
 	inArray,
@@ -164,8 +165,8 @@ describe("User Service Tests", () => {
 			.select()
 			.from(usersTable)
 			.where(inArray(usersTable.externalId, userIds))
-			.then((result) => sortById(result))
-			.then((result) => result.map(serializeUserDates));
+			.then((result) => result.map(serializeUserDates))
+			.then(sortById);
 
 		const response: SuperResponse<User[]> = await request(app)
 			.post(endpoints.getTeamUsers)
@@ -198,8 +199,8 @@ describe("User Service Tests", () => {
 			.select()
 			.from(teamsTable)
 			.where(inArray(teamsTable.id, user.teamIds))
-			.then((result) => sortById(result))
-			.then((result) => result.map(serializeTeamDates));
+			.then((result) => result.map(serializeTeamDates))
+			.then(sortById);
 
 		const response: SuperResponse<Team[]> = await request(app)
 			.post(endpoints.getUserTeams)
@@ -397,12 +398,8 @@ describe("User Service Tests", () => {
 					user.userWorkspaces.map((uw) => uw.workspaceId),
 				),
 			)
-			.then(
-				(result) =>
-					result.sort(
-						(a, b) => b.createdAt.valueOf() - a.createdAt.valueOf(),
-					)[0],
-			)
+			.orderBy(desc(workspacesTable.createdAt))
+			.then((result) => result[0])
 			.then(serializeWorkspaceDates);
 
 		await db
@@ -459,7 +456,7 @@ describe("User Service Tests", () => {
 			.where(eq(teamsTable.id, teamId))
 			.then((result) => result[0]);
 
-		const response = await request(app)
+		const response: SuperResponse<boolean> = await request(app)
 			.post(endpoints.isUserAuthorized)
 			.send({ userId, teamIdentifier: team.identifier });
 		expect(response.body).toBe(true);
@@ -485,16 +482,13 @@ describe("User Service Tests", () => {
 			throw new Error("failed to isolate invalid team");
 		}
 
-		const response: SuperResponse<{ message: string }> = await request(app)
+		const response: SuperResponse<boolean> = await request(app)
 			.post(endpoints.isUserAuthorized)
 			.send({
 				userId: user.externalId,
 				teamIdentifier: invalidTeamIdentifier,
 			});
 
-		const re = /not authorized/gi;
-		expect(response.statusCode).toBeGreaterThanOrEqual(400);
-		expect(response.statusCode).toBeLessThan(500);
-		expect(response.body.message).toMatch(re);
+		expect(response.body).toBe(false);
 	});
 });
