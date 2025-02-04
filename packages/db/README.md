@@ -52,7 +52,7 @@ The package comes with several predefined commands in `package.json` for managin
    pnpm run db:gen
    ```
 
-   It is also automatically triggered after installation via the `postinstall` hook.
+   It is also automatically triggered after installation via the `prepare` hook.
 
 2. **Deploy Migrations**:
 
