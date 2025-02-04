@@ -3,9 +3,9 @@
 import dynamic from "next/dynamic";
 
 export const components = {
-  faq_section: dynamic(() => import("./FaqSection")),
-  feature_highlight: dynamic(() => import("./FeatureHighlight")),
-  step_by_step_guide: dynamic(() => import("./StepByStepGuide")),
-  text_section: dynamic(() => import("./TextSection")),
-  tips_and_tricks: dynamic(() => import("./TipsAndTricks")),
+	faq_section: dynamic(() => import("./FaqSection")),
+	feature_highlight: dynamic(() => import("./FeatureHighlight")),
+	step_by_step_guide: dynamic(() => import("./StepByStepGuide")),
+	text_section: dynamic(() => import("./TextSection")),
+	tips_and_tricks: dynamic(() => import("./TipsAndTricks")),
 };
