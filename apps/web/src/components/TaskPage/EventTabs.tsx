@@ -11,13 +11,13 @@ export const EventTabs = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 
 	return (
-		<Tabs defaultValue="activity" className="w-full mt-8">
+		<Tabs defaultValue="activity" className="mt-8 w-full">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
 				<TabsTrigger value="activity">Activity</TabsTrigger>
 				<TabsTrigger value="comments">Comments</TabsTrigger>
 			</TabsList>
 			<TabsContent value="activity">
-				<div className="flex flex-col bg-card rounded-md text-sm py-2">
+				<div className="flex flex-col rounded-md bg-card py-2 text-sm">
 					<CreatedByInformation />
 				</div>
 			</TabsContent>

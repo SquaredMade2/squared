@@ -1,11 +1,9 @@
-;
-
 import { Label as LabelPrimitive } from "../label";
 import * as SwitchPrimitive from "../switch";
 
+import { useState } from "react";
 import { css } from "../../stitches.config";
 import { RECOMMENDED_CSS__LABEL__ROOT } from "../label/Label.stories";
-import { useState } from "react";
 
 export default { title: "Components/Switch" };
 
@@ -63,12 +61,13 @@ export const WithinForm = () => {
 		>
 			<fieldset>
 				<legend>optional checked: {String(data.optional)}</legend>
-				<label>
+				<label htmlFor="optionalSwitch">
 					<SwitchPrimitive.Root
 						className={rootClass()}
 						name="optional"
 						checked={checked}
 						onCheckedChange={setChecked}
+						id="optionalSwitch"
 					>
 						<SwitchPrimitive.Thumb className={thumbClass()} />
 					</SwitchPrimitive.Root>{" "}

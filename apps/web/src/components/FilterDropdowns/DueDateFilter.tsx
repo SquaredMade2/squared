@@ -60,7 +60,7 @@ const DueDateFilterDropDown = ({
 				</div>
 			</DropdownMenuSubTrigger>
 			<DropdownMenuSubContent className="w-70">
-				<div className="flex gap-2 my-2 w-full justify-center">
+				<div className="my-2 flex w-full justify-center gap-2">
 					<Button
 						variant={selectedToggle === "before" ? "secondary" : "ghost"}
 						className={selectedToggle === "before" ? "hover:bg-accent" : ""}

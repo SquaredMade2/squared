@@ -12,8 +12,8 @@ export default function SettingsLayoutWrapper({
 		<SidebarProvider>
 			<div className="flex h-screen w-full">
 				<SettingsNavBar />
-				<SidebarInset className="flex-grow overflow-auto container">
-					<ScrollArea className="p-6 w-full flex justify-center overflow-y-hidden h-screen">
+				<SidebarInset className="container flex-grow overflow-auto">
+					<ScrollArea className="flex h-screen w-full justify-center overflow-y-hidden p-6">
 						{children}
 					</ScrollArea>
 				</SidebarInset>

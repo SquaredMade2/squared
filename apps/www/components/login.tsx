@@ -52,13 +52,13 @@ export function LoginForm() {
 
 	return (
 		<Form {...form}>
-			<div className="flex items-center w-full justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+			<div className="flex w-full items-center justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
 				<div className="mx-auto w-full max-w-md">
 					<div>
 						<div className="flex">
 							<Logo />
 						</div>
-						<h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
+						<h2 className="mt-8 font-bold text-2xl text-black leading-9 tracking-tight dark:text-white">
 							Sign in to your account
 						</h2>
 					</div>
@@ -77,7 +77,7 @@ export function LoginForm() {
 											<FormItem>
 												<label
 													htmlFor="email"
-													className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+													className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
 												>
 													Email address
 												</label>
@@ -87,7 +87,7 @@ export function LoginForm() {
 															id="email"
 															type="email"
 															placeholder="hello@johndoe.com"
-															className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+															className="block w-full rounded-md border-0 bg-white px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 sm:text-sm sm:leading-6 dark:bg-neutral-900 dark:text-white"
 															{...field}
 														/>
 													</div>
@@ -106,7 +106,7 @@ export function LoginForm() {
 											<FormItem>
 												<label
 													htmlFor="password"
-													className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+													className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
 												>
 													Password
 												</label>
@@ -116,7 +116,7 @@ export function LoginForm() {
 															id="password"
 															type="password"
 															placeholder="••••••••"
-															className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+															className="block w-full rounded-md border-0 bg-white px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 sm:text-sm sm:leading-6 dark:bg-neutral-900 dark:text-white"
 															{...field}
 														/>
 													</div>
@@ -139,7 +139,7 @@ export function LoginForm() {
 									<Button className="w-full">Sign in</Button>
 									<p
 										className={cn(
-											"text-sm text-neutral-500 text-center mt-4 text-muted dark:text-muted-dark",
+											"mt-4 text-center text-muted text-neutral-500 text-sm dark:text-muted-dark",
 										)}
 									>
 										Don&apos; have an account?{" "}
@@ -157,25 +157,25 @@ export function LoginForm() {
 									className="absolute inset-0 flex items-center"
 									aria-hidden="true"
 								>
-									<div className="w-full border-t border-neutral-300 dark:border-neutral-700" />
+									<div className="w-full border-neutral-300 border-t dark:border-neutral-700" />
 								</div>
-								<div className="relative flex justify-center text-sm font-medium leading-6">
-									<span className="bg-white px-6 text-neutral-400 dark:text-neutral-500 dark:bg-black">
+								<div className="relative flex justify-center font-medium text-sm leading-6">
+									<span className="bg-white px-6 text-neutral-400 dark:bg-black dark:text-neutral-500">
 										Or continue with
 									</span>
 								</div>
 							</div>
 
-							<div className="mt-6 w-full flex items-center justify-center">
+							<div className="mt-6 flex w-full items-center justify-center">
 								<Button onClick={() => {}} className="w-full py-1.5">
 									<IconBrandGithub className="h-5 w-5" />
-									<span className="text-sm font-semibold leading-6">
+									<span className="font-semibold text-sm leading-6">
 										Github
 									</span>
 								</Button>
 							</div>
 
-							<p className="text-neutral-600 dark:text-neutral-400 text-sm text-center mt-8">
+							<p className="mt-8 text-center text-neutral-600 text-sm dark:text-neutral-400">
 								By clicking on sign in, you agree to our{" "}
 								<Link
 									href="#"

@@ -19,9 +19,9 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 						<AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
 						<AvatarFallback>{placeholder}</AvatarFallback>
 					</Avatar>
-					<div className="flex items-start flex-col">
+					<div className="flex flex-col items-start">
 						<div className="ml-2">{user.name}</div>
-						<div className="ml-2 text-sm text-muted-foreground">
+						<div className="ml-2 text-muted-foreground text-sm">
 							{user.email}
 						</div>
 					</div>

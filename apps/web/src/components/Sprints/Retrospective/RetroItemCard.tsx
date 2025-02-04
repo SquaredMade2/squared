@@ -37,7 +37,7 @@ export const RetroItemCard = ({
 					{...provided.dragHandleProps}
 				>
 					<Card>
-						<CardContent className="p-2 flex justify-between">
+						<CardContent className="flex justify-between p-2">
 							<div className="flex flex-col">
 								<div>{item.content}</div>
 								{author && (

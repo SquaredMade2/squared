@@ -52,7 +52,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 					{!task.assigneeId || !currentUser ? (
 						<UserSearch className="size-5 text-[#9597AD]" />
 					) : (
-						<Avatar className="size-4 text-xxs mr-2 flex">
+						<Avatar className="mr-2 flex size-4 text-xxs">
 							<AvatarImage src={currentUser.avatarUrl ?? ""} />
 							<AvatarFallback>{getInitials(currentUser.name)}</AvatarFallback>
 						</Avatar>
@@ -67,10 +67,10 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						onClick={() => handleSelectAssignee(null)}
 					>
 						<div className="flex">
-							<UserSearch className="size-5 mx-1 mr-3" />
+							<UserSearch className="mx-1 mr-3 size-5" />
 							Unassigned
 						</div>
-						{!task.assigneeId && <Check className="w-4 h-4" />}
+						{!task.assigneeId && <Check className="h-4 w-4" />}
 					</ContextMenuItem>
 					{users
 						.sort((a, b) => a.name.localeCompare(b.name))
@@ -82,14 +82,14 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 									className="flex justify-between"
 								>
 									<div className="flex">
-										<Avatar className="size-6 text-xxs mr-2 flex">
+										<Avatar className="mr-2 flex size-6 text-xxs">
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
 										{user.name}
 									</div>
 									{task.assigneeId === user.externalId && (
-										<Check className="w-4 h-4 ml-2" />
+										<Check className="ml-2 h-4 w-4" />
 									)}
 								</ContextMenuItem>
 							);

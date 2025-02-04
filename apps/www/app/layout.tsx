@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "@squared/fonts/src/styles.css";
 import { ThemeProvider } from "@/context/theme-provider";
+import { repositoryName } from "@/prismicio";
+import { PrismicPreview } from "@prismicio/next";
 import { ViewTransitions } from "next-view-transitions";
 
 export const metadata: Metadata = {
@@ -21,7 +23,7 @@ export default function RootLayout({
 	return (
 		<ViewTransitions>
 			<html lang="en">
-				<body className={"antialiased h-full w-full"}>
+				<body className={"h-full w-full antialiased"}>
 					<ThemeProvider
 						attribute="class"
 						enableSystem
@@ -31,6 +33,7 @@ export default function RootLayout({
 						{children}
 					</ThemeProvider>
 				</body>
+				<PrismicPreview repositoryName={repositoryName} />
 			</html>
 		</ViewTransitions>
 	);

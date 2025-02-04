@@ -428,7 +428,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 							onKeyDown={handleSetEditorContent}
 							renderLeaf={renderLeaf}
 							renderElement={renderElement}
-							className="min-h-[160px] w-full py-4 px-3"
+							className="min-h-[160px] w-full px-3 py-4"
 						/>
 					</div>
 				</div>
@@ -447,7 +447,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
-				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) && "bg-muted hover:bg-muted text-muted-foreground"}`}
+				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 			>
 				Comment
 			</Button>

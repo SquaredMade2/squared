@@ -37,7 +37,6 @@ describe("given an Avatar with fallback and a working image", () => {
 				setTimeout(() => {
 					this.onload();
 				}, DELAY);
-				return this;
 			}
 		};
 	});
@@ -109,7 +108,7 @@ describe("given an Avatar with an image that only works when referrerPolicy=no-r
 		(window.Image as any) = class MockImage {
 			onload: () => void = () => {};
 			onerror: () => void = () => {};
-			src: string = "";
+			src = "";
 			referrerPolicy: string | undefined;
 			constructor() {
 				setTimeout(() => {
@@ -119,7 +118,6 @@ describe("given an Avatar with an image that only works when referrerPolicy=no-r
 						this.onerror();
 					}
 				}, DELAY);
-				return this;
 			}
 		};
 	});

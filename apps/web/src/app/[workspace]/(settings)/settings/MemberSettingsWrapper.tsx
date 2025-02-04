@@ -6,10 +6,10 @@ export default function MemberSettingsWrapper({
 	page,
 }: { children: ReactNode; page: "workspace" | "team" }) {
 	return (
-		<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">
-			<div className="flex flex-col gap-2 items-start">
+		<div className="container flex w-full flex-col gap-4 py-8 md:w-3/4">
+			<div className="flex flex-col items-start gap-2">
 				<h1 className="text-2xl">Members</h1>
-				<p className="text-xs text-muted-foreground">
+				<p className="text-muted-foreground text-xs">
 					Manage members for this {page}
 				</p>
 			</div>

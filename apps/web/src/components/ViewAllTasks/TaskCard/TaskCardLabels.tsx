@@ -10,7 +10,7 @@ export const LabelColor = ({ label }: { label: Label }) => {
 	const validatedColor = color.startsWith("#") ? color : `#${color}`;
 	return (
 		<div
-			className="w-3 h-3 rounded-lg"
+			className="h-3 w-3 rounded-lg"
 			style={{ backgroundColor: validatedColor }}
 		/>
 	);
@@ -42,11 +42,11 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 				<div
 					ref={containerRef}
 					className={cn(
-						`flex flex-wrap items-center justify-end text-muted-foreground gap-1 w-fit max-w-full min-w-[${minWidth}px] `,
+						`flex w-fit max-w-full flex-wrap items-center justify-end gap-1 text-muted-foreground min-w-[${minWidth}px]`,
 					)}
 				>
 					{labels.map((label) => (
-						<div key={label.id} className="label-badge flex-shrink">
+						<div key={label.name} className="label-badge flex-shrink">
 							<LabelBadge label={label} />
 						</div>
 					))}
@@ -54,7 +54,7 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 			) : (
 				<>
 					{labels.map((label) => (
-						<div key={label.id} className="label-badge flex-shrink mb-1">
+						<div key={label.name} className="label-badge mb-1 flex-shrink">
 							<LabelBadge label={label} />
 						</div>
 					))}

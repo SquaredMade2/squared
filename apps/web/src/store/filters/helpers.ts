@@ -57,7 +57,7 @@ export function checkCondition(
 								(item === null && val === null) ||
 								(item !== null &&
 									val !== null &&
-									item.toString() === val.toString()),
+									item.name.toString() === val.toString()),
 						),
 					)
 				);

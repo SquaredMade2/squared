@@ -57,8 +57,8 @@ export default function Home() {
 		<>
 			{loading || workspaceFound ? (
 				<div className="h-screen w-full">
-					<div className="flex h-full justify-center items-center">
-						<div className="flex flex-col gap-4 items-center">
+					<div className="flex h-full items-center justify-center">
+						<div className="flex flex-col items-center gap-4">
 							<div className="font-bold text-3xl">Loading Workspace</div>
 							<SquaredLoader />
 						</div>

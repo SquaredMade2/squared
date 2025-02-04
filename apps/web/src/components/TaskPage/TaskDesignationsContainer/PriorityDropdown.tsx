@@ -62,13 +62,13 @@ const PriorityDropdown = () => {
 			onValueChange={(value) => handleSelectPriority(value as Priority)}
 			value={sidebarPriority}
 		>
-			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10 px-4 py-2">
+			<SelectTrigger className="flex h-8 w-fit flex-row items-center border-[0.8px] border-border bg-transparent px-4 py-2 text-card-foreground hover:cursor-pointer md:h-10 md:grow">
 				<SelectValue placeholder="Select priority">
-					<div className="w-full flex items-center justify-between">
-						<div className="w-4 h-4 mr-2">
+					<div className="flex w-full items-center justify-between">
+						<div className="mr-2 h-4 w-4">
 							{sidebarPriority && <PriorityIcon priority={sidebarPriority} />}
 						</div>
-						<span className="text-sm font-semibold text-card-foreground">
+						<span className="font-semibold text-card-foreground text-sm">
 							{sidebarPriority
 								? formatPriority(sidebarPriority)
 								: "Select priority"}
@@ -79,7 +79,7 @@ const PriorityDropdown = () => {
 			<SelectContent>
 				{priorityOptions.map((priority) => (
 					<SelectItem key={priority} value={priority}>
-						<div className="flex items-center justify-between w-full">
+						<div className="flex w-full items-center justify-between">
 							<div className="flex items-center gap-2">
 								<PriorityIcon priority={priority} />
 								<span>{formatPriority(priority)}</span>

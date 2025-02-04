@@ -27,8 +27,8 @@ export const BlurImage = ({
 	return (
 		<Image
 			className={clsx(
-				"transition duration-300 transform",
-				isLoading ? "blur-sm scale-105" : "blur-0 scale-100",
+				"transform transition duration-300",
+				isLoading ? "scale-105 blur-sm" : "scale-100 blur-0",
 				className,
 			)}
 			onLoadingComplete={() => setLoading(false)}

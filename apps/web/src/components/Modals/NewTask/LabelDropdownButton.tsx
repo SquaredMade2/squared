@@ -26,18 +26,18 @@ export const LabelDropdownButton = () => {
 
 	const taskLabels = useMemo(() => workspace?.labels || [], [workspace]);
 	const newTaskLabels = useMemo(
-		() => taskLabels.filter((label) => newTaskData.labels?.includes(label.id)),
+		() => taskLabels.filter((label) => newTaskData.labels?.includes(label)),
 		[taskLabels, newTaskData.labels],
 	);
 
 	const handleSelectLabels = (selectedLabel: Label) => {
 		const updatedLabels = newTaskLabels.includes(selectedLabel)
-			? newTaskLabels.filter((label) => label.id !== selectedLabel.id)
+			? newTaskLabels.filter((label) => label !== selectedLabel)
 			: [...newTaskLabels, selectedLabel];
 
 		setNewTaskData({
 			...newTaskData,
-			labels: updatedLabels.map((label) => label.id),
+			labels: updatedLabels.map((label) => label),
 		});
 	};
 
@@ -63,7 +63,10 @@ export const LabelDropdownButton = () => {
 		return (
 			<>
 				{newTaskLabels.map((label, index) => (
-					<div key={label.id} className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}>
+					<div
+						key={label.name}
+						className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}
+					>
 						<LabelColor label={label} />
 					</div>
 				))}
@@ -75,7 +78,7 @@ export const LabelDropdownButton = () => {
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full mr-2">
+				<Button variant="outline" className="mr-2 w-full max-w-full">
 					{renderLabelButton()}
 				</Button>
 			</PopoverTrigger>
@@ -87,10 +90,10 @@ export const LabelDropdownButton = () => {
 						<CommandGroup>
 							{taskLabels.map((label) => (
 								<CommandItem
-									key={label.id}
+									key={label.name}
 									value={label.name}
 									onSelect={() => handleSelectLabels(label)}
-									className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
+									className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 								>
 									<LabelBadge label={label} />
 									{newTaskLabels.includes(label) && (

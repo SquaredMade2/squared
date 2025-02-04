@@ -178,9 +178,9 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 						type="button"
 						variant="outline"
 						size="sm"
-						className="my-4 flex items-center w-full"
+						className="my-4 flex w-full items-center"
 					>
-						<PlusCircle className="w-4 h-4 mr-2" />
+						<PlusCircle className="mr-2 h-4 w-4" />
 						Add Subtask
 					</Button>
 				</AccordionTrigger>
@@ -217,7 +217,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-md resize-none"
+													className="resize-none text-md"
 													rows={4}
 												/>
 											</FormControl>
@@ -225,17 +225,17 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 									)}
 								/>
 							</div>
-							<div className="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+							<div className="grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
 								<StatusDropdownButton />
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
 								<EffortDropdownButton />
 								<DateDropdownButton />
 							</div>
-							<div className="flex justify-end space-x-2 mt-4">
+							<div className="mt-4 flex justify-end space-x-2">
 								<Button
 									onClick={handleCancel}
-									className="hover:cursor-pointer bg-transparent"
+									className="bg-transparent hover:cursor-pointer"
 									variant="outline"
 									type="button"
 								>
