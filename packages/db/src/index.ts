@@ -1,13 +1,12 @@
-import { Pool, neonConfig, neon } from "@neondatabase/serverless";
+import { Pool, neonConfig } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import { type NeonQueryResultHKT, drizzle } from "drizzle-orm/neon-serverless";
+import { type NeonQueryResultHKT, drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import ws from "ws";
-import { drizzle as driz } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 export * from "drizzle-orm";
 export * from "./schema";
-
+export type Database = NeonDatabase
 export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
 export type TransactionClient = PgTransaction<
 	NeonQueryResultHKT,
@@ -18,12 +17,6 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-export const createRemoteDb = ({databaseUrl}: {databaseUrl: string}) => {
-	console.log('DATABASE URL: ', databaseUrl)
-	const sql = neon(databaseUrl);
-	return driz({client: sql, schema});
-}
-
 export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLocal?: boolean }) => {
 	// Function to create the database connection
 	const config = {
@@ -31,9 +24,11 @@ export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLoc
 			databaseUrl ||
 			process.env.DATABASE_URL ||
 			"postgres://squared:squared@localhost:5432/squared-test?sslmode=disable",
-		localDb: isLocal !== undefined ? isLocal : ( process.env.LOCAL_DB || false),
+		localDb: isLocal === undefined ?  ( process.env.LOCAL_DB || false) : isLocal,
 		nodeEnv: process.env.NODE_ENV || "test",
 	};
+	neonConfig.webSocketConstructor = ws;
+	if(!config.localDb) neonConfig.useSecureWebSocket = true
 
 	if (config.localDb) {
 		neonConfig.fetchEndpoint = (host) => {
@@ -42,7 +37,6 @@ export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLoc
 		};
 		neonConfig.useSecureWebSocket = false;
 		neonConfig.wsProxy = (host) => `${host}:4444/v1`;
-		neonConfig.webSocketConstructor = ws;
 		const parsedDatabaseURL = new URL(config.databaseUrl);
 		parsedDatabaseURL.host = "db.localtest.me"; // Magic string here 🤷
 		config.databaseUrl = parsedDatabaseURL.toString();
