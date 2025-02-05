@@ -102,21 +102,15 @@ export function useTaskDashboard() {
 			);
 			const [reorderedItem] = items.splice(source.index, 1);
 			items.splice(destination.index, 0, reorderedItem);
-			const subtasks = await taskService.reorderSubtasks(TODO, {
-				parentId: draggedTask.parentId ?? "",
-				newOrder: items.map((item) => item.id),
+			await client.task.updateSubtaskOrder.$post({
+				parentId: draggedTask.parentId,
+				newOrder: items.map((item) => item.id)
 			});
 			const teamTasksReq = await client.task.getAllTasks.$get({
 				teamId: team.id,
 			});
 			const teamTasks = await teamTasksReq.json();
-			const updatedTasks = teamTasks.map((task) => {
-				for (const subtask of subtasks) {
-					if (task.id === subtask.id) task.order = subtask.order;
-				}
-				return task;
-			});
-			setTasks(updatedTasks);
+			setTasks(teamTasks);
 			return;
 		}
 		updateTaskMutation.mutate({

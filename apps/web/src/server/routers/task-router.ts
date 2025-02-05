@@ -299,4 +299,18 @@ export const taskRouter = router({
 				}),
 			);
 		}),
+	updateSubtaskOrder: privateProcedure.input(z.object({
+			parentId: z.string(),
+			newOrder: z.string().array(),
+		}),
+	).mutation(async ({c, ctx, input}) => {
+		const {taskService} = ctx;
+		const {parentId, newOrder} = input
+		return c.superjson(
+			await taskService.reorderSubtasks(TODO, {
+				parentId,
+				newOrder
+			})
+		)
+	})
 });
