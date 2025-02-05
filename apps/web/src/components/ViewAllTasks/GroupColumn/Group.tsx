@@ -84,7 +84,7 @@ const Group = ({
 								: "w-72 rounded-lg p-2"
 						}`}
 					>
-						{subtasks.map((subtask, subIndex) => (
+						{subtasks.toSorted((a, b) => a.order - b.order).map((subtask, subIndex) => (
 							<TaskCard
 								key={subtask.id}
 								task={subtask}
