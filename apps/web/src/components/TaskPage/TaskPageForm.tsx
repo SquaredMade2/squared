@@ -10,6 +10,7 @@ import { type ChangeEvent, type FormEvent, useState } from "react";
 import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 export const TaskPageForm = () => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
@@ -127,7 +128,7 @@ export const TaskPageForm = () => {
 					</div>
 				)}
 			</div>
-			<Input
+			<Textarea
 				className="mt-2 mb-2 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
 				placeholder={"Add description..."}
 				onChange={handleDescriptionChange}
