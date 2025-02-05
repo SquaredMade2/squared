@@ -8,7 +8,7 @@ export const EditLabelButton = ({ label }: { label: Label }) => {
 	};
 	return (
 		<Button onClick={handleEditClick} variant="ghost">
-			<Pencil />
+			<Pencil className="h-4 w-4" />
 		</Button>
 	);
 };

@@ -8,7 +8,7 @@ export const DeleteLabelButton = ({ label }: { label: Label }) => {
 	};
 	return (
 		<Button onClick={handleDeleteClick} variant="ghost">
-			<Trash />
+			<Trash className="h-4 w-4" />
 		</Button>
 	);
 };
