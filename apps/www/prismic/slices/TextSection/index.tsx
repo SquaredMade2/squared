@@ -34,6 +34,11 @@ const TextSection: FC<TextSectionProps> = ({ slice }) => {
 							{children}
 						</h1>
 					),
+					strong: ({ children }) => (
+						<strong className="font-semibold text-foreground">
+							{children}
+						</strong>
+					),
 				}}
 			/>
 		</div>
