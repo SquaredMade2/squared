@@ -165,8 +165,8 @@ describe("User Service Tests", () => {
 			.select()
 			.from(usersTable)
 			.where(inArray(usersTable.externalId, userIds))
-			.then((result) => result.map(serializeUserDates))
-			.then(sortById);
+			.orderBy(usersTable.id)
+			.then((result) => result.map(serializeUserDates));
 
 		const response: SuperResponse<User[]> = await request(app)
 			.post(endpoints.getTeamUsers)
@@ -199,8 +199,8 @@ describe("User Service Tests", () => {
 			.select()
 			.from(teamsTable)
 			.where(inArray(teamsTable.id, user.teamIds))
-			.then((result) => result.map(serializeTeamDates))
-			.then(sortById);
+			.orderBy(teamsTable.id)
+			.then((result) => result.map(serializeTeamDates));
 
 		const response: SuperResponse<Team[]> = await request(app)
 			.post(endpoints.getUserTeams)
@@ -227,9 +227,9 @@ describe("User Service Tests", () => {
 				usersTable,
 				eq(usersTable.externalId, userWorkspacesTable.userId),
 			)
+			.orderBy(usersTable.id)
 			.then((result) => result.map((union) => union.User).filter((u) => !!u))
-			.then((result) => result.map(serializeUserDates))
-			.then(sortById);
+			.then((result) => result.map(serializeUserDates));
 
 		const response: SuperResponse<User[]> = await request(app)
 			.post(endpoints.getWorkspaceUsers)
@@ -258,6 +258,7 @@ describe("User Service Tests", () => {
 			.select()
 			.from(usersTable)
 			.where(inArray(usersTable.externalId, userIds))
+			.orderBy(usersTable.externalId)
 			.then((result) =>
 				result.map((user) => ({
 					id: user.externalId,
@@ -265,7 +266,6 @@ describe("User Service Tests", () => {
 					avatarUrl: user.avatarUrl,
 				})),
 			);
-		const want = sortById(users);
 
 		const response: SuperResponse<
 			{ id: string; name: string; avatarUrl: string }[]
@@ -274,7 +274,7 @@ describe("User Service Tests", () => {
 			.send({ workspaceId: workspace.id });
 
 		const got = sortById(response.body);
-		expect(got).toStrictEqual(want);
+		expect(got).toStrictEqual(users);
 	});
 
 	it("gets a user's connected github repository information", async () => {
