@@ -5,7 +5,7 @@ import type { CommentRpc } from "./types";
 
 export const commentRpcSchema = createServiceSchema<CommentRpc>()({
 	addComment: {
-		input: z.object({ comment: commentSchema.omit({ id: true }) }),
+		input: commentSchema.omit({ id: true, date: true }),
 		output: z.array(commentSchema),
 	},
 	deleteComment: {

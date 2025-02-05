@@ -1,12 +1,9 @@
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { eventService } from "@/lib/services";
 import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import { TODO } from "@squared/context";
-import type { TaskEvent } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
@@ -47,11 +44,12 @@ export const TaskPageForm = () => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
 
-			const updatedEvents = await eventService.getTaskEvents(TODO, {
-				taskId: updatedTask.id,
-			});
-			// TODO: Will remove type coercion once commits are implemented
-			setEvents(updatedEvents as TaskEvent[]);
+			const updatedEvents = await client.event.getEvents
+				.$get({
+					taskId: updatedTask.id,
+				})
+				.then((res) => res.json());
+			setEvents(updatedEvents);
 			queryClient.invalidateQueries({ queryKey: ["taskEvents", task?.id] });
 			toast({ title: "Task updated successfully" });
 		},
