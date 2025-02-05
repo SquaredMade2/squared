@@ -183,7 +183,7 @@ export class EventService implements EventRpc {
 		notificationIds: string[];
 		read?: boolean;
 		dismissed?: boolean;
-	}): Promise<Notification[]> {
+	}): Promise<FullNotification[]> {
 		return await this.db.transaction(async (tx) => {
 			// Update the notifications
 			await tx
@@ -192,10 +192,29 @@ export class EventService implements EventRpc {
 				.where(inArray(notificationsTable.id, notificationIds));
 
 			// Fetch and return the updated notifications
-			return tx
-				.select()
+			const notifications = await tx
+				.select({
+					notification: notificationsTable,
+					task: tasksTable,
+					workspace: workspacesTable,
+				})
 				.from(notificationsTable)
+				.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
+				.leftJoin(
+					workspacesTable,
+					eq(notificationsTable.workspaceId, workspacesTable.id),
+				)
 				.where(inArray(notificationsTable.id, notificationIds));
+
+			return notifications.map((noti) => {
+				const { notification, task, workspace } = noti;
+				if (!task || !workspace) throw new Error("Task or Workspace not found");
+				return {
+					...notification,
+					Task: task,
+					Workspace: workspace,
+				};
+			});
 		});
 	}
 	async deleteNotification({
