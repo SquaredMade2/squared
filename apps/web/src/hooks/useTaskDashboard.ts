@@ -104,7 +104,7 @@ export function useTaskDashboard() {
 			items.splice(destination.index, 0, reorderedItem);
 			await client.task.updateSubtaskOrder.$post({
 				parentId: draggedTask.parentId,
-				newOrder: items.map((item) => item.id)
+				newOrder: items.map((item) => item.id),
 			});
 			const teamTasksReq = await client.task.getAllTasks.$get({
 				teamId: team.id,
