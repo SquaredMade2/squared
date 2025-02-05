@@ -434,7 +434,7 @@ export function AssignTasksDialog({
 									</div>
 
 									{orderTasks(filteredTasks).map((task: Task) => {
-										const taskLabels = workspace?.Labels.filter((label) =>
+										const taskLabels = workspace?.labels.filter((label) =>
 											task.labels.includes(label.id),
 										);
 										return (
