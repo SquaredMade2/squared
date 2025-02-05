@@ -1,6 +1,7 @@
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
 import type { Label } from "@squared/db";
 import type { ColumnDef } from "@tanstack/react-table";
+import { DeleteLabelButton } from "./DeleteLabelButton";
 import { EditLabelButton } from "./EditLabelButton";
 
 export const columns: ColumnDef<Label>[] = [
@@ -42,6 +43,14 @@ export const columns: ColumnDef<Label>[] = [
 		cell: ({ row }) => {
 			const label = row.original;
 			return <EditLabelButton label={label} />;
+		},
+	},
+	{
+		accessorKey: "delete",
+		cell: ({ row }) => {
+			const label = row.original;
+
+			return <DeleteLabelButton label={label} />;
 		},
 	},
 ];
