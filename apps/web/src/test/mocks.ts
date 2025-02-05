@@ -1,7 +1,6 @@
 import type {
 	Comment,
 	Commit,
-	Label,
 	Notification,
 	RetrospectiveItem,
 	SavedFilter,
@@ -12,6 +11,20 @@ import type {
 	User,
 	Workspace,
 } from "@squared/db";
+
+export const DEFAULT_LABELS = [
+	{ name: "Feature", description: "New feature", color: "#FF5733" },
+	{ name: "Bug", description: "Bug fix", color: "#C70039" },
+	{ name: "Chore", description: "General task", color: "#900C3F" },
+	{ name: "Refactor", description: "Code refactor", color: "#581845" },
+	{ name: "Docs", description: "Documentation", color: "#FFC300" },
+	{ name: "Test", description: "Testing task", color: "#DAF7A6" },
+	{
+		name: "Design",
+		description: "Design related task",
+		color: "#33FFBD",
+	},
+];
 
 export const STANDARD_USER: User = {
 	id: "70C7FB67-6ECB-40E1-9AD6-2378700BDB7A",
@@ -39,6 +52,7 @@ export const STANDARD_WORKSPACE: Workspace = {
 	tasksCreated: 1,
 	universalTokenLinkId: null,
 	admins: [],
+	labels: DEFAULT_LABELS,
 	defaultView: null,
 	createdAt: new Date(),
 };
@@ -240,52 +254,4 @@ export const STANDARD_TASK_EVENT: TaskEvent = {
 	createdAt: new Date(),
 	taskId: "task1",
 	message: "Task created",
-};
-
-export const STANDARD_LABEL: Label = {
-	id: "792D082C-6BC0-4F1C-BF9E-17F862F7394E",
-	name: "Feature",
-	description: "New feature",
-	color: "#FF5733",
-	workspaceId: STANDARD_WORKSPACE.id,
-};
-
-export const STANDARD_LABEL_2: Label = {
-	id: "62025D9B-EBED-4987-8C93-9B9946991422",
-	name: "Bug",
-	description: "Bug fix",
-	color: "#C70039",
-	workspaceId: STANDARD_WORKSPACE.id,
-};
-
-export const STANDARD_LABEL_3: Label = {
-	id: "C46F4835-FC0E-4D2C-9817-6750E0791B16",
-	name: "Chore",
-	description: "General task",
-	color: "#900C3F",
-	workspaceId: STANDARD_WORKSPACE.id,
-};
-
-export const STANDARD_LABEL_4: Label = {
-	id: "B16E825D-C53C-4657-889E-40F2E5ADEEED",
-	name: "Refactor",
-	description: "Code refactor",
-	color: "#581845",
-	workspaceId: STANDARD_WORKSPACE.id,
-};
-
-export const STANDARD_LABEL_5: Label = {
-	id: "284F3FA1-6071-4C1B-A31A-C1E8D3051C1F",
-	name: "Docs",
-	description: "Documentation",
-	color: "#FFC300",
-	workspaceId: STANDARD_WORKSPACE.id,
-};
-
-export const STANDARD_LABEL_6: Label = {
-	id: "B77FB60C-074D-4FA4-9C2D-3BAD05FE8BB8",
-	name: "Test",
-	description: "Testing task",
-	color: "#DAF7A6",
-	workspaceId: STANDARD_WORKSPACE.id,
 };
