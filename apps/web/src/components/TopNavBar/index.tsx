@@ -19,7 +19,7 @@ const TopNavBar = ({
 	const pathname = usePathname();
 	const [createNewFilter, setCreateNewFilter] = useState(false);
 	const [search, setSearch] = useState('');
-	const debouncedSearch = useDebounce(search, 3000);
+	const debouncedSearch = useDebounce(search, 500);
 
 	useEffect(() => {
 		setSearchFilter(debouncedSearch)
@@ -40,7 +40,7 @@ const TopNavBar = ({
 				<div className="mb-4 flex gap-3">
 					<FilterDropDown />
 					<Input
-						placeholder="Search Task"
+						placeholder="Search Tasks"
 						onChange={(e) => setSearch(e.target.value)} 
 					/>
 				</div>
