@@ -267,12 +267,7 @@ export function AssignTasksDialog({
 				<div className="flex flex-col gap-4 px-6 flex-grow overflow-hidden">
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
 						<div className="flex items-center gap-2 w-full mt-2">
-							{/* <Label
-								htmlFor="sprint"
-								className="ml-auto hidden whitespace-nowrap sm:block"
-							>
-								Sprint
-							</Label> */}
+					
 							<Select
 								onValueChange={setTargetSprint}
 								defaultValue={selectedSprintId}
