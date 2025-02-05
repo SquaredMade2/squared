@@ -73,7 +73,7 @@ const Group = ({
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
 			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
-				<Droppable droppableId={`${task.title}Subtasks`}>
+				<Droppable droppableId={`${task.identifier}Subtasks`}>
 				{(provided) => (
 					<div
 						{...provided.droppableProps}
