@@ -4,7 +4,11 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import { z } from "zod";
-import { workspaceLabelSchema, workspaceRoleEnum } from "../schema";
+import {
+	labelSchema,
+	workspaceLabelSchema,
+	workspaceRoleEnum,
+} from "../schema";
 import type { WorkspaceParams, WorkspaceRpc } from "./types";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
@@ -79,6 +83,10 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.object({ success: z.boolean() }),
 	},
+	getWorkspaceLabels: {
+		input: z.object({ workspaceId: z.string() }),
+		output: labelSchema.array(),
+	},
 });
 
 export type WorkspaceRpcSchema = typeof workspaceRpcSchema;
@@ -95,6 +103,7 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
+		getWorkspaceLabels: (input) => workspaceService.getWorkspaceLabels(input),
 	});
 
 export { WorkspaceService } from "./workspace-service";

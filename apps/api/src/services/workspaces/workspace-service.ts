@@ -2,6 +2,7 @@ import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
 import {
 	type DBClient,
+	type Label,
 	type Team,
 	type User,
 	type Workspace,
@@ -108,6 +109,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			return newWorkspace;
 		});
 	}
+
 	async getWorkspace({
 		workspaceId,
 	}: { workspaceId: string }): Promise<Workspace | null> {
@@ -174,6 +176,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		return workspaces.map((workspace) => workspace.Workspace);
 	}
+
 	async joinWorkspace({
 		token,
 		userId,
@@ -326,6 +329,18 @@ export class WorkspaceService implements WorkspaceRpc {
 			return { success: true };
 		});
 	}
+
+	async getWorkspaceLabels({
+		workspaceId,
+	}: { workspaceId: string }): Promise<Label[]> {
+		this.logger.info("Getting labels for workspace with id %s", workspaceId);
+		return await this.db
+			.select()
+			.from(workspacesTable)
+			.where(eq(workspacesTable.id, workspaceId))
+			.then((results) => results[0].labels);
+	}
+
 	private verifyToken(token: string): string | null {
 		try {
 			const decoded = jwt.verify(token, this.JWT_SECRET) as {

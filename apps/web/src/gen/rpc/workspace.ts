@@ -19,7 +19,7 @@ export type CreateWorkspaceResponse = {
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
@@ -41,7 +41,7 @@ export type GetWorkspaceResponse = {
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
@@ -63,7 +63,7 @@ export type GetWorkspaceByUrlResponse = {
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
@@ -90,7 +90,7 @@ export type UpdateWorkspaceResponse = {
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
@@ -116,7 +116,7 @@ export type GetUserWorkspacesResponse = {
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
@@ -140,7 +140,7 @@ export type JoinWorkspaceResponse = {
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
@@ -166,6 +166,16 @@ export type InviteToWorkspaceRequest = {
 export type InviteToWorkspaceResponse = {
 	success: boolean;
 };
+
+export type GetWorkspaceLabelsRequest = {
+	workspaceId: string;
+};
+
+export type GetWorkspaceLabelsResponse = {
+	color: string;
+	description?: string | null;
+	name: string;
+}[];
 
 /**
  * workspace service
@@ -260,5 +270,15 @@ export class WorkspaceService extends RPCContextClient {
 		req: InviteToWorkspaceRequest,
 	): Promise<InviteToWorkspaceResponse> {
 		return this.request(ctx, "inviteToWorkspace", req);
+	}
+
+	/**
+	 * getWorkspaceLabels method
+	 */
+	getWorkspaceLabels(
+		ctx: Context,
+		req: GetWorkspaceLabelsRequest,
+	): Promise<GetWorkspaceLabelsResponse> {
+		return this.request(ctx, "getWorkspaceLabels", req);
 	}
 }

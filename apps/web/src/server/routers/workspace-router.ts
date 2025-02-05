@@ -31,4 +31,15 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	getWorkspaceLabels: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceId } = input;
+			return c.superjson(
+				await workspaceService.getWorkspaceLabels(TODO, {
+					workspaceId: workspaceId,
+				}),
+			);
+		}),
 });

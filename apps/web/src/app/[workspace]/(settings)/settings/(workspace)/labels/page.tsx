@@ -4,11 +4,24 @@ import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { LabelsPage } from "@/components/Settings/Labels/LabelsPage";
 import { columns } from "@/components/Settings/Labels/columns";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
 import { Separator } from "@squaredmade/ui/separator";
+import { useQuery } from "@tanstack/react-query";
 
 export default function WorkspaceLabelsPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const workspaceLabels = workspace ? workspace.labels : [];
+
+	const { data: workspaceLabels = [] } = useQuery({
+		queryKey: ["workspaceLabels", workspace?.id],
+		queryFn: async () => {
+			if (!workspace) return [];
+			const labels = await client.workspace.getWorkspaceLabels
+				.$get({ workspaceId: workspace.id })
+				.then((res) => res.json());
+			return labels;
+		},
+		enabled: !!workspace,
+	});
 
 	const enhancedColumns = columns.map((col) => ({
 		...col,
