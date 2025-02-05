@@ -1,295 +1,204 @@
-import { faker } from "@faker-js/faker";
+import "dotenv/config";
 import {
-	type Label,
-	Priority,
-	Status,
+	type Branch,
+	type Comment,
+	type Commit,
+	type GithubRepoInfo,
+	type Notification,
+	type Project,
+	type RetrospectiveItem,
+	type SavedFilter,
+	type Sprint,
+	type Task,
+	type TaskEvent,
 	type Team,
-	type TransactionClient,
+	type UniversalTokenLink,
 	type User,
+	type UserTeam,
+	type UserWorkspace,
 	type Workspace,
+	type WorkspaceRepositories,
+	branchesTable,
 	commentsTable,
+	commitsTable,
 	createDb,
-	eq,
+	githubRepoInfoTable,
 	notificationsTable,
-	sql,
+	projectsTable,
+	retrospectiveItemsTable,
+	savedFiltersTable,
+	sprintsTable,
+	taskEventsTable,
 	tasksTable,
 	teamsTable,
+	universalTokenLinksTable,
 	userTeamsTable,
 	userWorkspacesTable,
 	usersTable,
+	workspaceRepositoriesTable,
 	workspacesTable,
+	createRemoteDb,
+	// remoteDb
 } from "@squared/db";
+// import * as schema from "./schema";
 import createCustomLogger from "@squared/logger";
-import "dotenv/config";
+
 
 const logger = createCustomLogger("seed");
 
-const db = createDb({ databaseUrl: process.env.DATABASE_URL });
+// const db = createDb({ databaseUrl: process.env.DATABASE_URL });
+const remoteDb = createRemoteDb({ databaseUrl: process.env.REMOTE_DATABASE_URL})
 
 async function seedDB() {
-	await db.transaction(async (tx) => {
-		const workspaces = await Promise.all([
-			addWorkspace(tx),
-			addWorkspace(tx),
-			addWorkspace(tx),
-		]);
+		console.log("RUNNING FETCH with remotedb: ")
+		const data = await remoteDb.select().from(workspacesTable)
+		console.log(data, 'REMOTE DATA IS HERE: ')
+		const data2 = await remoteDb.select().from(usersTable)
+		console.log('ALSO DATA BUT USERS: ', data2)
 
-		const user = await addMainUser(tx);
+	// interface FetchFunction<T> {
+	// 	name: string;
+	// 	fetch: () => Promise<T[]>;
+	// 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// 	insert: (data: T) => any;
+	// }
+	// // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// const migrationFunctions: FetchFunction<any>[] = [
+	// 	{
+	// 		name: "Workspaces",
+	// 		fetch: () => remoteDb.select().from(workspacesTable),
+	// 		insert: (data: Workspace[]) => db.insert(workspacesTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Users",
+	// 		fetch: () => remoteDb.select().from(usersTable),
+	// 		insert: (data: User) => db.insert(usersTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Teams",
+	// 		fetch: () => remoteDb.select().from(teamsTable),
+	// 		insert: (data: Team[]) => db.insert(teamsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Sprints",
+	// 		fetch: () => remoteDb.select().from(sprintsTable),
+	// 		insert: (data: Sprint) => db.insert(sprintsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Tasks",
+	// 		fetch: () =>
+	// 			remoteDb.select().from(tasksTable)
+	// 				.then((tasks) => tasks.sort((a) => (a.parentId ? 1 : -1))),
+	// 		insert: (data: Task[]) => db.insert(tasksTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Comments",
+	// 		fetch: () => remoteDb.select().from(commentsTable),
+	// 		insert: (data: Comment[]) => db.insert(commentsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Notifications",
+	// 		fetch: () => remoteDb.select().from(notificationsTable),
+	// 		insert: (data: Notification) =>
+	// 			db.insert(notificationsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "SavedFilters",
+	// 		fetch: () => remoteDb.select().from(savedFiltersTable),
+	// 		insert: (data: SavedFilter[]) =>
+	// 			db.insert(savedFiltersTable).values({ ...data, filter: data.filter }),
+	// 	},
+	// 	{
+	// 		name: "UniversalTokenLinks",
+	// 		fetch: () => remoteDb.select().from(universalTokenLinksTable),
+	// 		insert: (data: UniversalTokenLink) =>
+	// 			db.insert(universalTokenLinksTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "GithubRepoInfo",
+	// 		fetch: () => remoteDb.select().from(githubRepoInfoTable),
+	// 		insert: (data: GithubRepoInfo) =>
+	// 			db.insert(githubRepoInfoTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "WorkspaceRepositories",
+	// 		fetch: () => remoteDb.select().from(workspaceRepositoriesTable),
+	// 		insert: (data: WorkspaceRepositories) =>
+	// 			db.insert(workspaceRepositoriesTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Projects",
+	// 		fetch: () => remoteDb.select().from(projectsTable),
+	// 		insert: (data: Project) => db.insert(projectsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "RetrospectiveItems",
+	// 		fetch: () => remoteDb.select().from(retrospectiveItemsTable),
+	// 		insert: (data: RetrospectiveItem) =>
+	// 			db.insert(retrospectiveItemsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Branches",
+	// 		fetch: () => remoteDb.select().from(branchesTable),
+	// 		insert: (data: Branch) => db.insert(branchesTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "Commits",
+	// 		fetch: () => remoteDb.select().from(commitsTable),
+	// 		insert: (data: Commit) => db.insert(commitsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "TaskEvents",
+	// 		fetch: () => remoteDb.select().from(taskEventsTable),
+	// 		insert: (data: TaskEvent) => db.insert(taskEventsTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "UserWorkspaces",
+	// 		fetch: () => remoteDb.select().from(userWorkspacesTable),
+	// 		insert: (data: UserWorkspace) =>
+	// 			db.insert(userWorkspacesTable).values(data),
+	// 	},
+	// 	{
+	// 		name: "UserTeams",
+	// 		fetch: () => remoteDb.select().from(userTeamsTable),
+	// 		insert: (data: UserTeam) => db.insert(userTeamsTable).values(data),
+	// 	},
+	// ];
+	
+	// await remoteDb.transaction(async () => {
+	// 	console.log("INSIDE REMOTEDB TRANSACTION")
+	// 	try {
+	// 		// fetch functions
+	
+	// 		// Perform migrations
+	// 		for (const { name, fetch } of migrationFunctions) {
+	// 			console.log(`fetching ${name}...`);
+	// 			const data = await fetch();
+	// 			for (const item of data) {
+	// 				console.log('ITEM HERE: ', item)
+	// 			}
+	// 			console.log(`${name} fetched`);
+	// 		}
+	
+	// 		console.log("fetch completed successfully");
+	// 	} catch (error) {
+	// 		console.error("fetch failed:", error);
+	// 	}})
 
-		for (const workspace of workspaces) {
-			await addUserToWorkspace(tx, user, workspace, true);
-
-			const numTeams = faker.number.int({ min: 1, max: 2 });
-
-			for (let j = 0; j < numTeams; j++) {
-				const team = await addTeam(tx, workspace, user);
-				const numUsers = faker.number.int({ min: 3, max: 6 });
-				const numTasks = faker.number.int({ min: 30, max: 50 });
-				const users = [user];
-				for (let i = 0; i < numUsers; i++) {
-					const newUser = await addUser(tx);
-					await addUserToWorkspace(tx, newUser, workspace, false);
-					await addUserToTeam(tx, newUser, team);
-					users.push(newUser);
-				}
-
-				for (let l = 0; l < numTasks; l++) {
-					const author =
-						users[faker.number.int({ min: 0, max: users.length - 1 })];
-					const task = await addTask(tx, team, workspace, author);
-					const numComments = faker.number.int({ min: 0, max: 3 });
-
-					for (let c = 0; c < numComments; c++) {
-						const author =
-							users[faker.number.int({ min: 0, max: users.length - 1 })];
-						await addComment(tx, author.externalId, task.id);
-					}
-				}
-			}
-		}
-	});
+	// 	try {
+	// 		await db.transaction(async () => {
+	// 			for(const {name, insert} of migrationFunctions) {
+	// 				for(const item of fetchedData[name]) {
+	// 					await insert(item).onConflictDoNothing();
+	// 				}
+	// 			}
+	// 		})
+	// 	} catch (error) {
+	// 		console.error("inserting data failed:", error);
+	// 	}
+	// })
 
 	logger.info("Database seeding completed");
-}
-
-async function addMainUser(tx: TransactionClient) {
-	const name = process.env.SEED_NAME || faker.person.fullName();
-	const email = process.env.SEED_EMAIL || faker.internet.email();
-	const externalId = process.env.CLERK_EXTERNAL_ID || faker.internet.password();
-	const username = name.replace(" ", "");
-
-	const [user] = await tx
-		.insert(usersTable)
-		.values({
-			name: name,
-			username,
-			email,
-			externalId,
-			onBoarding: false,
-			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
-		})
-		.returning();
-	return user;
-}
-
-async function addUser(tx: TransactionClient) {
-	const firstName = faker.person.firstName();
-	const lastName = faker.person.lastName();
-	const fullName = `${firstName} ${lastName}`;
-	const username = faker.internet.username({ firstName, lastName });
-	const email = faker.internet.email({ firstName, lastName });
-	const externalId = `user_${faker.internet.password()}`;
-
-	const [user] = await tx
-		.insert(usersTable)
-		.values({
-			name: fullName,
-			username,
-			email,
-			externalId,
-			onBoarding: false,
-			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
-		})
-		.returning();
-
-	return user;
-}
-
-async function addUserToWorkspace(
-	tx: TransactionClient,
-	user: User,
-	workspace: Workspace,
-	isFirstUser: boolean,
-) {
-	await tx.insert(userWorkspacesTable).values({
-		userId: user.externalId,
-		workspaceId: workspace.id,
-		role: isFirstUser ? "owner" : "member",
-	});
-}
-
-async function addUserToTeam(tx: TransactionClient, user: User, team: Team) {
-	await tx.insert(userTeamsTable).values({
-		userId: user.externalId,
-		teamId: team.id,
-	});
-}
-
-async function addWorkspace(tx: TransactionClient) {
-	const workspaceName = faker.internet.domainWord();
-	const workspaceCompanySize = faker.number.int({ max: 1000 });
-
-	const defaultLabels = [
-		{ name: "Feature", description: "New feature", color: "#FF5733" },
-		{ name: "Bug", description: "Bug fix", color: "#C70039" },
-		{ name: "Chore", description: "General task", color: "#900C3F" },
-		{ name: "Refactor", description: "Code refactor", color: "#581845" },
-		{ name: "Docs", description: "Documentation", color: "#FFC300" },
-		{ name: "Test", description: "Testing task", color: "#DAF7A6" },
-		{ name: "Design", description: "Design related task", color: "#33FFBD" },
-	];
-
-	const [workspace] = await tx
-		.insert(workspacesTable)
-		.values({
-			name: workspaceName,
-			companySize: workspaceCompanySize,
-			url: workspaceName.split(" ").join("-").toLowerCase(),
-			labels: defaultLabels,
-		})
-		.returning();
-
-	return workspace;
-}
-
-async function addTeam(
-	tx: TransactionClient,
-	workspace: Workspace,
-	user: User,
-) {
-	const teamName = faker.internet.domainWord();
-	const teamIdentifier = faker.string.alpha({ length: 3, casing: "upper" });
-
-	const [team] = await tx
-		.insert(teamsTable)
-		.values({
-			name: teamName,
-			identifier: teamIdentifier,
-			workspaceId: workspace.id,
-		})
-		.returning();
-
-	await tx.insert(userTeamsTable).values({
-		userId: user.externalId,
-		teamId: team.id,
-	});
-
-	return team;
-}
-
-const getRandomLabels = (labels: Label[]) => {
-	const numLabels = faker.number.int({ min: 1, max: labels.length });
-	return faker.helpers.shuffle(labels).slice(0, numLabels);
-};
-
-async function addTask(
-	tx: TransactionClient,
-	team: Team,
-	workspace: Workspace,
-	user: User,
-) {
-	const taskTitle = faker.lorem.words({ min: 1, max: 3 });
-	const taskDescription = faker.lorem.words({ min: 3, max: 5 });
-	const taskStatus = faker.helpers.arrayElement([
-		Status.backlog,
-		Status.todo,
-		Status.inProgress,
-		Status.done,
-		Status.inReview,
-	]);
-	const taskPriority = faker.helpers.arrayElement([
-		Priority.noPriority,
-		Priority.urgent,
-		Priority.high,
-		Priority.medium,
-		Priority.low,
-	]);
-
-	const taskLabels = workspace.labels;
-
-	const taskDueDate = faker.date.future();
-	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);
-
-	const [updatedWorkspace] = await tx
-		.update(workspacesTable)
-		.set({ tasksCreated: sql`${workspacesTable.tasksCreated} + 1` })
-		.where(eq(workspacesTable.id, workspace.id))
-		.returning();
-
-	const identifier = `${team.identifier}-${updatedWorkspace.tasksCreated + 1}`;
-	const randomLabelIds = getRandomLabels(taskLabels);
-
-	const data = {
-		authorId: user.externalId,
-		title: taskTitle,
-		description: taskDescription,
-		status: taskStatus,
-		priority: taskPriority,
-		dueDate: taskDueDate,
-		effortEstimate: taskEffortEstimate,
-		identifier: identifier,
-		teamId: team.id,
-		assigneeId: user.externalId,
-		labels: randomLabelIds,
-		workspaceId: workspace.id,
-	};
-
-	const [task] = await tx
-		.insert(tasksTable)
-		.values({
-			...data,
-		})
-		.returning();
-
-	await addNotification(tx, user.externalId, task.id, workspace.id);
-
-	return task;
-}
-
-async function addComment(
-	tx: TransactionClient,
-	userId: string,
-	taskId: string,
-) {
-	const commentContent = faker.lorem.words({ min: 3, max: 5 });
-	await tx.insert(commentsTable).values({
-		comment: commentContent,
-		authorId: userId,
-		taskId: taskId,
-	});
-}
-
-async function addNotification(
-	tx: TransactionClient,
-	userId: string,
-	taskId: string,
-	workspaceId: string,
-) {
-	await tx.insert(notificationsTable).values({
-		userId,
-		taskId,
-		workspaceId,
-		read: faker.datatype.boolean(),
-		saved: faker.datatype.boolean(),
-		description: faker.lorem.sentence(),
-		dismissed: faker.datatype.boolean(),
-		type: faker.helpers.arrayElement([
-			"ASSIGNED",
-			"PARTICIPATING",
-			"MENTIONED",
-			"CREATED",
-		]),
-	});
 }
 
 seedDB().catch((e) => {
