@@ -341,6 +341,42 @@ export class WorkspaceService implements WorkspaceRpc {
 			.then((results) => results[0].labels);
 	}
 
+	async deleteWorkspaceLabel({
+		workspaceId,
+		labelName,
+	}: { workspaceId: string; labelName: string }): Promise<{
+		success: boolean;
+	}> {
+		this.logger.info(
+			"Deleting label %s for workspace with id %s",
+			labelName,
+			workspaceId,
+		);
+
+		return await this.db.transaction(async (tx) => {
+			const workspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.then((results) => results[0]);
+
+			if (!workspace) {
+				this.throwError("Workspace not found.");
+			}
+
+			const updatedLabels = workspace.labels.filter(
+				(label) => label.name !== labelName,
+			);
+
+			await tx
+				.update(workspacesTable)
+				.set({ labels: updatedLabels })
+				.where(eq(workspacesTable.id, workspaceId));
+
+			return { success: true };
+		});
+	}
+
 	private verifyToken(token: string): string | null {
 		try {
 			const decoded = jwt.verify(token, this.JWT_SECRET) as {

@@ -42,4 +42,16 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	deleteWorkspaceLabel: privateProcedure
+		.input(z.object({ workspaceId: z.string(), labelName: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceId, labelName } = input;
+			const { workspaceService } = ctx;
+			return c.superjson(
+				await workspaceService.deleteWorkspaceLabel(TODO, {
+					workspaceId,
+					labelName,
+				}),
+			);
+		}),
 });

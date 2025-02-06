@@ -25,7 +25,11 @@ export default function WorkspaceLabelsPage() {
 
 	const enhancedColumns = columns.map((col) => ({
 		...col,
-		meta: { page: "workspaceLabels" },
+		meta: {
+			page: "workspaceLabels",
+			pageId: workspace?.id,
+			workspaceLabels: workspaceLabels,
+		},
 	}));
 
 	if (workspaceLoading) {

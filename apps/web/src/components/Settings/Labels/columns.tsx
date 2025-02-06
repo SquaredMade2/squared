@@ -47,10 +47,18 @@ export const columns: ColumnDef<Label>[] = [
 	},
 	{
 		accessorKey: "delete",
-		cell: ({ row }) => {
-			const label = row.original;
+		cell: ({ row, column }) => {
+			const labelName = row.original.name;
+			const { pageId, labels, refetch } = column.columnDef.meta || {};
 
-			return <DeleteLabelButton label={label} />;
+			return (
+				<DeleteLabelButton
+					labelName={labelName}
+					pageId={pageId}
+					labels={labels}
+					refetch={refetch}
+				/>
+			);
 		},
 	},
 ];

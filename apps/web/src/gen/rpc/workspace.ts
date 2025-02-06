@@ -177,6 +177,15 @@ export type GetWorkspaceLabelsResponse = {
 	name: string;
 }[];
 
+export type DeleteWorkspaceLabelRequest = {
+	labelName: string;
+	workspaceId: string;
+};
+
+export type DeleteWorkspaceLabelResponse = {
+	success: boolean;
+};
+
 /**
  * workspace service
  */
@@ -280,5 +289,15 @@ export class WorkspaceService extends RPCContextClient {
 		req: GetWorkspaceLabelsRequest,
 	): Promise<GetWorkspaceLabelsResponse> {
 		return this.request(ctx, "getWorkspaceLabels", req);
+	}
+
+	/**
+	 * deleteWorkspaceLabel method
+	 */
+	deleteWorkspaceLabel(
+		ctx: Context,
+		req: DeleteWorkspaceLabelRequest,
+	): Promise<DeleteWorkspaceLabelResponse> {
+		return this.request(ctx, "deleteWorkspaceLabel", req);
 	}
 }
