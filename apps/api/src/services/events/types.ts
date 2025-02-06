@@ -53,7 +53,7 @@ export interface EventRpc {
 		notificationIds: string[];
 		read?: boolean;
 		dismissed?: boolean;
-	}) => Promise<Notification[]>;
+	}) => Promise<FullNotification[]>;
 	deleteNotification: ({
 		notificationIds,
 	}: { notificationIds: string[] }) => Promise<void>;

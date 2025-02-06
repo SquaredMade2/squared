@@ -78,7 +78,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			read: z.boolean().optional(),
 			dismissed: z.boolean().optional(),
 		}),
-		output: z.array(notificationSchema),
+		output: z.array(fullNotificationSchema),
 	},
 	deleteNotification: {
 		input: z.object({ notificationIds: z.array(z.string()) }),

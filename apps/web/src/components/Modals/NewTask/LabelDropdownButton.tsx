@@ -10,10 +10,10 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
 import { Check, Tag } from "lucide-react";
@@ -76,13 +76,13 @@ export const LabelDropdownButton = () => {
 	};
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
+		<DropdownMenu open={open} onOpenChange={setOpen}>
+			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="mr-2 w-full max-w-full">
 					{renderLabelButton()}
 				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="w-[170px] p-0" side="left" align="start">
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="w-[170px] p-0" side="left" align="start">
 				<Command>
 					<CommandInput placeholder="Search labels..." />
 					<CommandList>
@@ -104,7 +104,7 @@ export const LabelDropdownButton = () => {
 						</CommandGroup>
 					</CommandList>
 				</Command>
-			</PopoverContent>
-		</Popover>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };

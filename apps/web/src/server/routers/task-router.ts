@@ -1,3 +1,4 @@
+import { client } from "@/lib/client";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import { z } from "zod";
@@ -296,6 +297,27 @@ export const taskRouter = router({
 					title,
 					description,
 					updaterId: user.id,
+				}),
+			);
+		}),
+	updateSubtaskOrder: privateProcedure
+		.input(
+			z.object({
+				parentId: z.string(),
+				newOrder: z.string().array(),
+				teamId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { parentId, newOrder, teamId } = input;
+			await taskService.reorderSubtasks(TODO, {
+				parentId,
+				newOrder,
+			});
+			return c.superjson(
+				await taskService.getTeamTasks(TODO, {
+					teamId,
 				}),
 			);
 		}),
