@@ -17,17 +17,17 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-export const createDb = ({ databaseUrl, isLocal = false }: { databaseUrl?: string, isLocal?: boolean }) => {
+export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLocal?: boolean }) => {
 	// Function to create the database connection
 	const config = {
 		databaseUrl:
 			databaseUrl ||
 			process.env.DATABASE_URL ||
 			"postgres://squared:squared@localhost:5432/squared-test?sslmode=disable",
-		localDb: process.env.LOCAL_DB || isLocal,
+		localDb: isLocal === undefined ?  ( process.env.LOCAL_DB || false) : isLocal,
 		nodeEnv: process.env.NODE_ENV || "test",
 	};
-	
+
 	neonConfig.webSocketConstructor = ws;
 
 	if (config.localDb) {
