@@ -49,7 +49,6 @@ async function seedDB() {
 		databaseUrl: process.env.REMOTE_DATABASE_URL,
 		isLocal: false,
 	});
-	console.log("RUNNING FETCH:");
 
 	interface FetchFunction<T> {
 		name: string;
