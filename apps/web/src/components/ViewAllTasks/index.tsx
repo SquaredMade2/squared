@@ -5,11 +5,14 @@ import { useState } from "react";
 import { RenameModal } from "../Modals";
 import GroupColumn from "./GroupColumn";
 import TaskColumnTitle from "./TaskColumnTitle";
+import { useFilterStore } from "@/store";
+
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	const { view, displayOptions } = useViewStore((state) => state);
 	const [showTasks, setShowTasks] = useState(true);
+	const { filterSearchTasks } = useFilterStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const pathname = usePathname();
 
@@ -25,7 +28,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	];
 
 	let groupedColumns = getGroupedColumns();
-
+	
 	if (groupTasksBy === "Status") {
 		if (pathname.includes("/active")) {
 			groupedColumns = groupedColumns.filter((column) =>
@@ -43,6 +46,13 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	}
 
 	const isListView = view === "list";
+
+	groupedColumns = groupedColumns
+	.map((column) => ({
+		...column,
+		tasks: filterSearchTasks(column.tasks),
+	}))
+	.filter((column) => column.tasks.length > 0); 
 
 	return (
 		<>
