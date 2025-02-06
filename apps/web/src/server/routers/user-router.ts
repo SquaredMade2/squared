@@ -96,4 +96,11 @@ export const userRouter = router({
 				}),
 			);
 		}),
+	getWorkspaceAvatars: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { userService } = ctx;
+			const { workspaceId } = input;
+			return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
+		}),
 });
