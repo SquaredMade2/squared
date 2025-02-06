@@ -30,6 +30,7 @@ export type FilterState = {
 	currentFilterTypes: string[];
 	savedFilters: SavedFilter[];
 	showSaveForm: boolean;
+	searchFilterValue: string
 };
 
 export interface FilterResponse {
@@ -54,6 +55,8 @@ type FilterActions = {
 		newFilters: FilterCondition[],
 		savedFilterId: string,
 	) => FilterCondition[];
+	setSearchFilter: (value: string) => void;
+	filterSearchTasks: (tasks: Task[]) => Task[];
 };
 
 export type FilterStore = FilterState & FilterActions;
