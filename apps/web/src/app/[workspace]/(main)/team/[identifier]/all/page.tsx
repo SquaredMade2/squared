@@ -16,6 +16,7 @@ export default function AllTasksPage() {
 	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } =
 		useGroups(filterTasks);
 
+
 	if (!workspace) return null;
 	return (
 		<TaskPageLayout
