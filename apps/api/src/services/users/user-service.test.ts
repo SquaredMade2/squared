@@ -60,7 +60,12 @@ describe("User Service Tests", () => {
 	});
 
 	it("updates a user's name and username", async () => {
-		const { userId } = await getUserAndTeamIDs();
+		const user = await db.query.usersTable.findFirst();
+		if (!user) {
+			throw new Error("no users in database");
+		}
+		const prev = user;
+
 		const updatedUserArgs = {
 			name: "Updated User",
 			username: "updated-user-123",
@@ -69,36 +74,52 @@ describe("User Service Tests", () => {
 		const response = await request(app)
 			.post(endpoints.updateUser)
 			.send({
-				userId,
+				userId: user.externalId,
 				...updatedUserArgs,
 			});
 
 		const updatedUser = await db
 			.select()
 			.from(usersTable)
-			.where(eq(usersTable.externalId, userId))
+			.where(eq(usersTable.id, user.id))
 			.then((user) => user[0])
 			.then(serializeUserDates);
 
 		expect(response.body).toMatchObject(updatedUser);
+
+		try {
+			await db.update(usersTable).set(prev).where(eq(usersTable.id, user.id));
+		} catch (e) {
+			throw new Error(`failed to restore updated user: ${e}`);
+		}
 	});
 
 	it("updates a user's avatar url", async () => {
-		const { userId } = await getUserAndTeamIDs();
+		const user = await db.query.usersTable.findFirst();
+		if (!user) {
+			throw new Error("no users in database");
+		}
+		const prev = user;
 		const newAvatarUrl =
 			"https://api.dicebear.com/9.x/thumbs/svg?eyes=variant9W16";
 
 		const response = await request(app)
 			.post(endpoints.updateUserAvatar)
-			.send({ userId, avatarUrl: newAvatarUrl });
+			.send({ userId: user.externalId, avatarUrl: newAvatarUrl });
 
 		const updatedUser = await db
 			.select()
 			.from(usersTable)
-			.where(eq(usersTable.externalId, userId))
+			.where(eq(usersTable.externalId, user.externalId))
 			.then((user) => user[0]);
 
 		expect(response.body.avatarUrl).toBe(updatedUser.avatarUrl);
+
+		try {
+			await db.update(usersTable).set(prev).where(eq(usersTable.id, user.id));
+		} catch (e) {
+			throw new Error(`failed to restore updated user: ${e}`);
+		}
 	});
 
 	it("updates a user's notification ids", async () => {
