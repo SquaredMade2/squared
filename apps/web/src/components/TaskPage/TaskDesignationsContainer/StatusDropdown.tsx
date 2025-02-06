@@ -11,11 +11,10 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
-import { eventService } from "@/lib/services";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
-import { TODO } from "@squared/context";
-import type { Status, TaskEvent } from "@squared/db";
+import { parseError } from "@/utils/parseError";
+import type { Status } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
@@ -43,17 +42,15 @@ const StatusDropdown = () => {
 				.then((res) => res.json());
 			setCurrentTask({ ...currentTask, status: newStatus });
 			updateTask({ ...currentTask, status: newStatus });
-			const updatedEvents = await eventService.getTaskEvents(TODO, {
-				taskId: taskId,
-			});
-			// TODO: Will remove type coercion once commits are implemented
-			setEvents(updatedEvents as TaskEvent[]);
+			setEvents(
+				await client.event.getEvents.$get({ taskId }).then((res) => res.json()),
+			);
 			return res;
 		},
 		onError: (error) => {
 			toast({
 				title: "Error updating status",
-				description: error.message,
+				description: parseError(error),
 				variant: "destructive",
 			});
 		},
