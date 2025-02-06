@@ -1,9 +1,9 @@
+import { client } from "@/lib/client";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
-import { client } from "@/lib/client";
 
 const statusEnum = z.enum([
 	"backlog",
@@ -314,11 +314,11 @@ export const taskRouter = router({
 			await taskService.reorderSubtasks(TODO, {
 				parentId,
 				newOrder,
-			})
+			});
 			return c.superjson(
 				await taskService.getTeamTasks(TODO, {
-					teamId
-				})
+					teamId,
+				}),
 			);
 		}),
 });
