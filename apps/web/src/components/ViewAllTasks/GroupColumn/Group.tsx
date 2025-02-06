@@ -5,6 +5,7 @@ import {
 	useViewStore,
 } from "@/store";
 import { orderTasks } from "@/utils/compareSorting";
+import { Droppable } from "@hello-pangea/dnd";
 import type { Task } from "@squared/db";
 import { usePathname } from "next/navigation";
 import TaskCard from "../TaskCard";
@@ -72,22 +73,35 @@ const Group = ({
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
 			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
-				<div
-					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
-						isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
-					}`}
-				>
-					{subtasks.map((subtask, subIndex) => (
-						<TaskCard
-							key={subtask.id}
-							task={subtask}
-							index={subIndex}
-							location={"dashboard"}
-							isSubtask={true}
-							isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
-						/>
-					))}
-				</div>
+				<Droppable droppableId={`${task.identifier}Subtasks`}>
+					{(provided) => (
+						<div
+							{...provided.droppableProps}
+							ref={provided.innerRef}
+							className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+								isListView
+									? "w-full rounded-b-lg px-2 pb-2"
+									: "w-72 rounded-lg p-2"
+							}`}
+						>
+							{subtasks
+								.toSorted((a, b) => a.order - b.order)
+								.map((subtask, subIndex) => (
+									<TaskCard
+										key={subtask.id}
+										task={subtask}
+										index={subIndex}
+										location={"dashboard"}
+										isSubtask={true}
+										isDisabled={
+											!!allBlockedTaskIds.find((id) => id === subtask.id)
+										}
+									/>
+								))}
+							{provided.placeholder}
+						</div>
+					)}
+				</Droppable>
 			)}
 		</div>
 	);
