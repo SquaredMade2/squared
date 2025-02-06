@@ -3,7 +3,7 @@ import {
 	type Branch,
 	type Comment,
 	type Commit,
-	type Database,
+	type DBClient,
 	type GithubRepoInfo,
 	type Notification,
 	type Project,
@@ -47,7 +47,7 @@ const logger = createCustomLogger("seed");
 async function seedDB() {
 	const remoteDb = createDb({
 		databaseUrl: process.env.REMOTE_DATABASE_URL,
-		isLocal: false,
+		defaultLocalValue: false,
 	});
 
 	logger.info("Fetching Remote Data");
@@ -62,94 +62,94 @@ async function seedDB() {
 		{
 			name: "Workspaces",
 			fetch: () => remoteDb.select().from(workspacesTable),
-			insert: ({data, db}: {data: Workspace[], db: Database}) => db.insert(workspacesTable).values(data),
+			insert: ({data, db}: {data: Workspace[], db: DBClient}) => db.insert(workspacesTable).values(data),
 		},
 		{
 			name: "Users",
 			fetch: () => remoteDb.select().from(usersTable),
-			insert: ({data, db}: {data: User[], db: Database}) => db.insert(usersTable).values(data),
+			insert: ({data, db}: {data: User[], db: DBClient}) => db.insert(usersTable).values(data),
 		},
 		{
 			name: "Teams",
 			fetch: () => remoteDb.select().from(teamsTable),
-			insert: ({ data, db }: { data: Team[], db: Database }) => db.insert(teamsTable).values(data),
+			insert: ({ data, db }: { data: Team[], db: DBClient }) => db.insert(teamsTable).values(data),
 	},
 	{
 			name: "Sprints",
 			fetch: () => remoteDb.select().from(sprintsTable),
-			insert: ({ data, db }: { data: Sprint[], db: Database }) => db.insert(sprintsTable).values(data),
+			insert: ({ data, db }: { data: Sprint[], db: DBClient }) => db.insert(sprintsTable).values(data),
 	},
 	{
 			name: "Tasks",
 			fetch: () =>
 					remoteDb.select().from(tasksTable)
 							.then((tasks) => tasks.sort((a) => (a.parentId ? 1 : -1))),
-			insert: ({ data, db }: { data: Task[], db: Database }) => db.insert(tasksTable).values(data),
+			insert: ({ data, db }: { data: Task[], db: DBClient }) => db.insert(tasksTable).values(data),
 	},
 	{
 			name: "Comments",
 			fetch: () => remoteDb.select().from(commentsTable),
-			insert: ({ data, db }: { data: Comment[], db: Database }) => db.insert(commentsTable).values(data),
+			insert: ({ data, db }: { data: Comment[], db: DBClient }) => db.insert(commentsTable).values(data),
 	},
 	{
 			name: "Notifications",
 			fetch: () => remoteDb.select().from(notificationsTable),
-			insert: ({ data, db }: { data: Notification[], db: Database }) => db.insert(notificationsTable).values(data),
+			insert: ({ data, db }: { data: Notification[], db: DBClient }) => db.insert(notificationsTable).values(data),
 	},
 	{
 			name: "SavedFilters",
 			fetch: () => remoteDb.select().from(savedFiltersTable),
-			insert: ({ data, db }: { data: SavedFilter[], db: Database }) => db.insert(savedFiltersTable).values(data),
+			insert: ({ data, db }: { data: SavedFilter[], db: DBClient }) => db.insert(savedFiltersTable).values(data),
 	},
 	{
 			name: "UniversalTokenLinks",
 			fetch: () => remoteDb.select().from(universalTokenLinksTable),
-			insert: ({ data, db }: { data: UniversalTokenLink[], db: Database }) => db.insert(universalTokenLinksTable).values(data),
+			insert: ({ data, db }: { data: UniversalTokenLink[], db: DBClient }) => db.insert(universalTokenLinksTable).values(data),
 	},
 	{
 			name: "GithubRepoInfo",
 			fetch: () => remoteDb.select().from(githubRepoInfoTable),
-			insert: ({ data, db }: { data: GithubRepoInfo[], db: Database }) => db.insert(githubRepoInfoTable).values(data),
+			insert: ({ data, db }: { data: GithubRepoInfo[], db: DBClient }) => db.insert(githubRepoInfoTable).values(data),
 	},
 	{
 			name: "WorkspaceRepositories",
 			fetch: () => remoteDb.select().from(workspaceRepositoriesTable),
-			insert: ({ data, db }: { data: WorkspaceRepositories[], db: Database }) => db.insert(workspaceRepositoriesTable).values(data),
+			insert: ({ data, db }: { data: WorkspaceRepositories[], db: DBClient }) => db.insert(workspaceRepositoriesTable).values(data),
 	},
 	{
 			name: "Projects",
 			fetch: () => remoteDb.select().from(projectsTable),
-			insert: ({ data, db }: { data: Project[], db: Database }) => db.insert(projectsTable).values(data),
+			insert: ({ data, db }: { data: Project[], db: DBClient }) => db.insert(projectsTable).values(data),
 	},
 	{
 			name: "RetrospectiveItems",
 			fetch: () => remoteDb.select().from(retrospectiveItemsTable),
-			insert: ({ data, db }: { data: RetrospectiveItem[], db: Database }) => db.insert(retrospectiveItemsTable).values(data),
+			insert: ({ data, db }: { data: RetrospectiveItem[], db: DBClient }) => db.insert(retrospectiveItemsTable).values(data),
 	},
 	{
 			name: "Branches",
 			fetch: () => remoteDb.select().from(branchesTable),
-			insert: ({ data, db }: { data: Branch[], db: Database }) => db.insert(branchesTable).values(data),
+			insert: ({ data, db }: { data: Branch[], db: DBClient }) => db.insert(branchesTable).values(data),
 	},
 	{
 			name: "Commits",
 			fetch: () => remoteDb.select().from(commitsTable),
-			insert: ({ data, db }: { data: Commit[], db: Database }) => db.insert(commitsTable).values(data),
+			insert: ({ data, db }: { data: Commit[], db: DBClient }) => db.insert(commitsTable).values(data),
 	},
 	{
 			name: "TaskEvents",
 			fetch: () => remoteDb.select().from(taskEventsTable),
-			insert: ({ data, db }: { data: TaskEvent[], db: Database }) => db.insert(taskEventsTable).values(data),
+			insert: ({ data, db }: { data: TaskEvent[], db: DBClient }) => db.insert(taskEventsTable).values(data),
 	},
 	{
 			name: "UserWorkspaces",
 			fetch: () => remoteDb.select().from(userWorkspacesTable),
-			insert: ({ data, db }: { data: UserWorkspace[], db: Database }) => db.insert(userWorkspacesTable).values(data),
+			insert: ({ data, db }: { data: UserWorkspace[], db: DBClient }) => db.insert(userWorkspacesTable).values(data),
 	},
 	{
 			name: "UserTeams",
 			fetch: () => remoteDb.select().from(userTeamsTable),
-			insert: ({ data, db }: { data: UserTeam[], db: Database }) => db.insert(userTeamsTable).values(data),
+			insert: ({ data, db }: { data: UserTeam[], db: DBClient }) => db.insert(userTeamsTable).values(data),
 	},
 	];
 

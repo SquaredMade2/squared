@@ -1,12 +1,11 @@
 import { Pool, neonConfig } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import { type NeonQueryResultHKT, drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
+import { type NeonQueryResultHKT, drizzle } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import ws from "ws";
 import * as schema from "./schema";
 export * from "drizzle-orm";
 export * from "./schema";
-export type Database = NeonDatabase
 export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
 export type TransactionClient = PgTransaction<
 	NeonQueryResultHKT,
@@ -17,14 +16,14 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLocal?: boolean }) => {
+export const createDb = ({ databaseUrl, defaultLocalValue = true }: { databaseUrl?: string, defaultLocalValue?: boolean }) => {
 	// Function to create the database connection
 	const config = {
 		databaseUrl:
 			databaseUrl ||
 			process.env.DATABASE_URL ||
 			"postgres://squared:squared@localhost:5432/squared-test?sslmode=disable",
-		localDb: isLocal === undefined ?  ( process.env.LOCAL_DB || false) : isLocal,
+		localDb: defaultLocalValue ? process.env.LOCAL_DB : false,
 		nodeEnv: process.env.NODE_ENV || "test",
 	};
 
