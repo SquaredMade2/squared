@@ -24,6 +24,11 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 	const { state } = useSidebar();
 	const { user } = useUser();
 	const { workspace } = useWorkspaceStore((state) => state);
+
+	const isUserWorkspaceAdmin = workspace?.admins.filter(
+		(admin) => admin === user?.id,
+	);
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -56,6 +61,15 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 						<span>Profile Settings</span>
 					</Link>
 				</DropdownMenuItem>
+				{/* This should only show for workspace owners and admins */}
+				{isUserWorkspaceAdmin && (
+					<DropdownMenuItem asChild>
+						<Button onClick={handleClick}>
+							<Settings className="mr-2 h-4 w-4" />
+							<span>Invite People</span>
+						</Button>
+					</DropdownMenuItem>
+				)}
 				<DropdownMenuItem onClick={onLogout}>
 					<LogOut className="mr-2 h-4 w-4" />
 					<span>Log out</span>
