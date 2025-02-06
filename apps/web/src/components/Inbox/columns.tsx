@@ -1,9 +1,9 @@
-import { eventService, userService, workspaceService } from "@/lib/services";
-import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
+import { client } from "@/lib/client";
+import { useEventStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
+import { useMutation } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
@@ -43,16 +43,11 @@ export const columns: ColumnDef<
 		id: "content",
 		cell: ({ row }) => {
 			const router = useRouter();
-			const { workspace } = useWorkspaceStore((state) => state);
 			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
-			const { userAvatars, user } = useUserStore((state) => state);
+			const { userAvatars } = useUserStore((state) => state);
 
 			const taskId = taskIdentifier.split("-")[1];
-			const {
-				name: workspaceName,
-				url: workspaceUrl,
-				id: workspaceId,
-			} = row.original.Workspace;
+			const { name: workspaceName, url: workspaceUrl } = row.original.Workspace;
 			const read = !row.original.read;
 			const type = row.original.type;
 			const avatars = userAvatars.filter(
@@ -61,31 +56,24 @@ export const columns: ColumnDef<
 					id === row.original.Task.authorId,
 			);
 
-			const handleClick = async () => {
-				eventService.toggleNotification(TODO, {
-					notificationIds: [row.original.id],
-					read: true,
-				});
-				if (workspace?.id === workspaceId) {
+			const { mutate: handleMarkAsUnread } = useMutation({
+				mutationKey: ["markAsUnread", row.original.id],
+				mutationFn: async () => {
+					await client.notification.markAsUnread.$post({
+						notificationIds: [row.original.id],
+					});
+				},
+				onSuccess: async () => {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 					);
-				} else {
-					const newWorkspace = await workspaceService.getWorkspace(TODO, {
-						workspaceId,
-					});
-					if (newWorkspace && user) {
-						router.push(
-							`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
-						);
-					}
-				}
-			};
+				},
+			});
 
 			return (
 				<div
 					className="flex w-full cursor-pointer items-start gap-4 sm:items-center"
-					onClick={handleClick}
+					onClick={() => handleMarkAsUnread()}
 				>
 					<div className="mt-2 flex h-full items-center sm:mt-0">
 						<StatusIcon status={row.original.Task.status} />
@@ -137,26 +125,26 @@ export const columns: ColumnDef<
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 			const { setNotifications } = useEventStore((state) => state);
 
-			const handleDismiss = async () => {
-				await eventService.toggleNotification(TODO, {
-					notificationIds: [row.original.id],
-					dismissed: true,
-				});
-				if (user) {
-					const updatedNotifications = await eventService.getNotifications(
-						TODO,
-						{
-							userId: user.id,
-						},
-					);
+			const { mutate: handleMarkAsDismissed } = useMutation({
+				mutationKey: ["markAsDismissed", row.original.id],
+				mutationFn: async () => {
+					return await client.notification.dismiss
+						.$post({
+							notificationIds: [row.original.id],
+						})
+						.then((res) => res.json());
+				},
+				onSuccess: (updatedNotifications) => {
 					setNotifications(updatedNotifications);
-				}
-			};
+				},
+			});
 
 			const handleDelete = async () => {
-				await eventService.deleteNotification(TODO, {
-					notificationIds: [row.original.id],
-				});
+				await client.notification.delete
+					.$post({
+						notificationIds: [row.original.id],
+					})
+					.then((res) => res.json());
 			};
 
 			const toggleSubscribe = async () => {
@@ -165,16 +153,9 @@ export const columns: ColumnDef<
 			};
 
 			const handleSave = async () => {
-				if (user) {
-					await userService.updateUserNotifications(TODO, {
-						userId: user.externalId,
-						notificationIds: saved
-							? user.savedNotificationIds?.filter(
-									(id) => id !== row.original.id,
-								)
-							: [...(user.savedNotificationIds || []), row.original.id],
-					});
-				}
+				await client.notification.updateUserNotifications.$post({
+					notificationIds: [row.original.id],
+				});
 			};
 
 			return (
@@ -189,8 +170,10 @@ export const columns: ColumnDef<
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
-											onClick={
-												row.original.dismissed ? handleDelete : handleDismiss
+											onClick={() =>
+												row.original.dismissed
+													? handleDelete()
+													: handleMarkAsDismissed()
 											}
 											variant="secondary"
 											size="icon"

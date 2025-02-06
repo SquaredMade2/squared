@@ -27,6 +27,11 @@ import {
 	useRef,
 	useState,
 } from "react";
+
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useMutation } from "@tanstack/react-query";
+
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -68,11 +73,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentTask = useTaskStore((state) => state.currentTask);
-	const users = useUserStore((state) => state.users);
-	const currentUser = useUser().user;
-	const { toast } = useToast();
-	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -87,22 +87,23 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
 	// Functions
-
-	const addCommentToTask = async () => {
-		try {
-			if (currentUser && task) {
+	const { mutate: addCommentToTask } = useMutation({
+		mutationKey: ["addComment", task?.id],
+		mutationFn: async () => {
+			if (task) {
 				if (checkIfSlateEmpty(editor)) {
 					return;
 				}
 				const newComment = {
 					comment: handleFormatSlateToComment(editorContent),
-					authorId: currentUser.id,
 					date: new Date(),
 					taskId: task.id,
 				};
-				setComments(
-					await commentService.addComment(TODO, { comment: newComment }),
-				);
+				// setComments(
+				// 	await client.comment.addComment
+				// 		.$post(newComment)
+				// 		.then((res) => res.json()),
+				// );
 				const mentions = getMentionsFromSlate(editorContent);
 
 				if (currentTask) {
@@ -143,10 +144,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					variant: "destructive",
 				});
 			}
-		} catch (err) {
-			throw new Error(`Could not find user data and current task: ${err}`);
-		}
-	};
+		},
+		onError: (error) => {
+			toast({
+				title: "Error adding comment",
+				description: parseError(error),
+				variant: "destructive",
+			});
+		},
+	});
 
 	const handleMentionKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "@") {
@@ -457,5 +463,5 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 export default TextEditor;
 
-export { Leaf, TextEditorToolBar, HeaderElement, CodeLeaf };
 export * from "./interfaces";
+export { CodeLeaf, HeaderElement, Leaf, TextEditorToolBar };
