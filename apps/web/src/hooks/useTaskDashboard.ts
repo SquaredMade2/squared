@@ -102,14 +102,11 @@ export function useTaskDashboard() {
 			);
 			const [reorderedItem] = items.splice(source.index, 1);
 			items.splice(destination.index, 0, reorderedItem);
-			await client.task.updateSubtaskOrder.$post({
+			const teamTasks = await client.task.updateSubtaskOrder.$post({
 				parentId: draggedTask.parentId,
 				newOrder: items.map((item) => item.id),
-			});
-			const teamTasksReq = await client.task.getAllTasks.$get({
-				teamId: team.id,
-			});
-			const teamTasks = await teamTasksReq.json();
+				teamId: team.id
+			}).then((res) => res.json());
 			setTasks(teamTasks);
 			return;
 		}

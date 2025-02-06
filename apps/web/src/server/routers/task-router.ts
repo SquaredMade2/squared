@@ -3,6 +3,7 @@ import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
+import { client } from "@/lib/client";
 
 const statusEnum = z.enum([
 	"backlog",
@@ -304,16 +305,20 @@ export const taskRouter = router({
 			z.object({
 				parentId: z.string(),
 				newOrder: z.string().array(),
+				teamId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
-			const { parentId, newOrder } = input;
+			const { parentId, newOrder, teamId } = input;
+			await taskService.reorderSubtasks(TODO, {
+				parentId,
+				newOrder,
+			})
 			return c.superjson(
-				await taskService.reorderSubtasks(TODO, {
-					parentId,
-					newOrder,
-				}),
+				await taskService.getTeamTasks(TODO, {
+					teamId
+				})
 			);
 		}),
 });
