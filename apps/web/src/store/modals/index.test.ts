@@ -21,6 +21,8 @@ describe("ModalStore", () => {
 			showTaskSelector: false,
 			showLinkForm: false,
 			newTaskData: {},
+			showLabelModal: false,
+			labelData: {},
 			setShowLinkForm: expect.any(Function),
 			setShowNewTask: expect.any(Function),
 			setShowRename: expect.any(Function),
@@ -30,6 +32,8 @@ describe("ModalStore", () => {
 			setShowWorkspaceInvite: expect.any(Function),
 			setShowSwitchWorkspace: expect.any(Function),
 			setShowTaskSelector: expect.any(Function),
+			setShowLabelModal: expect.any(Function),
+			setLabelData: expect.any(Function),
 		});
 	});
 
