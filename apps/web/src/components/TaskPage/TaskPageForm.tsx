@@ -129,7 +129,7 @@ export const TaskPageForm = () => {
 				)}
 			</div>
 			<Textarea
-				className="mt-2 mb-2 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
+				className="mt-2 mb-2 min-h-40 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
 				placeholder={"Add description..."}
 				onChange={handleDescriptionChange}
 				value={updatedDescription ?? ""}
