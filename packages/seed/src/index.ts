@@ -50,6 +50,7 @@ async function seedDB() {
 		isLocal: false,
 	});
 
+	logger.info("Fetching Remote Data");
 	interface FetchFunction<T> {
 		name: string;
 		fetch: () => Promise<T[]>;
@@ -155,21 +156,21 @@ async function seedDB() {
 	const remoteData = await remoteDb.transaction(async () => {
 		try {
 			// fetch functions
-			const remoteData: Table[][] = []
+			const fetchedData: Table[][] = []
 			for (let i = 0; i < fetchAndInsertFunctions.length; i++) {
 				const {name, fetch} = fetchAndInsertFunctions[i]
 				logger.info(`fetching ${name}...`);
 				const data = await fetch();
-				remoteData.push([])
+				fetchedData.push([])
 				for (let j = 0; j < data.length; j++) {
-					remoteData[i].push(data[j])
+					fetchedData[i].push(data[j])
 				}
 			}
 			
 			logger.info("fetch completed successfully");
-			return remoteData
+			return fetchedData
 		} catch (error) {
-			console.error("fetch failed:", error);
+			logger.error("fetch failed:", error);
 		}})
 
 
@@ -189,7 +190,7 @@ async function seedDB() {
 			})
 			logger.info("insertions completed successfully")
 		} catch (error) {
-			console.error("inserting data failed:", error);
+			logger.error("inserting data failed:", error);
 		}
 		logger.info("Database seeding completed");
 	}

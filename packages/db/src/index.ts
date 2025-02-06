@@ -17,18 +17,18 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLocal?: boolean }) => {
+export const createDb = ({ databaseUrl, isLocal = false }: { databaseUrl?: string, isLocal?: boolean }) => {
 	// Function to create the database connection
 	const config = {
 		databaseUrl:
 			databaseUrl ||
 			process.env.DATABASE_URL ||
 			"postgres://squared:squared@localhost:5432/squared-test?sslmode=disable",
-		localDb: isLocal === undefined ?  ( process.env.LOCAL_DB || false) : isLocal,
+		localDb: process.env.LOCAL_DB || isLocal,
 		nodeEnv: process.env.NODE_ENV || "test",
 	};
+	
 	neonConfig.webSocketConstructor = ws;
-	if(!config.localDb) neonConfig.useSecureWebSocket = true
 
 	if (config.localDb) {
 		neonConfig.fetchEndpoint = (host) => {
@@ -40,6 +40,8 @@ export const createDb = ({ databaseUrl, isLocal }: { databaseUrl?: string, isLoc
 		const parsedDatabaseURL = new URL(config.databaseUrl);
 		parsedDatabaseURL.host = "db.localtest.me"; // Magic string here 🤷
 		config.databaseUrl = parsedDatabaseURL.toString();
+	} else {
+		neonConfig.useSecureWebSocket = true
 	}
 	const pool = new Pool({ connectionString: config.databaseUrl });
 	return drizzle({ client: pool, schema });
