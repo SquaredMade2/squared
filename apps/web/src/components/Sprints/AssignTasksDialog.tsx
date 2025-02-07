@@ -103,7 +103,7 @@ export function AssignTasksDialog({
 		useViewStore((state) => state);
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { taskOrder, groupTasksBy } = displayOptions;
-	const orderByOptions: TaskOrder[] = TaskOrderOptions;
+	const orderByOptions = TaskOrderOptions;
 
 	const params = useParams();
 	const workspaceUrl = parseParams(params.workspace);
@@ -350,7 +350,7 @@ export function AssignTasksDialog({
 								<Select
 									onValueChange={(value) =>
 										setOptions({
-											taskOrder: { ...taskOrder, orderBy: value },
+											taskOrder: { ...taskOrder, orderBy: value as "Priority" | "Status" | "Effort" | "Title" | "Assignee" | "Due Date" | "Updated" | "Created" },
 										})
 									}
 									value={taskOrder.orderBy}
