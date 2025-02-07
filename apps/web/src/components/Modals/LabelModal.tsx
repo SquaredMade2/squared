@@ -24,7 +24,7 @@ const formSchema = z.object({
 export const LabelModal = () => {
 	const { showLabelModal, setShowLabelModal, labelData, setLabelData } =
 		useModalStore((state) => state);
-	console.log(labelData, showLabelModal);
+
 	useEffect(() => {
 		if (labelData.name) {
 			form.setValue("name", labelData.name);
