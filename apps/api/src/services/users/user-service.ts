@@ -357,11 +357,7 @@ export class UserService implements UserRpc {
 			return firstWorkspace || null;
 		});
 
-		if(userWorkspace === null) return null
-
-		if (!userWorkspace) {
-			throw new Error("No workspace found for the user");
-		}
+		if (!userWorkspace) return null
 
 		return userWorkspace;
 	}
