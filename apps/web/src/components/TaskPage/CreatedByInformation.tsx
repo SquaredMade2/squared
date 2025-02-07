@@ -42,7 +42,7 @@ export const CreatedByInformation = () => {
 				.map((event) => {
 					const eventAuthor = users.find((user) => {
 						if (!("authorId" in event)) return false;
-						user.externalId === event.authorId;
+						return user.externalId === event.authorId;
 					});
 					return (
 						<div key={event.id} className="flex items-center px-8">
