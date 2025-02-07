@@ -177,6 +177,19 @@ export type GetWorkspaceLabelsResponse = {
 	name: string;
 }[];
 
+export type CreateWorkspaceLabelRequest = {
+	label: {
+		color: string;
+		description?: string | null;
+		name: string;
+	};
+	workspaceId: string;
+};
+
+export type CreateWorkspaceLabelResponse = {
+	success: boolean;
+};
+
 export type DeleteWorkspaceLabelRequest = {
 	labelName: string;
 	workspaceId: string;
@@ -289,6 +302,16 @@ export class WorkspaceService extends RPCContextClient {
 		req: GetWorkspaceLabelsRequest,
 	): Promise<GetWorkspaceLabelsResponse> {
 		return this.request(ctx, "getWorkspaceLabels", req);
+	}
+
+	/**
+	 * createWorkspaceLabel method
+	 */
+	createWorkspaceLabel(
+		ctx: Context,
+		req: CreateWorkspaceLabelRequest,
+	): Promise<CreateWorkspaceLabelResponse> {
+		return this.request(ctx, "createWorkspaceLabel", req);
 	}
 
 	/**

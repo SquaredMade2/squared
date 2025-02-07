@@ -47,7 +47,10 @@ export const LabelModal = () => {
 
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
 		console.log(values);
-		// try{}
+		// try {
+		// } catch (error) {
+		// 	console.error(error);
+		// }
 	};
 
 	return (

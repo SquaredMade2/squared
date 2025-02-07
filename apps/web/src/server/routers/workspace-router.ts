@@ -42,6 +42,27 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	createWorkspaceLabel: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				label: z.object({
+					name: z.string(),
+					description: z.string().nullable().optional(),
+					color: z.string(),
+				}),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceId, label } = input;
+			const { workspaceService } = ctx;
+			return c.superjson(
+				await workspaceService.createWorkspaceLabel(TODO, {
+					workspaceId,
+					label,
+				}),
+			);
+		}),
 	deleteWorkspaceLabel: privateProcedure
 		.input(z.object({ workspaceId: z.string(), labelName: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
