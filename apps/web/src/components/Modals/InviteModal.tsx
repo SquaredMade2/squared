@@ -1,8 +1,7 @@
 "use client";
 
 import { workspaceService } from "@/lib/services";
-import { useModalStore } from "@/store";
-import { useUser } from "@clerk/nextjs";
+import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import {
 	Select,
@@ -22,19 +21,20 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "../ui/dialog";
-import { useToast } from "../ui/use-toast";
 
 export const inviteModal = () => {
 	const [expirationPeriod, setExpirationPeriod] = useState<string>("1h");
 	// const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 	const { showInvite, setShowInvite } = useModalStore((state) => state);
-	const { toast } = useToast();
-	const { user } = useUser();
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	const expirationTimes = ["15m", "30m", "1h", "6h", "12h", "1d", "7d"];
 
 	const generateToken = async () => {
-		await workspaceService.generateToken(workspace.id, expirationPeriod);
+		await workspaceService.generateToken(TODO, {
+			workspaceId: workspace?.id,
+			expirationPeriod,
+		});
 	};
 
 	useEffect(() => {
@@ -49,9 +49,15 @@ export const inviteModal = () => {
 						<DialogHeader>
 							<DialogTitle>Expire After</DialogTitle>
 						</DialogHeader>
-						<Select>
+						<Select
+							onValueChange={(value) => {
+								setExpirationPeriod(value);
+							}}
+							value={expirationPeriod}
+							defaultValue="1h"
+						>
 							<SelectTrigger>
-								<SelectValue />
+								<SelectValue placeholder="Select a time limit" />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectGroup>
