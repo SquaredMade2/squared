@@ -22,7 +22,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
 import { useToast } from "../ui/use-toast";
 
 export const inviteModal = () => {
