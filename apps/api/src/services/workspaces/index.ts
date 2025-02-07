@@ -79,6 +79,13 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.object({ success: z.boolean() }),
 	},
+	generateWorkspaceInviteToken: {
+		input: z.object({
+			workspaceId: z.string(),
+			expirationPeriod: z.string(),
+		}),
+		output: z.string(),
+	},
 });
 
 export type WorkspaceRpcSchema = typeof workspaceRpcSchema;
@@ -95,6 +102,8 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
+		generateWorkspaceInviteToken: (input) =>
+			workspaceService.generateWorkspaceInviteToken(input),
 	});
 
 export { WorkspaceService } from "./workspace-service";

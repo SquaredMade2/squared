@@ -41,4 +41,8 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}) => Promise<{ success: boolean }>;
+	generateWorkspaceInviteToken: (args: {
+		workspaceId: string;
+		expirationPeriod: string;
+	}) => Promise<string>;
 }
