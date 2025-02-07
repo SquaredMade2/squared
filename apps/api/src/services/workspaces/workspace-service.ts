@@ -341,6 +341,34 @@ export class WorkspaceService implements WorkspaceRpc {
 			.then((results) => results[0].labels);
 	}
 
+	async createWorkspaceLabel({
+		workspaceId,
+		label,
+	}: { workspaceId: string; label: Label }): Promise<{ success: boolean }> {
+		this.logger.info("Creating label for workspace with id %s", workspaceId);
+
+		return await this.db.transaction(async (tx) => {
+			const workspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.limit(1)
+				.then((results) => results[0]);
+
+			if (!workspace) {
+				throw new Error("Workspace not found.");
+			}
+
+			const updatedLabels = [...workspace.labels, label];
+
+			await tx
+				.update(workspacesTable)
+				.set({ labels: updatedLabels })
+				.where(eq(workspacesTable.id, workspaceId));
+			return { success: true };
+		});
+	}
+
 	async deleteWorkspaceLabel({
 		workspaceId,
 		labelName,
