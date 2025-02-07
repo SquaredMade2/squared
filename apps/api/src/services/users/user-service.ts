@@ -68,18 +68,30 @@ export class UserService implements UserRpc {
 
 	async updateUserNotifications({
 		userId,
-		notificationIds: savedNotificationIds,
+		notificationIds,
 	}: {
 		userId: string;
 		notificationIds: string[];
 	}) {
 		this.logger.info("Updating user notifications with id: %s", userId);
-		return await this.db
-			.update(usersTable)
-			.set({ savedNotificationIds })
-			.where(eq(usersTable.externalId, userId))
-			.returning()
-			.then((user) => user[0]);
+		return await this.db.transaction(async (tx) => {
+			const currentNotifications = await tx
+				.select({ savedNotificationIds: usersTable.savedNotificationIds })
+				.from(usersTable)
+				.where(eq(usersTable.externalId, userId))
+				.then((results) => results[0].savedNotificationIds);
+
+			return tx
+				.update(usersTable)
+				.set({
+					savedNotificationIds: [
+						...new Set([...currentNotifications, ...notificationIds]),
+					],
+				})
+				.where(eq(usersTable.externalId, userId))
+				.returning()
+				.then((user) => user[0]);
+		});
 	}
 
 	async getUser({ userId }: { userId: string }) {
@@ -345,9 +357,7 @@ export class UserService implements UserRpc {
 			return firstWorkspace || null;
 		});
 
-		if (!userWorkspace) {
-			throw new Error("No workspace found for the user");
-		}
+		if (!userWorkspace) return null
 
 		return userWorkspace;
 	}

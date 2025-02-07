@@ -1,5 +1,6 @@
 import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
+import type { Commit, TaskEvent } from "@squared/db";
 import { formatDate } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
@@ -19,22 +20,34 @@ export const CreatedByInformation = () => {
 		}
 	};
 
+	const getEventTime = (event: TaskEvent | Commit) => {
+		if ("createdAt" in event) {
+			return event.createdAt;
+		}
+		if ("timestamp" in event) {
+			return event.timestamp;
+		}
+		throw new Error("Event does not have a timestamp or createdAt field");
+	};
+
 	return (
 		<div className="flex flex-col gap-2">
 			{/* Events */}
 			{events
 				.sort(
 					(a, b) =>
-						new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+						new Date(getEventTime(b) || getEventTime(b)).getTime() -
+						new Date(getEventTime(a) || getEventTime(a)).getTime(),
 				)
 				.map((event) => {
-					const eventAuthor = users.find(
-						(user) => user.externalId === event.authorId,
-					);
+					const eventAuthor = users.find((user) => {
+						if (!("authorId" in event)) return false;
+						return user.externalId === event.authorId;
+					});
 					return (
 						<div key={event.id} className="flex items-center px-8">
 							<div className="mr-4 text-muted-foreground">
-								{formatDate(new Date(event.createdAt), "dd MMM yyyy")}
+								{formatDate(new Date(getEventTime(event)), "dd MMM yyyy")}
 							</div>
 							<Avatar className="size-6 text-xxs">
 								<AvatarImage src={eventAuthor?.avatarUrl ?? ""} />
