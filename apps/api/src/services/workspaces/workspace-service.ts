@@ -326,6 +326,14 @@ export class WorkspaceService implements WorkspaceRpc {
 			return { success: true };
 		});
 	}
+	async generateWorkspaceInviteToken(
+		workspaceId: string,
+		expirationPeriod: string,
+	): Promise<string> {
+		return jwt.sign({ workspaceId }, this.JWT_SECRET, {
+			expiresIn: `${expirationPeriod}`,
+		});
+	}
 	private verifyToken(token: string): string | null {
 		try {
 			const decoded = jwt.verify(token, this.JWT_SECRET) as {
