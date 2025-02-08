@@ -293,7 +293,9 @@ async function addNotification(
 }
 
 seedDB().catch((e) => {
-	logger.error("Error seeding database: %s", e);
+	logger.error(`Error seeding database: ${(e as Error).message}`);
+	// If you want to log the full error stack:
+	logger.error(`Full error stack: ${(e as Error).stack}`);
 });
 
 console.log("Seed script executed. Check the logs for results.");

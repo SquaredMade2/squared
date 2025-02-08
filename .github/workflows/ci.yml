@@ -184,6 +184,7 @@ jobs:
         run: pnpm run docker:db:init
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
+          LOCAL_DB: true
       - name: Run tests
         run: pnpm run --filter=api test:ci
         env:
