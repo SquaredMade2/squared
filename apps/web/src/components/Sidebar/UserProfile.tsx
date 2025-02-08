@@ -11,9 +11,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useWorkspaceStore } from "@/store";
+import { useModalStore, useWorkspaceStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, UserRoundPlus } from "lucide-react";
 import Link from "next/link";
 
 interface UserProfileProps {
@@ -24,6 +24,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 	const { state } = useSidebar();
 	const { user } = useUser();
 	const { workspace } = useWorkspaceStore((state) => state);
+	const { setShowInvite } = useModalStore((state) => state);
 
 	const isUserWorkspaceAdmin = workspace?.admins.filter(
 		(admin) => admin === user?.id,
@@ -55,7 +56,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 			<DropdownMenuContent align="end" className="w-56">
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem asChild>
+				<DropdownMenuItem asChild className="cursor-pointer">
 					<Link href={`/${workspace?.url}/settings/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>
@@ -64,13 +65,17 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 				{/* This should only show for workspace owners and admins */}
 				{isUserWorkspaceAdmin && (
 					<DropdownMenuItem asChild>
-						<Button onClick={handleClick}>
-							<Settings className="mr-2 h-4 w-4" />
+						<Button
+							onClick={() => setShowInvite(true)}
+							variant="ghost"
+							className="w-full h-min flex justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-none: focus-visible:ring-offset-0"
+						>
+							<UserRoundPlus className="mr-2 h-4 w-4" />
 							<span>Invite People</span>
 						</Button>
 					</DropdownMenuItem>
 				)}
-				<DropdownMenuItem onClick={onLogout}>
+				<DropdownMenuItem onClick={onLogout} className="cursor-pointer">
 					<LogOut className="mr-2 h-4 w-4" />
 					<span>Log out</span>
 				</DropdownMenuItem>

@@ -46,7 +46,7 @@ export const createModalStore = (
 		setShowTaskSelector: (input) => {
 			set({ showTaskSelector: input });
 		},
-		showInvite: (input) => {
+		setShowInvite: (input) => {
 			set({ showInvite: input });
 		},
 	}));

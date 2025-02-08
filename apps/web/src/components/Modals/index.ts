@@ -3,3 +3,4 @@ export * from "./WorkspaceInviteModal";
 export * from "./NewTask";
 export * from "./SwitchWorkspaceModal";
 export * from "./TaskSelectorModal";
+export * from "./InviteModal";

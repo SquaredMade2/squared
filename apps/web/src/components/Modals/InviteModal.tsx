@@ -11,8 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@squaredmade/ui/select";
-import { Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
 	Dialog,
@@ -21,23 +20,35 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "../ui/dialog";
+import { toast } from "../ui/use-toast";
 
-export const inviteModal = () => {
+export const InviteModal = () => {
 	const [expirationPeriod, setExpirationPeriod] = useState<string>("1h");
-	// const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+	const [token, setToken] = useState<string>("");
 	const { showInvite, setShowInvite } = useModalStore((state) => state);
 	const { workspace } = useWorkspaceStore((state) => state);
 
 	const expirationTimes = ["15m", "30m", "1h", "6h", "12h", "1d", "7d"];
 
 	const generateToken = async () => {
-		await workspaceService.generateToken(TODO, {
-			workspaceId: workspace?.id,
-			expirationPeriod,
-		});
+		try {
+			workspace &&
+				setToken(
+					await workspaceService.generateWorkspaceInviteToken(TODO, {
+						workspaceId: workspace?.id,
+						expirationPeriod,
+					}),
+				);
+		} catch (error) {
+			toast({
+				title: "Error creating token",
+				description: error instanceof Error && error.message,
+				variant: "destructive",
+			});
+		}
 	};
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		generateToken();
 	}, []);
 
@@ -64,7 +75,14 @@ export const inviteModal = () => {
 									{expirationTimes.map((time: string) => {
 										return (
 											<SelectItem key={time} value={time}>
-												{time.replace(/([])/)}
+												{/* {time.replace(
+													/(\d+)([mhd])/g,
+													(_, num, unit: string) => {
+														const units = { m: "minute", h: "hour", d: "day" };
+														return `${num} ${units[unit]}${Number(num) > 1 && "s"}`;
+													},
+												)} */}
+												times
 											</SelectItem>
 										);
 									})}
@@ -73,15 +91,13 @@ export const inviteModal = () => {
 						</Select>
 						<div className="w-full border border-border" />
 						<DialogFooter>
-							<Button>
-								<span className="mr-2.5">
-									<Pencil className="size-4" />
-								</span>
+							<div>
 								<p>
-									Rename task to
-									<span className="ml-2 italic">{`"${inputValue}"`}</span>
+									{token ? `/join?token=${token}` : "Failed to generate token"}
 								</p>
-							</Button>
+								<Button disabled={Boolean(token)}>Copy</Button>
+							</div>
+							<Button>Generate Token</Button>
 						</DialogFooter>
 					</div>
 				</form>
