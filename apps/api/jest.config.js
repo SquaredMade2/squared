@@ -10,7 +10,7 @@ export default {
 	},
 	extensionsToTreatAsEsm: [".ts"],
 	transform: {
-		"^.+\\.tsx?$": [
+		"^.+\\.ts?$": [
 			"ts-jest",
 			{
 				useESM: true,
