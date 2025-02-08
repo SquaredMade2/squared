@@ -359,8 +359,8 @@ export default function SprintDashboard() {
 							setTargetSprint={setTargetSprint}
 							unassignedTasks={unassignedTasks}
 							upcomingSprints={upcomingSprints}
-							view={view}
 						/>
+
 						<Button variant="outline" onClick={prepareAutoAssign}>
 							Auto-Assign Tasks
 						</Button>
