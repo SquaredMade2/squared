@@ -107,18 +107,17 @@ export class TeamService implements TeamRpc {
 
 	async deleteTeam({ teamId }: { teamId: string }): Promise<Team> {
 		this.logger.info("Deleting team: %s", teamId);
-		const deletedTeam = await this.db.transaction(async (tx) => {
-			const result = await tx
+		return await this.db.transaction(async (tx) => {
+			const [result] = await tx
 				.delete(teamsTable)
 				.where(eq(teamsTable.id, teamId))
 				.returning();
 
-			if (result.length === 0) {
+			if (!result) {
 				throw new Error("Team not found");
 			}
-			return result[0]
+			return result
 		});
-		return deletedTeam;
 	}
 
 	async getTeam({ teamId }: { teamId: string }): Promise<Team | null> {
