@@ -4,9 +4,8 @@ import type { Label } from "@squared/db";
 import { Pencil } from "lucide-react";
 
 export const EditLabelButton = ({ label }: { label: Label }) => {
-	const { setShowLabelModal, setLabelData, showLabelModal, labelData } =
-		useModalStore((state) => state);
-	console.log(labelData, showLabelModal);
+	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
+
 	const handleEditClick = () => {
 		setLabelData(label);
 		setShowLabelModal(true);

@@ -1,4 +1,5 @@
-import { useModalStore } from "@/store";
+import { client } from "@/lib/client";
+import { useModalStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@squaredmade/ui/dialog";
 import { useEffect } from "react";
@@ -13,17 +14,21 @@ import {
 } from "../ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
+import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
 	name: z
 		.string()
 		.min(2, { message: "Label name must be at least 2 characters." }),
 	description: z.string().optional(),
+	color: z.string(),
 });
 
 export const LabelModal = () => {
+	const { toast } = useToast();
 	const { showLabelModal, setShowLabelModal, labelData, setLabelData } =
 		useModalStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	useEffect(() => {
 		if (labelData.name) {
@@ -32,11 +37,14 @@ export const LabelModal = () => {
 		if (labelData.description) {
 			form.setValue("description", labelData.description);
 		}
+		if (labelData.color) {
+			form.setValue("color", labelData.color);
+		}
 	}, [showLabelModal]);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		defaultValues: { name: "", description: "" },
+		defaultValues: { name: "", description: "", color: "" },
 	});
 
 	const handleDiscard = () => {
@@ -44,13 +52,33 @@ export const LabelModal = () => {
 		form.reset();
 		setShowLabelModal(false);
 	};
-
+	console.log(workspace);
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
 		console.log(values);
+		// console.log("labelData", labelData);
+		if (workspace) {
+			if (labelData) {
+				console.log("labelData", labelData);
+			} else {
+				try {
+					await client.workspace.createWorkspaceLabel
+						.$post({ workspaceId: workspace.id, label: values })
+						.then((res) => res.json());
+				} catch (error) {
+					console.error(error);
+					toast({
+						title: "Label could not be created",
+						description: "An unknown error occurred",
+						variant: "destructive",
+					});
+				}
+			}
+		}
 		// try {
 		// } catch (error) {
 		// 	console.error(error);
 		// }
+		setShowLabelModal(false);
 	};
 
 	return (
@@ -88,6 +116,18 @@ export const LabelModal = () => {
 									</FormItem>
 								)}
 							/>
+							<FormField
+								control={form.control}
+								name="color"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Label Color</FormLabel>
+										<FormControl>
+											<Input {...field} placeholder="Label Color" />
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 						</div>
 						<DialogFooter>
 							<Button
@@ -98,7 +138,7 @@ export const LabelModal = () => {
 								Discard
 							</Button>
 							<Button type="submit" className="hover:cursor-pointer">
-								Create Label
+								Save
 							</Button>
 						</DialogFooter>
 					</form>
