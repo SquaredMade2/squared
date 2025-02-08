@@ -17,4 +17,5 @@ export default {
 			},
 		],
 	},
+	transformIgnorePatterns: ["node_modules/(?!(superjson|@squared/rpc)/)"],
 };

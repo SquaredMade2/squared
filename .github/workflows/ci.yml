@@ -176,6 +176,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
       - name: Start Docker Compose services
         run: docker-compose -f packages/seed/docker-compose.yml up -d
       - name: Wait for services to be ready
