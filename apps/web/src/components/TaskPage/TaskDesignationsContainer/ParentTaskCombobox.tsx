@@ -1,16 +1,24 @@
+"use client";
+import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
-import type { Task } from "@squared/db";
+import {
+	useEventStore,
+	useTaskStore
+} from "@/store";
+import type { Task, TaskEvent } from "@squared/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const ParentTaskCombobox = () => {
+	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 	const { tasks, currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
-	const user = useUserStore((state) => state.user);
+	const { setEvents } = useEventStore((state) => state);
+
+	if (!currentTask) return null;
 	const queryClient = useQueryClient();
 
 	const taskId = currentTask?.id ?? "";
@@ -24,27 +32,39 @@ const ParentTaskCombobox = () => {
 		enabled: !!currentTask?.parentId,
 	});
 
-	const updateTaskMutation = useMutation({
+	const { mutate: updateTaskMutation } = useMutation({
+		mutationKey: ["updateTaskParentId", currentTask?.parentId],
 		mutationFn: async (parentId: string | null) => {
-			if (!user) throw new Error("User not found");
 			const res = await client.task.updateParent.$post({
-				taskId: taskId,
+				taskId,
 				parentId,
 			});
-			return res.json();
+			const updatedTask = await res.json();
+			return updatedTask;
 		},
-		onSuccess: (updatedTask) => {
+		onError: (error) => {
+			toast({
+				title: "Error updating parent id",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+		onSuccess: async (updatedTask) => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
+			const eventsRes = await client.event.getEvents.$get({
+				taskId,
+			});
+			const updatedEvents = await eventsRes.json();
+			setEvents(updatedEvents as TaskEvent[]);
 			queryClient.invalidateQueries({
 				queryKey: ["parentTask", updatedTask.parentId],
 			});
-			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
 		},
 	});
 
 	const handleAssignParentTask = (parentId: string | null) => {
-		updateTaskMutation.mutate(parentId);
+		updateTaskMutation(parentId);
 		setOpen(false);
 	};
 
