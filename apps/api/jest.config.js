@@ -17,5 +17,8 @@ export default {
 			},
 		],
 	},
-	transformIgnorePatterns: ["node_modules/(?!(superjson|@squared/rpc)/)"],
+	transformIgnorePatterns: [
+		"node_modules/(?!(superjson|@squared/rpc)/)",
+		"node_modules/superjson/dist/.*",
+	],
 };
