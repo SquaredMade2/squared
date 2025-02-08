@@ -182,10 +182,6 @@ jobs:
           sudo apt-get install -y docker-compose
       - name: Start Docker Compose services
         run: docker-compose -f packages/seed/docker-compose.yml up -d
-      - name: Wait for services to be ready
-        run: |
-          docker-compose -f packages/seed/docker-compose.yml run --rm postgres pg_isready -h postgres -U postgres
-          docker-compose -f packages/seed/docker-compose.yml run --rm neon-proxy curl -f http://neon-proxy:4444/healthz
       - name: Run migrations and seed data
         run: pnpm db:migrate && pnpm docker:db:seed
         env:
@@ -208,7 +204,7 @@ jobs:
         run: pnpm --filter=api build
       - name: Stop Docker Compose services
         if: always()
-        run: docker-compose -f ci-docker-compose.yml down
+        run: docker-compose -f packages/seed/docker-compose.yml down
 
   test-web:
     name: Test Web
