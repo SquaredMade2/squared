@@ -5,6 +5,7 @@ import { userService } from "@/lib/services";
 import { useModalStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Team, User, Workspace, WorkspaceRole } from "@squared/db";
+import { useUser } from "@clerk/nextjs";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -33,7 +34,7 @@ interface CsvType {
 	role: WorkspaceRole;
 	teams?: string;
 	active: string;
-	lastLogin: Date;
+	lastLogin: Date | null | undefined;
 }
 
 export function DataTable({ columns, data }: DataTableProps) {
@@ -65,6 +66,9 @@ export function DataTable({ columns, data }: DataTableProps) {
 		setShowWorkspaceInvite(true);
 	};
 
+	const  { user } = useUser();
+	const lastLogin= user?.lastSignInAt;
+
 	const generateMembersCsv = async () => {
 		const members = await Promise.all(
 			data.map(async (member: MemberWithRole) => {
@@ -78,7 +82,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 					role: member.role,
 					teams: teamNames,
 					active: "active",
-					lastLogin: member.lastLogin,
+					
 					createdAt: member.createdAt,
 				};
 			}),
@@ -89,7 +93,11 @@ export function DataTable({ columns, data }: DataTableProps) {
 	useEffect(() => {
 		const generateCsv = async () => {
 			const csv = await generateMembersCsv();
-			setMembersCsv(csv);
+			const csvWithLastLogin = csv.map((user) => ({
+				...user,
+				lastLogin: lastLogin
+			}))
+			setMembersCsv(csvWithLastLogin);
 		};
 		generateCsv();
 	}, []);
