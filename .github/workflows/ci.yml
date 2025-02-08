@@ -181,12 +181,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
       - name: Start Docker Compose services
-        run: docker-compose -f packages/seed/docker-compose.yml up -d
-      - name: Run migrations and seed data
-        run: pnpm db:migrate && pnpm docker:db:seed
+        run: pnpm run docker:db:init
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
-
       - name: Run tests
         run: pnpm run --filter=api test:ci
         env:
