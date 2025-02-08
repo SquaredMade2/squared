@@ -180,7 +180,6 @@ CREATE TABLE "User" (
 	"name" text NOT NULL,
 	"username" text,
 	"email" text NOT NULL,
-	"lastLogin" timestamp (3) DEFAULT now() NOT NULL,
 	"onBoarding" boolean DEFAULT true NOT NULL,
 	"defaultWorkspaceId" uuid,
 	"avatarUrl" text,
