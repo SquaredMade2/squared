@@ -9,7 +9,7 @@ import {
 	Circle,
 	ClipboardCopy,
 	Copy,
-	Layers,
+	Layers3,
 	LogOut,
 	MoveDiagonal,
 	PanelLeft,
@@ -17,7 +17,7 @@ import {
 	Search,
 	Settings,
 	Trash2,
-} from "lucide-react";
+} from "@squared/icons";
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./interfaces";
 
@@ -108,7 +108,7 @@ export class CommandSchema {
 			},
 			View: {
 				createNewView: {
-					icon: <Layers className="mr-2 size-4" />,
+					icon: <Layers3 className="mr-2 size-4" />,
 					text: "Create new view",
 					function: () => {
 						this.clearFilter();

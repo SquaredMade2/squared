@@ -21,7 +21,7 @@ import {
 	Inbox,
 	MapPin,
 	MessageCircleMore,
-} from "lucide-react";
+} from "@squared/icons";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 

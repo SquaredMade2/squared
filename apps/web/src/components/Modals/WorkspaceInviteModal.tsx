@@ -3,7 +3,7 @@
 import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Loader2 } from "lucide-react";
+import { LoaderCircle } from "@squared/icons";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -88,7 +88,7 @@ export const WorkspaceInviteModal = () => {
 				<DialogFooter>
 					<Button onClick={handleInvite} disabled={isLoading} className="w-32">
 						{isLoading ? (
-							<Loader2 className="size-4 animate-spin" />
+							<LoaderCircle className="size-4 animate-spin" />
 						) : (
 							"Send invites"
 						)}

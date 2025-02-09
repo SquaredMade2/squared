@@ -10,7 +10,7 @@ import { teamService, workspaceService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis } from "@squared/icons";
 import type { MemberWithRole } from "./data-table";
 
 const RemoveMemberButton = ({

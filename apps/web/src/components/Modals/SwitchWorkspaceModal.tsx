@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { cn } from "@/utils/cn";
-import { Check, PlusCircle } from "lucide-react";
+import { Check, CirclePlus } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import WorkspaceInitials from "../WorkspaceImage";
 
@@ -82,7 +82,7 @@ export function WorkspaceSwitcher() {
 									}}
 									className="cursor-pointer"
 								>
-									<PlusCircle className="mr-2 h-4 w-4" />
+									<CirclePlus className="mr-2 h-4 w-4" />
 									Create New Workspace
 								</CommandItem>
 							</CommandGroup>

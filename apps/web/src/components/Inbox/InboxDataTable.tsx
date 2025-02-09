@@ -36,7 +36,7 @@ import {
 	Ellipsis,
 	MoveRight,
 	Trash2,
-} from "lucide-react";
+} from "@squared/icons";
 import { Checkbox } from "../ui/checkbox";
 import { columns } from "./columns";
 

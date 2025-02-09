@@ -5,7 +5,7 @@ import { useModalStore, useTaskStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
-import { Pencil } from "lucide-react";
+import { Pencil } from "@squared/icons";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {

@@ -12,7 +12,7 @@ import {
 	type LucideIcon,
 	MapPin,
 	MessageCircleMore,
-} from "lucide-react";
+} from "@squared/icons";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;

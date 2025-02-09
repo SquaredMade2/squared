@@ -6,7 +6,7 @@ import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { useMutation } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
-import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
+import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
