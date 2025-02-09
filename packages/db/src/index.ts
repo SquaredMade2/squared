@@ -16,7 +16,10 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-export const createDb = ({ databaseUrl, isRemote = false }: { databaseUrl?: string, isRemote?: boolean }) => {
+export const createDb = ({
+	databaseUrl,
+	isRemote = false,
+}: { databaseUrl?: string; isRemote?: boolean }) => {
 	// Function to create the database connection
 	const config = {
 		databaseUrl:
@@ -40,7 +43,7 @@ export const createDb = ({ databaseUrl, isRemote = false }: { databaseUrl?: stri
 		parsedDatabaseURL.host = "db.localtest.me"; // Magic string here 🤷
 		config.databaseUrl = parsedDatabaseURL.toString();
 	} else {
-		neonConfig.useSecureWebSocket = true
+		neonConfig.useSecureWebSocket = true;
 	}
 	const pool = new Pool({ connectionString: config.databaseUrl });
 	return drizzle({ client: pool, schema });
