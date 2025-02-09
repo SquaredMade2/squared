@@ -350,7 +350,7 @@ export function AssignTasksDialog({
 								<Select
 									onValueChange={(value) =>
 										setOptions({
-											taskOrder: { ...taskOrder, orderBy: value as "Priority" | "Status" | "Effort" | "Title" | "Assignee" | "Due Date" | "Updated" | "Created" },
+											taskOrder: { ...taskOrder, orderBy: value as TaskOrder },
 										})
 									}
 									value={taskOrder.orderBy}
