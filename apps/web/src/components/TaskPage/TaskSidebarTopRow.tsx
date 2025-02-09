@@ -1,7 +1,7 @@
 import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import { Copy, GitPullRequestArrow, Link } from "lucide-react";
+import { Copy, GitPullRequestArrow, Link } from "@squared/icons";
 import { useCallback, useEffect } from "react";
 import { Button } from "../ui/button";
 import {

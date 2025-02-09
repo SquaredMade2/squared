@@ -1,7 +1,8 @@
 import { taskService } from "@/lib/services";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Activity, Copy, Layers } from "lucide-react";
+import { Activity} from "lucide-react";
+import {Copy,Layers3} from "@squared/icons"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -114,7 +115,7 @@ const NavBarTeams = ({
 					onClick={() => handleActiveParams("views")}
 					className="h-6 w-full justify-start"
 				>
-					<Layers className="mr-2 size-4 text-muted-foreground" />
+					<Layers3 className="mr-2 size-4 text-muted-foreground" />
 					<p>Views</p>
 				</Button>
 			</Link>

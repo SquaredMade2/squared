@@ -11,7 +11,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@squared/icons";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 

@@ -1,6 +1,6 @@
 import type { Sprint, Task } from "@squared/db";
 import { format } from "date-fns";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@squared/icons";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import {
