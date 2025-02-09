@@ -357,7 +357,7 @@ export class UserService implements UserRpc {
 			return firstWorkspace || null;
 		});
 
-		if (!userWorkspace) return null
+		if (!userWorkspace) return null;
 
 		return userWorkspace;
 	}

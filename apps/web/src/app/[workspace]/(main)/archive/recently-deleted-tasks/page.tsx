@@ -8,7 +8,7 @@ import { useFilterStore } from "@/store";
 
 const Page = () => {
 	const { filterTasks } = useFilterStore((state) => state);
-	
+
 	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
 		useTaskDashboard();
 
