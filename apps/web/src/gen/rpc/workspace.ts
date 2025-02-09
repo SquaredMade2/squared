@@ -187,6 +187,11 @@ export type CreateWorkspaceLabelRequest = {
 };
 
 export type CreateWorkspaceLabelResponse = {
+	labels?: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	success: boolean;
 };
 

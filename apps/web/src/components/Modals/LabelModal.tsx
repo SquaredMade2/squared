@@ -52,33 +52,34 @@ export const LabelModal = () => {
 		form.reset();
 		setShowLabelModal(false);
 	};
-	console.log(workspace);
+
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
-		console.log(values);
-		// console.log("labelData", labelData);
-		if (workspace) {
-			if (labelData) {
-				console.log("labelData", labelData);
-			} else {
-				try {
-					await client.workspace.createWorkspaceLabel
-						.$post({ workspaceId: workspace.id, label: values })
-						.then((res) => res.json());
-				} catch (error) {
-					console.error(error);
-					toast({
-						title: "Label could not be created",
-						description: "An unknown error occurred",
-						variant: "destructive",
-					});
-				}
+		if (!workspace) return;
+
+		try {
+			const response = await client.workspace.createWorkspaceLabel
+				.$post({ workspaceId: workspace.id, label: values })
+				.then((res) => res.json());
+
+			if (!response.success) {
+				throw new Error("Label creation failed.");
 			}
+
+			toast({
+				title: "Label created successfully",
+				description: `Label "${values.name}" added.`,
+			});
+			setLabelData({});
+			form.reset();
+			setShowLabelModal(false);
+		} catch (error) {
+			console.error(error);
+			toast({
+				title: "Label could not be created",
+				description: "An unknown error occurred",
+				variant: "destructive",
+			});
 		}
-		// try {
-		// } catch (error) {
-		// 	console.error(error);
-		// }
-		setShowLabelModal(false);
 	};
 
 	return (

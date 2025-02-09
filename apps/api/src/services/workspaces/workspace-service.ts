@@ -10,6 +10,7 @@ import {
 	and,
 	eq,
 	inArray,
+	sql,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -344,7 +345,10 @@ export class WorkspaceService implements WorkspaceRpc {
 	async createWorkspaceLabel({
 		workspaceId,
 		label,
-	}: { workspaceId: string; label: Label }): Promise<{ success: boolean }> {
+	}: { workspaceId: string; label: Label }): Promise<{
+		success: boolean;
+		labels?: Label[];
+	}> {
 		this.logger.info("Creating label for workspace with id %s", workspaceId);
 
 		return await this.db.transaction(async (tx) => {
@@ -359,13 +363,20 @@ export class WorkspaceService implements WorkspaceRpc {
 				throw new Error("Workspace not found.");
 			}
 
-			const updatedLabels = [...workspace.labels, label];
-
-			await tx
+			const updated = await tx
 				.update(workspacesTable)
-				.set({ labels: updatedLabels })
-				.where(eq(workspacesTable.id, workspaceId));
-			return { success: true };
+				.set({
+					labels: sql`COALESCE(${workspacesTable.labels}, '[]'::jsonb) || ${JSON.stringify(label)}::jsonb`,
+				})
+				.where(eq(workspacesTable.id, workspaceId))
+				.returning({ labels: workspacesTable.labels })
+				.then((res) => res[0]);
+
+			if (!updated) {
+				throw new Error("Update failed.");
+			}
+
+			return { success: true, labels: updated.labels };
 		});
 	}
 

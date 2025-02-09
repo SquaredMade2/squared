@@ -89,7 +89,10 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	},
 	createWorkspaceLabel: {
 		input: z.object({ workspaceId: z.string(), label: labelSchema }),
-		output: z.object({ success: z.boolean() }),
+		output: z.object({
+			success: z.boolean(),
+			labels: labelSchema.array().optional(),
+		}),
 	},
 	deleteWorkspaceLabel: {
 		input: z.object({ workspaceId: z.string(), labelName: z.string() }),
