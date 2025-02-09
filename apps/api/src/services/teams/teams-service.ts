@@ -116,7 +116,7 @@ export class TeamService implements TeamRpc {
 			if (!result) {
 				throw new Error("Team not found");
 			}
-			return result
+			return result;
 		});
 	}
 
