@@ -1,0 +1,2 @@
+# Lint the commit message
+npx commitlint --edit $1

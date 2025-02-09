@@ -1,0 +1,10 @@
+echo "Running Formatting..."
+
+# Format Project before committing
+pnpm format:write
+pnpm lint:fix
+git add .
+
+
+# Allow the commit to proceed
+exit 0
