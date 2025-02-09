@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
-import { commentService, eventService } from "@/lib/services";
 import {
 	useCommentStore,
 	useModalStore,
@@ -18,8 +17,6 @@ import {
 	injectMentionConfirm,
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -73,6 +70,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
+	const currentTask = useTaskStore((state) => state.currentTask)
+	const users = useUserStore((state) => state.users)
+	const currentWorkspace = useWorkspaceStore((state) => state.workspace)
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -107,27 +107,25 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				);
 				const mentions = getMentionsFromSlate(editorContent);
 
-				// if (currentTask) {
-				for (let i = 0; i < mentions.length; i++) {
-					const currentMentionUser = mentions[i];
+				if (currentTask) {
+					for (let i = 0; i < mentions.length; i++) {
+						const currentMentionUser = mentions[i];
 
-					const mentionedUser = users.find(
-						(user) => user.name === currentMentionUser,
-					);
+						const mentionedUser = users.find(
+							(user) => user.name === currentMentionUser,
+						);
 
-					const mentionEvent: CreateNotificationRequest = {
-						description: "Task Comment Mention",
-						// taskId: currentTask.id ?? currentTask.id,
-						type: "MENTIONED",
-						// userId: mentionedUser ? mentionedUser.externalId : "",
-						// workspaceId: currentWorkspace ? currentWorkspace.id : "",
-					};
+						const mentionEvent: CreateNotificationRequest = {
+							description: "Task Comment Mention",
+							taskId: currentTask.id ?? currentTask.id,
+							type: "MENTIONED",
+							userId: mentionedUser ? mentionedUser.externalId : "",
+							workspaceId: currentWorkspace ? currentWorkspace.id : "",
+						};
 
-					client.notification.updateUserNotifications.$post(mentionEvent);
-
-					// 		await eventService.createNotification(TODO, mentionEvent);
+						client.notification.createNotification.$post(mentionEvent)
+					}
 				}
-				// }
 
 				setEditorContent([]);
 				editor.children = [
