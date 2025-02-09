@@ -14,7 +14,7 @@ export type OnBoardUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
+
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -37,7 +37,7 @@ export type UpdateUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
+
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -59,7 +59,7 @@ export type UpdateUserAvatarResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
+
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -81,7 +81,6 @@ export type UpdateUserNotificationsResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -102,7 +101,7 @@ export type GetUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
+
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -123,7 +122,6 @@ export type GetWorkspaceUsersResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -144,7 +142,6 @@ export type GetTeamUsersResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -199,7 +196,6 @@ export type SetLastViewedTaskResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -229,7 +225,6 @@ export type GetWorkspaceUsersWithRolesResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
