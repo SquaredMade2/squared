@@ -183,6 +183,7 @@ async function seedDB() {
 			return fetchedData;
 		} catch (error) {
 			logger.error("fetch failed:", error);
+			throw error;
 		}
 	});
 
@@ -203,12 +204,14 @@ async function seedDB() {
 		logger.info("insertions completed successfully");
 	} catch (error) {
 		logger.error("inserting data failed:", error);
+		throw error;
 	}
 	logger.info("Database seeding completed");
 }
 
 seedDB().catch((e) => {
-	logger.error("Error seeding database: %s", e);
+	console.error("Error seeding database: %s", e);
+	throw e;
 });
 
 logger.info("Seed script executed. Check the logs for results.");
