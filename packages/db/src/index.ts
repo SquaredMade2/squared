@@ -16,14 +16,14 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-export const createDb = ({ databaseUrl, setIsLocalToFalse = false }: { databaseUrl?: string, setIsLocalToFalse?: boolean }) => {
+export const createDb = ({ databaseUrl, isRemote = false }: { databaseUrl?: string, isRemote?: boolean }) => {
 	// Function to create the database connection
 	const config = {
 		databaseUrl:
 			databaseUrl ||
 			process.env.DATABASE_URL ||
 			"postgres://squared:squared@localhost:5432/squared-test?sslmode=disable",
-		localDb: setIsLocalToFalse ? false : process.env.LOCAL_DB,
+		localDb: isRemote ? false : process.env.LOCAL_DB,
 		nodeEnv: process.env.NODE_ENV || "test",
 	};
 

@@ -47,7 +47,7 @@ const logger = createCustomLogger("seed");
 async function seedDB() {
 	const remoteDb = createDb({
 		databaseUrl: process.env.REMOTE_DATABASE_URL,
-		setIsLocalToFalse: true,
+		isRemote: true,
 	});
 
 	logger.info("Fetching Remote Data");
