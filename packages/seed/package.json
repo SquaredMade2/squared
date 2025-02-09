@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@squared/logger": "workspace:*",
+		"cross-env": "^7.0.3",
 		"dotenv": "^16.4.1",
 		"pg": "^8.13.1"
 	},
