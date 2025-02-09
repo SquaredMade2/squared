@@ -1,2 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/h"
+
 # Lint the commit message
 npx commitlint --edit $1
