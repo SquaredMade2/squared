@@ -86,6 +86,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
+	const { toast } = useToast();
 	// Functions
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["addComment", task?.id],
@@ -99,32 +100,34 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					date: new Date(),
 					taskId: task.id,
 				};
-				// setComments(
-				// 	await client.comment.addComment
-				// 		.$post(newComment)
-				// 		.then((res) => res.json()),
-				// );
+				setComments(
+					await client.comment.addComment
+						.$post(newComment)
+						.then((res) => res.json()),
+				);
 				const mentions = getMentionsFromSlate(editorContent);
 
-				if (currentTask) {
-					for (let i = 0; i < mentions.length; i++) {
-						const currentMentionUser = mentions[i];
+				// if (currentTask) {
+				for (let i = 0; i < mentions.length; i++) {
+					const currentMentionUser = mentions[i];
 
-						const mentionedUser = users.find(
-							(user) => user.name === currentMentionUser,
-						);
+					const mentionedUser = users.find(
+						(user) => user.name === currentMentionUser,
+					);
 
-						const mentionEvent: CreateNotificationRequest = {
-							description: "Task Comment Mention",
-							taskId: currentTask.id ?? currentTask.id,
-							type: "MENTIONED",
-							userId: mentionedUser ? mentionedUser.externalId : "",
-							workspaceId: currentWorkspace ? currentWorkspace.id : "",
-						};
+					const mentionEvent: CreateNotificationRequest = {
+						description: "Task Comment Mention",
+						// taskId: currentTask.id ?? currentTask.id,
+						type: "MENTIONED",
+						// userId: mentionedUser ? mentionedUser.externalId : "",
+						// workspaceId: currentWorkspace ? currentWorkspace.id : "",
+					};
 
-						await eventService.createNotification(TODO, mentionEvent);
-					}
+					client.notification.updateUserNotifications.$post(mentionEvent);
+
+					// 		await eventService.createNotification(TODO, mentionEvent);
 				}
+				// }
 
 				setEditorContent([]);
 				editor.children = [

@@ -3,15 +3,18 @@ import type {
 	CustomElement,
 	CustomText,
 } from "@/components/TextEditor";
-import { Element, Transforms } from "slate";
-import { Editor, type Editor as EditorType } from "slate";
-import { Node, Range } from "slate";
+import {
+	Editor,
+	type Editor as EditorType,
+	Element,
+	Node,
+	Range,
+	Transforms,
+} from "slate";
 
 // getting the current characters selected
 export const getCharactersInSelection = (editor: EditorType) => {
-	if (!editor.selection) {
-		return "";
-	}
+	if (!editor.selection || Range.isCollapsed(editor.selection)) return "";
 
 	const { anchor, focus } = editor.selection;
 
@@ -46,9 +49,9 @@ export const getMentionFromLeaf = (editor: EditorType) => {
 
 	const block = Editor.above(editor, {
 		match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
-	}) || [null];
+	});
 
-	if (!block || block[0] === null) return "";
+	if (!block || !block[0]) return "";
 
 	const [node] = block;
 
@@ -60,9 +63,7 @@ export const getMentionFromLeaf = (editor: EditorType) => {
 export const clearCurrentLeafContent = (editor: EditorType) => {
 	const { selection } = editor;
 
-	if (!selection) {
-		return;
-	}
+	if (!selection) return;
 
 	const [node, path] = Editor.node(editor, selection, { edge: "start" });
 

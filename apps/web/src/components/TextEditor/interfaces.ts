@@ -1,9 +1,6 @@
 import type { Task } from "@squared/db";
-import type { Dispatch, MutableRefObject, SetStateAction } from "react";
-import type { BaseSelection, Node, NodeEntry } from "slate";
-import type { Editor } from "slate";
-
-import type { JSX } from "react";
+import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
+import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
