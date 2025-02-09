@@ -218,7 +218,6 @@ export class TaskService implements TaskRpc {
 			if (!updatedTask) {
 				this.throwError("There was an issue updating the task");
 			}
-
 			// Create log event
 			await this.eventService.createLogEvent({
 				taskId: updatedTask.id,
@@ -226,7 +225,6 @@ export class TaskService implements TaskRpc {
 				changes: taskData,
 				previousTask,
 			});
-
 			return updatedTask;
 		});
 	}
@@ -429,7 +427,6 @@ export class TaskService implements TaskRpc {
 		key: "blocking" | "blockedBy";
 	}): Promise<Task[]> {
 		this.logger.info(`updating task ${key} to`, updatingIds);
-
 		return await this.db.transaction(async (tx) => {
 			// Delete existing relationships
 			await tx
@@ -441,12 +438,14 @@ export class TaskService implements TaskRpc {
 				);
 
 			// Add new relationships
-			await tx.insert(blockedTasksTable).values(
-				updatingIds.map((id) => ({
-					a: key === "blocking" ? taskId : id,
-					b: key === "blocking" ? id : taskId,
-				})),
-			);
+			if (updatingIds.length > 0) {
+				await tx.insert(blockedTasksTable).values(
+					updatingIds.map((id) => ({
+						a: key === "blocking" ? taskId : id,
+						b: key === "blocking" ? id : taskId,
+					})),
+				);
+			}
 
 			// Fetch and return the updated blocked by tasks
 			const blockedByTasks = await tx
