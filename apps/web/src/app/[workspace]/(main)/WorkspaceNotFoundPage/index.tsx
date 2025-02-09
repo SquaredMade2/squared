@@ -2,7 +2,7 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import type { Workspace } from "@squared/db";
-import { FileSearch } from "lucide-react";
+import { FileSearch } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useViewStore, useWorkspaceStore } from "@/store";
-import { ChevronLeft, PanelLeft } from "lucide-react";
+import { ChevronLeft, PanelLeft } from "@squared/icons";
 import { useRouter } from "next/navigation";
 
 const SettingsTopNavBar = () => {

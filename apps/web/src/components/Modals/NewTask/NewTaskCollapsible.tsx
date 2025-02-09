@@ -26,7 +26,7 @@ import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
-import { PlusCircle } from "lucide-react";
+import { CirclePlus } from "@squared/icons";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -180,7 +180,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 						size="sm"
 						className="my-4 flex w-full items-center"
 					>
-						<PlusCircle className="mr-2 h-4 w-4" />
+						<CirclePlus className="mr-2 h-4 w-4" />
 						Add Subtask
 					</Button>
 				</AccordionTrigger>

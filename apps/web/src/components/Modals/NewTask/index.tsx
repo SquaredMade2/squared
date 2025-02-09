@@ -23,7 +23,7 @@ import { useCreateTask } from "@/hooks/useCreateTask";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight, LayoutGrid } from "lucide-react";
+import { ChevronRight, LayoutGrid } from "@squared/icons";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

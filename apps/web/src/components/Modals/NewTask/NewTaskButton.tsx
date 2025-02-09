@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore, useSprintStore, useViewStore } from "@/store";
 import type { Status } from "@squared/db";
-import { SquarePen } from "lucide-react";
+import { SquarePen } from "@squared/icons";
 import { usePathname } from "next/navigation";
 
 export const NewTaskButton = () => {

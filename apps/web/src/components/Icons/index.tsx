@@ -1,19 +1,19 @@
 import { cn } from "@/utils/cn";
 import type { Priority, Status } from "@squared/db";
 import {
-	AlertTriangle,
+	TriangleAlert,
 	Archive,
 	ArrowDown,
 	ArrowRight,
 	ArrowUp,
-	CheckCircle2,
+	CircleCheck,
 	Circle,
 	CircleDot,
 	Eye,
-	HourglassIcon,
+	Hourglass,
 	Inbox,
-	XCircle,
-} from "lucide-react";
+	CircleX,
+} from "@squared/icons";
 
 export const PriorityIcon = ({
 	priority,
@@ -41,7 +41,7 @@ export const PriorityIcon = ({
 				);
 			case "urgent":
 				return (
-					<AlertTriangle
+					<TriangleAlert
 						className={cn("size-4 shrink-0 text-destructive", className)}
 					/>
 				);
@@ -59,13 +59,13 @@ export const StatusIcon = ({ status }: { status: Status }) => {
 		case "todo":
 			return <Circle className="size-4 shrink-0 text-blue-500" />;
 		case "inProgress":
-			return <HourglassIcon className="size-4 shrink-0 text-yellow-500" />;
+			return <Hourglass className="size-4 shrink-0 text-yellow-500" />;
 		case "inReview":
 			return <Eye className="size-4 shrink-0 text-purple-500" />;
 		case "done":
-			return <CheckCircle2 className="size-4 shrink-0 text-green-500" />;
+			return <CircleCheck className="size-4 shrink-0 text-green-500" />;
 		case "canceled":
-			return <XCircle className="size-4 shrink-0 text-red-500" />;
+			return <CircleX className="size-4 shrink-0 text-red-500" />;
 		case "archived":
 			return <Archive className="size-4 shrink-0 text-gray-400" />;
 		default:
