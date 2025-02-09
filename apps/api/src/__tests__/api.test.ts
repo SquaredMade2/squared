@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import { app, db } from "@/api/app";
 import type { CreateFilterParams } from "@/services/filters/types";
 import {
-	type FilterCondition,
 	type SavedFilter,
 	eq,
 	inArray,
@@ -121,15 +120,7 @@ describe("API Tests", () => {
 
 		it("retrieves multiple filters by team ID", async () => {
 			const { teamId, authorId } = await getUserAndTeamIDs();
-			const sampleFilters: {
-				authorId: string;
-				teamId: string;
-				type: "TEAM" | "WORKSPACE";
-				name: string;
-				description: string;
-				sprintId: string | null;
-				filter: FilterCondition[];
-			}[] = [
+			const sampleFilters: SavedFilter[] = [
 				{
 					authorId,
 					teamId,
@@ -141,6 +132,8 @@ describe("API Tests", () => {
 						{ field: "effortEstimate", value: 5, operator: "lessThan" },
 						{ field: "priority", value: "high", operator: "equals" },
 					],
+					id: "69807de5-5c97-4cd4-b4b3-b62b21cffd3a",
+					workspaceId: null,
 				},
 				{
 					authorId,
@@ -157,6 +150,8 @@ describe("API Tests", () => {
 							operator: "lessThan",
 						},
 					],
+					id: "764871ba-cd9f-4c61-8941-0797609125fb",
+					workspaceId: null,
 				},
 			];
 
@@ -175,13 +170,13 @@ describe("API Tests", () => {
 
 			// equate names first in case filters are returned from rpc service
 			// in a different order than in the sampleFilters object
-			for (const retrieved of retrievedFilters) {
-				const original = sampleFilters.find((f) => f.name === retrieved.name);
+			for (const sample of sampleFilters) {
+				const original = retrievedFilters.find((f) => f.name === sample.name);
 				if (!original) {
 					throw new Error("failed to match filters");
 				}
 
-				expect(retrieved).toMatchObject(original);
+				expect(sample).toMatchObject(original);
 			}
 		});
 
