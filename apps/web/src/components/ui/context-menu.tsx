@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/cn";
 import * as ContextMenuPrimitive from "@squaredmade/ui/context-menu";
-import { Check, ChevronRight, Circle } from "lucide-react";
+import { Check, ChevronRight, Circle } from "@squared/icons";
 import * as React from "react";
 
 const ContextMenu = ContextMenuPrimitive.Root;

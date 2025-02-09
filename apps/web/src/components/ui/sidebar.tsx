@@ -2,7 +2,7 @@
 
 import { Slot } from "@squaredmade/ui/slot";
 import { type VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { PanelLeft } from "@squared/icons";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";

@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/cn";
 import * as DialogPrimitive from "@squaredmade/ui/dialog";
-import { X } from "lucide-react";
+import { X } from "@squared/icons";
 import * as React from "react";
 
 const Dialog = DialogPrimitive.Root;

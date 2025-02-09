@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/cn";
 import * as DropdownMenuPrimitive from "@squaredmade/ui/dropdown-menu";
-import { Check, ChevronRight, Circle } from "lucide-react";
+import { Check, ChevronRight, Circle } from "@squared/icons";
 import * as React from "react";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;

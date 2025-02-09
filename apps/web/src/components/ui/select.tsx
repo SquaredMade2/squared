@@ -1,7 +1,8 @@
 "use client";
 
 import * as SelectPrimitive from "@squaredmade/ui/select";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
+import { ChevronDown, Check } from "@squared/icons";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";
