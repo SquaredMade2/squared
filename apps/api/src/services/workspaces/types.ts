@@ -14,6 +14,13 @@ export type CreateWorkspaceParams = {
 	};
 };
 
+export type WorkspaceInviteLink = {
+	workspaceId: string;
+	link: string;
+	expirationPeriod?: string;
+	uses?: number;
+};
+
 export interface WorkspaceRpc {
 	createWorkspace: (args: CreateWorkspaceParams) => Promise<Workspace>;
 	getWorkspace: (args: {
@@ -41,8 +48,9 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}) => Promise<{ success: boolean }>;
-	generateWorkspaceInviteToken: (args: {
+	generateWorkspaceInviteLink: (args: {
 		workspaceId: string;
-		expirationPeriod: string;
+		expirationPeriod?: string;
+		uses?: number;
 	}) => Promise<string>;
 }
