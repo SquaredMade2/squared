@@ -14,7 +14,7 @@ import { effortEstimateOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@squared/icons";
 import { type JSX, useState } from "react";
 
 const EffortEstimateDropdown = () => {

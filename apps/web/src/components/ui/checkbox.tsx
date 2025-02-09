@@ -1,7 +1,7 @@
 "use client";
 
 import * as CheckboxPrimitive from "@squaredmade/ui/checkbox";
-import { Check } from "lucide-react";
+import { Check } from "@squared/icons";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";

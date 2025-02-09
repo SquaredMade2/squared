@@ -2,7 +2,7 @@
 
 import { cn } from "@/utils/cn";
 import * as AccordionPrimitive from "@squaredmade/ui/accordion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@squared/icons";
 import * as React from "react";
 
 const Accordion = AccordionPrimitive.Root;
