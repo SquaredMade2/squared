@@ -10,7 +10,7 @@ import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
-import { Tag } from "lucide-react";
+import { Tag } from "@squared/icons";
 import { useState } from "react";
 import { LabelColor } from "../TaskCardLabels";
 import type { ContextMenuProps } from "./interfaces";

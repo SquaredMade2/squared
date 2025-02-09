@@ -38,7 +38,7 @@ import { useTaskStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Task } from "@squared/db";
 import { differenceInDays, format } from "date-fns";
-import { AlertCircle } from "lucide-react";
+import { CircleAlert } from "@squared/icons";
 import { useCallback, useEffect, useState } from "react";
 import {
 	Line,
@@ -412,7 +412,7 @@ export default function SprintDashboard() {
 							))}
 						</ScrollArea>
 						<Alert>
-							<AlertCircle className="h-4 w-4" />
+							<CircleAlert className="h-4 w-4" />
 							<AlertTitle>Auto-Assign</AlertTitle>
 							<AlertDescription>
 								This will assign {tasksToAutoAssign.length} task

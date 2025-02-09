@@ -20,7 +20,7 @@ import {
 } from "@hello-pangea/dnd";
 import { TODO } from "@squared/context";
 import type { Task, User } from "@squared/db";
-import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
+import { ChevronDown, ChevronRight, UserSearch } from "@squared/icons";
 import Link from "next/link";
 import { useState } from "react";
 

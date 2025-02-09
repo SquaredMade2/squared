@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useViewStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";
-import { UserSearch } from "lucide-react";
+import { UserSearch } from "@squared/icons";
 import Link from "next/link";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskListProps } from "./interfaces";

@@ -10,7 +10,7 @@ import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
-import { Info, Trash } from "lucide-react";
+import { Info, Trash } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LabelBadge from "../LabelBadges";

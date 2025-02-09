@@ -9,7 +9,7 @@ import {
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
-import { CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon } from "@squared/icons";
 import { useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 

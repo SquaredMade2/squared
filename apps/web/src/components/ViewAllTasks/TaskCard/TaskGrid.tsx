@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useViewStore } from "@/store";
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { formatDate } from "date-fns";
-import { Calendar, UserSearch } from "lucide-react";
+import { Calendar, UserSearch } from "@squared/icons";
 import Link from "next/link";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";

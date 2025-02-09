@@ -13,7 +13,7 @@ import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
-import { Check, UserSearch } from "lucide-react";
+import { Check, UserSearch } from "@squared/icons";
 import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 

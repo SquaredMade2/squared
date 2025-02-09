@@ -39,7 +39,7 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

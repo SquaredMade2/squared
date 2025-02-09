@@ -9,7 +9,7 @@ import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
