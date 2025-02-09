@@ -165,7 +165,7 @@ export const workspacesTable = pgTable(
 	"Workspace",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text(),
+		externalId: text().unique(),
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
