@@ -191,6 +191,7 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           REMOTE_DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
+          LOCAL_DB: true
 
       - name: Run tests
         run: pnpm run --filter=api test:ci
