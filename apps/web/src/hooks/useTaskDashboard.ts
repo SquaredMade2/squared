@@ -1,10 +1,8 @@
 import { client } from "@/lib/client";
-import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import { TODO } from "@squared/context";
 import type { Status, Task } from "@squared/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
