@@ -12,7 +12,7 @@ import { useFilterStore, useUserStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
-import { Check, UserSearch } from "lucide-react";
+import { Check, UserSearch } from "@squared/icons";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
