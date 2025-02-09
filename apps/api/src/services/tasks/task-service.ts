@@ -218,13 +218,13 @@ export class TaskService implements TaskRpc {
 			if (!updatedTask) {
 				this.throwError("There was an issue updating the task");
 			}
-				// Create log event
-				await this.eventService.createLogEvent({
-					taskId: updatedTask.id,
-					authorId: updaterId,
-					changes: taskData,
-					previousTask,
-				});
+			// Create log event
+			await this.eventService.createLogEvent({
+				taskId: updatedTask.id,
+				authorId: updaterId,
+				changes: taskData,
+				previousTask,
+			});
 			return updatedTask;
 		});
 	}
