@@ -380,6 +380,54 @@ export class WorkspaceService implements WorkspaceRpc {
 		});
 	}
 
+	async updateWorkspaceLabel({
+		workspaceId,
+		updatedLabel,
+	}: { workspaceId: string; updatedLabel: Label }): Promise<{
+		success: boolean;
+		labels: Label[];
+	}> {
+		this.logger.info(
+			"Editing label %s for workspace with id %s",
+			updatedLabel.name,
+			workspaceId,
+		);
+
+		return await this.db.transaction(async (tx) => {
+			const workspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.limit(1)
+				.then((results) => results[0]);
+			if (!workspace) {
+				throw new Error("Workspace not found.");
+			}
+
+			//Find label to update
+			const labels = workspace.labels;
+			const labelIndex = labels.findIndex((l) => l.name === updatedLabel.name);
+			if (labelIndex === -1) {
+				throw new Error("Label not found.");
+			}
+
+			const updatedLabels = [...labels];
+			updatedLabels[labelIndex] = { ...labels[labelIndex], ...updatedLabel };
+
+			const updated = await tx
+				.update(workspacesTable)
+				.set({ labels: updatedLabels })
+				.where(eq(workspacesTable.id, workspaceId))
+				.returning({ labels: workspacesTable.labels })
+				.then((res) => res[0]);
+
+			if (!updated) {
+				throw new Error("Update failed.");
+			}
+			return { success: true, labels: updated.labels };
+		});
+	}
+
 	async deleteWorkspaceLabel({
 		workspaceId,
 		labelName,

@@ -19,8 +19,10 @@ export function DataTable({
 }: { columns: ColumnDef<Label, unknown>[]; data: Label[] }) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState("");
-	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
-
+	const { setShowLabelModal, setLabelData, labelData } = useModalStore(
+		(state) => state,
+	);
+	console.log("labelData", labelData);
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
 		setSearchTerm(value);
@@ -50,8 +52,8 @@ export function DataTable({
 					<div className="flex items-center justify-center gap-2">
 						<Button
 							onClick={() => {
-								setLabelData({});
 								setShowLabelModal(true);
+								setLabelData({});
 							}}
 						>
 							Add New Label

@@ -1,7 +1,7 @@
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -30,22 +30,44 @@ export const LabelModal = () => {
 		useModalStore((state) => state);
 	const { workspace } = useWorkspaceStore((state) => state);
 
-	useEffect(() => {
-		if (labelData.name) {
-			form.setValue("name", labelData.name);
-		}
-		if (labelData.description) {
-			form.setValue("description", labelData.description);
-		}
-		if (labelData.color) {
-			form.setValue("color", labelData.color);
-		}
-	}, [showLabelModal]);
+	const [nameExists, setNameExists] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: { name: "", description: "", color: "" },
 	});
+
+	useEffect(() => {
+		if (showLabelModal) {
+			form.reset({
+				name: labelData.name || "",
+				description: labelData.description || "",
+				color: labelData.color || "",
+			});
+		} else {
+			form.reset({
+				name: "",
+				description: "",
+				color: "",
+			});
+			setLabelData({});
+		}
+	}, [showLabelModal]);
+
+	const checkLabelExists = (name: string) => {
+		if (!workspace || !name.trim()) {
+			setNameExists(false);
+			return;
+		}
+		if (name === labelData.name) {
+			setNameExists(false);
+			return;
+		}
+		const exists = workspace.labels.some(
+			(label) => label.name.toLowerCase() === name.toLowerCase(),
+		);
+		setNameExists(exists);
+	};
 
 	const handleDiscard = () => {
 		setLabelData({});
@@ -56,29 +78,54 @@ export const LabelModal = () => {
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
 		if (!workspace) return;
 
-		try {
-			const response = await client.workspace.createWorkspaceLabel
-				.$post({ workspaceId: workspace.id, label: values })
-				.then((res) => res.json());
-
-			if (!response.success) {
-				throw new Error("Label creation failed.");
+		if (labelData) {
+			try {
+				const response = await client.workspace.updateWorkspaceLabel
+					.$post({ workspaceId: workspace.id, updatedLabel: values })
+					.then((res) => res.json());
+				if (!response.success) {
+					throw new Error("Label update failed.");
+				}
+				toast({
+					title: "Label updated successfully",
+					description: `Label "${values.name}" updated.`,
+				});
+				setLabelData({});
+				form.reset();
+				setShowLabelModal(false);
+			} catch (error) {
+				console.error(error);
+				toast({
+					title: "Label could not be updated",
+					description: "An unknown error occurred",
+					variant: "destructive",
+				});
 			}
+		} else {
+			try {
+				const response = await client.workspace.createWorkspaceLabel
+					.$post({ workspaceId: workspace.id, label: values })
+					.then((res) => res.json());
 
-			toast({
-				title: "Label created successfully",
-				description: `Label "${values.name}" added.`,
-			});
-			setLabelData({});
-			form.reset();
-			setShowLabelModal(false);
-		} catch (error) {
-			console.error(error);
-			toast({
-				title: "Label could not be created",
-				description: "An unknown error occurred",
-				variant: "destructive",
-			});
+				if (!response.success) {
+					throw new Error("Label creation failed.");
+				}
+
+				toast({
+					title: "Label created successfully",
+					description: `Label "${values.name}" added.`,
+				});
+				setLabelData({});
+				form.reset();
+				setShowLabelModal(false);
+			} catch (error) {
+				console.error(error);
+				toast({
+					title: "Label could not be created",
+					description: "An unknown error occurred",
+					variant: "destructive",
+				});
+			}
 		}
 	};
 
@@ -100,8 +147,20 @@ export const LabelModal = () => {
 									<FormItem>
 										<FormLabel>Label Name</FormLabel>
 										<FormControl>
-											<Input {...field} placeholder="Label Name" />
+											<Input
+												{...field}
+												placeholder="Label Name"
+												onChange={(e) => {
+													field.onChange(e);
+													checkLabelExists(e.target.value);
+												}}
+											/>
 										</FormControl>
+										{nameExists && (
+											<p className="text-red-500 text-sm">
+												Label name already exists!
+											</p>
+										)}
 									</FormItem>
 								)}
 							/>
@@ -138,7 +197,11 @@ export const LabelModal = () => {
 							>
 								Discard
 							</Button>
-							<Button type="submit" className="hover:cursor-pointer">
+							<Button
+								type="submit"
+								className="hover:cursor-pointer"
+								disabled={nameExists}
+							>
 								Save
 							</Button>
 						</DialogFooter>
