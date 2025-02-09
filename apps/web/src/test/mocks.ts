@@ -50,7 +50,7 @@ export const STANDARD_WORKSPACE: Workspace = {
 	url: "test-workspace",
 	companySize: null,
 	tasksCreated: 1,
-	universalTokenLinkId: null,
+	externalId: null,
 	admins: [],
 	labels: DEFAULT_LABELS,
 	defaultView: null,
