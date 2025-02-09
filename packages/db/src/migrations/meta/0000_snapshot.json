@@ -1499,7 +1499,13 @@
 					"primaryKey": false,
 					"notNull": true
 				},
-
+				"lastLogin": {
+					"name": "lastLogin",
+					"type": "timestamp (3)",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
 				"onBoarding": {
 					"name": "onBoarding",
 					"type": "boolean",

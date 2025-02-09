@@ -42,6 +42,8 @@ export function DataTable({ columns, data }: DataTableProps) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [membersCsv, setMembersCsv] = useState<CsvType[] | null>(null);
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
+	const  { user, isLoaded } = useUser();
+	const lastLogin = isLoaded && user?.lastSignInAt;
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -66,9 +68,6 @@ export function DataTable({ columns, data }: DataTableProps) {
 		setShowWorkspaceInvite(true);
 	};
 
-	const  { user } = useUser();
-	const lastLogin= user?.lastSignInAt;
-
 	const generateMembersCsv = async () => {
 		const members = await Promise.all(
 			data.map(async (member: MemberWithRole) => {
@@ -82,7 +81,6 @@ export function DataTable({ columns, data }: DataTableProps) {
 					role: member.role,
 					teams: teamNames,
 					active: "active",
-					
 					createdAt: member.createdAt,
 				};
 			}),
@@ -95,12 +93,14 @@ export function DataTable({ columns, data }: DataTableProps) {
 			const csv = await generateMembersCsv();
 			const csvWithLastLogin = csv.map((user) => ({
 				...user,
-				lastLogin: lastLogin
-			}))
+				lastLogin: lastLogin instanceof Date ? lastLogin : null 
+			  }));
+	
 			setMembersCsv(csvWithLastLogin);
 		};
 		generateCsv();
 	}, []);
+	
 
 	return (
 		<div className="flex flex-col items-start gap-4">

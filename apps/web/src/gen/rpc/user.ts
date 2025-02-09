@@ -225,7 +225,6 @@ export type GetWorkspaceUsersWithRolesResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
