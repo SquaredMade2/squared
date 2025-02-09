@@ -216,7 +216,8 @@ async function seedDB() {
 }
 
 seedDB().catch((e) => {
-	logger.error("Error seeding database: %s", e);
+	console.error("Error seeding database: %s", e);
+	throw e;
 });
 
 logger.info("Seed script executed. Check the logs for results.");
