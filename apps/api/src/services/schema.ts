@@ -143,7 +143,6 @@ export const userSchema = createSchema<User>()(
 		username: z.string().nullable(),
 		email: z.string().email(),
 		externalId: z.string(),
-		lastLogin: z.date(),
 		createdAt: z.date(),
 		onBoarding: z.boolean(),
 		defaultWorkspaceId: z.string().nullable(),

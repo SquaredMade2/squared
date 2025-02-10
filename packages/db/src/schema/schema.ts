@@ -191,7 +191,6 @@ export const usersTable = pgTable(
 		name: text().notNull(),
 		username: text(),
 		email: text().notNull(),
-		lastLogin: timestamp({ precision: 3 }).defaultNow().notNull(),
 		onBoarding: boolean().default(true).notNull(),
 		defaultWorkspaceId: uuid(),
 		avatarUrl: text(),
