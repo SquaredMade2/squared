@@ -165,11 +165,11 @@ export const workspacesTable = pgTable(
 	"Workspace",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().unique(),
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
 		tasksCreated: integer().default(0).notNull(),
-		universalTokenLinkId: text(),
 		avatarUrl: text(),
 		admins: text().array().default([]).notNull(),
 		defaultView: text(),
@@ -319,29 +319,6 @@ export const tasksTable = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("set null"),
-	],
-);
-
-export const universalTokenLinksTable = pgTable(
-	"UniversalTokenLink",
-	{
-		id: uuid().primaryKey().notNull(),
-		token: text().notNull(),
-		isEnabled: boolean().default(true).notNull(),
-		workspaceId: uuid().notNull(),
-	},
-	(table) => [
-		uniqueIndex("UniversalTokenLink_workspaceId_key").using(
-			"btree",
-			table.workspaceId.asc().nullsLast().op("uuid_ops"),
-		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
-			name: "UniversalTokenLink_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
@@ -655,7 +632,6 @@ export type Sprint = typeof sprintsTable.$inferSelect;
 export type Task = typeof tasksTable.$inferSelect;
 export type TaskEvent = typeof taskEventsTable.$inferSelect;
 export type Team = typeof teamsTable.$inferSelect;
-export type UniversalTokenLink = typeof universalTokenLinksTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
 export type UserTeam = typeof userTeamsTable.$inferSelect;
 export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;

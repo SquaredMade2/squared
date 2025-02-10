@@ -70,6 +70,7 @@ export type GetNotificationsResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
+		externalId: string | null;
 		id: string;
 		labels: {
 			color: string;
@@ -78,7 +79,6 @@ export type GetNotificationsResponse = {
 		}[];
 		name: string;
 		tasksCreated: number;
-		universalTokenLinkId: string | null;
 		url: string;
 	};
 	createdAt: Date;
@@ -207,6 +207,7 @@ export type ToggleNotificationResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
+		externalId: string | null;
 		id: string;
 		labels: {
 			color: string;
@@ -215,7 +216,6 @@ export type ToggleNotificationResponse = {
 		}[];
 		name: string;
 		tasksCreated: number;
-		universalTokenLinkId: string | null;
 		url: string;
 	};
 	createdAt: Date;

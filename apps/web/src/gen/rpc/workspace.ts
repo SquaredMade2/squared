@@ -16,15 +16,15 @@ export type CreateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -38,15 +38,15 @@ export type GetWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -60,15 +60,15 @@ export type GetWorkspaceByUrlResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -87,15 +87,15 @@ export type UpdateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -113,15 +113,15 @@ export type GetUserWorkspacesResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 }[];
 
@@ -137,15 +137,15 @@ export type JoinWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
+		description?: string | null;
 		name: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 

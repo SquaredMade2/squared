@@ -3,9 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { userService } from "@/lib/services";
 import { useModalStore } from "@/store";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { Team, User, Workspace, WorkspaceRole } from "@squared/db";
-import { useUser } from "@clerk/nextjs";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -42,7 +42,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [membersCsv, setMembersCsv] = useState<CsvType[] | null>(null);
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
-	const  { user, isLoaded } = useUser();
+	const { user, isLoaded } = useUser();
 	const lastLogin = isLoaded && user?.lastSignInAt;
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,14 +93,13 @@ export function DataTable({ columns, data }: DataTableProps) {
 			const csv = await generateMembersCsv();
 			const csvWithLastLogin = csv.map((user) => ({
 				...user,
-				lastLogin: lastLogin instanceof Date ? lastLogin : null 
-			  }));
-	
+				lastLogin: lastLogin instanceof Date ? lastLogin : null,
+			}));
+
 			setMembersCsv(csvWithLastLogin);
 		};
 		generateCsv();
 	}, []);
-	
 
 	return (
 		<div className="flex flex-col items-start gap-4">
