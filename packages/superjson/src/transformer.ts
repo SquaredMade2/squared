@@ -92,9 +92,9 @@ const simpleRules = [
 				message: v.message,
 			};
 
-			superJson.allowedErrorProps.forEach((prop) => {
+			for (const prop in superJson.allowedErrorProps) {
 				baseError[prop] = (v as any)[prop];
-			});
+			}
 
 			return baseError;
 		},
@@ -103,9 +103,9 @@ const simpleRules = [
 			e.name = v.name;
 			e.stack = v.stack;
 
-			superJson.allowedErrorProps.forEach((prop) => {
+			for (const prop in superJson.allowedErrorProps) {
 				(e as any)[prop] = v[prop];
-			});
+			}
 
 			return e;
 		},
@@ -114,7 +114,7 @@ const simpleRules = [
 	simpleTransformation(
 		isRegExp,
 		"regexp",
-		(v) => "" + v,
+		(v) => `${v}`,
 		(regex) => {
 			const body = regex.slice(1, regex.lastIndexOf("/"));
 			const flags = regex.slice(regex.lastIndexOf("/") + 1);
@@ -147,9 +147,8 @@ const simpleRules = [
 
 			if (v > 0) {
 				return "Infinity";
-			} else {
-				return "-Infinity";
 			}
+			return "-Infinity";
 		},
 		Number,
 	),
@@ -195,6 +194,7 @@ const symbolRule = compositeTransformation(
 	},
 	(s, superJson) => {
 		const identifier = superJson.symbolRegistry.getIdentifier(s);
+		// biome-ignore lint/style/noNonNullAssertion: This is a symbol, so it should always have a description
 		return ["symbol", identifier!];
 	},
 	(v) => v.description,
@@ -254,6 +254,7 @@ const classRule = compositeTransformation(
 	isInstanceOfRegisteredClass,
 	(clazz, superJson) => {
 		const identifier = superJson.classRegistry.getIdentifier(clazz.constructor);
+		// biome-ignore lint/style/noNonNullAssertion: This is a class, so it should always have an identifier
 		return ["class", identifier!];
 	},
 	(clazz, superJson) => {
@@ -265,9 +266,9 @@ const classRule = compositeTransformation(
 		}
 
 		const result: any = {};
-		allowedProps.forEach((prop) => {
+		for (const prop of allowedProps) {
 			result[prop] = clazz[prop];
-		});
+		}
 		return result;
 	},
 	(v, a, superJson) => {
@@ -289,11 +290,13 @@ const customRule = compositeTransformation(
 	},
 	(value, superJson) => {
 		const transformer =
+			// biome-ignore lint/style/noNonNullAssertion: We've already checked if it's applicable
 			superJson.customTransformerRegistry.findApplicable(value)!;
 		return ["custom", transformer.name];
 	},
 	(value, superJson) => {
 		const transformer =
+			// biome-ignore lint/style/noNonNullAssertion: We've already checked if it's applicable
 			superJson.customTransformerRegistry.findApplicable(value)!;
 		return transformer.serialize(value);
 	},
@@ -337,9 +340,9 @@ export const transformValue = (
 };
 
 const simpleRulesByAnnotation: Record<string, (typeof simpleRules)[0]> = {};
-simpleRules.forEach((rule) => {
+for (const rule of simpleRules) {
 	simpleRulesByAnnotation[rule.annotation] = rule;
-});
+}
 
 export const untransformValue = (
 	json: any,
@@ -357,14 +360,13 @@ export const untransformValue = (
 			case "typed-array":
 				return typedArrayRule.untransform(json, type, superJson);
 			default:
-				throw new Error("Unknown transformation: " + type);
+				throw new Error(`Unknown transformation: ${type}`);
 		}
-	} else {
-		const transformation = simpleRulesByAnnotation[type];
-		if (!transformation) {
-			throw new Error("Unknown transformation: " + type);
-		}
-
-		return transformation.untransform(json as never, superJson);
 	}
+	const transformation = simpleRulesByAnnotation[type];
+	if (!transformation) {
+		throw new Error(`Unknown transformation: ${type}`);
+	}
+
+	return transformation.untransform(json as never, superJson);
 };

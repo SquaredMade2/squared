@@ -64,7 +64,7 @@
 			}
 		},
 		{
-			"include": ["apps/web/src/server/__internals"],
+			"include": ["apps/web/src/server/__internals", "packages/superjson"],
 			"linter": {
 				"rules": {
 					"complexity": {

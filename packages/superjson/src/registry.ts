@@ -6,15 +6,16 @@ export class Registry<T> {
 	constructor(private readonly generateIdentifier: (v: T) => string) {}
 
 	register(value: T, identifier?: string): void {
+		let newIdentifier = identifier;
 		if (this.kv.getByValue(value)) {
 			return;
 		}
 
-		if (!identifier) {
-			identifier = this.generateIdentifier(value);
+		if (!newIdentifier) {
+			newIdentifier = this.generateIdentifier(value);
 		}
 
-		this.kv.set(identifier, value);
+		this.kv.set(newIdentifier, value);
 	}
 
 	clear(): void {

@@ -36,7 +36,6 @@ export default class SuperJSON {
 	}
 
 	serialize(object: SuperJSONValue): SuperJSONResult {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		const identities = new Map<any, any[][]>();
 		const output = walker(object, identities, this, this.dedupe);
 		const res: SuperJSONResult = {

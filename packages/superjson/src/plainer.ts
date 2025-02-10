@@ -55,30 +55,34 @@ export function applyValueAnnotations(
 	annotations: MinimisedTree<TypeAnnotation>,
 	superJson: SuperJSON,
 ) {
+	let newPlain = plain;
 	traverse(annotations, (type, path) => {
-		plain = setDeep(plain, path, (v) => untransformValue(v, type, superJson));
+		newPlain = setDeep(newPlain, path, (v) =>
+			untransformValue(v, type, superJson),
+		);
 	});
 
-	return plain;
+	return newPlain;
 }
 
 export function applyReferentialEqualityAnnotations(
 	plain: any,
 	annotations: ReferentialEqualityAnnotations,
 ) {
+	let newPlain = plain;
 	function apply(identicalPaths: string[], path: string) {
-		const object = getDeep(plain, parsePath(path));
+		const object = getDeep(newPlain, parsePath(path));
 
-		identicalPaths.map(parsePath).forEach((identicalObjectPath) => {
-			plain = setDeep(plain, identicalObjectPath, () => object);
-		});
+		for (const identicalObjectPath of identicalPaths.map(parsePath)) {
+			newPlain = setDeep(newPlain, identicalObjectPath, () => object);
+		}
 	}
 
 	if (isArray(annotations)) {
 		const [root, other] = annotations;
-		root.forEach((identicalPath) => {
-			plain = setDeep(plain, parsePath(identicalPath), () => plain);
-		});
+		for (const identicalPath of root) {
+			newPlain = setDeep(newPlain, parsePath(identicalPath), () => newPlain);
+		}
 
 		if (other) {
 			forEach(other, apply);
@@ -87,7 +91,7 @@ export function applyReferentialEqualityAnnotations(
 		forEach(annotations, apply);
 	}
 
-	return plain;
+	return newPlain;
 }
 
 const isDeep = (object: any, superJson: SuperJSON): boolean =>
@@ -118,15 +122,15 @@ export type ReferentialEqualityAnnotations =
 	| [string[], Record<string, string[]>];
 
 export function generateReferentialEqualityAnnotations(
-	identitites: Map<any, any[][]>,
+	identities: Map<any, any[][]>,
 	dedupe: boolean,
 ): ReferentialEqualityAnnotations | undefined {
 	const result: Record<string, string[]> = {};
 	let rootEqualityPaths: string[] | undefined = undefined;
 
-	identitites.forEach((paths) => {
+	for (let [_, paths] of identities.entries()) {
 		if (paths.length <= 1) {
-			return;
+			continue;
 		}
 
 		// if we're not deduping, all of these objects continue existing.
@@ -146,17 +150,15 @@ export function generateReferentialEqualityAnnotations(
 			result[stringifyPath(representativePath)] =
 				identicalPaths.map(stringifyPath);
 		}
-	});
+	}
 
 	if (rootEqualityPaths) {
 		if (isEmptyObject(result)) {
 			return [rootEqualityPaths];
-		} else {
-			return [rootEqualityPaths, result];
 		}
-	} else {
-		return isEmptyObject(result) ? undefined : result;
+		return [rootEqualityPaths, result];
 	}
+	return isEmptyObject(result) ? undefined : result;
 }
 
 export const walker = (
@@ -214,7 +216,7 @@ export const walker = (
 	const transformedValue: any = isArray(transformed) ? [] : {};
 	const innerAnnotations: Record<string, Tree<TypeAnnotation>> = {};
 
-	forEach(transformed, (value, index) => {
+	for (const [index, value] of Object.entries(transformed)) {
 		if (
 			index === "__proto__" ||
 			index === "constructor" ||
@@ -240,22 +242,22 @@ export const walker = (
 		if (isArray(recursiveResult.annotations)) {
 			innerAnnotations[index] = recursiveResult.annotations;
 		} else if (isPlainObject(recursiveResult.annotations)) {
-			forEach(recursiveResult.annotations, (tree, key) => {
-				innerAnnotations[escapeKey(index) + "." + key] = tree;
-			});
+			for (const [key, tree] of Object.entries(recursiveResult.annotations)) {
+				innerAnnotations[`${escapeKey(index)}.${key}`] = tree;
+			}
 		}
-	});
+	}
 
 	const result: Result = isEmptyObject(innerAnnotations)
 		? {
 				transformedValue,
-				annotations: !!transformationResult
+				annotations: transformationResult
 					? [transformationResult.type]
 					: undefined,
 			}
 		: {
 				transformedValue,
-				annotations: !!transformationResult
+				annotations: transformationResult
 					? [transformationResult.type, innerAnnotations]
 					: innerAnnotations,
 			};

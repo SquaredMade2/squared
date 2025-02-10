@@ -4,9 +4,8 @@ import { includes } from "./util.js";
 const getNthKey = (value: Map<any, any> | Set<any>, n: number): any => {
 	if (n > value.size) throw new Error("index out of bounds");
 	const keys = value.keys();
-	while (n > 0) {
+	for (let i = 0; i < n; i++) {
 		keys.next();
-		n--;
 	}
 
 	return keys.next().value;
@@ -26,30 +25,31 @@ function validatePath(path: (string | number)[]) {
 
 export const getDeep = (object: object, path: (string | number)[]): object => {
 	validatePath(path);
+	let newObject = object;
 
 	for (let i = 0; i < path.length; i++) {
 		const key = path[i];
-		if (isSet(object)) {
-			object = getNthKey(object, +key);
-		} else if (isMap(object)) {
+		if (isSet(newObject)) {
+			newObject = getNthKey(newObject, +key);
+		} else if (isMap(newObject)) {
 			const row = +key;
 			const type = +path[++i] === 0 ? "key" : "value";
 
-			const keyOfRow = getNthKey(object, row);
+			const keyOfRow = getNthKey(newObject, row);
 			switch (type) {
 				case "key":
-					object = keyOfRow;
+					newObject = keyOfRow;
 					break;
 				case "value":
-					object = object.get(keyOfRow);
+					newObject = newObject.get(keyOfRow);
 					break;
 			}
 		} else {
-			object = (object as any)[key];
+			newObject = (newObject as any)[key];
 		}
 	}
 
-	return object;
+	return newObject;
 };
 
 export const setDeep = (

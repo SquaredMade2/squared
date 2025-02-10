@@ -26,7 +26,7 @@ export const isString = (payload: any): payload is string =>
 	typeof payload === "string";
 
 export const isNumber = (payload: any): payload is number =>
-	typeof payload === "number" && !isNaN(payload);
+	typeof payload === "number" && !Number.isNaN(payload);
 
 export const isBoolean = (payload: any): payload is boolean =>
 	typeof payload === "boolean";
@@ -44,13 +44,13 @@ export const isSymbol = (payload: any): payload is symbol =>
 	getType(payload) === "Symbol";
 
 export const isDate = (payload: any): payload is Date =>
-	payload instanceof Date && !isNaN(payload.valueOf());
+	payload instanceof Date && !Number.isNaN(payload.valueOf());
 
 export const isError = (payload: any): payload is Error =>
 	payload instanceof Error;
 
 export const isNaNValue = (payload: any): payload is typeof NaN =>
-	typeof payload === "number" && isNaN(payload);
+	typeof payload === "number" && Number.isNaN(payload);
 
 export const isPrimitive = (
 	payload: any,
