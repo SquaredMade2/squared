@@ -30,7 +30,7 @@ export class TeamService implements TeamRpc {
 		workspaceId,
 		userId,
 	}: CreateTeamParams): Promise<Team> {
-		this.logger.info("Creating team: %0", { name, identifier, workspaceId });
+		this.logger.info("Creating team", { name, identifier, workspaceId });
 
 		return await this.db.transaction(async (tx) => {
 			// Check if team already exists
@@ -69,7 +69,7 @@ export class TeamService implements TeamRpc {
 	}
 
 	async updateTeam({ id, ...args }: UpdateTeamParams): Promise<Team> {
-		this.logger.info("Updating team: %s", id);
+		this.logger.info("Updating team", id);
 		return await this.db.transaction(async (tx) => {
 			const [updatedTeam] = await tx
 				.update(teamsTable)
@@ -89,7 +89,7 @@ export class TeamService implements TeamRpc {
 		id,
 		...args
 	}: UpdateTeamSprintsParams): Promise<Team> {
-		this.logger.info("Updating team sprints: %s", id);
+		this.logger.info("Updating team sprints", id);
 		return await this.db.transaction(async (tx) => {
 			const [updatedTeam] = await tx
 				.update(teamsTable)
@@ -106,7 +106,7 @@ export class TeamService implements TeamRpc {
 	}
 
 	async deleteTeam({ teamId }: { teamId: string }): Promise<Team> {
-		this.logger.info("Deleting team: %s", teamId);
+		this.logger.info("Deleting team", teamId);
 		return await this.db.transaction(async (tx) => {
 			const [result] = await tx
 				.delete(teamsTable)
@@ -121,7 +121,7 @@ export class TeamService implements TeamRpc {
 	}
 
 	async getTeam({ teamId }: { teamId: string }): Promise<Team | null> {
-		this.logger.info("Finding team: %s", teamId);
+		this.logger.info("Finding team", teamId);
 		return await this.db.transaction(async (tx) => {
 			const team = await tx
 				.select()
@@ -141,7 +141,7 @@ export class TeamService implements TeamRpc {
 		identifier: string;
 		workspaceId: string;
 	}): Promise<Team | null> {
-		this.logger.info("Finding team: %s", identifier);
+		this.logger.info("Finding team", identifier);
 		return await this.db.transaction(async (tx) => {
 			const team = await tx
 				.select()
@@ -163,7 +163,7 @@ export class TeamService implements TeamRpc {
 		userId,
 		workspaceId,
 	}: { userId: string; workspaceId: string }): Promise<Team[]> {
-		this.logger.info("Finding teams for user: %s", userId);
+		this.logger.info("Finding teams for user", userId);
 		return await this.db
 			.select()
 			.from(teamsTable)
