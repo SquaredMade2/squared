@@ -9,12 +9,7 @@ import {
 	teamsTable,
 	userTeamsTable,
 } from "@squared/db";
-import superjson from "@squared/superjson";
-import request from "supertest";
-
-const superJsonMiddleware = (body: any) => {
-	return JSON.parse(superjson.stringify(body));
-};
+import request from "./request";
 
 describe("API Tests", () => {
 	it("should respond with 200 OK for the root path", async () => {
@@ -92,7 +87,7 @@ describe("API Tests", () => {
 			const filter = newBasicFilter(await getUserAndTeamIDs());
 			const response = await request(app)
 				.post(createFilterEndpoint)
-				.send(superJsonMiddleware(filter));
+				.send(filter);
 			addResponseId(response);
 
 			expect(response.body).toMatchObject(filter);
@@ -103,7 +98,7 @@ describe("API Tests", () => {
 			const filter = newBasicFilter({ authorId, teamId: randomUUID() });
 			const response = await request(app)
 				.post(createFilterEndpoint)
-				.send(superJsonMiddleware(filter));
+				.send(filter);
 			addResponseId(response);
 
 			// this is a client error so the response code should be in the 400s
@@ -116,7 +111,7 @@ describe("API Tests", () => {
 			const filter = newBasicFilter({ authorId: randomUUID(), teamId });
 			const response = await request(app)
 				.post(createFilterEndpoint)
-				.send(superJsonMiddleware(filter));
+				.send(filter);
 			addResponseId(response);
 
 			expect(response.statusCode).toBeGreaterThanOrEqual(400);
@@ -170,7 +165,7 @@ describe("API Tests", () => {
 
 			const response = await request(app)
 				.post(getFilterEndpoint)
-				.send(superJsonMiddleware({ teamId }));
+				.send({ teamId });
 			const retrievedFilters: SavedFilter[] = response.body;
 
 			// equate names first in case filters are returned from rpc service
@@ -202,14 +197,10 @@ describe("API Tests", () => {
 				],
 			};
 
-			const response = await request(app)
-				.post(updateFilterEndpoint)
-				.send(
-					superJsonMiddleware({
-						filterId: insertedFilter.id,
-						filters: updateFilterParams,
-					}),
-				);
+			const response = await request(app).post(updateFilterEndpoint).send({
+				filterId: insertedFilter.id,
+				filters: updateFilterParams,
+			});
 
 			expect(response.body).toMatchObject(updateFilterParams);
 		});
@@ -224,7 +215,7 @@ describe("API Tests", () => {
 
 			await request(app)
 				.post(deleteFilterEndpoint)
-				.send(superJsonMiddleware({ filterId: insertedFilter.id }));
+				.send({ filterId: insertedFilter.id });
 
 			const deletedFilter = await db
 				.select()
