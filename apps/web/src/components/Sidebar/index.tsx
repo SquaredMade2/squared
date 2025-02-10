@@ -21,17 +21,17 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import type { Workspace } from "@squared/db";
-import { useQuery } from "@tanstack/react-query";
 import {
-	ClipboardList,
-	Home,
+	Clipboard,
+	House,
 	Inbox,
-	type LucideIcon,
 	Moon,
 	Search,
 	Settings,
 	Sun,
-} from "lucide-react";
+} from "@squared/icons";
+import { useQuery } from "@tanstack/react-query";
+import type { LucideIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -100,7 +100,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 				<WorkspaceDropdown />
 				<NewTaskButton />
 				<div className="flex flex-col space-y-2">
-					<IconButton icon={Home} label="Home" onClick={toHome} />
+					<IconButton icon={House} label="Home" onClick={toHome} />
 					<IconButton
 						icon={Search}
 						label="Search"
@@ -118,7 +118,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 						notificationCount={notifications.length}
 					/>
 					<IconButton
-						icon={ClipboardList}
+						icon={Clipboard}
 						label="My Tasks"
 						onClick={() => navigateTo(`${workspace?.url}/my-tasks/assigned`)}
 					/>

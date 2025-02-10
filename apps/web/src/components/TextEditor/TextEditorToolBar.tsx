@@ -1,4 +1,4 @@
-import { Bold, Heading, Italic } from "lucide-react";
+import { Bold, Heading, Italic } from "@squared/icons";
 import { Button } from "../ui/button";
 import LinkModal from "./LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";

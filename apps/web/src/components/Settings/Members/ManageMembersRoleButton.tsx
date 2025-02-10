@@ -10,9 +10,9 @@ import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import type { WorkspaceRole } from "@squared/db";
+import { UserCog } from "@squared/icons";
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UserCog } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
 
 const ManageMembersRoleButton = ({

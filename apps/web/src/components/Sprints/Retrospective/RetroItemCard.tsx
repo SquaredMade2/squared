@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useUserStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
+import { ThumbsUp } from "@squared/icons";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
-import { ThumbsUp } from "lucide-react";
 
 export const RetroItemCard = ({
 	item,

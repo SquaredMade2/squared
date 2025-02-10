@@ -6,14 +6,14 @@ import { sprintService, taskService, teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Sprint, Team } from "@squared/db";
-import { addDays, format, startOfWeek } from "date-fns";
 import {
-	CalendarIcon,
+	Calendar as CalendarIcon,
 	ChevronDown,
 	ChevronRight,
 	Maximize2,
 	X,
-} from "lucide-react";
+} from "@squared/icons";
+import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 

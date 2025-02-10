@@ -17,7 +17,7 @@ import {
 	Menu,
 	SlidersVertical,
 } from "@squared/icons";
-import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
+import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "@squared/icons";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import {
