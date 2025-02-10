@@ -5,7 +5,7 @@
 	"scripts": {
 		"api:gen": "pnpm run --filter=api gen",
 		"build": "turbo run build",
-		"build:icons": "pnpm --filter=@squaredmade/ui run build",
+		"build:icons": "pnpm --filter=@squared/icons run build",
 		"db:backup": "cd ./packages/db && dotenv -e .env -- sh -c 'echo $POSTGRES_PRISMA_URL && pg_dump --file=../../database/$(date +%d-%m-%Y).bak --dbname=$(echo $POSTGRES_PRISMA_URL | sed \"s/[?&]pgbouncer=true//\")'",
 		"db:gen": "turbo run db:gen",
 		"db:migrate": "pnpm --filter=@squared/db db:migrate",
@@ -50,8 +50,15 @@
 	},
 	"pnpm": {
 		"supportedArchitectures": {
-			"os": ["win32", "darwin", "current"],
-			"cpu": ["x64", "arm64"]
+			"os": [
+				"win32",
+				"darwin",
+				"current"
+			],
+			"cpu": [
+				"x64",
+				"arm64"
+			]
 		},
 		"overrides": {
 			"@types/react": "19.0.8",
