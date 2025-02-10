@@ -154,6 +154,20 @@ jobs:
     needs: [detect-changes, setup]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: squared
+          POSTGRES_PASSWORD: squared
+          POSTGRES_DB: squared-test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -176,15 +190,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-      - name: Start Docker Compose services
-        run: pnpm run docker:db:init
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
-          LOCAL_DB: true
       - name: Run tests
         run: pnpm run --filter=api test:ci
         env:
@@ -194,15 +199,12 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           EMAIL_USERNAME: info@squaredmade.com
           EMAIL_PASSWORD: H=3x=_uhQa
-          POSTGRES_PORT: 5432
+          POSTGRES_PORT: 5434
           NODE_ENV: test
           LOCAL_DB: true
           RUNNING_TESTS: true
       - name: Build API
         run: pnpm --filter=api build
-      - name: Stop Docker Compose services
-        if: always()
-        run: docker-compose -f packages/seed/docker-compose.yml down
 
   test-web:
     name: Test Web
