@@ -119,6 +119,7 @@ export function createRequestHandler(
 					res.on("finish", () => abortable?.abort());
 
 					requestContexts.set(req, ctx);
+					console.log("req.body", req.body);
 					const result = await methodFn(req.body);
 					res.json(result);
 

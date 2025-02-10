@@ -1,0 +1,24 @@
+{
+	"name": "@squared/superjson",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"check-types": "tsc --noEmit",
+		"test": "vitest run",
+		"build": "node build.mjs"
+	},
+	"dependencies": {
+		"copy-anything": "^3.0.5"
+	},
+	"devDependencies": {
+		"@squared/builder": "workspace:*",
+		"@squared/typescript-config": "workspace:*",
+		"@types/debug": "^4.1.12",
+		"@types/node": "^18.19.75",
+		"benchmark": "^2.1.4",
+		"decimal.js": "^10.5.0",
+		"mongodb": "^6.13.0",
+		"tsdx": "^0.14.1",
+		"vitest": "^0.34.6"
+	}
+}

@@ -8,6 +8,9 @@
 		"clientKind": "git",
 		"useIgnoreFile": true
 	},
+	"files": {
+		"maxSize": 10000000
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -67,6 +70,16 @@
 					"complexity": {
 						"noBannedTypes": "off"
 					},
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		},
+		{
+			"include": ["**/*.test.ts", "**/*.test.tsx"],
+			"linter": {
+				"rules": {
 					"suspicious": {
 						"noExplicitAny": "off"
 					}
