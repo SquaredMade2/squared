@@ -26,7 +26,7 @@ export interface TeamRpc {
 	createTeam: (args: CreateTeamParams) => Promise<Team>;
 	updateTeam: (args: UpdateTeamParams) => Promise<Team>;
 	updateTeamSprints: (args: UpdateTeamSprintsParams) => Promise<Team>;
-	deleteTeam: (args: { teamId: string }) => Promise<void>;
+	deleteTeam: (args: { teamId: string }) => Promise<Team>;
 	getTeam: (args: { teamId: string }) => Promise<Team | null>;
 	getTeamByIdentifier: (args: {
 		identifier: string;
