@@ -1,5 +1,5 @@
 {
-	"id": "160bbb89-4ed9-4775-badf-69c01cd93891",
+	"id": "19aca9b3-1cf8-4f11-8a7b-5dcb3a2474b9",
 	"prevId": "c553d91f-255d-4560-95a6-4814b695acf5",
 	"version": "7",
 	"dialect": "postgresql",
@@ -1246,6 +1246,71 @@
 			"checkConstraints": {},
 			"isRLSEnabled": false
 		},
+		"public.UniversalTokenLink": {
+			"name": "UniversalTokenLink",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"token": {
+					"name": "token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"isEnabled": {
+					"name": "isEnabled",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true,
+					"default": true
+				},
+				"workspaceId": {
+					"name": "workspaceId",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {
+				"UniversalTokenLink_workspaceId_key": {
+					"name": "UniversalTokenLink_workspaceId_key",
+					"columns": [
+						{
+							"expression": "workspaceId",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last",
+							"opclass": "uuid_ops"
+						}
+					],
+					"isUnique": true,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"UniversalTokenLink_workspaceId_fkey": {
+					"name": "UniversalTokenLink_workspaceId_fkey",
+					"tableFrom": "UniversalTokenLink",
+					"tableTo": "Workspace",
+					"columnsFrom": ["workspaceId"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
 		"public.UserTeam": {
 			"name": "UserTeam",
 			"schema": "",
@@ -1379,13 +1444,6 @@
 					"type": "text",
 					"primaryKey": false,
 					"notNull": true
-				},
-				"lastLogin": {
-					"name": "lastLogin",
-					"type": "timestamp (3)",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
 				},
 				"onBoarding": {
 					"name": "onBoarding",
@@ -1573,12 +1631,6 @@
 					"notNull": true,
 					"default": "gen_random_uuid()"
 				},
-				"externalId": {
-					"name": "externalId",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
 				"name": {
 					"name": "name",
 					"type": "text",
@@ -1603,6 +1655,12 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": 0
+				},
+				"universalTokenLinkId": {
+					"name": "universalTokenLinkId",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
 				},
 				"avatarUrl": {
 					"name": "avatarUrl",
@@ -1658,13 +1716,7 @@
 			},
 			"foreignKeys": {},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {
-				"Workspace_externalId_unique": {
-					"name": "Workspace_externalId_unique",
-					"nullsNotDistinct": false,
-					"columns": ["externalId"]
-				}
-			},
+			"uniqueConstraints": {},
 			"policies": {},
 			"checkConstraints": {},
 			"isRLSEnabled": false

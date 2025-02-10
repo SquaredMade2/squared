@@ -20,13 +20,13 @@
 			"idx": 2,
 			"version": "7",
 			"when": 1739073122450,
-			"tag": "0002_clerk_prep",
+			"tag": "0002_remove_last_login",
 			"breakpoints": true
 		},
 		{
 			"idx": 3,
 			"version": "7",
-			"when": 1739149397890,
+			"when": 1739150372875,
 			"tag": "0003_clerk_prep",
 			"breakpoints": true
 		}
