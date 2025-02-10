@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-	title: "Documentation | Your Project Name",
+	title: "Documentation | Squared",
 	description:
-		"Explore our comprehensive documentation to get started with Your Project Name.",
+		"Explore our comprehensive documentation to get started with Squared.",
 };
 
 export default async function DocsLandingPage() {

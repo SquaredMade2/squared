@@ -228,7 +228,104 @@ export type DocumentationDocument<Lang extends string = string> =
 		Lang
 	>;
 
-export type AllDocumentTypes = DocsDocument | DocumentationDocument;
+type HomeDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Home documents
+ */
+interface HomeDocumentData {
+	/**
+	 * Hero Title field in *Home*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: Welcome to Squared
+	 * - **API ID Path**: home.hero_title
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/field#key-text
+	 */
+	hero_title: prismic.KeyTextField;
+
+	/**
+	 * Hero Description field in *Home*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: Description here...
+	 * - **API ID Path**: home.hero_description
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/field#key-text
+	 */
+	hero_description: prismic.KeyTextField;
+
+	/**
+	 * Hero CTA field in *Home*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: See what it's about
+	 * - **API ID Path**: home.hero_cta
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/field#key-text
+	 */
+	hero_cta: prismic.KeyTextField;
+
+	/**
+	 * Slice Zone field in *Home*
+	 *
+	 * - **Field Type**: Slice Zone
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: home.slices[]
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/field#slices
+	 */
+	slices: prismic.SliceZone<HomeDocumentDataSlicesSlice> /**
+	 * Meta Title field in *Home*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: A title of the page used for social media and search engines
+	 * - **API ID Path**: home.meta_title
+	 * - **Tab**: SEO & Metadata
+	 * - **Documentation**: https://prismic.io/docs/field#key-text
+	 */;
+	meta_title: prismic.KeyTextField;
+
+	/**
+	 * Meta Description field in *Home*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: A brief summary of the page
+	 * - **API ID Path**: home.meta_description
+	 * - **Tab**: SEO & Metadata
+	 * - **Documentation**: https://prismic.io/docs/field#key-text
+	 */
+	meta_description: prismic.KeyTextField;
+
+	/**
+	 * Meta Image field in *Home*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: home.meta_image
+	 * - **Tab**: SEO & Metadata
+	 * - **Documentation**: https://prismic.io/docs/field#image
+	 */
+	meta_image: prismic.ImageField<never>;
+}
+
+/**
+ * Home document from Prismic
+ *
+ * - **API ID**: `home`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type HomeDocument<Lang extends string = string> =
+	prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, "home", Lang>;
+
+export type AllDocumentTypes =
+	| DocsDocument
+	| DocumentationDocument
+	| HomeDocument;
 
 /**
  * Item in *FaqSection → Default → Primary → Questions*
@@ -586,16 +683,14 @@ export type TipsAndTricksSlice = prismic.SharedSlice<
 
 declare module "@prismicio/client" {
 	type CreateClient = (
-		repositoryNameOrEndpoint: string,
-		options?: prismic.ClientConfig,
-	) => prismic.Client<AllDocumentTypes>;
+			repositoryNameOrEndpoint: string,
+			options?: prismic.ClientConfig,) => prismic.Client<AllDocumentTypes>
 
 	type CreateWriteClient = (
-		repositoryNameOrEndpoint: string,
-		options: prismic.WriteClientConfig,
-	) => prismic.WriteClient<AllDocumentTypes>;
+			repositoryNameOrEndpoint: string,
+			options: prismic.WriteClientConfig,) => prismic.WriteClient<AllDocumentTypes>
 
-	type CreateMigration = () => prismic.Migration<AllDocumentTypes>;
+	type CreateMigration = () => prismic.Migration<AllDocumentTypes>
 
 	namespace Content {
 		export type {
@@ -606,6 +701,9 @@ declare module "@prismicio/client" {
 			DocumentationDocument,
 			DocumentationDocumentData,
 			DocumentationDocumentDataSlicesSlice,
+			HomeDocument,
+			HomeDocumentData,
+			HomeDocumentDataSlicesSlice,
 			AllDocumentTypes,
 			FaqSectionSlice,
 			FaqSectionSliceDefaultPrimaryQuestionsItem,
