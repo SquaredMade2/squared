@@ -1,6 +1,6 @@
+import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { TODO } from "@squared/context";
 import { z } from "zod";
-import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
@@ -88,19 +88,23 @@ export const notificationRouter = router({
 		);
 	}),
 
-	createNotification: privateProcedure.input(
-		z.object({
-			description: z.string(),
-			type: mentionTypeEnum,
-			taskId: z.string(),
-			userId: z.string(),
-			workspaceId: z.string(),
-		})
-	).mutation(async ({c, ctx, input}) => {
-		const newNotification: CreateNotificationRequest = {
-			...input
-		}
-		const { eventService } = ctx
-		return c.superjson(await eventService.createNotification(TODO, newNotification))
-	})
+	createNotification: privateProcedure
+		.input(
+			z.object({
+				description: z.string(),
+				type: mentionTypeEnum,
+				taskId: z.string(),
+				userId: z.string(),
+				workspaceId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const newNotification: CreateNotificationRequest = {
+				...input,
+			};
+			const { eventService } = ctx;
+			return c.superjson(
+				await eventService.createNotification(TODO, newNotification),
+			);
+		}),
 });

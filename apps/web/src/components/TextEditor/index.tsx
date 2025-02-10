@@ -70,9 +70,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentTask = useTaskStore((state) => state.currentTask)
-	const users = useUserStore((state) => state.users)
-	const currentWorkspace = useWorkspaceStore((state) => state.workspace)
+	const currentTask = useTaskStore((state) => state.currentTask);
+	const users = useUserStore((state) => state.users);
+	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -123,7 +123,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 							workspaceId: currentWorkspace ? currentWorkspace.id : "",
 						};
 
-						client.notification.createNotification.$post(mentionEvent)
+						client.notification.createNotification.$post(mentionEvent);
 					}
 				}
 

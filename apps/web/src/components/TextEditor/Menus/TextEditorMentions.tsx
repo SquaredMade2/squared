@@ -60,7 +60,7 @@ const TextEditorMentions = ({
 
 	return (
 		<Command
-			className="absolute border bg-background rounded-lg shadow-lg w-64 h-auto"
+			className="absolute h-auto w-64 rounded-lg border bg-background shadow-lg"
 			style={{
 				left: `${currentCursorPosition.x + 50}px`,
 				top: `${currentCursorPosition.y - 50}px`,
@@ -87,8 +87,8 @@ const TextEditorMentions = ({
 								>
 									{truncateString(user.name, 13)}
 									{index === 0 && (
-										<div className="flex flex-row items-center justify-start w-32 select-none">
-											<div className="flex flex-row ml-auto text-muted-foreground border-2 px-2 py-1 w-10 rounded-lg">
+										<div className="flex w-32 select-none flex-row items-center justify-start">
+											<div className="ml-auto flex w-10 flex-row rounded-lg border-2 px-2 py-1 text-muted-foreground">
 												<CornerDownLeft
 													size={20}
 													color="hsl(217,5%, 44%)"

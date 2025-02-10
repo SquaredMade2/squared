@@ -1,8 +1,6 @@
 {
 	"ts-node": {
-		"require": [
-			"tsconfig-paths/register"
-		]
+		"require": ["tsconfig-paths/register"]
 	},
 	"compilerOptions": {
 		"target": "ES2020",
@@ -12,13 +10,8 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"baseUrl": ".",
+		"baseUrl": "."
 	},
-	"include": [
-		"src/index.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"generated"
-	]
+	"include": ["src/index.ts"],
+	"exclude": ["node_modules", "generated"]
 }
