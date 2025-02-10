@@ -1,30 +1,21 @@
 import type { TaskOrder } from "@/store/views";
 import { Priority, Status, type Task, type User } from "@squared/db";
 
-export const compareNullableStrings = (
-	a: string | null,
-	b: string | null,
-): number => {
+const compareNullableStrings = (a: string | null, b: string | null): number => {
 	if (!a && !b) return 0;
 	if (!a) return 1;
 	if (!b) return -1;
 	return a.localeCompare(b);
 };
 
-export const compareNullableNumbers = (
-	a: number | null,
-	b: number | null,
-): number => {
+const compareNullableNumbers = (a: number | null, b: number | null): number => {
 	if (a === null && b === null) return 0;
 	if (a === null) return -1;
 	if (b === null) return 1;
 	return a - b;
 };
 
-export const compareNullableDates = (
-	a: Date | null,
-	b: Date | null,
-): number => {
+const compareNullableDates = (a: Date | null, b: Date | null): number => {
 	if (a === null && b === null) return 0;
 	if (a === null) return -1;
 	if (b === null) return 1;
