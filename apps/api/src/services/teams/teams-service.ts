@@ -163,7 +163,7 @@ export class TeamService implements TeamRpc {
 		userId,
 		workspaceId,
 	}: { userId: string; workspaceId: string }): Promise<Team[]> {
-		this.logger.info("Finding teams for user", userId);
+		this.logger.info("Finding teams for user: ", userId);
 		return await this.db
 			.select()
 			.from(teamsTable)
