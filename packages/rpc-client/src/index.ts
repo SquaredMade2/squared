@@ -1,4 +1,5 @@
 import * as context from "@squared/context";
+import superjson from "@squared/superjson";
 
 export interface RequestOptions {
 	timeout?: number;
@@ -48,7 +49,7 @@ class BaseClient {
 			const response = await fetch(url, {
 				method: "POST",
 				headers,
-				body: JSON.stringify(params),
+				body: superjson.stringify(params),
 				signal: contextWithSignal.signal,
 			});
 
@@ -57,8 +58,9 @@ class BaseClient {
 				mapError(this.serviceName, methodName, errorData, response.status);
 			}
 
-			return await response.json();
+			return superjson.parse(superjson.stringify(await response.json()));
 		} catch (error) {
+			console.error("Error occurred during RPC request: ", error);
 			if (error instanceof Error) {
 				throw error;
 			}

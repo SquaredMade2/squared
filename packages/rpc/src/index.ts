@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
 import type { Logger } from "@squared/logger";
+import superjson from "@squared/superjson";
 import type { ErrorRequestHandler, RequestHandler } from "express";
 import "tslib";
 import { z } from "zod";
@@ -119,8 +120,9 @@ export function createRequestHandler(
 					res.on("finish", () => abortable?.abort());
 
 					requestContexts.set(req, ctx);
-					console.log("req.body", req.body);
-					const result = await methodFn(req.body);
+					const result = await methodFn(
+						superjson.parse(JSON.stringify(req.body)),
+					);
 					res.json(result);
 
 					// biome-ignore lint/suspicious/noExplicitAny: Error has to be any
