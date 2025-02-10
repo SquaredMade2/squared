@@ -80,7 +80,7 @@ function getRoutes(dir: string): string[] {
 	const files = fs.readdirSync(dir);
 	const routes: string[] = [];
 
-	logger.info("Checking directory: %s", dir);
+	logger.info("Checking directory", dir);
 
 	for (const file of files) {
 		const path = `${dir}/${file}`;
@@ -88,7 +88,7 @@ function getRoutes(dir: string): string[] {
 		if (stat.isDirectory()) {
 			routes.push(...getRoutes(path));
 		} else if (path.endsWith("/index.ts")) {
-			logger.info("Found route: %s", path);
+			logger.info("Found route", path);
 			routes.push(path.replace("/index.ts", ""));
 		}
 	}
@@ -104,4 +104,4 @@ function createRouteHash(route: string): string {
 // Call the function to generate the index
 generateIndex();
 
-logger.info("Index file generated at: %s", outputPath);
+logger.info("Index file generated at", outputPath);

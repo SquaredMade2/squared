@@ -16,6 +16,7 @@ export type CreateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
@@ -24,7 +25,6 @@ export type CreateWorkspaceResponse = {
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -38,6 +38,7 @@ export type GetWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
@@ -46,7 +47,6 @@ export type GetWorkspaceResponse = {
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -60,6 +60,7 @@ export type GetWorkspaceByUrlResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
@@ -68,7 +69,6 @@ export type GetWorkspaceByUrlResponse = {
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -87,6 +87,7 @@ export type UpdateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
@@ -95,7 +96,6 @@ export type UpdateWorkspaceResponse = {
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -113,6 +113,7 @@ export type GetUserWorkspacesResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
@@ -121,7 +122,6 @@ export type GetUserWorkspacesResponse = {
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 }[];
 
@@ -137,6 +137,7 @@ export type JoinWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
@@ -145,7 +146,6 @@ export type JoinWorkspaceResponse = {
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 

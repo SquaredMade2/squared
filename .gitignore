@@ -46,3 +46,6 @@ generated
 
 # squared
 .squared
+
+# Husky
+.husky/_

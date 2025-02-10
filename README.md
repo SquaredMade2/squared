@@ -1,6 +1,6 @@
 # Turborepo Docker starter
 
-This is an official Docker starter Turborepo.
+This is the official Squared Repo
 
 ## Using this example
 
