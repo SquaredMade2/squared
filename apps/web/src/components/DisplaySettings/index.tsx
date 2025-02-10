@@ -10,14 +10,14 @@ import {
 	TaskOrderOptions,
 	type View,
 } from "@/store/views";
-import {ArrowDownWideNarrow,ArrowUpWideNarrow,} from "lucide-react"
 import {
-	Menu,
 	ChevronDown,
 	Layers3,
 	LayoutGrid,
+	Menu,
 	SlidersVertical,
 } from "@squared/icons";
+import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import {

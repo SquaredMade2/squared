@@ -28,7 +28,6 @@ import {
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
 import { useEventStore } from "@/store";
-import { useMutation } from "@tanstack/react-query";
 import {
 	BellOff,
 	Check,
@@ -37,6 +36,7 @@ import {
 	MoveRight,
 	Trash2,
 } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import { Checkbox } from "../ui/checkbox";
 import { columns } from "./columns";
 

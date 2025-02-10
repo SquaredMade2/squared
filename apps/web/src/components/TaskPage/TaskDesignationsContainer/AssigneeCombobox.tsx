@@ -22,8 +22,8 @@ import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
 import type { TaskEvent } from "@squared/db";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, UserSearch } from "@squared/icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 const AssigneeCombobox = () => {

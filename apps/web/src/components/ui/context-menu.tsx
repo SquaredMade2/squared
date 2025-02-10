@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import * as ContextMenuPrimitive from "@squaredmade/ui/context-menu";
 import { Check, ChevronRight, Circle } from "@squared/icons";
+import * as ContextMenuPrimitive from "@squaredmade/ui/context-menu";
 import * as React from "react";
 
 const ContextMenu = ContextMenuPrimitive.Root;

@@ -1,8 +1,8 @@
 import { taskService } from "@/lib/services";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Activity} from "lucide-react";
-import {Copy,Layers3} from "@squared/icons"
+import { Copy, Layers3 } from "@squared/icons";
+import { Activity } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";

@@ -8,8 +8,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/utils/cn";
-import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "@squared/icons";
+import { format } from "date-fns";
 import * as React from "react";
 
 interface DatePickerProps {

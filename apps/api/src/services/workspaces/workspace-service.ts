@@ -263,7 +263,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}): Promise<{ success: boolean }> {
-		this.logger.info("Inviting user to workspace: %0", {
+		this.logger.info("Inviting user to workspace", {
 			email,
 			workspaceId,
 		});

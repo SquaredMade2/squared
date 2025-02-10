@@ -37,8 +37,8 @@ import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Task } from "@squared/db";
-import { differenceInDays, format } from "date-fns";
 import { CircleAlert } from "@squared/icons";
+import { differenceInDays, format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import {
 	Line,

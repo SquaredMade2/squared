@@ -18,8 +18,8 @@ import {
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, TaskEvent } from "@squared/db";
-import { useMutation } from "@tanstack/react-query";
 import { Check, Plus, Tag } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
 

@@ -32,6 +32,7 @@ import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
 import type { Effort } from "@squared/db";
+import { ChevronDown } from "@squared/icons";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -39,7 +40,6 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
-import { ChevronDown } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

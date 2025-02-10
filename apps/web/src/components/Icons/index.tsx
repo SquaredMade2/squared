@@ -1,18 +1,18 @@
 import { cn } from "@/utils/cn";
 import type { Priority, Status } from "@squared/db";
 import {
-	TriangleAlert,
 	Archive,
 	ArrowDown,
 	ArrowRight,
 	ArrowUp,
-	CircleCheck,
 	Circle,
+	CircleCheck,
 	CircleDot,
+	CircleX,
 	Eye,
 	Hourglass,
 	Inbox,
-	CircleX,
+	TriangleAlert,
 } from "@squared/icons";
 
 export const PriorityIcon = ({

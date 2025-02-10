@@ -1,6 +1,6 @@
 import { cn } from "@/utils/cn";
-import { Slot } from "@squaredmade/ui/slot";
 import { ChevronRight, Ellipsis } from "@squared/icons";
+import { Slot } from "@squaredmade/ui/slot";
 import * as React from "react";
 
 const Breadcrumb = React.forwardRef<

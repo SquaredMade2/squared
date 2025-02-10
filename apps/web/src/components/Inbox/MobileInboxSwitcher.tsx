@@ -10,8 +10,6 @@ import {
 	CommandSeparator,
 } from "@/components/ui/command";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { DialogTitle } from "@squaredmade/ui/dialog";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,
@@ -22,6 +20,8 @@ import {
 	MapPin,
 	MessageCircleMore,
 } from "@squared/icons";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 

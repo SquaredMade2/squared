@@ -13,7 +13,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
-import { LogOut, Settings } from "@squared/icons"
+import { LogOut, Settings } from "@squared/icons";
 import Link from "next/link";
 
 interface UserProfileProps {

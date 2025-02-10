@@ -2,7 +2,6 @@ import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { Notification, Workspace } from "@squared/db";
-import { Label } from "@squaredmade/ui/label";
 import {
 	BadgePlus,
 	Bookmark,
@@ -13,6 +12,7 @@ import {
 	MapPin,
 	MessageCircleMore,
 } from "@squared/icons";
+import { Label } from "@squaredmade/ui/label";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;

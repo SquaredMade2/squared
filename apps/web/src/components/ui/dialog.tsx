@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import * as DialogPrimitive from "@squaredmade/ui/dialog";
 import { X } from "@squared/icons";
+import * as DialogPrimitive from "@squaredmade/ui/dialog";
 import * as React from "react";
 
 const Dialog = DialogPrimitive.Root;
