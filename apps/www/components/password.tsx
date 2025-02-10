@@ -1,4 +1,4 @@
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Eye, EyeOff } from "@squared/icons";
 import type React from "react";
 import { useState } from "react";
 
@@ -28,13 +28,13 @@ function Password(props: PasswordProps) {
 			/>
 			<div className="absolute top-[30%] right-3">
 				{!show && (
-					<EyeIcon
+					<Eye
 						onClick={() => setShow(true)}
 						className="h-4 cursor-pointer text-gray-400"
 					/>
 				)}
 				{show && (
-					<EyeOffIcon
+					<EyeOff
 						onClick={() => setShow(false)}
 						className="h-4 cursor-pointer text-gray-400"
 					/>

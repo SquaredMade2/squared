@@ -18,6 +18,7 @@
 		"@radix-ui/react-label": "^2.0.2",
 		"@radix-ui/react-slot": "^1.0.2",
 		"@squared/fonts": "workspace:*",
+		"@squared/icons": "workspace:*",
 		"@squaredmade/ui": "2.0.0-rc.2",
 		"@tabler/icons-react": "^3.5.0",
 		"@tailwindcss/typography": "^0.5.13",
