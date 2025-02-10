@@ -237,19 +237,31 @@ export function AssignTasksDialog({
 	};
 
 	const tooltipContent = (): string => {
-		return ["Title", "Status", "Assignee"].includes(taskOrder.orderBy)
-			? taskOrder.orderAscending
-				? "A-Z"
-				: "Z-A"
-			: ["Priority", "Effort"].includes(taskOrder.orderBy)
-				? taskOrder.orderAscending
-					? "Ascending"
-					: "Descending"
-				: ["Due Date", "Updated", "Created"].includes(taskOrder.orderBy)
-					? taskOrder.orderAscending
-						? "Oldest first"
-						: "Newest first"
-					: "";
+	    const ascendingMap: Record<string, string> = {
+	        Title: "A-Z",
+	        Status: "A-Z",
+	        Assignee: "A-Z",
+	        Priority: "Ascending",
+	        Effort: "Ascending",
+	        "Due Date": "Oldest first",
+	        Updated: "Oldest first",
+	        Created: "Oldest first",
+	    };
+	
+	    const descendingMap: Record<string, string> = {
+	        Title: "Z-A",
+	        Status: "Z-A",
+	        Assignee: "Z-A",
+	        Priority: "Descending",
+	        Effort: "Descending",
+	        "Due Date": "Newest first",
+	        Updated: "Newest first",
+	        Created: "Newest first",
+	    };
+	
+	    return taskOrder.orderAscending
+	        ? ascendingMap[taskOrder.orderBy] || ""
+	        : descendingMap[taskOrder.orderBy] || "";
 	};
 
 	return (
