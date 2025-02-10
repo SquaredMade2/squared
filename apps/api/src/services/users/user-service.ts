@@ -27,7 +27,7 @@ export class UserService implements UserRpc {
 	}
 
 	async onBoardUser({ userId }: { userId: string }) {
-		this.logger.info("Onboarding user with id", userId);
+		this.logger.info("Onboarding user with id: ", userId);
 		return await this.db
 			.update(usersTable)
 			.set({ onBoarding: false })
@@ -40,7 +40,7 @@ export class UserService implements UserRpc {
 		userId,
 		...args
 	}: { userId: string; name: string; username?: string }) {
-		this.logger.info("Updating user with id", userId);
+		this.logger.info("Updating user with id: ", userId);
 		return await this.db
 			.update(usersTable)
 			.set(args)
@@ -73,7 +73,7 @@ export class UserService implements UserRpc {
 		userId: string;
 		notificationIds: string[];
 	}) {
-		this.logger.info("Updating user notifications with id", userId);
+		this.logger.info("Updating user notifications with id: ", userId);
 		return await this.db.transaction(async (tx) => {
 			const currentNotifications = await tx
 				.select({ savedNotificationIds: usersTable.savedNotificationIds })
@@ -95,7 +95,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getUser({ userId }: { userId: string }) {
-		this.logger.info("Fetching user with id", userId);
+		this.logger.info("Fetching user with id: ", userId);
 		return await this.db
 			.select()
 			.from(usersTable)
@@ -111,7 +111,7 @@ export class UserService implements UserRpc {
 		workspaceId: string;
 	}): Promise<{ role: WorkspaceRole }> {
 		this.logger.info(
-			"Fetching user role for userId in workspaceId",
+			"Fetching user role for userId in workspaceId: ",
 			userId,
 			workspaceId,
 		);
@@ -133,7 +133,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
-		this.logger.info("Fetching workspace users with id", workspaceId);
+		this.logger.info("Fetching workspace users with id: ", workspaceId);
 		return await this.db
 			.select()
 			.from(userWorkspacesTable)
@@ -146,7 +146,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getWorkspaceUsersWithRoles({ workspaceId }: { workspaceId: string }) {
-		this.logger.info("Fetching workspace users with id", workspaceId);
+		this.logger.info("Fetching workspace users with id: ", workspaceId);
 		const thingo = await this.db
 			.select()
 			.from(usersTable)
@@ -240,7 +240,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getTeamUsers({ teamId }: { teamId: string }) {
-		this.logger.info("Fetching team users with id", teamId);
+		this.logger.info("Fetching team users with id: ", teamId);
 		return await this.db
 			.select()
 			.from(userTeamsTable)
@@ -250,7 +250,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getUserAvatars({ workspaceId }: { workspaceId: string }) {
-		this.logger.info("Fetching user avatars with id", workspaceId);
+		this.logger.info("Fetching user avatars with id: ", workspaceId);
 		return await this.db
 			.select({
 				id: usersTable.externalId,
@@ -266,7 +266,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getUserRepositories({ userId }: { userId: string }) {
-		this.logger.info("Fetching user repositories with id", userId);
+		this.logger.info("Fetching user repositories with id: ", userId);
 		return await this.db.transaction(async (tx) => {
 			const user = await tx
 				.select({ githubUsername: usersTable.githubUsername })
@@ -288,7 +288,7 @@ export class UserService implements UserRpc {
 		});
 	}
 	async getUserTeams({ userId }: { userId: string }): Promise<Team[]> {
-		this.logger.info("Fetching user teams with id", userId);
+		this.logger.info("Fetching user teams with id: ", userId);
 		return await this.db
 			.select()
 			.from(teamsTable)
@@ -305,7 +305,7 @@ export class UserService implements UserRpc {
 		taskId: string;
 	}) {
 		this.logger.info(
-			"Setting last viewed task for userId, taskId",
+			"Setting last viewed task for userId, taskId: ",
 			userId,
 			taskId,
 		);
@@ -320,7 +320,7 @@ export class UserService implements UserRpc {
 	async getDefaultWorkspace({
 		userId,
 	}: { userId: string }): Promise<Workspace | null> {
-		this.logger.info("Fetching default workspace for userId", userId);
+		this.logger.info("Fetching default workspace for userId: ", userId);
 		const userWorkspace = await this.db.transaction(async (tx) => {
 			// First, try to get the user's default workspace
 			const defaultWorkspace = await tx
