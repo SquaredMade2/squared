@@ -31,7 +31,7 @@ export const STANDARD_USER: User = {
 	name: "Test User",
 	email: "test@example.com",
 	username: "testuser",
-	lastLogin: new Date(),
+	
 	createdAt: new Date(),
 	onBoarding: false,
 	defaultWorkspaceId: null,

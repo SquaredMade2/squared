@@ -367,11 +367,7 @@ const schemas = {
 				format: "date-time",
 				description: "Timestamp when the user was created",
 			},
-			lastLogin: {
-				type: "string",
-				format: "date-time",
-				description: "Timestamp of the user's last login",
-			},
+
 			onBoarding: {
 				type: "boolean",
 				description: "Indicates if the user is in the onboarding process",
