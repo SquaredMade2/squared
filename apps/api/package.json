@@ -41,6 +41,7 @@
 	},
 	"devDependencies": {
 		"@jest/globals": "^29.7.0",
+		"@squared/superjson": "workspace:*",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
