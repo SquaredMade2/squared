@@ -11,8 +11,8 @@
 		"db:migrate": "pnpm --filter=@squared/db db:migrate",
 		"db:push": "pnpm --filter=@squared/db db:push",
 		"docker:build": "docker compose build",
-		"docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
-		"docker:db": "pnpm --filter=@squared/seed run docker:db && pnpm db:migrate",
+		"docker:db:init": "pnpm docker:db && pnpm docker:db:seed && pnpm db:migrate",
+		"docker:db": "pnpm --filter=@squared/seed run docker:db",
 		"docker:db:down": "pnpm --filter=@squared/seed run docker:db:down",
 		"docker:db:seed": "pnpm --filter=@squared/seed run db:seed",
 		"docker:up": "docker compose up",
@@ -32,13 +32,14 @@
 		"test:web": "turbo run test --filter=web",
 		"test:api": "turbo run test --filter=api",
 		"test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build",
-		"knip": "knip"
+		"knip": "knip",
+		"prepare": "husky"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@commitlint/cli": "^19.3.0",
 		"@commitlint/config-conventional": "^19.4.1",
-		"husky": "^9.1.5",
+		"husky": "^9.1.7",
 		"knip": "^5.29.1",
 		"rimraf": "^6.0.1",
 		"turbo": "^2.1.0",

@@ -5,7 +5,7 @@
 	},
 	"typescript.preferences.preferTypeOnlyAutoImports": true,
 	"[json]": {
-		"editor.defaultFormatter": "vscode.json-language-features"
+		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "biomejs.biome"

@@ -13,7 +13,6 @@ import {
 	taskEventsTable,
 	tasksTable,
 	teamsTable,
-	universalTokenLinksTable,
 	userTeamsTable,
 	userWorkspacesTable,
 	usersTable,
@@ -38,7 +37,6 @@ export const workspaceRelations = relations(workspacesTable, ({ many }) => ({
 	notifications: many(notificationsTable),
 	users: many(usersTable),
 	tasks: many(tasksTable),
-	universalTokenLinks: many(universalTokenLinksTable),
 	workspaceRepositories: many(workspaceRepositoriesTable),
 	projects: many(projectsTable),
 	savedFilters: many(savedFiltersTable),
@@ -182,16 +180,6 @@ export const commentRelations = relations(commentsTable, ({ one }) => ({
 		references: [usersTable.externalId],
 	}),
 }));
-
-export const universalTokenLinkRelations = relations(
-	universalTokenLinksTable,
-	({ one }) => ({
-		workspace: one(workspacesTable, {
-			fields: [universalTokenLinksTable.workspaceId],
-			references: [workspacesTable.id],
-		}),
-	}),
-);
 
 export const workspaceRepositoriesRelations = relations(
 	workspaceRepositoriesTable,
