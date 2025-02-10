@@ -100,7 +100,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					})
 					.returning(),
 			]);
-			tx.insert(userTeamsTable).values({
+			await tx.insert(userTeamsTable).values({
 				userId: userId,
 				teamId: newTeam.id,
 			});
