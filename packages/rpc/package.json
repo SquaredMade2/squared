@@ -25,7 +25,7 @@
 	"dependencies": {
 		"@squared/context": "workspace:*",
 		"@squared/logger": "workspace:*",
-		"superjson": "^2.2.2",
+		"@squared/superjson": "workspace:*",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

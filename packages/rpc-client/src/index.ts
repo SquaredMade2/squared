@@ -1,5 +1,5 @@
 import * as context from "@squared/context";
-import superjson from "superjson";
+import superjson from "@squared/superjson";
 
 export interface RequestOptions {
 	timeout?: number;

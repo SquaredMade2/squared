@@ -1,12 +1,10 @@
 {
-	"extends": "@squared/typescript-config/base.json",
+	"extends": "@squared/typescript-config/squared-package.json",
 	"compilerOptions": {
 		"rootDir": ".",
-		"types": ["node"],
-		"module": "commonjs",
-		"target": "es2018",
-		"esModuleInterop": true
+		"outDir": "./dist",
+		"declaration": true,
+		"types": ["node"]
 	},
-	"include": ["src/**/*.ts", "build.mjs"],
 	"exclude": ["node_modules", "dist"]
 }

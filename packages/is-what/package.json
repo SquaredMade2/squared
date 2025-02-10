@@ -1,9 +1,7 @@
 {
-	"name": "@squared/rpc-client",
+	"name": "@squared/is-what",
 	"version": "0.0.0",
 	"private": true,
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": {
@@ -17,19 +15,14 @@
 		}
 	},
 	"scripts": {
+		"check-types": "tsc --noemit",
 		"build": "node build.mjs",
-		"prebuild": "rimraf dist",
-		"postinstall": "pnpm run build"
-	},
-	"dependencies": {
-		"@squared/context": "workspace:*",
-		"@squared/superjson": "workspace:*"
+		"prepare": "pnpm run build"
 	},
 	"devDependencies": {
 		"@squared/builder": "workspace:*",
 		"@squared/typescript-config": "workspace:*",
-		"@types/node": "^22.10.10",
-		"tslib": "^2.7.0",
-		"typescript": "^5.2.2"
+		"@types/node": "^22.13.1",
+		"typescript": "^5.7.3"
 	}
 }

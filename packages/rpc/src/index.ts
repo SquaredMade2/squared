@@ -15,7 +15,7 @@ import {
 	requestContexts,
 } from "./rpc-types";
 export * from "./rpc-types";
-import superjson from "superjson";
+import superjson from "@squared/superjson";
 
 export class RpcError extends Error {
 	constructor(
