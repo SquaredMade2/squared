@@ -12,16 +12,16 @@ export class CommentService implements CommentRpc {
 		this.logger = createCustomLogger("comments");
 	}
 	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment[]> {
-		this.logger.info("Adding comment with payload: %0", comment);
+		this.logger.info("Adding comment with payload", comment);
 		return await this.db.insert(commentsTable).values(comment).returning();
 	}
 	async deleteComment({ commentId }: { commentId: string }): Promise<void> {
-		this.logger.info("Deleting comment with id: %s", commentId);
+		this.logger.info("Deleting comment with id", commentId);
 		await this.db.delete(commentsTable).where(eq(commentsTable.id, commentId));
 		return;
 	}
 	async getTaskComments({ taskId }: { taskId: string }): Promise<Comment[]> {
-		this.logger.info("Getting comments for task with id: %s", taskId);
+		this.logger.info("Getting comments for task with id", taskId);
 		return this.db
 			.select()
 			.from(commentsTable)
