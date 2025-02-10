@@ -19,10 +19,8 @@ export function DataTable({
 }: { columns: ColumnDef<Label, unknown>[]; data: Label[] }) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState("");
-	const { setShowLabelModal, setLabelData, labelData } = useModalStore(
-		(state) => state,
-	);
-	console.log("labelData", labelData);
+	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
+
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
 		setSearchTerm(value);
@@ -44,7 +42,7 @@ export function DataTable({
 			<div className="w-full">
 				<div className="flex w-full items-center justify-between py-4">
 					<Input
-						placeholder="Search by name or email"
+						placeholder="Search by name or description"
 						value={searchTerm}
 						onChange={handleSearch}
 						className="max-w-xs"
