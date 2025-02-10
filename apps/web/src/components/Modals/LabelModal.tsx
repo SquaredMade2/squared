@@ -2,6 +2,7 @@ import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { HexColorPicker } from "react-colorful";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -21,7 +22,7 @@ const formSchema = z.object({
 		.string()
 		.min(2, { message: "Label name must be at least 2 characters." }),
 	description: z.string().optional(),
-	color: z.string(),
+	color: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i, "Invalid HEX color"),
 });
 
 export const LabelModal = () => {
@@ -34,24 +35,28 @@ export const LabelModal = () => {
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		defaultValues: { name: "", description: "", color: "" },
+		defaultValues: { name: "", description: "", color: "#000000" },
 	});
 
 	useEffect(() => {
-		if (showLabelModal) {
-			form.reset({
-				name: labelData.name || "",
-				description: labelData.description || "",
-				color: labelData.color || "",
-			});
-		} else {
-			form.reset({
-				name: "",
-				description: "",
-				color: "",
-			});
-			setLabelData({});
-		}
+		// if (showLabelModal) {
+		// 	form.reset({
+		// 		name: labelData.name || "",
+		// 		description: labelData.description || "",
+		// 		color: labelData.color || "",
+		// 	});
+		// } else {
+		// 	form.reset({
+		// 		name: "",
+		// 		description: "",
+		// 		color: "",
+		// 	});
+		// 	setLabelData({});
+		// }
+		if (labelData.name) form.setValue("name", labelData.name);
+		if (labelData.description)
+			form.setValue("description", labelData.description);
+		if (labelData.color) form.setValue("color", labelData.color);
 	}, [showLabelModal]);
 
 	const checkLabelExists = (name: string) => {
@@ -139,55 +144,75 @@ export const LabelModal = () => {
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleLabelSubmit)}>
-						<div className="flex">
-							<FormField
-								control={form.control}
-								name="name"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Label Name</FormLabel>
-										<FormControl>
-											<Input
-												{...field}
-												placeholder="Label Name"
-												onChange={(e) => {
-													field.onChange(e);
-													checkLabelExists(e.target.value);
-												}}
-											/>
-										</FormControl>
-										{nameExists && (
-											<p className="text-red-500 text-sm">
-												Label name already exists!
-											</p>
-										)}
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="description"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Label Description</FormLabel>
-										<FormControl>
-											<Input {...field} placeholder="Label Description" />
-										</FormControl>
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="color"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Label Color</FormLabel>
-										<FormControl>
-											<Input {...field} placeholder="Label Color" />
-										</FormControl>
-									</FormItem>
-								)}
-							/>
+						<div className="my-4 grid grid-cols-2 gap-4">
+							<div className="flex flex-col gap-4 ">
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="flex items-center gap-4">
+												Label Name{" "}
+												{nameExists && (
+													<span className="text-red-500 text-sm">
+														Label name already exists!
+													</span>
+												)}
+											</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													placeholder="Label Name"
+													onChange={(e) => {
+														field.onChange(e);
+														checkLabelExists(e.target.value);
+													}}
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Label Description</FormLabel>
+											<FormControl>
+												<Input {...field} placeholder="Label Description" />
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="color"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Label Color</FormLabel>
+											<FormControl>
+												<div className="flex items-center gap-2">
+													<div
+														className="h-5 w-5 rounded-lg border border-gray-500"
+														style={{ backgroundColor: field.value }}
+													/>
+													<Input
+														{...field}
+														value={field.value}
+														onChange={(e) => field.onChange(e.target.value)}
+													/>
+												</div>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+							</div>
+							<div className="flex flex-col items-center justify-center gap-4 ">
+								<HexColorPicker
+									color={form.watch("color")}
+									onChange={form.setValue.bind(null, "color")}
+								/>
+							</div>
 						</div>
 						<DialogFooter>
 							<Button
