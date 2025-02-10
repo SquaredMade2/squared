@@ -100,7 +100,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					})
 					.returning(),
 			]);
-			tx.insert(userTeamsTable).values({
+			await tx.insert(userTeamsTable).values({
 				userId: userId,
 				teamId: newTeam.id,
 			});
@@ -162,7 +162,7 @@ export class WorkspaceService implements WorkspaceRpc {
 	async getUserWorkspaces({
 		userId,
 	}: { userId: string }): Promise<Workspace[]> {
-		this.logger.info("Getting workspaces for user %s", userId);
+		this.logger.info("Getting workspaces for user: ", userId);
 		const workspaces = await this.db
 			.select()
 			.from(workspacesTable)
