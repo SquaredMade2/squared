@@ -1,3 +1,5 @@
+import { getRandomValues } from "node:crypto";
+import { expirationTimeFormat } from "@/utils/helpers";
 import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
 import {
@@ -326,13 +328,50 @@ export class WorkspaceService implements WorkspaceRpc {
 			return { success: true };
 		});
 	}
-	async generateWorkspaceInviteToken({
+	async generateWorkspaceInviteLink({
 		workspaceId,
-		expirationPeriod,
-	}: { workspaceId: string; expirationPeriod: string }): Promise<string> {
-		return jwt.sign({ workspaceId }, this.JWT_SECRET, {
-			expiresIn: `${expirationPeriod}`,
-		});
+		expiration,
+		uses,
+	}: {
+		workspaceId: string;
+		expiration?: string;
+		uses?: number;
+	}): Promise<string> {
+		function generateSecureRandomString(length = 8) {
+			const chars =
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			const array = new Uint8Array(length);
+			getRandomValues(array);
+
+			return Array.from(array, (byte) => chars[byte % chars.length]).join("");
+		}
+
+		const link = generateSecureRandomString();
+
+		const currentLinks = await this.db
+			.select({ inviteLinks: workspacesTable.inviteLinks })
+			.from(workspacesTable)
+			.where(eq(workspacesTable.id, workspaceId))
+			.then((results) => results[0].inviteLinks);
+
+		await this.db
+			.update(workspacesTable)
+			.set({
+				inviteLinks: [
+					...currentLinks,
+					{
+						link,
+						expiration: expiration
+							? expirationTimeFormat(expiration)
+							: undefined,
+						uses,
+					},
+				],
+			})
+			.where(eq(workspacesTable.id, workspaceId))
+			.returning();
+
+		return link;
 	}
 	private verifyToken(token: string): string | null {
 		try {

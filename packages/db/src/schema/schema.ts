@@ -175,6 +175,7 @@ export const workspacesTable = pgTable(
 		defaultView: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
+		inviteLinks: jsonb().$type<WorkspaceInviteLink[]>().default([]).notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
@@ -663,3 +664,8 @@ export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;
 export type Workspace = typeof workspacesTable.$inferSelect;
 export type WorkspaceRepositories =
 	typeof workspaceRepositoriesTable.$inferSelect;
+export type WorkspaceInviteLink = {
+	link: string;
+	expiration?: number;
+	uses?: number;
+};

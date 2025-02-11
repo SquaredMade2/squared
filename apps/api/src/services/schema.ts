@@ -9,10 +9,19 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
+	WorkspaceInviteLink,
 	WorkspaceRole,
 } from "@squared/db";
 import { createEnumSchema, createSchema } from "@squared/rpc";
 import z from "zod";
+
+export const workspaceInviteLinkSchema = createSchema<WorkspaceInviteLink>()(
+	z.object({
+		link: z.string(),
+		expiration: z.date().optional(),
+		uses: z.number().optional(),
+	}),
+);
 
 export const labelSchema = createSchema<Label>()(
 	z.object({
@@ -111,6 +120,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 		defaultView: z.string().nullable(),
 		createdAt: z.date(),
 		labels: z.array(labelSchema),
+		inviteLinks: z.array(workspaceInviteLinkSchema),
 	}),
 );
 
@@ -149,6 +159,7 @@ export const workspaceLabelSchema = createSchema<Workspace>()(
 		defaultView: z.string().nullable(),
 		labels: z.array(labelSchema),
 		createdAt: z.date(),
+		inviteLinks: z.array(workspaceInviteLinkSchema),
 	}),
 );
 

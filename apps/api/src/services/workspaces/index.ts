@@ -82,7 +82,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	generateWorkspaceInviteLink: {
 		input: z.object({
 			workspaceId: z.string(),
-			expirationPeriod: z.string().optional(),
+			expiration: z.string().optional(),
 			uses: z.number().optional(),
 		}),
 		output: z.string(),
