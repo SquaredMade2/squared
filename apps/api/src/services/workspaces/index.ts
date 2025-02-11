@@ -80,7 +80,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		output: z.object({ success: z.boolean() }),
 	},
 	getTakenWorkspaceUrls: {
-		input: z.void(),
+		input: z.undefined(),
 		output: z.array(z.string()),
 	},
 });

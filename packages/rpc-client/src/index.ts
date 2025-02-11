@@ -18,8 +18,9 @@ class BaseClient {
 		ctx: context.Context,
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
-		params: Record<string, any>,
-	) {
+		params?: Record<string, any>,
+		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
+	): Promise<any> {
 		const url = `${this.baseURL}/${this.serviceName}/${methodName}`;
 
 		const headers: Record<string, string> = {
@@ -133,7 +134,7 @@ export class RPCContextClient extends BaseClient {
 		ctx: context.Context,
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
-		params: Record<string, any>,
+		params?: Record<string, any>,
 	) {
 		return super.doRequest(ctx, methodName, params);
 	}

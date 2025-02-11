@@ -254,7 +254,7 @@ export class {{toPascalCase .Name}}Service extends RPCContextClient {
 }
 
 func runBiomeFormat(fileName string) {
-	cmd := exec.Command("biome", "format", "--write", fileName)
+	cmd := exec.Command("pnpm", "format:write", fileName)
 	err := cmd.Run()
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
@@ -343,6 +343,8 @@ func zodToTypeScript(schema ZodSchema) string {
 		return "void"
 	case "null":
 		return "null"
+	case "undefined":
+		return "undefined"
 	default:
 		return "unknown"
 	}
