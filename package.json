@@ -25,6 +25,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"reset": "turbo run reset && pnpm install",
+		"slicemachine": "pnpm run --filter=www slicemachine",
 		"start": "turbo run start",
 		"storybook": "pnpm run --filter=@squaredmade/ui storybook",
 		"studio": "turbo run studio",
