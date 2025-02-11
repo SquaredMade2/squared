@@ -344,6 +344,14 @@ export class WorkspaceService implements WorkspaceRpc {
 			return { success: true };
 		});
 	}
+	async getTakenWorkspaceUrls(): Promise<string[]> {
+		this.logger.info("Getting taken workspace urls");
+
+		return await this.db
+			.select({ url: workspacesTable.url })
+			.from(workspacesTable)
+			.then((results) => results.map((result) => result.url));
+	}
 	private verifyToken(token: string): string | null {
 		try {
 			const decoded = jwt.verify(token, this.JWT_SECRET) as {

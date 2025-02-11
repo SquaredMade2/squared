@@ -2,11 +2,17 @@
 	"$schema": "https://unpkg.com/knip@5/schema.json",
 	"workspaces": {
 		".": {
-			"entry": ["src/index.ts", "scripts/{build,create}.ts"],
+			"entry": [
+				"src/index.ts",
+				"scripts/{build,create}.ts",
+				"*.config.{json,ts,js}",
+				"**/*.test.{ts,tsx,js}",
+				"tsconfig.json"
+			],
 			"project": ["src/**/*.ts", "scripts/**/*.ts"]
 		},
 		"apps/api": {
-			"entry": ["src/api/index.ts", "src/**/index.ts"],
+			"entry": ["src/api/index.ts", "src/**/index.ts", "src/**/*.docs.ts"],
 			"project": ["**/*.ts"]
 		},
 		"apps/web": {
@@ -16,17 +22,23 @@
 		},
 		"apps/www": {
 			"entry": ["src/index.ts", "src/**/*.{ts,tsx}"],
-			"project": ["**/*.{ts,tsx}"]
+			"project": ["**/*.{ts,tsx}"],
+			"ignore": ["prismic/slices/**/*.{ts,tsx}"]
 		},
 		"packages/ui": {
 			"entry": ["src/**/*.tsx", "src/**/*.stories.tsx"],
 			"project": ["**/*.ts, **/*.tsx"]
 		},
 		"packages/*": {
-			"entry": ["{index,cli}.ts"],
+			"entry": ["src/**/{index,cli}.ts"],
 			"project": ["**/*.ts, **/*.tsx"]
 		}
 	},
 	"ignore": ["**/node_modules/**", "**/dist/**", "**/gen/**", "**/ui/**"],
-	"ignoreDependencies": ["turbo-ignore", "husky"]
+	"ignoreDependencies": [
+		"turbo-ignore",
+		"husky",
+		"pg",
+		"@squared/typescript-config"
+	]
 }

@@ -12,7 +12,6 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
 import AddTeamButton from "@/components/Buttons/AddTeamButton";
-import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
 import {
 	Accordion,
 	AccordionContent,
@@ -54,7 +53,6 @@ function SettingsNavbarContent() {
 	return (
 		<>
 			<SidebarHeader className="border-b p-4">
-				<WorkspaceDropdown />
 				<Button
 					variant="ghost"
 					onClick={() =>
