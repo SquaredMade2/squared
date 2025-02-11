@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const getDeploymentUrl = () => {
 	if (process.env.VERCEL_TARGET_ENV === "preview") {
@@ -15,10 +16,7 @@ export default clerkMiddleware(
 		const pathSegments = url.pathname.split("/").filter(Boolean);
 
 		if (pathSegments[1] === "undefined" || pathSegments[3] === "undefined") {
-			return new Response(null, {
-				status: 307,
-				headers: { Location: deploymentUrl },
-			});
+			return NextResponse.redirect(new URL("/", request.url));
 		}
 
 		if (!isPublicRoute(request)) {
