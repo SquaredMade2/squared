@@ -50,8 +50,8 @@ export class WorkspaceService implements WorkspaceRpc {
 		if (!JWT_SECRET) this.throwError("JWT_SECRET is not defined.");
 		if (!CLERK_SECRET) this.throwError("CLERK_SECRET is not defined.");
 		this.JWT_SECRET = JWT_SECRET;
-		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 		this.logger = createCustomLogger("workspace");
+		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 	}
 
 	async createWorkspace({
