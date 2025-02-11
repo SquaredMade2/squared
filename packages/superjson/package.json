@@ -15,9 +15,10 @@
 		}
 	},
 	"scripts": {
+		"build": "node build.mjs",
 		"check-types": "tsc --noEmit",
-		"test": "vitest run",
-		"build": "node build.mjs"
+		"prepare": "pnpm run build",
+		"test": "vitest run"
 	},
 	"dependencies": {
 		"copy-anything": "^3.0.5"
