@@ -41,4 +41,5 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}) => Promise<{ success: boolean }>;
+	getTakenWorkspaceUrls: () => Promise<string[]>;
 }

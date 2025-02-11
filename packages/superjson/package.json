@@ -1,9 +1,7 @@
 {
-	"name": "@squared/rpc-client",
+	"name": "@squared/superjson",
 	"version": "0.0.0",
 	"private": true,
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": {
@@ -18,17 +16,21 @@
 	},
 	"scripts": {
 		"build": "node build.mjs",
-		"prebuild": "rimraf dist",
-		"prepare": "pnpm run build"
+		"check-types": "tsc --noEmit",
+		"prepare": "pnpm run build",
+		"test": "vitest run"
 	},
 	"dependencies": {
-		"@squared/context": "workspace:*",
-		"@squared/superjson": "workspace:*"
+		"copy-anything": "^3.0.5"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
 		"@squared/builder": "workspace:*",
-		"@types/node": "^22.10.10",
-		"typescript": "^5.2.2"
+		"@squared/typescript-config": "workspace:*",
+		"@types/debug": "^4.1.12",
+		"@types/node": "^18.19.75",
+		"decimal.js": "^10.5.0",
+		"mongodb": "^6.13.0",
+		"typescript": "^5.7.3",
+		"vitest": "^0.34.6"
 	}
 }
