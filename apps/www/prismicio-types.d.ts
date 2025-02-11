@@ -475,6 +475,61 @@ export type FeatureHighlightSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *ImageSlice → Default → Primary*
+ */
+export interface ImageSliceSliceDefaultPrimary {
+	/**
+	 * image field in *ImageSlice → Default → Primary*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: image_slice.default.primary.image
+	 * - **Documentation**: https://prismic.io/docs/field#image
+	 */
+	image: prismic.ImageField<never>;
+
+	/**
+	 * Caption field in *ImageSlice → Default → Primary*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: image_slice.default.primary.caption
+	 * - **Documentation**: https://prismic.io/docs/field#key-text
+	 */
+	caption: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for ImageSlice Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ImageSliceSliceDefault = prismic.SharedSliceVariation<
+	"default",
+	Simplify<ImageSliceSliceDefaultPrimary>,
+	never
+>;
+
+/**
+ * Slice variation for *ImageSlice*
+ */
+type ImageSliceSliceVariation = ImageSliceSliceDefault;
+
+/**
+ * ImageSlice Shared Slice
+ *
+ * - **API ID**: `image_slice`
+ * - **Description**: ImageSlice
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ImageSliceSlice = prismic.SharedSlice<
+	"image_slice",
+	ImageSliceSliceVariation
+>;
+
+/**
  * Item in *StepByStepGuide → Default → Primary → Steps*
  */
 export interface StepByStepGuideSliceDefaultPrimaryStepsItem {
@@ -714,6 +769,10 @@ declare module "@prismicio/client" {
 			FeatureHighlightSliceDefaultPrimary,
 			FeatureHighlightSliceVariation,
 			FeatureHighlightSliceDefault,
+			ImageSliceSlice,
+			ImageSliceSliceDefaultPrimary,
+			ImageSliceSliceVariation,
+			ImageSliceSliceDefault,
 			StepByStepGuideSlice,
 			StepByStepGuideSliceDefaultPrimaryStepsItem,
 			StepByStepGuideSliceDefaultPrimary,
