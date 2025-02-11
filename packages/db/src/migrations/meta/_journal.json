@@ -29,6 +29,13 @@
 			"when": 1739150372875,
 			"tag": "0003_clerk_prep",
 			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1739256466178,
+			"tag": "0004_clerk_workspaces",
+			"breakpoints": true
 		}
 	]
 }
