@@ -31,9 +31,9 @@ import {
 	Sun,
 } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
-import type { LucideIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
@@ -176,9 +176,15 @@ function ToggleSidebarButton() {
 		/>
 	);
 }
-
+interface IconProps {
+	className?: string;
+	size?: number;
+	color?: string;
+	strokeWidth?: number;
+	absoluteStrokeWidth?: boolean;
+}
 interface IconButtonProps {
-	icon: LucideIcon;
+	icon: FC<IconProps>;
 	label: string;
 	onClick: () => void;
 	notificationCount?: number;
