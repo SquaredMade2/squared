@@ -40,7 +40,7 @@ export const Hero = () => {
 			>
 				<Badge
 					onClick={() =>
-						router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)
+						router.push(`${process.env.NEXT_PUBLIC_APP_URL}/sign-in`)
 					}
 				>
 					See what it&apos;s about
@@ -100,7 +100,7 @@ export const Hero = () => {
 				}}
 				className="relative z-10 mt-6 flex items-center justify-center gap-4"
 			>
-				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}>
 					Get started
 				</Button>
 				<Button

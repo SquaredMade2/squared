@@ -72,14 +72,14 @@ export const MobileNavbar = ({
 					<div className="flex w-full flex-row items-start gap-2.5 px-8 py-4 ">
 						<Button
 							as={Link}
-							href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}
+							href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}
 						>
 							Sign Up
 						</Button>
 						<Button
 							variant="simple"
 							as={Link}
-							href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}
+							href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-in`}
 						>
 							Login
 						</Button>
