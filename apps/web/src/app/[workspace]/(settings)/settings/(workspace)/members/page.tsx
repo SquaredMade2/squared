@@ -3,7 +3,6 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { columns } from "@/components/Settings/Members/columns";
-import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { useQuery } from "@tanstack/react-query";
@@ -11,9 +10,8 @@ import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { loading: userLoading } = useUsers();
 
-	const { data: pageUsers = [] } = useQuery({
+	const { data: pageUsers = [], isLoading: userLoading } = useQuery({
 		queryKey: ["workspaceUsers", workspace?.id],
 		queryFn: async () => {
 			if (!workspace) return [];
