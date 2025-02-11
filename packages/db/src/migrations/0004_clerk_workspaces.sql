@@ -1,3 +1,6 @@
+-- Update Workspace externalId with id where it's null
+UPDATE "Workspace" SET "externalId" = "id"::text WHERE "externalId" IS NULL;
+
 -- Set Workspace externalId to NOT NULL
 ALTER TABLE "Workspace" ALTER COLUMN "externalId" SET NOT NULL;
 
