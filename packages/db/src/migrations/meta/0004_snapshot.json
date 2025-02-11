@@ -1,5 +1,5 @@
 {
-	"id": "7130aa8f-0d9c-465e-b01c-6305f8288730",
+	"id": "1514dbc7-3bf0-41f5-83bf-361dfa5d95ca",
 	"prevId": "1659766c-bd50-4bd6-b6a2-ab41654c5e53",
 	"version": "7",
 	"dialect": "postgresql",
@@ -382,7 +382,7 @@
 				},
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": true
 				},
@@ -468,7 +468,7 @@
 				},
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				}
@@ -648,7 +648,7 @@
 				},
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				},
@@ -955,7 +955,7 @@
 				},
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": true
 				},
@@ -1156,7 +1156,7 @@
 				},
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": true
 				},
@@ -1301,7 +1301,7 @@
 			"columns": {
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": true
 				},
@@ -1389,7 +1389,7 @@
 				},
 				"defaultWorkspaceId": {
 					"name": "defaultWorkspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				},
@@ -1493,7 +1493,7 @@
 				},
 				"workspaceId": {
 					"name": "workspaceId",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": true
 				},
