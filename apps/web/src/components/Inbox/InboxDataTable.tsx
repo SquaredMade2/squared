@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-import type { NotificationFilter } from "@/app/inbox/page";
+import type { NotificationFilter } from "@/app/[workspace]/(main)/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

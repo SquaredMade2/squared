@@ -50,7 +50,7 @@ export const DeleteTaskAlertDialog = ({
 			deleteTask(task.id);
 			if (redirectTask) {
 				router.push(
-					`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
+					`${lastVisitedPage === "inbox" ? `/${workspace?.url}/inbox` : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
 				);
 			}
 		} catch (error) {

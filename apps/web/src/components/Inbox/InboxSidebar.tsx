@@ -1,4 +1,4 @@
-import type { NotificationFilter } from "@/app/inbox/page";
+import type { NotificationFilter } from "@/app/[workspace]/(main)/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { Notification, Workspace } from "@squared/db";

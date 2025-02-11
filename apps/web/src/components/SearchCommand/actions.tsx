@@ -173,7 +173,7 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Go to inbox",
 					function: () => {
-						this.router.push("/inbox");
+						this.router.push(`${this.workspace?.url}/inbox`);
 					},
 					shortcut: ["G", "then", "I"],
 				},

@@ -5,7 +5,6 @@ import {
 	InboxSidebar,
 	MobileInboxSwitcher,
 } from "@/components/Inbox";
-import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
 import {
@@ -107,54 +106,49 @@ export default function InboxPage() {
 	}, [filterType, notifications, workspace, user]);
 
 	useEffect(() => {
-		if (pathname === "/inbox") {
+		if (pathname.includes("/inbox")) {
 			setLastVisitedPage("inbox");
 		}
 	}, [pathname, setLastVisitedPage]);
 
 	return (
-		<div className="flex w-full">
-			<div className="fixed inset-y-0 z-50 mt-px md:relative md:z-0">
-				<SidebarNav />
-			</div>
-			<div className="flex w-full flex-col">
-				<div className="w-full px-4 md:px-8">
-					<div className="mb-4 flex w-full items-center gap-4 border-border border-b py-4">
-						<h1 className="ml-4 font-bold text-2xl">Inbox</h1>
-					</div>
-					<div className="flex">
-						<div className="flex w-full flex-col gap-4">
-							<MobileInboxSwitcher
-								setFilterType={setFilterType}
-								filterType={filterType}
-								setWorkspace={setWorkspaceName}
-								readNotifications={notifications.filter((n) => !n.read)}
-								workspaces={workspaces}
-								workspace={workspaceName}
-								filterRead={filterRead}
-								setFilterRead={setFilterRead}
-							/>
-							<InboxDataTable
-								data={filteredNotifications
-									.map((n) => ({
-										...n,
-										user,
-									}))
-									.filter((n) => (!filterRead ? true : n.read))}
-								filterType={filterType}
-							/>
-						</div>
-						<InboxSidebar
+		<div className="flex w-full flex-col">
+			<div className="w-full px-4 md:px-8">
+				<div className="mb-4 flex w-full items-center gap-4 border-border border-b py-4">
+					<h1 className="ml-4 font-bold text-2xl">Inbox</h1>
+				</div>
+				<div className="flex">
+					<div className="flex w-full flex-col gap-4">
+						<MobileInboxSwitcher
 							setFilterType={setFilterType}
 							filterType={filterType}
 							setWorkspace={setWorkspaceName}
-							readNotifications={notifications.filter(
-								(n) => !n.read || !n.dismissed,
-							)}
+							readNotifications={notifications.filter((n) => !n.read)}
 							workspaces={workspaces}
 							workspace={workspaceName}
+							filterRead={filterRead}
+							setFilterRead={setFilterRead}
+						/>
+						<InboxDataTable
+							data={filteredNotifications
+								.map((n) => ({
+									...n,
+									user,
+								}))
+								.filter((n) => (!filterRead ? true : n.read))}
+							filterType={filterType}
 						/>
 					</div>
+					<InboxSidebar
+						setFilterType={setFilterType}
+						filterType={filterType}
+						setWorkspace={setWorkspaceName}
+						readNotifications={notifications.filter(
+							(n) => !n.read || !n.dismissed,
+						)}
+						workspaces={workspaces}
+						workspace={workspaceName}
+					/>
 				</div>
 			</div>
 		</div>
