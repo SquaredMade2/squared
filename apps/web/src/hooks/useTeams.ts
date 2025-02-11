@@ -38,7 +38,7 @@ export function useTeams() {
 		queryFn: async () => {
 			if (!workspace) return { teams: [], team: null };
 			const res = await client.team.getUserTeams.$get({
-				workspaceId: workspace.id,
+				workspaceId: workspace.externalId,
 			});
 			const allTeams = await res.json();
 			setTeams(allTeams);

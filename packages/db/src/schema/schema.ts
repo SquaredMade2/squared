@@ -45,7 +45,7 @@ export const teamsTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Team_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -146,7 +146,7 @@ export const notificationsTable = pgTable(
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Notification_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -165,7 +165,7 @@ export const workspacesTable = pgTable(
 	"Workspace",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().unique(),
+		externalId: text().notNull().unique(),
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
@@ -208,7 +208,7 @@ export const usersTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.defaultWorkspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "User_defaultWorkspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -293,7 +293,7 @@ export const tasksTable = pgTable(
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Task_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -337,7 +337,7 @@ export const workspaceRepositoriesTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "WorkspaceRepositories_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -370,7 +370,7 @@ export const projectsTable = pgTable(
 			.onDelete("set null"),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Project_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -460,7 +460,7 @@ export const savedFiltersTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "SavedFilter_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -567,7 +567,7 @@ export const userWorkspacesTable = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "UserWorkspace_workspaceId_fkey",
 		})
 			.onUpdate("cascade")

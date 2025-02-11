@@ -16,7 +16,7 @@ export type CreateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -38,7 +38,7 @@ export type GetWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -60,7 +60,7 @@ export type GetWorkspaceByUrlResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -87,7 +87,7 @@ export type UpdateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -113,7 +113,7 @@ export type GetUserWorkspacesResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -137,7 +137,7 @@ export type JoinWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;

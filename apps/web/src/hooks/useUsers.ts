@@ -17,7 +17,7 @@ export function useUsers() {
 		queryFn: async () => {
 			if (!workspace) return [];
 			const res = await client.user.getAllUsers.$get({
-				workspaceId: workspace.id,
+				workspaceId: workspace.externalId,
 			});
 			const workspaceUsers = await res.json();
 			setUsers(workspaceUsers);

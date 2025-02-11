@@ -20,7 +20,7 @@ export const TaskBreadcrumbs = () => {
 	const { team } = useTeamStore((state) => state);
 	const { lastVisitedPage } = useViewStore((state) => state);
 	const index: number = workspace
-		? workspaces.findIndex((item) => item.id === workspace.id)
+		? workspaces.findIndex((item) => item.externalId === workspace.externalId)
 		: -1;
 
 	return (
