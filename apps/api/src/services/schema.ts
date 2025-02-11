@@ -18,7 +18,7 @@ import z from "zod";
 export const workspaceInviteLinkSchema = createSchema<WorkspaceInviteLink>()(
 	z.object({
 		link: z.string(),
-		expiration: z.date().optional(),
+		expiration: z.number().optional(),
 		uses: z.number().optional(),
 	}),
 );

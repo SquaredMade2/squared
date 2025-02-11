@@ -22,6 +22,11 @@ export type CreateWorkspaceResponse = {
 	createdAt: Date;
 	defaultView: string | null;
 	id: string;
+	inviteLinks: {
+	expiration?: number;
+	link: string;
+	uses?: number;
+}[];
 	labels: {
 	color: string;
 	description?: string | null;
@@ -49,6 +54,11 @@ export type GetWorkspaceResponse = {
 	createdAt: Date;
 	defaultView: string | null;
 	id: string;
+	inviteLinks: {
+	expiration?: number;
+	link: string;
+	uses?: number;
+}[];
 	labels: {
 	color: string;
 	description?: string | null;
@@ -76,6 +86,11 @@ export type GetWorkspaceByUrlResponse = {
 	createdAt: Date;
 	defaultView: string | null;
 	id: string;
+	inviteLinks: {
+	expiration?: number;
+	link: string;
+	uses?: number;
+}[];
 	labels: {
 	color: string;
 	description?: string | null;
@@ -108,6 +123,11 @@ export type UpdateWorkspaceResponse = {
 	createdAt: Date;
 	defaultView: string | null;
 	id: string;
+	inviteLinks: {
+	expiration?: number;
+	link: string;
+	uses?: number;
+}[];
 	labels: {
 	color: string;
 	description?: string | null;
@@ -144,6 +164,11 @@ export type GetUserWorkspacesResponse = {
 	createdAt: Date;
 	defaultView: string | null;
 	id: string;
+	inviteLinks: {
+	expiration?: number;
+	link: string;
+	uses?: number;
+}[];
 	labels: {
 	color: string;
 	description?: string | null;
@@ -173,6 +198,11 @@ export type JoinWorkspaceResponse = {
 	createdAt: Date;
 	defaultView: string | null;
 	id: string;
+	inviteLinks: {
+	expiration?: number;
+	link: string;
+	uses?: number;
+}[];
 	labels: {
 	color: string;
 	description?: string | null;
@@ -215,14 +245,15 @@ export type InviteToWorkspaceResponse = {
 
 
 
-export type GenerateWorkspaceInviteTokenRequest = {
-	expirationPeriod: string;
+export type GenerateWorkspaceInviteLinkRequest = {
+	expiration?: string;
+	uses?: number;
 	workspaceId: string;
 };
 
 
 
-export type GenerateWorkspaceInviteTokenResponse = string;
+export type GenerateWorkspaceInviteLinkResponse = string;
 
 
 
@@ -299,10 +330,10 @@ export class WorkspaceService extends RPCContextClient {
   }
   
   /**
-   * generateWorkspaceInviteToken method
+   * generateWorkspaceInviteLink method
    */
-  generateWorkspaceInviteToken(ctx: Context, req: GenerateWorkspaceInviteTokenRequest): Promise<GenerateWorkspaceInviteTokenResponse> {
-    return this.request(ctx, "generateWorkspaceInviteToken", req);
+  generateWorkspaceInviteLink(ctx: Context, req: GenerateWorkspaceInviteLinkRequest): Promise<GenerateWorkspaceInviteLinkResponse> {
+    return this.request(ctx, "generateWorkspaceInviteLink", req);
   }
   
 }
