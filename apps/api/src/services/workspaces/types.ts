@@ -1,4 +1,4 @@
-import type { WorkspaceLabel, WorkspaceRole } from "@squared/db";
+import type { Workspace, WorkspaceRole } from "@squared/db";
 
 export type WorkspaceParams = {
 	url: string;
@@ -15,24 +15,24 @@ export type CreateWorkspaceParams = {
 };
 
 export interface WorkspaceRpc {
-	createWorkspace: (args: CreateWorkspaceParams) => Promise<WorkspaceLabel>;
+	createWorkspace: (args: CreateWorkspaceParams) => Promise<Workspace>;
 	getWorkspace: (args: {
 		workspaceId: string;
-	}) => Promise<WorkspaceLabel | null>;
+	}) => Promise<Workspace | null>;
 	getWorkspaceByUrl: (args: {
 		url: string;
-	}) => Promise<WorkspaceLabel | null>;
+	}) => Promise<Workspace | null>;
 	updateWorkspace: (args: {
 		workspaceId: string;
 		workspace: WorkspaceParams;
-	}) => Promise<WorkspaceLabel>;
+	}) => Promise<Workspace>;
 	deleteWorkspace: (args: { workspaceId: string }) => Promise<void>;
-	getUserWorkspaces: (args: { userId: string }) => Promise<WorkspaceLabel[]>;
+	getUserWorkspaces: (args: { userId: string }) => Promise<Workspace[]>;
 	joinWorkspace: (args: {
 		token: string;
 		userId: string;
 		role?: WorkspaceRole;
-	}) => Promise<WorkspaceLabel | null>;
+	}) => Promise<Workspace | null>;
 	removeUserFromWorkspace: (args: {
 		workspaceId: string;
 		userId: string;
@@ -41,4 +41,5 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}) => Promise<{ success: boolean }>;
+	getTakenWorkspaceUrls: () => Promise<string[]>;
 }

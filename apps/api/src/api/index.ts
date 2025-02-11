@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
 
 	socket.on("joinRoom", (sprintId) => {
 		socket.join(sprintId);
-		logger.info("User joined room: %s", sprintId);
+		logger.info("User joined room", sprintId);
 	});
 
 	socket.on("addItem", (data) => {

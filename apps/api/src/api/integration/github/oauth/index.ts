@@ -67,7 +67,7 @@ export function createRoute({ db }: { db: DBClient }): Route {
 					"https://github.com/apps/SquaredMadeApp/installations/new",
 				);
 			} catch (error) {
-				logger.error("Error processing OAuth: %s", error);
+				logger.error("Error processing OAuth", error);
 				res.status(500).json({
 					message: `Error during OAuth: ${error instanceof Error && `: ${error.message}`}`,
 				});

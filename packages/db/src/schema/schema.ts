@@ -165,15 +165,16 @@ export const workspacesTable = pgTable(
 	"Workspace",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().unique(),
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
 		tasksCreated: integer().default(0).notNull(),
-		universalTokenLinkId: text(),
 		avatarUrl: text(),
 		admins: text().array().default([]).notNull(),
 		defaultView: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		labels: jsonb().$type<Label[]>().default([]).notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
@@ -190,7 +191,6 @@ export const usersTable = pgTable(
 		name: text().notNull(),
 		username: text(),
 		email: text().notNull(),
-		lastLogin: timestamp({ precision: 3 }).defaultNow().notNull(),
 		onBoarding: boolean().default(true).notNull(),
 		defaultWorkspaceId: uuid(),
 		avatarUrl: text(),
@@ -254,7 +254,7 @@ export const tasksTable = pgTable(
 		effortEstimate: integer(),
 		teamId: uuid().notNull(),
 		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
-		labels: uuid().array().default([]).notNull(),
+		labels: jsonb().$type<Label[]>().default([]).notNull(),
 		workspaceId: uuid().notNull(),
 		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		deleted: boolean().default(false).notNull(),
@@ -319,49 +319,6 @@ export const tasksTable = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("set null"),
-	],
-);
-
-export const labelsTable = pgTable(
-	"Label",
-	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		description: text(),
-		color: text().notNull(),
-		workspaceId: uuid().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
-			name: "Label_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
-
-export const universalTokenLinksTable = pgTable(
-	"UniversalTokenLink",
-	{
-		id: uuid().primaryKey().notNull(),
-		token: text().notNull(),
-		isEnabled: boolean().default(true).notNull(),
-		workspaceId: uuid().notNull(),
-	},
-	(table) => [
-		uniqueIndex("UniversalTokenLink_workspaceId_key").using(
-			"btree",
-			table.workspaceId.asc().nullsLast().op("uuid_ops"),
-		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
-			name: "UniversalTokenLink_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
@@ -662,7 +619,11 @@ export type Branch = typeof branchesTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
 export type Commit = typeof commitsTable.$inferSelect;
 export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;
-export type Label = typeof labelsTable.$inferSelect;
+export type Label = {
+	name: string;
+	description?: string | null;
+	color: string;
+};
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Project = typeof projectsTable.$inferSelect;
 export type RetrospectiveItem = typeof retrospectiveItemsTable.$inferSelect;
@@ -671,11 +632,9 @@ export type Sprint = typeof sprintsTable.$inferSelect;
 export type Task = typeof tasksTable.$inferSelect;
 export type TaskEvent = typeof taskEventsTable.$inferSelect;
 export type Team = typeof teamsTable.$inferSelect;
-export type UniversalTokenLink = typeof universalTokenLinksTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
 export type UserTeam = typeof userTeamsTable.$inferSelect;
 export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;
 export type Workspace = typeof workspacesTable.$inferSelect;
-export type WorkspaceLabel = Workspace & { labels: Label[] };
 export type WorkspaceRepositories =
 	typeof workspaceRepositoriesTable.$inferSelect;

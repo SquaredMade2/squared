@@ -20,7 +20,7 @@ export type RegisterResponse = {
 		externalId: string;
 		githubUsername: string | null;
 		id: string;
-		lastLogin: Date;
+
 		lastViewedTaskId: string | null;
 		name: string;
 		onBoarding: boolean;

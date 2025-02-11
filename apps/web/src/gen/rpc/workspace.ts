@@ -16,17 +16,15 @@ export type CreateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
-		id: string;
+		description?: string | null;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -40,17 +38,15 @@ export type GetWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
-		id: string;
+		description?: string | null;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -64,17 +60,15 @@ export type GetWorkspaceByUrlResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
-		id: string;
+		description?: string | null;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -93,17 +87,15 @@ export type UpdateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
-		id: string;
+		description?: string | null;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -121,21 +113,20 @@ export type GetUserWorkspacesResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
-		id: string;
+		description?: string | null;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 }[];
 
 export type JoinWorkspaceRequest = {
+	role?: "owner" | "admin" | "member";
 	token: string;
 	userId: string;
 };
@@ -146,17 +137,15 @@ export type JoinWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string | null;
 	id: string;
 	labels: {
 		color: string;
-		description: string | null;
-		id: string;
+		description?: string | null;
 		name: string;
-		workspaceId: string;
 	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -177,6 +166,8 @@ export type InviteToWorkspaceRequest = {
 export type InviteToWorkspaceResponse = {
 	success: boolean;
 };
+
+export type GetTakenWorkspaceUrlsResponse = string[];
 
 /**
  * workspace service
@@ -271,5 +262,12 @@ export class WorkspaceService extends RPCContextClient {
 		req: InviteToWorkspaceRequest,
 	): Promise<InviteToWorkspaceResponse> {
 		return this.request(ctx, "inviteToWorkspace", req);
+	}
+
+	/**
+	 * getTakenWorkspaceUrls method
+	 */
+	getTakenWorkspaceUrls(ctx: Context): Promise<GetTakenWorkspaceUrlsResponse> {
+		return this.request(ctx, "getTakenWorkspaceUrls");
 	}
 }

@@ -7,12 +7,19 @@ import Balancer from "react-wrap-balancer";
 import { Badge } from "./badge";
 import { Button } from "./button";
 
+import type { KeyTextField } from "@prismicio/client";
 import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const Hero = () => {
+interface HeroProps {
+	title: KeyTextField;
+	description: KeyTextField;
+	cta: KeyTextField;
+}
+
+export const Hero = ({ title, description, cta }: HeroProps) => {
 	const { resolvedTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 	const router = useRouter();
@@ -43,7 +50,7 @@ export const Hero = () => {
 						router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)
 					}
 				>
-					See what it&apos;s about
+					{cta}
 				</Badge>
 			</motion.div>
 			<motion.h1
@@ -61,7 +68,7 @@ export const Hero = () => {
 				}}
 				className="relative z-10 mx-auto mt-6 max-w-6xl text-center font-semibold text-2xl md:text-4xl lg:text-8xl"
 			>
-				<Balancer>Elevate product development with Squared</Balancer>
+				<Balancer>{title}</Balancer>
 			</motion.h1>
 			<motion.p
 				initial={{
@@ -79,10 +86,7 @@ export const Hero = () => {
 				}}
 				className="relative z-10 mx-auto mt-6 max-w-3xl text-center text-base text-foreground md:text-xl"
 			>
-				<Balancer>
-					Squared the the new way to develop software. Create new tasks, plan
-					product goals, and setup milestones using Squared.
-				</Balancer>
+				<Balancer>{description}</Balancer>
 			</motion.p>
 			<motion.div
 				initial={{

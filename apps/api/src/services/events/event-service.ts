@@ -9,7 +9,6 @@ import {
 	commitsTable,
 	eq,
 	inArray,
-	labelsTable,
 	notificationsTable,
 	sprintsTable,
 	taskEventsTable,
@@ -58,7 +57,7 @@ export class EventService implements EventRpc {
 	async getNotifications({
 		userId,
 	}: { userId: string }): Promise<FullNotification[]> {
-		this.logger.info(`Fetching Notifications for User ID ${userId}...`);
+		this.logger.info("Fetching Notifications for userId: ", userId);
 		const notifications = await this.db
 			.select({
 				notification: notificationsTable,
@@ -184,7 +183,7 @@ export class EventService implements EventRpc {
 		notificationIds: string[];
 		read?: boolean;
 		dismissed?: boolean;
-	}): Promise<Notification[]> {
+	}): Promise<FullNotification[]> {
 		return await this.db.transaction(async (tx) => {
 			// Update the notifications
 			await tx
@@ -193,10 +192,29 @@ export class EventService implements EventRpc {
 				.where(inArray(notificationsTable.id, notificationIds));
 
 			// Fetch and return the updated notifications
-			return tx
-				.select()
+			const notifications = await tx
+				.select({
+					notification: notificationsTable,
+					task: tasksTable,
+					workspace: workspacesTable,
+				})
 				.from(notificationsTable)
+				.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
+				.leftJoin(
+					workspacesTable,
+					eq(notificationsTable.workspaceId, workspacesTable.id),
+				)
 				.where(inArray(notificationsTable.id, notificationIds));
+
+			return notifications.map((noti) => {
+				const { notification, task, workspace } = noti;
+				if (!task || !workspace) throw new Error("Task or Workspace not found");
+				return {
+					...notification,
+					Task: task,
+					Workspace: workspace,
+				};
+			});
 		});
 	}
 	async deleteNotification({
@@ -223,6 +241,23 @@ export class EventService implements EventRpc {
 
 				if (formattedOldValue !== formattedNewValue) {
 					const formattedKey = `${key[0].toUpperCase()}${key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}`;
+					if (formattedKey === "Parent Id" && changes.parentId) {
+						if (previousTask.parentId) {
+							const parentIds = [previousTask.parentId, changes.parentId];
+							const parentTitles = await this.db
+								.select({ title: tasksTable.title })
+								.from(tasksTable)
+								.where(inArray(tasksTable.id, parentIds));
+							return `Parent Task changed from ${parentTitles[0].title} to ${parentTitles[1].title}`;
+						}
+						const parentId = changes.parentId;
+						const parentTitle = await this.db
+							.select({ title: tasksTable.title })
+							.from(tasksTable)
+							.where(eq(tasksTable.id, parentId))
+							.limit(1);
+						return `Parent Task changed to ${parentTitle[0].title}`;
+					}
 					const diffString =
 						formattedKey === "Title" ||
 						formattedKey === "Description" ||
@@ -316,15 +351,7 @@ export class EventService implements EventRpc {
 
 		// Handle labels array
 		if (Array.isArray(value) && key === "labels") {
-			const labelIds = value as string[];
-			if (labelIds.length === 0) {
-				return "No labels";
-			}
-			const labels = await this.db
-				.select({ name: labelsTable.name })
-				.from(labelsTable)
-				.where(inArray(labelsTable.id, labelIds));
-			return labels.map((l) => l.name).join(", ");
+			return value.map((l) => l.name).join(", ");
 		}
 
 		// Handle effort estimate

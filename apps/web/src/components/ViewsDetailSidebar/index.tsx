@@ -64,12 +64,12 @@ const ViewsDetailSidebar = ({
 	const getLabelCount = () => {
 		const labelCount: Record<string, number> = {};
 		for (const task of filteredTasks) {
-			for (const labelId of task.labels) {
-				labelCount[labelId] = (labelCount[labelId] || 0) + 1;
+			for (const label of task.labels) {
+				labelCount[label.name] = (labelCount[label.name] || 0) + 1;
 			}
 		}
-		return Object.entries(labelCount).map(([id, count]) => ({
-			id,
+		return Object.entries(labelCount).map(([name, count]) => ({
+			name,
 			count,
 		}));
 	};
@@ -156,10 +156,12 @@ const ViewsDetailSidebar = ({
 						</TabsContent>
 						<TabsContent value="labels" className="mt-2">
 							{labelCount.map((label) => {
-								const foundLabel = allLabels?.find(({ id }) => id === label.id);
+								const foundLabel = allLabels?.find(
+									({ name }) => name === label.name,
+								);
 								return (
 									<div
-										key={label.id}
+										key={label.name}
 										className="flex items-center justify-between py-2"
 									>
 										<div className="flex items-center gap-2">

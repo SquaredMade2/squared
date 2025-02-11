@@ -1,12 +1,8 @@
 {
-	"extends": "@squared/typescript-config/base.json",
+	"extends": "@squared/typescript-config/dependency.json",
 	"compilerOptions": {
 		"rootDir": ".",
-		"types": ["node"],
-		"module": "commonjs",
-		"target": "es2018",
-		"esModuleInterop": true
+		"outDir": "./dist"
 	},
-	"include": ["src/**/*.ts", "build.mjs"],
 	"exclude": ["node_modules", "dist"]
 }

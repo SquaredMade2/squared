@@ -67,6 +67,19 @@ export type DeleteTeamRequest = {
 	teamId: string;
 };
 
+export type DeleteTeamResponse = {
+	cooldownDuration: number;
+	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
+	id: string;
+	identifier: string;
+	name: string | null;
+	sprintDuration: number;
+	sprintStartDate: Date;
+	sprintsEnabled: boolean;
+	tasksPerSprint: number;
+	workspaceId: string;
+};
+
 export type GetTeamRequest = {
 	teamId: string;
 };
@@ -187,7 +200,10 @@ export class TeamService extends RPCContextClient {
 	/**
 	 * deleteTeam method
 	 */
-	deleteTeam(ctx: Context, req: DeleteTeamRequest): Promise<void> {
+	deleteTeam(
+		ctx: Context,
+		req: DeleteTeamRequest,
+	): Promise<DeleteTeamResponse> {
 		return this.request(ctx, "deleteTeam", req);
 	}
 

@@ -90,7 +90,11 @@ export type GetSprintTasksResponse = {
 	effortEstimate: number | null;
 	id: string;
 	identifier: string;
-	labels: string[];
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";

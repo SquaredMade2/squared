@@ -154,34 +154,24 @@ jobs:
     needs: [detect-changes, setup]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: squared
-          POSTGRES_PASSWORD: squared
-          POSTGRES_DB: squared-test
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 23.3.0
           cache: 'pnpm'
+
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
       - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
@@ -189,7 +179,20 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+
       - run: pnpm install --frozen-lockfile
+
+      - uses: KengoTODA/actions-setup-docker-compose@v1
+        with:
+          version: '2.29.7'
+
+      - name: Initialize Database Server
+        run: pnpm run docker:db:init
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
+          REMOTE_DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
+          LOCAL_DB: true
+
       - name: Run tests
         run: pnpm run --filter=api test:ci
         env:
@@ -203,9 +206,10 @@ jobs:
           NODE_ENV: test
           LOCAL_DB: true
           RUNNING_TESTS: true
-          LOCAL_DB: true
-      - name: Build API
-        run: pnpm --filter=api build
+      
+      - name: Stop Database Server
+        if: always()
+        run: pnpm run docker:db:down
 
   test-web:
     name: Test Web
@@ -296,7 +300,7 @@ jobs:
 
   ci-status:
     name: CI Pipeline
-    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www]
+    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-logs]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -306,7 +310,7 @@ jobs:
             echo "Lint and type check failed"
             exit 1
           fi
-          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" ]]; then
+          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" || "${{ needs.test-logs.result}}" == "failure" ]]; then
             echo "One or more tests failed"
             exit 1
           fi

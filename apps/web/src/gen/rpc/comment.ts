@@ -3,12 +3,9 @@ import type { Context } from "@squared/context";
 import { RPCContextClient } from "@squared/rpc-client";
 
 export type AddCommentRequest = {
-	comment: {
-		authorId: string;
-		comment: string;
-		date: Date;
-		taskId: string;
-	};
+	authorId: string;
+	comment: string;
+	taskId: string;
 };
 
 export type AddCommentResponse = {
