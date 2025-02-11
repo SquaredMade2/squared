@@ -167,8 +167,6 @@ export type InviteToWorkspaceResponse = {
 	success: boolean;
 };
 
-export type GetTakenWorkspaceUrlsRequest = undefined;
-
 export type GetTakenWorkspaceUrlsResponse = string[];
 
 /**
@@ -269,10 +267,7 @@ export class WorkspaceService extends RPCContextClient {
 	/**
 	 * getTakenWorkspaceUrls method
 	 */
-	getTakenWorkspaceUrls(
-		ctx: Context,
-		req: GetTakenWorkspaceUrlsRequest,
-	): Promise<GetTakenWorkspaceUrlsResponse> {
-		return this.request(ctx, "getTakenWorkspaceUrls", req);
+	getTakenWorkspaceUrls(ctx: Context): Promise<GetTakenWorkspaceUrlsResponse> {
+		return this.request(ctx, "getTakenWorkspaceUrls");
 	}
 }

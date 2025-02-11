@@ -201,7 +201,7 @@ import { RPCContextClient } from "@squared/rpc-client";
 import type { Context } from "@squared/context";
 
 {{range .Interfaces}}
-{{if ne .InputType "void"}}
+{{if ne .InputType "undefined"}}
 export type {{toPascalCase .MethodName}}Request = {{.InputType}};
 {{end}}
 
@@ -222,8 +222,12 @@ export class {{toPascalCase .Name}}Service extends RPCContextClient {
   /**
    * {{.MethodName}} method
    */
-  {{.MethodName}}(ctx: Context, req: {{if eq .InputType "void"}}void{{else}}{{toPascalCase .MethodName}}Request{{end}}): Promise<{{if eq .OutputType "void"}}void{{else}}{{toPascalCase .MethodName}}Response{{end}}> {
+  {{.MethodName}}(ctx: Context{{if ne .InputType "undefined"}}, req: {{toPascalCase .MethodName}}Request{{end}}): Promise<{{if eq .OutputType "void"}}void{{else}}{{toPascalCase .MethodName}}Response{{end}}> {
+    {{if ne .InputType "undefined"}}
     return this.request(ctx, "{{.MethodName}}", req);
+    {{else}}
+    return this.request(ctx, "{{.MethodName}}");
+    {{end}}
   }
   {{end}}
 }
