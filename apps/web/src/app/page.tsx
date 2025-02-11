@@ -14,7 +14,7 @@ const HomePage = () => {
 			const res = await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
-			if (!res) {
+			if (!res || res.url === "undefined") {
 				router.push("/join");
 				return res;
 			}
