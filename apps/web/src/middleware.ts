@@ -11,6 +11,16 @@ const deploymentUrl = getDeploymentUrl();
 
 export default clerkMiddleware(
 	async (auth, request) => {
+		const url = new URL(request.url);
+		const pathSegments = url.pathname.split("/").filter(Boolean);
+
+		if (pathSegments[1] === "undefined" || pathSegments[3] === "undefined") {
+			return new Response(null, {
+				status: 307,
+				headers: { Location: deploymentUrl },
+			});
+		}
+
 		if (!isPublicRoute(request)) {
 			await auth.protect();
 		}
