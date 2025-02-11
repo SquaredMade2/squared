@@ -24,6 +24,16 @@ ALTER TABLE "UserWorkspace" DROP CONSTRAINT "UserWorkspace_workspaceId_fkey";
 ALTER TABLE "User" DROP CONSTRAINT "User_defaultWorkspaceId_fkey";
 ALTER TABLE "WorkspaceRepositories" DROP CONSTRAINT "WorkspaceRepositories_workspaceId_fkey";
 
+-- Alter the data types of workspaceId columns to text
+ALTER TABLE "Notification" ALTER COLUMN "workspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "Project" ALTER COLUMN "workspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "SavedFilter" ALTER COLUMN "workspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "Task" ALTER COLUMN "workspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "Team" ALTER COLUMN "workspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "UserWorkspace" ALTER COLUMN "workspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "User" ALTER COLUMN "defaultWorkspaceId" SET DATA TYPE text;--> statement-breakpoint
+ALTER TABLE "WorkspaceRepositories" ALTER COLUMN "workspaceId" SET DATA TYPE text;
+
 -- Add new foreign key constraints referencing Workspace.externalId
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("externalId") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "Project" ADD CONSTRAINT "Project_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("externalId") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -29,7 +29,7 @@ export const teamsTable = pgTable(
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		name: text(),
 		identifier: text().notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		sprintsEnabled: boolean().default(false).notNull(),
 		sprintDuration: integer().default(2).notNull(),
 		cooldownDuration: integer().default(1).notNull(),
@@ -131,7 +131,7 @@ export const notificationsTable = pgTable(
 		description: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		dismissed: boolean().default(false).notNull(),
 		type: notificationType().notNull(),
 		userId: text().notNull(),
@@ -192,7 +192,7 @@ export const usersTable = pgTable(
 		username: text(),
 		email: text().notNull(),
 		onBoarding: boolean().default(true).notNull(),
-		defaultWorkspaceId: uuid(),
+		defaultWorkspaceId: text(),
 		avatarUrl: text(),
 		savedNotificationIds: uuid().array().default([]).notNull(),
 		subscribedTasks: text().array().default([]).notNull(),
@@ -255,7 +255,7 @@ export const tasksTable = pgTable(
 		teamId: uuid().notNull(),
 		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		deleted: boolean().default(false).notNull(),
 		parentId: uuid(),
@@ -326,7 +326,7 @@ export const workspaceRepositoriesTable = pgTable(
 	"WorkspaceRepositories",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		repoId: uuid().notNull(),
 	},
 	(table) => [
@@ -358,7 +358,7 @@ export const projectsTable = pgTable(
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		teamId: uuid(),
-		workspaceId: uuid(),
+		workspaceId: text(),
 	},
 	(table) => [
 		foreignKey({
@@ -443,7 +443,7 @@ export const savedFiltersTable = pgTable(
 		name: text().notNull(),
 		description: text().default(""),
 		filter: jsonb().$type<FilterCondition[]>().notNull(),
-		workspaceId: uuid(),
+		workspaceId: text(),
 		teamId: uuid(),
 		type: savedFilterType().notNull(),
 		sprintId: uuid(),
@@ -560,7 +560,7 @@ export const blockedTasksTable = pgTable(
 export const userWorkspacesTable = pgTable(
 	"UserWorkspace",
 	{
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		userId: text().notNull(),
 		role: workspaceRoleType().notNull(),
 	},
