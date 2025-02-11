@@ -738,14 +738,16 @@ export type TipsAndTricksSlice = prismic.SharedSlice<
 
 declare module "@prismicio/client" {
 	type CreateClient = (
-			repositoryNameOrEndpoint: string,
-			options?: prismic.ClientConfig,) => prismic.Client<AllDocumentTypes>
+		repositoryNameOrEndpoint: string,
+		options?: prismic.ClientConfig,
+	) => prismic.Client<AllDocumentTypes>;
 
 	type CreateWriteClient = (
-			repositoryNameOrEndpoint: string,
-			options: prismic.WriteClientConfig,) => prismic.WriteClient<AllDocumentTypes>
+		repositoryNameOrEndpoint: string,
+		options: prismic.WriteClientConfig,
+	) => prismic.WriteClient<AllDocumentTypes>;
 
-	type CreateMigration = () => prismic.Migration<AllDocumentTypes>
+	type CreateMigration = () => prismic.Migration<AllDocumentTypes>;
 
 	namespace Content {
 		export type {
