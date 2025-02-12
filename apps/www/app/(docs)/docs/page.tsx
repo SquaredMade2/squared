@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-	title: "Documentation | Your Project Name",
+	title: "Documentation | Squared",
 	description:
-		"Explore our comprehensive documentation to get started with Your Project Name.",
+		"Explore our comprehensive documentation to get started with Squared.",
 };
 
 export default async function DocsLandingPage() {
@@ -19,7 +19,14 @@ export default async function DocsLandingPage() {
 		<div className="mx-auto max-w-4xl py-12">
 			<h1 className="mb-6 font-bold text-4xl">{page.data.title}</h1>
 			<div className="prose mb-12 max-w-none">
-				<PrismicRichText field={page.data.introduction} />
+				<PrismicRichText
+					field={page.data.introduction}
+					components={{
+						paragraph: ({ children }) => (
+							<p className="mb-4 text-muted-foreground">{children}</p>
+						),
+					}}
+				/>
 			</div>
 
 			<h2 className="mb-4 font-semibold text-2xl">Documentation Sections</h2>

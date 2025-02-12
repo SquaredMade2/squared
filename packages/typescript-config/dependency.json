@@ -1,0 +1,12 @@
+{
+	"extends": "./base.json",
+	"compilerOptions": {
+		"rootDir": ".",
+		"outDir": "./dist",
+		"module": "Node16",
+		"moduleResolution": "node16",
+		"declaration": true,
+		"types": ["node"]
+	},
+	"exclude": ["node_modules", "dist"]
+}

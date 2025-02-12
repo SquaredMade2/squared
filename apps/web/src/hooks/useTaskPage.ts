@@ -1,12 +1,16 @@
 import { client } from "@/lib/client";
-import { useCommentStore, useEventStore, useTaskStore } from "@/store";
+import {
+	useCommentStore,
+	useEventStore,
+	useTaskStore,
+	useUserStore,
+} from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { TaskEvent } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTeams } from "./useTeams";
-import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
@@ -28,9 +32,10 @@ export function useTaskPage() {
 		setCurrentTaskBlockedBy,
 		allBlockedTaskIds,
 	} = useTaskStore((state) => state);
-	const { users, loading: userLoading, error: userError } = useUsers();
+
 	const { setComments } = useCommentStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
+	const { users } = useUserStore((state) => state);
 
 	const taskQuery = useQuery({
 		queryKey: ["task", workspace?.id, taskIdentifier],
@@ -110,7 +115,6 @@ export function useTaskPage() {
 
 	const isLoading =
 		workspaceLoading ||
-		userLoading ||
 		teamLoading ||
 		taskQuery.isLoading ||
 		subtasksQuery.isLoading ||
@@ -120,7 +124,6 @@ export function useTaskPage() {
 
 	const error =
 		workspaceError ||
-		userError ||
 		teamError ||
 		taskQuery.error ||
 		subtasksQuery.error ||

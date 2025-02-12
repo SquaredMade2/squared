@@ -44,7 +44,7 @@ export type GetNotificationsResponse = {
 		identifier: string;
 		labels: {
 			color: string;
-			description: string | null;
+			description?: string | null;
 			name: string;
 		}[];
 		order: number;
@@ -70,15 +70,15 @@ export type GetNotificationsResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
+		externalId: string | null;
 		id: string;
 		labels: {
 			color: string;
-			description: string | null;
+			description?: string | null;
 			name: string;
 		}[];
 		name: string;
 		tasksCreated: number;
-		universalTokenLinkId: string | null;
 		url: string;
 	};
 	createdAt: Date;
@@ -109,7 +109,7 @@ export type CreateLogEventRequest = {
 		identifier: string;
 		labels: {
 			color: string;
-			description: string | null;
+			description?: string | null;
 			name: string;
 		}[];
 		order: number;
@@ -169,6 +169,55 @@ export type ToggleNotificationRequest = {
 };
 
 export type ToggleNotificationResponse = {
+	Task: {
+		assigneeId: string | null;
+		authorId: string;
+		dateCreated: Date;
+		deleted: boolean;
+		description: string | null;
+		dueDate: Date | null;
+		effortEstimate: number | null;
+		id: string;
+		identifier: string;
+		labels: {
+			color: string;
+			description?: string | null;
+			name: string;
+		}[];
+		order: number;
+		parentId: string | null;
+		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+		sprintId: string | null;
+		status:
+			| "backlog"
+			| "todo"
+			| "inProgress"
+			| "inReview"
+			| "done"
+			| "canceled"
+			| "archived";
+		teamId: string;
+		title: string;
+		updatedAt: Date;
+		workspaceId: string;
+	};
+	Workspace: {
+		admins: string[];
+		avatarUrl: string | null;
+		companySize: number | null;
+		createdAt: Date;
+		defaultView: string | null;
+		externalId: string | null;
+		id: string;
+		labels: {
+			color: string;
+			description?: string | null;
+			name: string;
+		}[];
+		name: string;
+		tasksCreated: number;
+		url: string;
+	};
 	createdAt: Date;
 	description: string | null;
 	dismissed: boolean;
