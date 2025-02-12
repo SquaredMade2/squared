@@ -184,9 +184,11 @@ export type GetUserWorkspacesResponse = {
 
 
 export type JoinWorkspaceRequest = {
+	isLink: boolean;
 	role?: "owner" | "admin" | "member";
 	token: string;
 	userId: string;
+	workspaceName?: string;
 };
 
 
