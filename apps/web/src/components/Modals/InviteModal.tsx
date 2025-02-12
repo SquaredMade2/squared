@@ -3,14 +3,6 @@
 import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@squaredmade/ui/select";
 import { useLayoutEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -23,12 +15,18 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
 import { toast } from "../ui/use-toast";
 
 export const InviteModal = () => {
-	const [expirationPeriod, setExpirationPeriod] = useState<
-		string | undefined
-	>();
+	const [expirationPeriod, setExpirationPeriod] = useState<string>("7d");
 	const [numberUses, setNumberUses] = useState<number | undefined>();
 	const [isUnlimitedUses, setIsUnlimitedUses] = useState<boolean>(false);
 	const [link, setLink] = useState<string>("");
@@ -38,12 +36,14 @@ export const InviteModal = () => {
 	const expirationTimes = ["15m", "30m", "1h", "6h", "12h", "1d", "7d"];
 
 	const generateLink = async () => {
+		console.log(expirationPeriod, numberUses, isUnlimitedUses);
 		try {
 			workspace &&
 				setLink(
 					await workspaceService.generateWorkspaceInviteLink(TODO, {
 						workspaceId: workspace?.id,
-						expiration: expirationPeriod,
+						expiration:
+							expirationPeriod === "never" ? undefined : expirationPeriod,
 						uses: numberUses,
 					}),
 				);
@@ -85,25 +85,29 @@ export const InviteModal = () => {
 								value={expirationPeriod}
 								defaultValue="7d"
 							>
-								<SelectTrigger className="h-10 border border-border rounded-md">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select an expiration" />
 								</SelectTrigger>
-								<SelectContent className="">
+								<SelectContent>
 									<SelectGroup>
 										{expirationTimes.map((time: string) => {
 											return (
 												<SelectItem key={time} value={time}>
-													{/* {time.replace(
-															/(\d+)([mhd])/g,
-															(_, num, unit: string) => {
-																const units = { m: "minute", h: "hour", d: "day" };
-																return `${num} ${units[unit]}${Number(num) > 1 && "s"}`;
-															},
-														)} */}
-													times
+													{time.replace(
+														/(\d+)([mhd])/g,
+														(_, num: string, unit: string) => {
+															const units: Record<string, string> = {
+																m: "minute",
+																h: "hour",
+																d: "day",
+															};
+															return `${num} ${units[unit]}${Number(num) > 1 ? "s" : ""}`;
+														},
+													)}
 												</SelectItem>
 											);
 										})}
+										<SelectItem value="never">Never</SelectItem>
 									</SelectGroup>
 								</SelectContent>
 							</Select>
@@ -112,7 +116,13 @@ export const InviteModal = () => {
 							<Label htmlFor="name" className="">
 								Number of Uses
 							</Label>
-							<Input id="usues" type="number" disabled={isUnlimitedUses} />
+							<Input
+								id="usues"
+								type="number"
+								min={1}
+								disabled={isUnlimitedUses}
+								onChange={() => setNumberUses(1)}
+							/>
 							<div className="flex gap-2">
 								<Checkbox
 									onClick={() => setIsUnlimitedUses(!isUnlimitedUses)}
@@ -120,21 +130,19 @@ export const InviteModal = () => {
 								<Label>Unlimited Uses</Label>
 							</div>
 						</div>
-						<Button onClick={generateLink} disabled>
-							Generate Link
-						</Button>
+						<Button onClick={generateLink}>Generate Link</Button>
 					</div>
 					<hr className="w-full border border-border" />
 					<DialogFooter>
 						<div className="w-full flex items-center justify-between gap-2 p-2 border border-border rounded-lg">
-							<p>
+							<p className="text-white/35">
 								{(!link && "Create Invite Link") ||
 									(link.includes("Failed") && link) ||
 									`/join?link&token=${link}`}
 							</p>
 							<Button
 								className="h-8"
-								disabled={Boolean(link)}
+								disabled={!link || link.includes("Failed")}
 								onClick={handleCopy}
 							>
 								Copy
