@@ -375,8 +375,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					},
 				],
 			})
-			.where(eq(workspacesTable.id, workspaceId))
-			.returning();
+			.where(eq(workspacesTable.id, workspaceId));
 
 		return link;
 	}
@@ -411,7 +410,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				}
 
 				// Check link hasn't exceeded number of uses
-				if (inviteLink[0].uses && inviteLink[0].uses === 0) {
+				if (inviteLink[0].uses === 0) {
 					return null;
 				}
 
