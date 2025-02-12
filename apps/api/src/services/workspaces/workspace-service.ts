@@ -72,7 +72,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					.where(eq(workspacesTable.url, workspace.url))
 					.limit(1),
 				tx
-					.select({ name: usersTable.name })
+					.select({ externalId: usersTable.externalId })
 					.from(usersTable)
 					.where(eq(usersTable.externalId, userId))
 					.limit(1),
@@ -85,7 +85,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				await this.clerkClient.organizations.createOrganization({
 					name: workspace.name,
 					slug: workspace.url,
-					createdBy: user.name,
+					createdBy: user.externalId,
 				});
 
 			const [newWorkspace] = await tx
