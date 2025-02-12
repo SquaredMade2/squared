@@ -1,0 +1,36 @@
+name: squared-staging
+
+on:
+  schedule:
+    - cron: '0 0 */14 * *' 
+  workflow_dispatch:
+
+jobs:
+  db-backup:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    env:
+      S3_BUCKET_NAME: 'squared-staging-backup'
+      AWS_REGION: 'us-east-1'
+      PG_VERSION: '16'
+
+    steps:
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          sudo apt install -y postgresql-client-${{ env.PG_VERSION }}
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ env.AWS_REGION }}
+
+      - name: Run Backup and insert into s3 bucket
+        run: |
+          BACKUP_FILE_NAME="$(date +%Y-%m-%d | tr -d '-')"
+          CLEAN_DB_URL=$(echo ${{ secrets.STAGING_DATABASE_URL }} | sed "s/[?&]pgbouncer=true//")
+          pg_dump --dbname="$CLEAN_DB_URL" | aws s3 cp - "s3://${{ env.S3_BUCKET_NAME }}/$BACKUP_FILE_NAME.bak" --region ${{ env.AWS_REGION }}
