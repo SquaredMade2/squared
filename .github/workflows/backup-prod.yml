@@ -26,7 +26,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -34,4 +34,4 @@ jobs:
         run: |
           BACKUP_FILE_NAME="$(date +%Y-%m-%d | tr -d '-')"
           CLEAN_DB_URL=$(echo ${{ secrets.STAGING_DATABASE_URL }} | sed "s/[?&]pgbouncer=true//")
-          pg_dump --dbname="$CLEAN_DB_URL" | aws s3 cp - "s3://${{ env.S3_BUCKET_NAME }}/$BACKUP_FILE_NAME.bak" --region us-east-1
+          pg_dump --dbname="$CLEAN_DB_URL" | aws s3 cp - "s3://${{ env.S3_BUCKET_NAME }}/$BACKUP_FILE_NAME.bak" --region ${{ env.AWS_REGION }}
