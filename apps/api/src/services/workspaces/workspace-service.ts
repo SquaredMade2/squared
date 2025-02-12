@@ -382,17 +382,17 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	async updateWorkspaceLabel({
 		workspaceId,
+		labelName,
 		updatedLabel,
-	}: { workspaceId: string; updatedLabel: Label }): Promise<{
+	}: { workspaceId: string; labelName: string; updatedLabel: Label }): Promise<{
 		success: boolean;
 		labels: Label[];
 	}> {
 		this.logger.info(
 			"Editing label %s for workspace with id %s",
-			updatedLabel.name,
+			labelName,
 			workspaceId,
 		);
-
 		return await this.db.transaction(async (tx) => {
 			const workspace = await tx
 				.select()
@@ -403,10 +403,11 @@ export class WorkspaceService implements WorkspaceRpc {
 			if (!workspace) {
 				throw new Error("Workspace not found.");
 			}
+			this.logger.error("workspace", workspace);
 
 			//Find label to update
 			const labels = workspace.labels;
-			const labelIndex = labels.findIndex((l) => l.name === updatedLabel.name);
+			const labelIndex = labels.findIndex((l) => l.name === labelName);
 			if (labelIndex === -1) {
 				throw new Error("Label not found.");
 			}

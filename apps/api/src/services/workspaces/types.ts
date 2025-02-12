@@ -48,6 +48,7 @@ export interface WorkspaceRpc {
 	}) => Promise<{ success: boolean; labels?: Label[] }>;
 	updateWorkspaceLabel: (args: {
 		workspaceId: string;
+		labelName: string;
 		updatedLabel: Label;
 	}) => Promise<{ success: boolean; labels?: Label[] }>;
 	deleteWorkspaceLabel: (args: {

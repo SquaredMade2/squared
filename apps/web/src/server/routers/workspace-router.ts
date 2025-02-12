@@ -67,6 +67,7 @@ export const workspaceRouter = router({
 		.input(
 			z.object({
 				workspaceId: z.string(),
+				labelName: z.string(),
 				updatedLabel: z.object({
 					name: z.string(),
 					description: z.string().nullable().optional(),

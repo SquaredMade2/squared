@@ -7,10 +7,11 @@ import { EditLabelButton } from "./EditLabelButton";
 export const columns: ColumnDef<Label>[] = [
 	{
 		accessorKey: "color",
+		size: 80,
 		cell: ({ row }) => {
 			const label = row.original;
 			return (
-				<div className="flex gap-2">
+				<div className="flex items-center justify-center gap-2">
 					<LabelColor label={label} />
 				</div>
 			);
@@ -21,7 +22,7 @@ export const columns: ColumnDef<Label>[] = [
 		cell: ({ row }) => {
 			const labelName = row.original.name;
 			return (
-				<div className="flex flex-col items-start">
+				<div className="ml-2 w-[200px] truncate">
 					<div className="ml-2">{labelName}</div>
 				</div>
 			);
@@ -31,18 +32,18 @@ export const columns: ColumnDef<Label>[] = [
 		accessorKey: "description",
 		cell: ({ row }) => {
 			const labelDescription = row.original.description;
-			return (
-				<div className="flex flex-col items-start">
-					<div className="ml-2">{labelDescription}</div>
-				</div>
-			);
+			return <div className="ml-2 w-[300px] truncate">{labelDescription}</div>;
 		},
 	},
 	{
 		accessorKey: "edit",
 		cell: ({ row }) => {
 			const label = row.original;
-			return <EditLabelButton label={label} />;
+			return (
+				<div className="flex w-[80px] justify-center">
+					<EditLabelButton label={label} />
+				</div>
+			);
 		},
 	},
 	{
@@ -52,12 +53,14 @@ export const columns: ColumnDef<Label>[] = [
 			const { pageId, labels, refetch } = column.columnDef.meta || {};
 
 			return (
-				<DeleteLabelButton
-					labelName={labelName}
-					pageId={pageId}
-					labels={labels}
-					refetch={refetch}
-				/>
+				<div className="flex w-[80px] justify-center">
+					<DeleteLabelButton
+						labelName={labelName}
+						pageId={pageId}
+						labels={labels}
+						refetch={refetch}
+					/>
+				</div>
 			);
 		},
 	},
