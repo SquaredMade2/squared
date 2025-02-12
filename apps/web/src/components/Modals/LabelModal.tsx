@@ -1,6 +1,7 @@
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { useForm } from "react-hook-form";
@@ -27,6 +28,7 @@ const formSchema = z.object({
 
 export const LabelModal = () => {
 	const { toast } = useToast();
+	const queryClient = useQueryClient();
 	const { showLabelModal, setShowLabelModal, labelData, setLabelData } =
 		useModalStore((state) => state);
 	const { workspace } = useWorkspaceStore((state) => state);
@@ -80,57 +82,65 @@ export const LabelModal = () => {
 		setShowLabelModal(false);
 	};
 
+	const updateLabelMutation = useMutation({
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			if (!workspace) throw new Error("Workspace not found");
+			const res = await client.workspace.updateWorkspaceLabel.$post({
+				workspaceId: workspace.id,
+				updatedLabel: values,
+			});
+			return res.json();
+		},
+		onSuccess: async () => {
+			setLabelData({});
+			form.reset();
+			setShowLabelModal(false);
+			queryClient.invalidateQueries({
+				queryKey: ["workspaceLabels", workspace?.id],
+			});
+		},
+		onError: (error) => {
+			toast({
+				title: "Error updating label",
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+				variant: "destructive",
+			});
+		},
+	});
+
+	const createLabelMutation = useMutation({
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			if (!workspace) throw new Error("Workspace not found");
+			const res = await client.workspace.createWorkspaceLabel.$post({
+				workspaceId: workspace.id,
+				label: values,
+			});
+			return res.json();
+		},
+		onSuccess: async () => {
+			setLabelData({});
+			form.reset();
+			setShowLabelModal(false);
+			queryClient.invalidateQueries({
+				queryKey: ["workspaceLabels", workspace?.id],
+			});
+		},
+		onError: (error) => {
+			toast({
+				title: "Error creating label",
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+				variant: "destructive",
+			});
+		},
+	});
+
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (!workspace) return;
-
 		if (labelData) {
-			try {
-				const response = await client.workspace.updateWorkspaceLabel
-					.$post({ workspaceId: workspace.id, updatedLabel: values })
-					.then((res) => res.json());
-				if (!response.success) {
-					throw new Error("Label update failed.");
-				}
-				toast({
-					title: "Label updated successfully",
-					description: `Label "${values.name}" updated.`,
-				});
-				setLabelData({});
-				form.reset();
-				setShowLabelModal(false);
-			} catch (error) {
-				console.error(error);
-				toast({
-					title: "Label could not be updated",
-					description: "An unknown error occurred",
-					variant: "destructive",
-				});
-			}
+			updateLabelMutation.mutate(values);
 		} else {
-			try {
-				const response = await client.workspace.createWorkspaceLabel
-					.$post({ workspaceId: workspace.id, label: values })
-					.then((res) => res.json());
-
-				if (!response.success) {
-					throw new Error("Label creation failed.");
-				}
-
-				toast({
-					title: "Label created successfully",
-					description: `Label "${values.name}" added.`,
-				});
-				setLabelData({});
-				form.reset();
-				setShowLabelModal(false);
-			} catch (error) {
-				console.error(error);
-				toast({
-					title: "Label could not be created",
-					description: "An unknown error occurred",
-					variant: "destructive",
-				});
-			}
+			createLabelMutation.mutate(values);
 		}
 	};
 

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import type { Label } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
 
 export const DeleteLabelButton = ({
@@ -17,22 +18,30 @@ export const DeleteLabelButton = ({
 }) => {
 	const { toast } = useToast();
 
-	const handleDeleteClick = async () => {
-		try {
+	const deleteLabelMutation = useMutation({
+		mutationFn: async () => {
 			await client.workspace.deleteWorkspaceLabel
 				.$post({ workspaceId: pageId, labelName: labelName })
 				.then((res) => res.json());
+		},
+		onSuccess: () => {
 			toast({ title: `${labelName} successfully deleted` });
 			labels && refetch();
-		} catch (error) {
+		},
+		onError: (error) => {
 			console.error(error);
 			toast({
 				title: "Label could not be deleted",
 				description: "An unknown error occurred",
 				variant: "destructive",
 			});
-		}
+		},
+	});
+
+	const handleDeleteClick = async () => {
+		deleteLabelMutation.mutate();
 	};
+
 	return (
 		<>
 			<Button onClick={handleDeleteClick} variant="ghost">
