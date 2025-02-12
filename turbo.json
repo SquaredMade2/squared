@@ -36,9 +36,6 @@
 		"lint:fix": {
 			"dependsOn": ["^lint:fix"]
 		},
-		"reset": {
-			"dependsOn": ["^reset"]
-		},
 		"start": {
 			"dependsOn": ["^start", "build"]
 		},
