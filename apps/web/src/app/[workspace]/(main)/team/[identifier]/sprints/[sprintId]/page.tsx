@@ -221,9 +221,9 @@ export default function SprintDashboardPage() {
 	}
 
 	return (
-		<div className="space-y-8 mx-auto p-4 container">
+		<div className="container mx-auto space-y-8 p-4">
 			<h1 className="ml-10 font-bold text-3xl">Sprint: {sprint.name}</h1>
-			<div className="gap-6 grid md:grid-cols-2">
+			<div className="grid gap-6 md:grid-cols-2">
 				<Card>
 					<CardHeader>
 						<CardTitle>Sprint Progress</CardTitle>
@@ -244,7 +244,7 @@ export default function SprintDashboardPage() {
 						<CardTitle>Sprint Summary</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<div className="gap-4 grid grid-cols-2">
+						<div className="grid grid-cols-2 gap-4">
 							<div>
 								<h3 className="font-semibold text-lg">Total Tasks</h3>
 								<p className="font-bold text-3xl">{sprintTasks.length}</p>
@@ -282,7 +282,7 @@ export default function SprintDashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-			<div className="gap-6 grid md:grid-cols-2">
+			<div className="grid gap-6 md:grid-cols-2">
 				<Card>
 					<CardHeader>
 						<CardTitle>Burndown Chart</CardTitle>
@@ -367,7 +367,7 @@ export default function SprintDashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-			<div className="flex justify-between items-center space-x-4">
+			<div className="flex items-center justify-between space-x-4">
 				<Button
 					onClick={() => handleButtonClick(false)}
 					variant="outline"
@@ -386,7 +386,7 @@ export default function SprintDashboardPage() {
 					Start Next Sprint
 				</Button>
 			</div>
-			<div className="flex justify-between items-center">
+			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-2xl">Sprint Tasks</h2>
 				<div className="space-x-4">
 					<AssignTasksDialog
@@ -414,7 +414,7 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<div className="scrollbar-thumb-[hsl(var(--border))] scrollbar-thumb-rounded-lg h-[20rem] overflow-y-scroll scrollbar-thin scrollbar-track-transparent">
+				<div className="scrollbar-thumb-[hsl(var(--border))] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
 					<TabsContent value="all">
 						<TaskList tasks={sprintTasks} />
 					</TabsContent>
@@ -481,7 +481,7 @@ function TaskList({ tasks }: { tasks: Task[] }) {
 						<Card key={task.id}>
 							<CardHeader>
 								<CardTitle>{task.title}</CardTitle>
-								<CardDescription className="border-2 px-2 py-1 rounded-lg w-fit">
+								<CardDescription className="w-fit rounded-lg border-2 px-2 py-1">
 									Status: {formatStatus(task.status)}
 								</CardDescription>
 							</CardHeader>
