@@ -41,24 +41,13 @@ export const LabelModal = () => {
 	});
 
 	useEffect(() => {
-		// if (showLabelModal) {
-		// 	form.reset({
-		// 		name: labelData.name || "",
-		// 		description: labelData.description || "",
-		// 		color: labelData.color || "",
-		// 	});
-		// } else {
-		// 	form.reset({
-		// 		name: "",
-		// 		description: "",
-		// 		color: "",
-		// 	});
-		// 	setLabelData({});
-		// }
-		if (labelData.name) form.setValue("name", labelData.name);
-		if (labelData.description)
-			form.setValue("description", labelData.description);
-		if (labelData.color) form.setValue("color", labelData.color);
+		if (showLabelModal) {
+			form.reset({
+				name: labelData.name || "",
+				description: labelData.description || "",
+				color: labelData.color || "#000000",
+			});
+		}
 	}, [showLabelModal]);
 
 	const checkLabelExists = (name: string) => {
@@ -76,7 +65,7 @@ export const LabelModal = () => {
 		setNameExists(exists);
 	};
 
-	const handleDiscard = () => {
+	const handleResetForm = () => {
 		setLabelData({});
 		form.reset();
 		setShowLabelModal(false);
@@ -91,13 +80,15 @@ export const LabelModal = () => {
 			});
 			return res.json();
 		},
-		onSuccess: async () => {
-			setLabelData({});
-			form.reset();
-			setShowLabelModal(false);
+		onSuccess: async (_, variables) => {
+			toast({
+				title: "Label updated successfully",
+				description: `Label "${variables.name}" has been updated`,
+			});
 			queryClient.invalidateQueries({
 				queryKey: ["workspaceLabels", workspace?.id],
 			});
+			handleResetForm();
 		},
 		onError: (error) => {
 			toast({
@@ -118,13 +109,15 @@ export const LabelModal = () => {
 			});
 			return res.json();
 		},
-		onSuccess: async () => {
-			setLabelData({});
-			form.reset();
-			setShowLabelModal(false);
+		onSuccess: async (_, variables) => {
+			toast({
+				title: "Label created successfully",
+				description: `Label "${variables.name}" has been created`,
+			});
 			queryClient.invalidateQueries({
 				queryKey: ["workspaceLabels", workspace?.id],
 			});
+			handleResetForm();
 		},
 		onError: (error) => {
 			toast({
@@ -137,7 +130,7 @@ export const LabelModal = () => {
 	});
 
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (labelData) {
+		if (labelData.name) {
 			updateLabelMutation.mutate(values);
 		} else {
 			createLabelMutation.mutate(values);
@@ -164,7 +157,7 @@ export const LabelModal = () => {
 											<FormLabel className="flex items-center gap-4">
 												Label Name{" "}
 												{nameExists && (
-													<span className="text-red-500 text-sm">
+													<span className="text-red-500">
 														Label name already exists!
 													</span>
 												)}
@@ -226,7 +219,7 @@ export const LabelModal = () => {
 						</div>
 						<DialogFooter>
 							<Button
-								onClick={handleDiscard}
+								onClick={handleResetForm}
 								className="bg-transparent text-foreground hover:cursor-pointer"
 								variant="destructive"
 							>
