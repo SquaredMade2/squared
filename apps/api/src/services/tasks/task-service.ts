@@ -45,7 +45,7 @@ export class TaskService implements TaskRpc {
 		parentId,
 		sprintId,
 	}: CreateTaskParams): Promise<Task> {
-		this.logger.info("Creating task by payload: %0", {
+		this.logger.info("Creating task by payload", {
 			authorId,
 			title,
 			description,
@@ -167,7 +167,7 @@ export class TaskService implements TaskRpc {
 
 	async updateTask(args: UpdateTaskParams): Promise<Task> {
 		const { updaterId, ...taskData } = args;
-		this.logger.info("Updating task with ID: %s", taskData.id);
+		this.logger.info("Updating task with ID", taskData.id);
 
 		return await this.db.transaction(async (tx) => {
 			// Find the previous task
@@ -218,13 +218,13 @@ export class TaskService implements TaskRpc {
 			if (!updatedTask) {
 				this.throwError("There was an issue updating the task");
 			}
-				// Create log event
-				await this.eventService.createLogEvent({
-					taskId: updatedTask.id,
-					authorId: updaterId,
-					changes: taskData,
-					previousTask,
-				});
+			// Create log event
+			await this.eventService.createLogEvent({
+				taskId: updatedTask.id,
+				authorId: updaterId,
+				changes: taskData,
+				previousTask,
+			});
 			return updatedTask;
 		});
 	}
@@ -232,7 +232,7 @@ export class TaskService implements TaskRpc {
 	async deleteTask({
 		taskId,
 	}: { taskId: string }): Promise<{ success: boolean }> {
-		this.logger.info("Deleting task by ID: %s", taskId);
+		this.logger.info("Deleting task by ID", taskId);
 
 		return await this.db.transaction(async (tx) => {
 			const result = await tx
@@ -249,7 +249,7 @@ export class TaskService implements TaskRpc {
 	}
 
 	async getTask({ taskId }: { taskId: string }): Promise<Task> {
-		this.logger.info("Finding task by ID: %s", taskId);
+		this.logger.info("Finding task by ID", taskId);
 
 		return await this.db.transaction(async (tx) => {
 			const task = await tx
@@ -296,7 +296,7 @@ export class TaskService implements TaskRpc {
 	}
 
 	async getTeamTasks({ teamId }: { teamId: string }): Promise<Task[]> {
-		this.logger.info("Getting tasks for team with id: %s", teamId);
+		this.logger.info("Getting tasks for team with id", teamId);
 
 		return await this.db.transaction(async (tx) => {
 			const tasks = await tx
@@ -311,7 +311,7 @@ export class TaskService implements TaskRpc {
 	async addActiveSprintTasks({
 		sprintId,
 	}: { sprintId: string }): Promise<number> {
-		this.logger.info("Adding active sprints to sprint with id: %s", sprintId);
+		this.logger.info("Adding active sprints to sprint with id", sprintId);
 
 		return await this.db.transaction(async (tx) => {
 			const sprint = await tx
@@ -462,10 +462,7 @@ export class TaskService implements TaskRpc {
 		blockedBy: Task[];
 		blockingIds: string[];
 	}> {
-		this.logger.info(
-			"getting tasks blocking and blocked by task id: %s",
-			taskId,
-		);
+		this.logger.info("getting tasks blocking and blocked by task id", taskId);
 
 		return await this.db.transaction(async (tx) => {
 			const blockedByTasksQuery = tx
@@ -504,10 +501,7 @@ export class TaskService implements TaskRpc {
 	async getAllBlockedTaskIds({
 		teamId,
 	}: { teamId: string }): Promise<string[]> {
-		this.logger.info(
-			"Getting all blocking taskIds for team with id: %s",
-			teamId,
-		);
+		this.logger.info("Getting all blocking taskIds for team with id", teamId);
 
 		return await this.db.transaction(async (tx) => {
 			const blockedTasks = await tx

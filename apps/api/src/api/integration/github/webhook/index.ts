@@ -84,7 +84,7 @@ export function createRoute({ db }: { db: DBClient }): Route<Params> {
 
 				res.status(204).json({ message: "No relevant event type" });
 			} catch (error) {
-				logger.error("Error handling webhook: %s", error);
+				logger.error("Error handling webhook", error);
 				res.status(500).json({
 					message: `Error during webhook: ${error instanceof Error && `: ${error.message}`}`,
 				});
@@ -110,7 +110,7 @@ async function handleRepositoryChanges(
 	for (const repo of repositoriesRemoved) {
 		if (!repo.full_name || !githubUsername) {
 			logger.error(
-				"Missing repository data for removal: %s %s",
+				"Missing repository data for removal %s",
 				repo.full_name ?? "Repository name",
 				githubUsername ?? "Repository owner",
 			);
@@ -168,7 +168,7 @@ async function handleRepositoryChanges(
 	for (const repo of repositoriesAdded) {
 		if (!repo.full_name || !githubUsername) {
 			logger.error(
-				"Missing repository data for removal: %s %s",
+				"Missing repository data for removal %s",
 				repo.full_name ?? "Repository name",
 				githubUsername ?? "Repository owner",
 			);

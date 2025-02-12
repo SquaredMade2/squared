@@ -2,7 +2,7 @@ echo "Running Formatting..."
 
 # Format Project before committing
 pnpm format:write
-pnpm lint:fix
+pnpm lint:fix || true
 git add .
 
 

@@ -101,16 +101,16 @@ export const commitSchema = createSchema<Commit>()(
 export const workspaceSchema = createSchema<Workspace>()(
 	z.object({
 		id: z.string(),
+		externalId: z.string().nullable(),
 		name: z.string(),
 		url: z.string(),
 		companySize: z.number().nullable(),
 		tasksCreated: z.number(),
-		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
-		createdAt: z.date(),
 		labels: z.array(labelSchema),
+		createdAt: z.date(),
 	}),
 );
 
@@ -136,22 +136,6 @@ export const commentSchema = createSchema<Comment>()(
 	}),
 );
 
-export const workspaceLabelSchema = createSchema<Workspace>()(
-	z.object({
-		id: z.string(),
-		name: z.string(),
-		url: z.string(),
-		companySize: z.number().nullable(),
-		tasksCreated: z.number(),
-		universalTokenLinkId: z.string().nullable(),
-		avatarUrl: z.string().nullable(),
-		admins: z.array(z.string()),
-		defaultView: z.string().nullable(),
-		labels: z.array(labelSchema),
-		createdAt: z.date(),
-	}),
-);
-
 export const userSchema = createSchema<User>()(
 	z.object({
 		id: z.string().uuid(),
@@ -159,7 +143,6 @@ export const userSchema = createSchema<User>()(
 		username: z.string().nullable(),
 		email: z.string().email(),
 		externalId: z.string(),
-		lastLogin: z.date(),
 		createdAt: z.date(),
 		onBoarding: z.boolean(),
 		defaultWorkspaceId: z.string().nullable(),

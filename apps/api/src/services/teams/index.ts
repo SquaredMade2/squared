@@ -47,7 +47,7 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 	},
 	updateTeam: { input: updateTeamParams, output: teamSchema },
 	updateTeamSprints: { input: updateTeamSprintsParams, output: teamSchema },
-	deleteTeam: { input: z.object({ teamId: z.string() }), output: z.void() },
+	deleteTeam: { input: z.object({ teamId: z.string() }), output: teamSchema },
 	getTeam: {
 		input: z.object({ teamId: z.string() }),
 		output: teamSchema.nullable(),
