@@ -402,19 +402,17 @@ export class WorkspaceService implements WorkspaceRpc {
 					.where(eq(workspacesTable.name, workspaceName))
 					.then((results) => results[0]);
 
-				const inviteLink = inviteLinks.filter((data) => data.link === token);
+				const inviteLink = inviteLinks.find((data) => data.link === token);
 
-				// Check link hasn't expired
-				if (inviteLink[0].expiration && Date.now() > inviteLink[0].expiration) {
+				// Check link hasn't expired or exceeded number of uses
+				if (
+					(inviteLink?.expiration && Date.now() > inviteLink.expiration) ||
+					inviteLink?.uses === 0
+				) {
 					return null;
 				}
 
-				// Check link hasn't exceeded number of uses
-				if (inviteLink[0].uses === 0) {
-					return null;
-				}
-
-				if (inviteLink[0].uses) {
+				if (inviteLink?.uses) {
 					// reduce uses by 1
 					await this.db
 						.update(workspacesTable)
@@ -422,9 +420,9 @@ export class WorkspaceService implements WorkspaceRpc {
 							inviteLinks: [
 								...inviteLinks,
 								{
-									link: inviteLink[0].link,
-									expiration: inviteLink[0].expiration,
-									uses: inviteLink[0].uses - 1,
+									link: inviteLink.link,
+									expiration: inviteLink.expiration,
+									uses: inviteLink.uses - 1,
 								},
 							],
 						})
