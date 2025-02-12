@@ -44,6 +44,17 @@ const formatError = (level: string, meta: LogMeta) => {
 	return "";
 };
 
+const formatMessage = (message: unknown, meta: LogMeta) => {
+	const splatInfo = meta[splatSymbol];
+	let additionalInfo = "";
+
+	if (Array.isArray(splatInfo) && splatInfo.length > 0) {
+		additionalInfo = splatInfo.join("");
+	}
+
+	return `${message}${additionalInfo}`;
+};
+
 // Create the logger factory function
 function createCustomLogger(prefix: string): Logger {
 	const logger = createLogger({
@@ -52,11 +63,12 @@ function createCustomLogger(prefix: string): Logger {
 		format: format.combine(
 			format.timestamp({ format: "MMM DD HH:mm:ss" }),
 			format.simple(),
-			format.printf(({ timestamp, level, message, ...meta }) => {
+			format.splat(),
+			format.printf(({ timestamp, level, message, splat, ...meta }) => {
 				const prefixString = prefix ? `[${prefix}] ` : "";
 				const stackTrace = formatError(level, meta);
 
-				return `${timestamp} ${level}: ${prefixString}${message}${stackTrace}`;
+				return `${timestamp} ${level}: ${prefixString}${formatMessage(message, meta)}${stackTrace}`;
 			}),
 		),
 		transports: [
@@ -72,11 +84,12 @@ function createCustomLogger(prefix: string): Logger {
 				format: format.combine(
 					format.colorize(),
 					format.simple(),
+					format.splat(),
 					format.printf(({ timestamp, level, message, ...meta }) => {
 						const prefixString = prefix ? `[${prefix}] ` : "";
 						const stackTrace = formatError(level, meta);
 
-						return `${timestamp} ${level}: ${prefixString}${message}${stackTrace}`;
+						return `${timestamp} ${level}: ${prefixString}${formatMessage(message, meta)}${stackTrace}`;
 					}),
 				),
 			}),

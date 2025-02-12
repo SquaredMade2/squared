@@ -79,6 +79,10 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.object({ success: z.boolean() }),
 	},
+	getTakenWorkspaceUrls: {
+		input: z.undefined(),
+		output: z.array(z.string()),
+	},
 	getWorkspaceLabels: {
 		input: z.object({ workspaceId: z.string() }),
 		output: labelSchema.array(),
@@ -121,6 +125,7 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
+		getTakenWorkspaceUrls: () => workspaceService.getTakenWorkspaceUrls(),
 		getWorkspaceLabels: (input) => workspaceService.getWorkspaceLabels(input),
 		createWorkspaceLabel: (input) =>
 			workspaceService.createWorkspaceLabel(input),

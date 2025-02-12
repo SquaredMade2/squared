@@ -54,5 +54,3 @@ export const RetroColumn = ({
 		</Card>
 	);
 };
-
-export default RetroColumn;
