@@ -7,7 +7,7 @@
 		"build": "turbo run build",
 		"build:rpc": "pnpm --filter=@squared/rpc run build && pnpm --filter=@squared/rpc-client run build",
 		"build:ui": "pnpm --filter=@squaredmade/ui run build",
-    "db:backup": "cd ./packages/db && sh src/backup/index.sh",
+    "db:backup": "pnpm --filter=db db:backup",
 		"db:gen": "turbo run db:gen",
 		"db:migrate": "pnpm --filter=@squared/db db:migrate",
 		"db:push": "pnpm --filter=@squared/db db:push",

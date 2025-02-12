@@ -2,7 +2,7 @@ name: squared-prod
 
 on:
   schedule:
-    - cron: '0 0 */7 * *' 
+    - cron: '0 0 1 * *' 
   workflow_dispatch:
 
 jobs:
@@ -32,6 +32,6 @@ jobs:
 
       - name: Run Backup and insert into s3 bucket
         run: |
-          BACKUP_FILE_NAME="$(date +%Y-%m-%d | tr -d '-')"
+          BACKUP_FILE_NAME="$(date +%Y%m%d | tr -d '-')"
           CLEAN_DB_URL=$(echo ${{ secrets.PRODUCTION_READONLY_STRING }} | sed "s/[?&]pgbouncer=true//")
           pg_dump --dbname="$CLEAN_DB_URL" | aws s3 cp - "s3://${{ env.S3_BUCKET_NAME }}/$BACKUP_FILE_NAME.bak" --region ${{ env.AWS_REGION }}
