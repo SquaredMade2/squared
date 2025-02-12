@@ -30,6 +30,6 @@ export const metadata = {
 	},
 };
 
-export const JoinWorkspacePage = () => {
+export default function JoinWorkspacePage() {
 	return <JoinWorkspace />;
-};
+}

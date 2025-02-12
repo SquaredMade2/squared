@@ -17,10 +17,16 @@ export default function JoinWorkspace() {
 	const { toast } = useToast();
 
 	const token = searchParams.get("token");
+	const isLink = searchParams.has("link");
+	const currentURL = window.location.href;
+	const workspaceName = currentURL.match(/(?<=\/)[^/]*(?=\/)/);
 
 	useEffect(() => {
 		if (isLoaded && !isSignedIn) {
-			router.push(`/sign-in?token=${token}`);
+			if (!isLink) {
+				router.push(`/sign-in?token=${token}`);
+			}
+			router.push(`/sign-in?link=true&token=${token}`);
 		}
 	}, [isLoaded, router, token]);
 
@@ -34,7 +40,9 @@ export default function JoinWorkspace() {
 			}
 			const workspace = await workspaceService.joinWorkspace(TODO, {
 				token,
+				isLink,
 				userId: user.id,
+				workspaceName: workspaceName ? workspaceName[0] : null,
 			});
 			toast({ title: "Workspace joined successfully" });
 			if (workspace?.url) {

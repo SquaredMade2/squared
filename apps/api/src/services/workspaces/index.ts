@@ -60,7 +60,9 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	joinWorkspace: {
 		input: z.object({
 			token: z.string(),
+			isLink: z.boolean(),
 			userId: z.string(),
+			workspaceName: z.string().optional(),
 			role: workspaceRoleEnum.optional(),
 		}),
 		output: workspaceLabelSchema.nullable(),

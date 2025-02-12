@@ -178,11 +178,18 @@ export class WorkspaceService implements WorkspaceRpc {
 	}
 	async joinWorkspace({
 		token,
+		isLink,
 		userId,
-	}: { token: string; userId: string }): Promise<Workspace | null> {
+		workspaceName,
+	}: {
+		token: string;
+		isLink: boolean;
+		userId: string;
+		workspaceName?: string;
+	}): Promise<Workspace | null> {
 		this.logger.info(`User ${userId} attempting to join workspace with token`);
 
-		const workspaceId = this.verifyToken(token);
+		const workspaceId = await this.verifyToken(token, isLink, workspaceName);
 		if (!workspaceId) {
 			this.throwError("Invalid token");
 		}
@@ -373,12 +380,61 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		return link;
 	}
-	private verifyToken(token: string): string | null {
+	private async verifyToken(
+		token: string,
+		isLink: boolean,
+		workspaceName?: string,
+	): Promise<string | null> {
 		try {
-			const decoded = jwt.verify(token, this.JWT_SECRET) as {
-				workspaceId: string;
-			};
-			return decoded.workspaceId;
+			if (!isLink) {
+				const decoded = jwt.verify(token, this.JWT_SECRET) as {
+					workspaceId: string;
+				};
+				return decoded.workspaceId;
+			}
+
+			if (workspaceName) {
+				const { id, inviteLinks } = await this.db
+					.select({
+						id: workspacesTable.id,
+						inviteLinks: workspacesTable.inviteLinks,
+					})
+					.from(workspacesTable)
+					.where(eq(workspacesTable.name, workspaceName))
+					.then((results) => results[0]);
+
+				const inviteLink = inviteLinks.filter((data) => data.link === token);
+
+				// Check link hasn't expired
+				if (inviteLink[0].expiration && Date.now() > inviteLink[0].expiration) {
+					return null;
+				}
+
+				// Check link hasn't exceeded number of uses
+				if (inviteLink[0].uses && inviteLink[0].uses === 0) {
+					return null;
+				}
+
+				if (inviteLink[0].uses) {
+					// reduce uses by 1
+					await this.db
+						.update(workspacesTable)
+						.set({
+							inviteLinks: [
+								...inviteLinks,
+								{
+									link: inviteLink[0].link,
+									expiration: inviteLink[0].expiration,
+									uses: inviteLink[0].uses - 1,
+								},
+							],
+						})
+						.where(eq(workspacesTable.id, id))
+						.returning();
+				}
+				return id;
+			}
+			return null;
 		} catch (error) {
 			this.logger.error("Token verification failed", error);
 			return null;

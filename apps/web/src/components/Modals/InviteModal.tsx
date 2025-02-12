@@ -3,7 +3,7 @@
 import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -58,14 +58,10 @@ export const InviteModal = () => {
 	};
 
 	const handleCopy = async () => {
-		const url = `${process.env.NEXT_PUBLIC_URL}/join?link&token=${link}`;
+		const url = `${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`;
 		await window.navigator.clipboard.writeText(url);
 		toast({ title: "URL copied to clipboard" });
 	};
-
-	// useLayoutEffect(() => {
-	// 	generateLink();
-	// }, []);
 
 	return (
 		<Dialog open={showInvite} onOpenChange={setShowInvite}>
@@ -138,7 +134,7 @@ export const InviteModal = () => {
 							<p className="text-white/35">
 								{(!link && "Create Invite Link") ||
 									(link.includes("Failed") && link) ||
-									`/join?link&token=${link}`}
+									`/join?link=true&token=${link}`}
 							</p>
 							<Button
 								className="h-8"

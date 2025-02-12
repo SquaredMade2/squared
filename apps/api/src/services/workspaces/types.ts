@@ -30,7 +30,9 @@ export interface WorkspaceRpc {
 	getUserWorkspaces: (args: { userId: string }) => Promise<Workspace[]>;
 	joinWorkspace: (args: {
 		token: string;
+		isLink: boolean;
 		userId: string;
+		workspaceName?: string;
 		role?: WorkspaceRole;
 	}) => Promise<Workspace | null>;
 	removeUserFromWorkspace: (args: {
