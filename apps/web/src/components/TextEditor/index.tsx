@@ -16,6 +16,7 @@ import { DefaultElement, Editable, Slate, withReact } from "slate-react";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
+import ImgElement from "./TextEditorElements/ElementBlocks/ImgElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
 import TextEditorToolBar from "./TextEditorToolBar";
@@ -23,6 +24,7 @@ import type {
 	CustomDescendant,
 	CustomElement,
 	CustomText,
+	ElementTypes,
 	MarkTypes,
 	TextEditorProps,
 } from "./interfaces";
@@ -114,12 +116,22 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	};
 
 	const injectImgContent = (img: File) => {
+		if (!img) return;
+		if (!editor.selection) {
+			toast({
+				title: "Place text cursor",
+				description:
+					"Place a text cursor in the designated area to insert an image",
+				variant: "destructive",
+			});
+			return;
+		}
 		const imgUrl = URL.createObjectURL(img);
-		const imageNode = {
-			text: "",
-			img: imgUrl,
+		const imageElement: CustomElement = {
+			type: "img",
+			children: [{ text: imgUrl }],
 		};
-		Transforms.insertNodes(editor, imageNode);
+		Transforms.insertNodes(editor, imageElement);
 	};
 
 	// Helper Functions
@@ -139,14 +151,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			"",
 		);
 		return editorContent.length === 0;
-	};
-
-	const isHeaderBlock = () => {
-		// return if the block exists in the highlighted area
-		const [match] = Editor.nodes(editor, {
-			match: (n) => Element.isElement(n) && n.type === "header",
-		});
-		return match;
 	};
 
 	// Create Element Blocks (Entire Row)
@@ -185,6 +189,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		return type === "url" ? !!marks?.[type] : Boolean(marks?.[type]);
 	};
 
+	const isElementActive = (elementType: ElementTypes) => {
+		// return if the block exists in the highlighted area
+		if (!editor.selection) return;
+		const [match] = Editor.nodes(editor, {
+			match: (n) => Element.isElement(n) && n.type === elementType,
+		});
+		return match;
+	};
+
 	const useEditorMarks = () => ({
 		isBoldActive: () => isMarkActive("bold"),
 		isItalicActive: () => isMarkActive("italic"),
@@ -208,12 +221,13 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
 
-		const noExtendMarks: MarkTypes[] = ["url", "img"];
-		for (let i = 0; i < noExtendMarks.length; i++) {
-			if (isMarkActive(noExtendMarks[i])) {
-				Editor.removeMark(editor, noExtendMarks[i]);
+		const noExtendMarks: MarkTypes[] = ["url"];
+		noExtendMarks.forEach((mark) => {
+			if (isMarkActive(mark)) {
+				Editor.removeMark(editor, mark);
 			}
-		}
+		});
+		console.log(editor.children);
 		switch (e.key) {
 			// Element Blocks
 
@@ -256,6 +270,11 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				}
 				break;
 			}
+
+			// case "Backspace": {
+			// 	if ()
+			// 	e.preventDefault()
+			// }
 		}
 	};
 
@@ -272,6 +291,8 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		switch (props.element.type) {
 			case "header":
 				return <HeaderElement {...props} />;
+			case "img":
+				return <ImgElement {...props} />;
 			default:
 				return <DefaultElement {...props} />;
 		}
@@ -306,7 +327,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						injectLinkContent={injectLinkContent}
 						// Blocks
 						createHeaderBlock={createHeaderBlock}
-						isHeaderBlock={isHeaderBlock()}
+						isElementActive={isElementActive}
 						// Others
 						selection={editor.selection}
 						injectImgContent={injectImgContent}

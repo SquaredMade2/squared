@@ -17,7 +17,7 @@ export interface TextEditorToolBarProps {
 	// Blocks
 
 	createHeaderBlock: () => void;
-	isHeaderBlock: NodeEntry<Node>;
+	isElementActive: (elementType: ElementTypes) => NodeEntry<Node> | undefined;
 
 	// Others
 
@@ -49,7 +49,7 @@ export type CustomElementAttributes = Omit<
 };
 
 export type CustomElement = {
-	type: string;
+	type: ElementTypes;
 	children: CustomText[];
 	attributes?: CustomElementAttributes;
 };
@@ -60,9 +60,11 @@ export type CustomText = {
 	italic?: boolean;
 	code?: boolean;
 	url?: string;
-	img?: string;
+	img?: boolean;
 };
 
 export type MarkTypes = keyof Omit<CustomText, "text">;
+
+export type ElementTypes = "paragraph" | "header" | "img";
 
 export type CustomDescendant = CustomElement | CustomText;
