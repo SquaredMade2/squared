@@ -1,5 +1,6 @@
 import type { RenderLeafProps } from "slate-react";
 import CodeLeaf from "./CodeLeaf";
+import ImgLeaf from "./ImgLeaf";
 
 const Leaf = (props: RenderLeafProps) => {
 	const renderLeafType = () => {
@@ -18,6 +19,9 @@ const Leaf = (props: RenderLeafProps) => {
 		}
 		if (props.leaf.code) {
 			return <CodeLeaf {...props} />;
+		}
+		if (props.leaf.img) {
+			return <ImgLeaf {...props} />;
 		}
 		return (
 			<span {...props.attributes} style={leafStyling}>

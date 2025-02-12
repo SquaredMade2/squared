@@ -1,5 +1,6 @@
 import { Bold, Heading, Italic } from "lucide-react";
 import { Button } from "../ui/button";
+import ImgModal from "./ImgModal";
 import LinkModal from "./LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
 
@@ -7,6 +8,7 @@ const TextEditorToolBar = ({
 	createLeaf,
 	markActiveChecks,
 	injectLinkContent,
+	injectImgContent,
 	createHeaderBlock,
 	isHeaderBlock,
 
@@ -76,6 +78,7 @@ const TextEditorToolBar = ({
 				<Heading className="size-4" />
 				<span className="sr-only">Header</span>
 			</Button>
+			<ImgModal injectImgContent={injectImgContent} />
 			<LinkModal injectLinkContent={injectLinkContent} selection={selection} />
 		</div>
 	);

@@ -12,6 +12,7 @@ export interface TextEditorToolBarProps {
 	createLeaf: (markType: MarkTypes) => void;
 	markActiveChecks: MarkActives;
 	injectLinkContent: (linkName: string, linkUrl: string) => void;
+	injectImgContent: (img: File) => void;
 
 	// Blocks
 
@@ -26,6 +27,10 @@ export interface TextEditorToolBarProps {
 export interface LinkModalProps {
 	injectLinkContent: (linkName: string, linkUrl: string) => void;
 	selection: BaseSelection;
+}
+
+export interface ImgModalProps {
+	injectImgContent: (img: File) => void;
 }
 
 export type MarkActives = {
@@ -55,6 +60,7 @@ export type CustomText = {
 	italic?: boolean;
 	code?: boolean;
 	url?: string;
+	img?: string;
 };
 
 export type MarkTypes = keyof Omit<CustomText, "text">;

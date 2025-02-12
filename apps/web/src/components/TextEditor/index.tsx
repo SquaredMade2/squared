@@ -113,6 +113,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		Transforms.insertNodes(editor, linkNode);
 	};
 
+	const injectImgContent = (img: File) => {
+		const imgUrl = URL.createObjectURL(img);
+		const imageNode = {
+			text: "",
+			img: imgUrl,
+		};
+		Transforms.insertNodes(editor, imageNode);
+	};
+
 	// Helper Functions
 
 	const checkIfSlateEmpty = (editor: BaseEditor & ReactEditor) => {
@@ -165,6 +174,8 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				return "isCodeActive";
 			case "url":
 				return "isLinkActive";
+			case "img":
+				return "isImgActive";
 		}
 	};
 
@@ -179,6 +190,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		isItalicActive: () => isMarkActive("italic"),
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
+		isImgActive: () => isMarkActive("img"),
 	});
 
 	const createLeaf = (markType: MarkTypes) => {
@@ -195,8 +207,12 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		// !!!
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
-		if (isMarkActive("url")) {
-			Editor.removeMark(editor, "url");
+
+		const noExtendMarks: MarkTypes[] = ["url", "img"];
+		for (let i = 0; i < noExtendMarks.length; i++) {
+			if (isMarkActive(noExtendMarks[i])) {
+				Editor.removeMark(editor, noExtendMarks[i]);
+			}
 		}
 		switch (e.key) {
 			// Element Blocks
@@ -293,6 +309,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						isHeaderBlock={isHeaderBlock()}
 						// Others
 						selection={editor.selection}
+						injectImgContent={injectImgContent}
 					/>
 					<Editable
 						onKeyDown={handleSetEditorContent}

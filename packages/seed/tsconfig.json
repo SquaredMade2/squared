@@ -1,6 +1,7 @@
 {
 	"ts-node": {
-		"require": ["tsconfig-paths/register"]
+		"require": ["tsconfig-paths/register"],
+		"compiler": "typescript"
 	},
 	"compilerOptions": {
 		"target": "ES2020",
