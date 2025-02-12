@@ -200,7 +200,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          CLERK_SECRET: ${{ secrets.CLERK_SECRET_KEY }}
           EMAIL_USERNAME: info@squaredmade.com
           EMAIL_PASSWORD: H=3x=_uhQa
           POSTGRES_PORT: 5434
