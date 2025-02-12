@@ -24,12 +24,13 @@ export const NewTaskButton = () => {
 	return (
 		<Button
 			variant="outline"
+			size={isCollapsed ? "icon" : "default"}
 			className={`border-blue-500 shadow-lg hover:shadow-glow ${
-				isCollapsed ? "px-0" : ""
+				isCollapsed ? "mx-1 px-0" : ""
 			}`}
 			onClick={handleOpen}
 		>
-			<SquarePen className="size-5" />
+			<SquarePen className={isCollapsed ? "size-4" : "size-5"} />
 			{!isCollapsed && (
 				<>
 					<span className="w-auto px-2">
