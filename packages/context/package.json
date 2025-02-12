@@ -17,9 +17,10 @@
 		}
 	},
 	"scripts": {
-		"prepare": "pnpm run build",
+		"build": "squared-build src/index.ts/index.ts",
+		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist",
-		"build": "squared-build src/index.ts/index.ts"
+		"prepare": "pnpm run build"
 	},
 	"devDependencies": {
 		"@squared/typescript-config": "workspace:*",

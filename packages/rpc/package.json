@@ -18,6 +18,7 @@
 	},
 	"scripts": {
 		"build": "node build.mjs",
+		"clean": "rimraf dist && rimraf node_modules",
 		"prepare": "pnpm run build",
 		"prebuild": "rimraf dist",
 		"prepublishOnly": "pnpm run build"
