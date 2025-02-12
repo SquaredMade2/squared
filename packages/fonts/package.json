@@ -5,8 +5,9 @@
 	"types": "dist/index.d.ts",
 	"files": ["dist", "src/fonts", "tailwind-plugin.js"],
 	"scripts": {
-		"prebuild": "rimraf dist",
-		"build": "tsc && node scripts/build-css.js"
+		"build": "tsc && node scripts/build-css.js",
+		"clean": "rimraf dist && rimraf node_modules",
+		"prebuild": "rimraf dist"
 	},
 	"keywords": ["font", "noirden-sans", "tailwindcss"],
 	"author": "squared",

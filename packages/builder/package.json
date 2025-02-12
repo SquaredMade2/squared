@@ -19,6 +19,7 @@
 	},
 	"scripts": {
 		"build": "ts-node ./build.ts",
+		"clean": "rimraf dist && rimraf node_modules",
 		"prepare": "pnpm run build",
 		"prebuild": "rimraf ./dist"
 	},
