@@ -159,7 +159,9 @@ export type RemoveUserFromWorkspaceResponse = {
 };
 
 export type InviteToWorkspaceRequest = {
-	email: string | string[];
+	email: string[];
+	slug: string;
+	userId: string;
 	workspaceId: string;
 };
 

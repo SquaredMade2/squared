@@ -1,4 +1,5 @@
 "use client";
+
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
@@ -8,30 +9,26 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { userService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
-import { TODO } from "@squared/context";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const GithubSettings: React.FC = () => {
-	const { connectedRepos, user, setConnectedRepos } = useUserStore(
-		(state) => state,
-	);
+	const { user, setConnectedRepos } = useUserStore((state) => state);
 	const router = useRouter();
-
-	useEffect(() => {
-		const getUserRepositories = async () => {
-			if (user) {
-				setConnectedRepos(
-					await userService.getUserRepositories(TODO, {
-						userId: user.externalId,
-					}),
-				);
-			}
-		};
-		getUserRepositories();
-	}, [user]);
+	const { data: connectedRepos = [] } = useQuery({
+		queryKey: ["getGithubRepos", user?.externalId],
+		queryFn: async () => {
+			const repos = await client.integration.getGithubRepos
+				.$get()
+				.then((res) => res.json());
+			setConnectedRepos(repos);
+			return repos;
+		},
+		enabled: !!user,
+		retry: true,
+	});
 
 	const handleClick = (): void => {
 		if (!user?.id) return;

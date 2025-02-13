@@ -39,7 +39,9 @@ export interface WorkspaceRpc {
 	}) => Promise<{ success: boolean }>;
 	inviteToWorkspace: (args: {
 		workspaceId: string;
-		email: string | string[];
+		email: string[];
+		userId: string;
+		slug: string;
 	}) => Promise<{ success: boolean }>;
 	getTakenWorkspaceUrls: () => Promise<string[]>;
 }

@@ -75,7 +75,9 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	inviteToWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
-			email: z.union([z.string(), z.array(z.string())]),
+			email: z.array(z.string()),
+			userId: z.string(),
+			slug: z.string(),
 		}),
 		output: z.object({ success: z.boolean() }),
 	},

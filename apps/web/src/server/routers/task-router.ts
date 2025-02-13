@@ -320,4 +320,13 @@ export const taskRouter = router({
 				}),
 			);
 		}),
+	setLastViewedTask: privateProcedure
+		.input(z.object({ taskId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { userService, user } = ctx;
+			const { taskId } = input;
+			return c.superjson(
+				await userService.setLastViewedTask(TODO, { userId: user.id, taskId }),
+			);
+		}),
 });

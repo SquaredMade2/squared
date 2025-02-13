@@ -35,4 +35,36 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	removeUser: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService, user } = ctx;
+			const { workspaceId } = input;
+			return c.json(
+				await workspaceService.removeUserFromWorkspace(TODO, {
+					workspaceId,
+					userId: user.id,
+				}),
+			);
+		}),
+	inviteToWorkspace: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				email: z.array(z.string()),
+				workspaceSlug: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService, user } = ctx;
+			const { workspaceId, email, workspaceSlug: slug } = input;
+			return c.json(
+				await workspaceService.inviteToWorkspace(TODO, {
+					workspaceId,
+					email,
+					userId: user.id,
+					slug,
+				}),
+			);
+		}),
 });

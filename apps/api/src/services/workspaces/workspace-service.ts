@@ -277,14 +277,32 @@ export class WorkspaceService implements WorkspaceRpc {
 	async inviteToWorkspace({
 		workspaceId,
 		email,
+		userId,
+		slug,
 	}: {
 		workspaceId: string;
-		email: string | string[];
+		email: string[];
+		userId: string;
+		slug: string;
 	}): Promise<{ success: boolean }> {
 		this.logger.info("Inviting user to workspace", {
 			email,
 			workspaceId,
 		});
+		const emails = Array.isArray(email) ? email : [email];
+		const inviteUser =
+			this.clerkClient.organizations.createOrganizationInvitation;
+		await Promise.all(
+			emails.map((e) =>
+				inviteUser({
+					organizationId: workspaceId,
+					emailAddress: e,
+					inviterUserId: userId,
+					role: "member",
+					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/join`,
+				}),
+			),
+		);
 
 		return await this.db.transaction(async (tx) => {
 			// Check if the workspace exists

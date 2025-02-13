@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { userService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
+import { useOrganization } from "@clerk/nextjs";
 import type { Team, User, Workspace, WorkspaceRole } from "@squared/db";
+import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -14,7 +14,7 @@ import {
 	getFilteredRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CSVLink } from "react-csv";
 
 export type MemberWithRole = User & {
@@ -28,22 +28,16 @@ interface DataTableProps {
 	team: Team | null;
 }
 
-interface CsvType {
-	name: string;
-	email: string;
-	role: WorkspaceRole;
-	teams?: string;
-	active: string;
-	lastLogin: Date | null | undefined;
-}
-
 export function DataTable({ columns, data }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [membersCsv, setMembersCsv] = useState<CsvType[] | null>(null);
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
-	const { user, isLoaded } = useUser();
-	const lastLogin = isLoaded && user?.lastSignInAt;
+	const { memberships, organization } = useOrganization({
+		memberships: {
+			infinite: true, // Append new data to the existing list
+			keepPreviousData: true, // Persist the cached data until the new data has been fetched
+		},
+	});
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -68,38 +62,25 @@ export function DataTable({ columns, data }: DataTableProps) {
 		setShowWorkspaceInvite(true);
 	};
 
-	const generateMembersCsv = async () => {
-		const members = await Promise.all(
-			data.map(async (member: MemberWithRole) => {
-				const teams = await userService.getUserTeams(TODO, {
-					userId: member.id,
-				});
-				const teamNames = teams.map((team) => team.name).join(", ");
-				return {
-					name: member.name,
-					email: member.email,
-					role: member.role,
-					teams: teamNames,
-					active: "active",
-					createdAt: member.createdAt,
-				};
-			}),
-		);
-		return members;
-	};
-
-	useEffect(() => {
-		const generateCsv = async () => {
-			const csv = await generateMembersCsv();
-			const csvWithLastLogin = csv.map((user) => ({
-				...user,
-				lastLogin: lastLogin instanceof Date ? lastLogin : null,
+	const { data: membersCsv } = useQuery({
+		queryKey: ["memberships", organization?.id],
+		queryFn: async () => {
+			if (!organization) return;
+			const teams = await client.team.getUserTeams
+				.$get({
+					workspaceId: organization.id,
+				})
+				.then((res) => res.json());
+			return memberships?.data?.map((m) => ({
+				name: m.publicUserData.firstName,
+				role: m.role,
+				teams: teams.map((team) => team.name).join(", "),
+				active: "active",
+				createdAt: m.createdAt,
+				lastLogin: m.updatedAt,
 			}));
-
-			setMembersCsv(csvWithLastLogin);
-		};
-		generateCsv();
-	}, []);
+		},
+	});
 
 	return (
 		<div className="flex flex-col items-start gap-4">
