@@ -1,15 +1,9 @@
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { TODO } from "@squared/context";
+import { NotificationType } from "@squared/db";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
-
-const mentionTypeEnum = z.enum([
-	"MENTIONED",
-	"ASSIGNED",
-	"PARTICIPATING",
-	"CREATED",
-]);
 
 export const notificationRouter = router({
 	markAsUnread: privateProcedure
@@ -92,7 +86,7 @@ export const notificationRouter = router({
 		.input(
 			z.object({
 				description: z.string(),
-				type: mentionTypeEnum,
+				type: z.enum(Object.values(NotificationType) as [string, ...string[]]),
 				taskId: z.string(),
 				userId: z.string(),
 				workspaceId: z.string(),

@@ -14,11 +14,9 @@ import {
 
 // getting the current characters selected
 export const getCharactersInSelection = (editor: EditorType) => {
-	if (!editor.selection || Range.isCollapsed(editor.selection)) return "";
+	if (editor.selection && !Range.isCollapsed(editor.selection)) {
+		const { anchor, focus } = editor.selection;
 
-	const { anchor, focus } = editor.selection;
-
-	if (!Range.isCollapsed(editor.selection)) {
 		const start = anchor.offset < focus.offset ? anchor : focus;
 		const end = anchor.offset < focus.offset ? focus : anchor;
 
@@ -45,13 +43,11 @@ export const isValidMentionBlock = (editor: EditorType) => {
 export const getMentionFromLeaf = (editor: EditorType) => {
 	const { selection } = editor;
 
-	if (!selection) return "";
-
 	const block = Editor.above(editor, {
 		match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
 	});
 
-	if (!block || !block[0]) return "";
+	if (!block?.[0] || !selection) return "";
 
 	const [node] = block;
 

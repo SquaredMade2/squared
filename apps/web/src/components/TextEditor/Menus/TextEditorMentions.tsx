@@ -87,7 +87,7 @@ const TextEditorMentions = ({
 								>
 									{truncateString(user.name, 13)}
 									{index === 0 && (
-										<div className="flex w-32 select-none flex-row items-center justify-start">
+										<div className="flex w-32 select-none flex-row items-center justify-start ">
 											<div className="ml-auto flex w-10 flex-row rounded-lg border-2 px-2 py-1 text-muted-foreground">
 												<CornerDownLeft
 													size={20}

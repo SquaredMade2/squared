@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
+import { client } from "@/lib/client";
 import {
 	useCommentStore,
 	useModalStore,
@@ -10,6 +11,7 @@ import {
 } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
 import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
@@ -17,6 +19,7 @@ import {
 	injectMentionConfirm,
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
+import { useMutation } from "@tanstack/react-query";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -24,11 +27,6 @@ import {
 	useRef,
 	useState,
 } from "react";
-
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
-import { useMutation } from "@tanstack/react-query";
-
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -107,7 +105,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				);
 				const mentions = getMentionsFromSlate(editorContent);
 
-				if (currentTask) {
+				if (currentTask && currentWorkspace) {
 					for (let i = 0; i < mentions.length; i++) {
 						const currentMentionUser = mentions[i];
 
@@ -115,12 +113,14 @@ const TextEditor = ({ task }: TextEditorProps) => {
 							(user) => user.name === currentMentionUser,
 						);
 
+						if (!mentionedUser) return;
+
 						const mentionEvent: CreateNotificationRequest = {
 							description: "Task Comment Mention",
-							taskId: currentTask.id ?? currentTask.id,
+							taskId: currentTask.id,
 							type: "MENTIONED",
-							userId: mentionedUser ? mentionedUser.externalId : "",
-							workspaceId: currentWorkspace ? currentWorkspace.id : "",
+							userId: mentionedUser.externalId,
+							workspaceId: currentWorkspace.id,
 						};
 
 						client.notification.createNotification.$post(mentionEvent);
