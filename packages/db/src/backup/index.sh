@@ -15,6 +15,6 @@ fi
 
 # Run pg_dump to create the backup
 echo "Using database URL: $STAGING_READONLY_STRING"
-pg_dump --dbname="$STAGING_DB_URL" | aws s3 cp - s3://squared-staging-backup/$BACKUP_FILE_NAME.bak --region ap-southeast-2
+pg_dump --dbname="$STAGING_DB_URL" | aws s3 cp - s3://squared-staging-backup/$BACKUP_FILE_NAME.bak --region us-east-1
 echo "Using database URL: $PRODUCTION_READONLY_STRING"
 pg_dump --dbname="$PRODUCTION_DB_URL" | aws s3 cp - s3://squared-prod-backup/$BACKUP_FILE_NAME.bak --region us-east-1
