@@ -70,7 +70,7 @@ export type GetNotificationsResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
-		externalId: string | null;
+		externalId: string;
 		id: string;
 		labels: {
 			color: string;
@@ -207,7 +207,7 @@ export type ToggleNotificationResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
-		externalId: string | null;
+		externalId: string;
 		id: string;
 		labels: {
 			color: string;

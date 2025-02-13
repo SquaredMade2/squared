@@ -16,7 +16,7 @@ export default function WorkspaceMembersPage() {
 		queryFn: async () => {
 			if (!workspace) return [];
 			const users = await client.user.getWorkspaceUsersWithRoles
-				.$get({ workspaceId: workspace.id })
+				.$get({ workspaceId: workspace.externalId })
 				.then((res) => res.json());
 			return users;
 		},

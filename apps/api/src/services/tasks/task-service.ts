@@ -68,7 +68,7 @@ export class TaskService implements TaskRpc {
 				.from(teamsTable)
 				.leftJoin(
 					workspacesTable,
-					eq(teamsTable.workspaceId, workspacesTable.id),
+					eq(teamsTable.workspaceId, workspacesTable.externalId),
 				)
 				.where(eq(teamsTable.id, teamId))
 				.limit(1)
@@ -128,7 +128,7 @@ export class TaskService implements TaskRpc {
 			const [updatedWorkspace] = await tx
 				.update(workspacesTable)
 				.set({ tasksCreated: sql`${workspacesTable.tasksCreated} + 1` })
-				.where(eq(workspacesTable.id, workspace.id))
+				.where(eq(workspacesTable.externalId, workspace.externalId))
 				.returning();
 
 			if (!updatedWorkspace) {
@@ -150,7 +150,7 @@ export class TaskService implements TaskRpc {
 					status,
 					priority,
 					sprintId,
-					workspaceId: workspace.id,
+					workspaceId: workspace.externalId,
 					identifier: newTaskIdentifier,
 				})
 				.returning();

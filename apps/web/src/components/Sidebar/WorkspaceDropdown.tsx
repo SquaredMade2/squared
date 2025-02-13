@@ -70,11 +70,12 @@ export function WorkspaceDropdown() {
 			>
 				{workspaces.map((workspace) => (
 					<DropdownMenuItem
-						key={workspace.id}
+						key={workspace.externalId}
 						onSelect={() => {
 							setWorkspace(workspace);
 							updatePathWithWorkspace(workspace);
 						}}
+						className="hover:cursor-pointer"
 					>
 						<Avatar className="mr-2 h-6 w-6">
 							<AvatarFallback>{getInitials(workspace.name)}</AvatarFallback>
@@ -85,8 +86,9 @@ export function WorkspaceDropdown() {
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					onSelect={() => {
-						router.push(`${workspace?.url}/settings`);
+						router.push(`/${workspace?.url}/settings`);
 					}}
+					className="hover:cursor-pointer"
 				>
 					<Settings className="text-muted-foreground" />
 					<span className="ml-2">Settings</span>
