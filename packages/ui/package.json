@@ -475,16 +475,17 @@
 	},
 	"files": ["dist"],
 	"scripts": {
-		"build:ui": "node build.mjs",
 		"build:stories": "storybook build",
+		"build:ui": "node build.mjs",
 		"check-types": "tsc --skipLibCheck --noEmit",
-		"sb": "pnpm storybook",
+		"clean": "rimraf dist && rimraf node_modules",
+		"format:check": "biome format .",
+		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"format:write": "biome format --write .",
-		"format:check": "biome format .",
-		"test": "jest --ci",
-		"storybook": "cross-env BROWSER=none storybook dev -p 9009"
+		"sb": "pnpm storybook",
+		"storybook": "cross-env BROWSER=none storybook dev -p 9009",
+		"test": "jest --ci"
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.1",

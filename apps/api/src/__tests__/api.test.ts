@@ -9,7 +9,7 @@ import {
 	teamsTable,
 	userTeamsTable,
 } from "@squared/db";
-import request from "supertest";
+import request from "./request";
 
 describe("API Tests", () => {
 	it("should respond with 200 OK for the root path", async () => {

@@ -5,5 +5,6 @@ build("src/index.ts", [
 	"express",
 	"@squared/context",
 	"@squared/logger",
+	"@squared/superjson",
 	"zod",
 ]);

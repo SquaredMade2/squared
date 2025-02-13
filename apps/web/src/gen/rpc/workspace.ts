@@ -16,7 +16,7 @@ export type CreateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -38,7 +38,7 @@ export type GetWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -60,7 +60,7 @@ export type GetWorkspaceByUrlResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -87,7 +87,7 @@ export type UpdateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -113,7 +113,7 @@ export type GetUserWorkspacesResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -137,7 +137,7 @@ export type JoinWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
-	externalId: string | null;
+	externalId: string;
 	id: string;
 	labels: {
 		color: string;
@@ -166,6 +166,8 @@ export type InviteToWorkspaceRequest = {
 export type InviteToWorkspaceResponse = {
 	success: boolean;
 };
+
+export type GetTakenWorkspaceUrlsResponse = string[];
 
 /**
  * workspace service
@@ -260,5 +262,12 @@ export class WorkspaceService extends RPCContextClient {
 		req: InviteToWorkspaceRequest,
 	): Promise<InviteToWorkspaceResponse> {
 		return this.request(ctx, "inviteToWorkspace", req);
+	}
+
+	/**
+	 * getTakenWorkspaceUrls method
+	 */
+	getTakenWorkspaceUrls(ctx: Context): Promise<GetTakenWorkspaceUrlsResponse> {
+		return this.request(ctx, "getTakenWorkspaceUrls");
 	}
 }

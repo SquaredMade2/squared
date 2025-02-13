@@ -151,7 +151,7 @@ export default function TeamsSetting() {
 					setTeam(
 						await teamService.getTeamByIdentifier(TODO, {
 							identifier: values.identifier,
-							workspaceId: workspace.id,
+							workspaceId: workspace.externalId,
 						}),
 					);
 					router.refresh();

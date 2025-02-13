@@ -119,7 +119,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
 				teamId: team.id,
-				workspaceId: workspace.id,
+				workspaceId: workspace.externalId,
 				updatedAt: new Date(),
 				parentId: parentId,
 			};

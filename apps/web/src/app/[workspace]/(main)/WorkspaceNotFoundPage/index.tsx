@@ -54,7 +54,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 										legacyBehavior
 										href={`workspace/${workspace.url}`}
 										className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
-										key={workspace.id}
+										key={workspace.externalId}
 									>
 										<div>
 											<div className="flex">

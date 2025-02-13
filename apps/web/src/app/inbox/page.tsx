@@ -45,7 +45,7 @@ export default function InboxPage() {
 			const [avatars, notifications] = await Promise.all([
 				client.user.getWorkspaceAvatars
 					.$get({
-						workspaceId: workspace.id,
+						workspaceId: workspace.externalId,
 					})
 					.then((res) => res.json()),
 				client.notification.getNotifications.$get({}).then((res) => res.json()),

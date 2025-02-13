@@ -10,6 +10,7 @@ import { useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { ChevronLeft } from "@squared/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -31,6 +32,7 @@ const Join = () => {
 		"password",
 		"sign-up",
 		"welcome",
+		"undefined",
 	];
 	const { isLoaded, isSignedIn, user: clerkUser } = useUser();
 
@@ -46,16 +48,28 @@ const Join = () => {
 		enabled: !!clerkUser?.id,
 	});
 
-	const { data: workspaces = [], isLoading: isWorkspacesLoading } = useQuery({
-		queryKey: ["workspaces", clerkUser?.id],
-		queryFn: () => {
-			if (!clerkUser?.id) return;
-			const res = client.workspace.getAllWorkspaces
-				.$get({ userId: clerkUser?.id })
-				.then((res) => res.json());
-			return res;
+	const { data: workspaceUrls = [], isLoading: isWorkspacesLoading } = useQuery(
+		{
+			queryKey: ["workspaces", clerkUser?.id],
+			queryFn: async () => {
+				if (!clerkUser?.id) return;
+				const res = await client.workspace.getTakenUrls
+					.$get()
+					.then((res) => res.json());
+				return res;
+			},
+			enabled: !!clerkUser?.id,
 		},
-		enabled: !!clerkUser?.id,
+	);
+
+	const { data: defaultWorkspace } = useQuery({
+		queryKey: ["defaultWorkspace"],
+		queryFn: async () => {
+			if (!clerkUser?.id) return;
+			return await client.user.getDefaultWorkpace
+				.$get()
+				.then((res) => res.json());
+		},
 	});
 
 	const createWorkspaceMutation = useMutation({
@@ -122,17 +136,8 @@ const Join = () => {
 
 	const isUrlTaken = (url: string) => {
 		// Check against both restricted routes and existing workspaces
-		const takenUrls = [
-			...restrictedRoutes,
-			...(workspaces?.map((ws) => ws.url) || []),
-		];
+		const takenUrls = [...restrictedRoutes, ...(workspaceUrls || [])];
 		return takenUrls.includes(url);
-	};
-
-	const isWorkspaceNameTaken = (name: string) => {
-		// Check for an existing workspace with the same name
-		const takenNames = [...workspaces.map((ws) => ws.name)];
-		return takenNames.includes(name);
 	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -150,14 +155,6 @@ const Join = () => {
 		if (urlInputValue.length === 0) {
 			toast({
 				title: "Please enter a workspace URL.",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (isWorkspaceNameTaken(inputValue)) {
-			toast({
-				title: "Workspace name already exists. Please choose a different name.",
 				variant: "destructive",
 			});
 			return;
@@ -193,7 +190,7 @@ const Join = () => {
 
 	return (
 		<div className="h-screen w-screen">
-			{!user?.onBoarding && workspaces && workspaces.length > 0 && (
+			{!user?.onBoarding && workspaceUrls?.length > 0 && (
 				<div className="absolute top-0 flex w-screen justify-between p-10">
 					<div className="flex flex-col text-sm">
 						<span className="text-muted-foreground text-xs">Logged in as:</span>
@@ -201,7 +198,7 @@ const Join = () => {
 					</div>
 					<div className="flex items-center space-x-1 text-foreground">
 						<ChevronLeft className="size-5 text-[#858699]" />
-						<a href={`/${workspaces[0].url}`}>Back to Squared</a>
+						<Link href={`/${defaultWorkspace?.url}`}>Back to Squared</Link>
 					</div>
 				</div>
 			)}

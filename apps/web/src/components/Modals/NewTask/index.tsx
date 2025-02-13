@@ -101,7 +101,7 @@ export const NewTaskModal = () => {
 			dueDate: dueDate || null,
 			effortEstimate: effortEstimate || null,
 			teamId: team.id,
-			workspaceId: workspace.id,
+			workspaceId: workspace.externalId,
 			sprintId,
 		};
 

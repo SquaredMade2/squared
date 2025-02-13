@@ -21,15 +21,7 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import type { Workspace } from "@squared/db";
-import {
-	Clipboard,
-	House,
-	Inbox,
-	Moon,
-	Search,
-	Settings,
-	Sun,
-} from "@squared/icons";
+import { Clipboard, Inbox, Moon, Search, Sun } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -90,17 +82,31 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 		router.push(`/${childRoute}`);
 	};
 
-	const toHome = () => {
-		router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
-	};
-
 	return (
 		<>
-			<SidebarHeader className="space-y-2 px-2">
-				<WorkspaceDropdown />
+			<SidebarHeader
+				className={`space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
+			>
+				<div className="flex items-center justify-between gap-2">
+					<WorkspaceDropdown />
+					{state === "expanded" && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="search"
+									onClick={() => setShowCommand(true)}
+								>
+									<Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent side="right">Search</TooltipContent>
+						</Tooltip>
+					)}
+				</div>
 				<NewTaskButton />
 				<div className="flex flex-col space-y-2">
-					<IconButton icon={House} label="Home" onClick={toHome} />
 					<IconButton
 						icon={Search}
 						label="Search"
@@ -111,6 +117,13 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 						label="Settings"
 						onClick={() => navigateTo(`${workspace?.url}/settings`)}
 					/>
+					{state === "collapsed" && (
+						<IconButton
+							icon={Search}
+							label="Search"
+							onClick={() => setShowCommand(true)}
+						/>
+					)}
 					<IconButton
 						icon={Inbox}
 						label="Inbox"
@@ -133,7 +146,9 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					/>
 				</SidebarContainer>
 			)}
-			<SidebarFooter className="mt-auto space-y-2 px-2">
+			<SidebarFooter
+				className={`mt-auto space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
+			>
 				<IconButton
 					icon={theme === "dark" ? Moon : Sun}
 					label={
@@ -212,11 +227,11 @@ function IconButton({
 			<TooltipTrigger asChild>
 				<Button
 					variant="ghost"
-					size="sm"
+					size={state === "expanded" ? "sm" : "icon"}
 					aria-label={label}
 					onClick={onClick}
-					className={`relative w-full justify-start ${
-						state === "collapsed" ? "px-3" : ""
+					className={`relative justify-start ${
+						state === "collapsed" ? "mx-1 px-3" : "w-full"
 					}`}
 				>
 					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />

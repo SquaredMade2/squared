@@ -28,6 +28,7 @@ import {
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
 import { useEventStore } from "@/store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
 	BellOff,
 	Check,
@@ -35,8 +36,7 @@ import {
 	Ellipsis,
 	MoveRight,
 	Trash2,
-} from "@squared/icons";
-import { useMutation } from "@tanstack/react-query";
+} from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import { columns } from "./columns";
 
@@ -95,6 +95,7 @@ export function InboxDataTable({
 	const allUnread = mySelectedNotification.every(
 		(notification) => notification.read === false,
 	);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		if (showUnreadOnly) {
@@ -138,6 +139,7 @@ export function InboxDataTable({
 			});
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
 			updateRowSelection();
 		},
 	});
@@ -149,6 +151,7 @@ export function InboxDataTable({
 			});
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
 			updateRowSelection();
 		},
 	});
@@ -163,6 +166,7 @@ export function InboxDataTable({
 		},
 		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
 			updateRowSelection();
 		},
 	});
@@ -177,6 +181,7 @@ export function InboxDataTable({
 		},
 		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
 			updateRowSelection();
 		},
 	});
@@ -190,6 +195,7 @@ export function InboxDataTable({
 				.then((res) => res.json());
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notifications"] });
 			updateRowSelection();
 		},
 	});

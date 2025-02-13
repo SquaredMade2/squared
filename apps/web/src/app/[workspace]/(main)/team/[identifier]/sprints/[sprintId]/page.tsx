@@ -414,29 +414,31 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="all">
-					<TaskList tasks={sprintTasks} />
-				</TabsContent>
-				<TabsContent value="todo">
-					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "todo")}
-					/>
-				</TabsContent>
-				<TabsContent value="inProgress">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) =>
-								task.status === "inProgress" || task.status === "inReview",
-						)}
-					/>
-				</TabsContent>
-				<TabsContent value="done">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) => task.status === "done" || task.status === "canceled",
-						)}
-					/>
-				</TabsContent>
+				<div className="scrollbar-thumb-[hsl(var(--border))] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
+					<TabsContent value="all">
+						<TaskList tasks={sprintTasks} />
+					</TabsContent>
+					<TabsContent value="todo">
+						<TaskList
+							tasks={sprintTasks.filter((task) => task.status === "todo")}
+						/>
+					</TabsContent>
+					<TabsContent value="inProgress">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) =>
+									task.status === "inProgress" || task.status === "inReview",
+							)}
+						/>
+					</TabsContent>
+					<TabsContent value="done">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) => task.status === "done" || task.status === "canceled",
+							)}
+						/>
+					</TabsContent>
+				</div>
 			</Tabs>
 
 			<AlertDialog
@@ -472,20 +474,35 @@ export default function SprintDashboardPage() {
 
 function TaskList({ tasks }: { tasks: Task[] }) {
 	return (
-		<div className="space-y-2">
-			{tasks.map((task) => (
-				<Card key={task.id}>
-					<CardHeader>
-						<CardTitle>{task.title}</CardTitle>
-						<CardDescription>
-							Status: {formatStatus(task.status)}
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p>{task.description}</p>
-					</CardContent>
-				</Card>
-			))}
+		<div>
+			{tasks.length > 0 ? (
+				<div className="space-y-2">
+					{tasks.map((task) => (
+						<Card key={task.id}>
+							<CardHeader>
+								<CardTitle>{task.title}</CardTitle>
+								<CardDescription className="w-fit rounded-lg border-2 px-2 py-1">
+									Status: {formatStatus(task.status)}
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<p>{task.description}</p>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+			) : (
+				<div className="space-y-2">
+					<Card className="text-center text-muted-foreground">
+						<CardHeader>
+							<CardTitle>No tasks</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p>There are no tasks within this category for this sprint.</p>
+						</CardContent>
+					</Card>
+				</div>
+			)}
 		</div>
 	);
 }

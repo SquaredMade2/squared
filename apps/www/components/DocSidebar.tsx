@@ -47,11 +47,20 @@ const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
 		return (
 			<Collapsible open={isOpen} onOpenChange={setIsOpen}>
 				<CollapsibleTrigger asChild>
-					<SidebarMenuButton className="w-full justify-between">
-						{page.title}
-						<ChevronDown
-							className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-						/>
+					<SidebarMenuButton
+						asChild
+						className="w-full justify-between"
+						isActive={isActive}
+					>
+						<Link
+							href={`/docs/${page.uid}`}
+							className="flex w-full items-center justify-between"
+						>
+							{page.title}
+							<ChevronDown
+								className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+							/>
+						</Link>
 					</SidebarMenuButton>
 				</CollapsibleTrigger>
 				<CollapsibleContent>
@@ -72,7 +81,10 @@ const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
 	return (
 		<SidebarMenuSubItem>
 			<SidebarMenuSubButton asChild isActive={isActive}>
-				<Link href={`/docs/${page.uid}`} className="h-fit">
+				<Link
+					href={`/docs/${page.uid}`}
+					className={`h-fit ${isActive && "bg-accent text-accent-foreground"} w-full`}
+				>
 					{page.title}
 				</Link>
 			</SidebarMenuSubButton>

@@ -6,14 +6,14 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { ChevronDown } from "@squared/icons";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { ChevronDown, Settings } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 export function WorkspaceDropdown() {
 	const pathName = usePathname();
@@ -42,7 +42,7 @@ export function WorkspaceDropdown() {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"
-					className={`w-full items-center justify-start gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" && "border-none px-0"}`}
+					className={`w-full items-center gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" ? "justify-center border-none px-0" : "justify-start"}`}
 				>
 					<Avatar className="h-8 w-8 shrink-0">
 						<AvatarFallback>
@@ -65,14 +65,17 @@ export function WorkspaceDropdown() {
 					)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-56">
+			<DropdownMenuContent
+				className={`bg-card ${state === "collapsed" ? "w-16" : "w-64"}`}
+			>
 				{workspaces.map((workspace) => (
 					<DropdownMenuItem
-						key={workspace.id}
+						key={workspace.externalId}
 						onSelect={() => {
 							setWorkspace(workspace);
 							updatePathWithWorkspace(workspace);
 						}}
+						className="hover:cursor-pointer"
 					>
 						<Avatar className="mr-2 h-6 w-6">
 							<AvatarFallback>{getInitials(workspace.name)}</AvatarFallback>
@@ -80,6 +83,16 @@ export function WorkspaceDropdown() {
 						<span className="truncate">{workspace.name}</span>
 					</DropdownMenuItem>
 				))}
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onSelect={() => {
+						router.push(`/${workspace?.url}/settings`);
+					}}
+					className="hover:cursor-pointer"
+				>
+					<Settings className="text-muted-foreground" />
+					<span className="ml-2">Settings</span>
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
