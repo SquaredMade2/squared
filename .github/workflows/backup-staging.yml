@@ -15,7 +15,6 @@ jobs:
     env:
       S3_BUCKET_NAME: 'squared-staging-backup'
       AWS_REGION: 'us-east-1'
-      PG_VERSION: '16'
 
     steps:
       - name: Install PostgreSQL
