@@ -126,9 +126,13 @@ export type GetUserWorkspacesResponse = {
 }[];
 
 export type JoinWorkspaceRequest = {
-	role?: "owner" | "admin" | "member";
-	token: string;
-	userId: string;
+	role: "owner" | "admin" | "member";
+	user: {
+		email: string;
+		id: string;
+		name: string;
+	};
+	workspaceId: string;
 };
 
 export type JoinWorkspaceResponse = {

@@ -3,6 +3,8 @@ import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
+export const workspaceRoleEnum = z.enum(["owner", "admin", "member"]);
+
 export const workspaceRouter = router({
 	getAllWorkspaces: privateProcedure.query(async ({ c, ctx }) => {
 		const { workspaceService, user } = ctx;
@@ -64,6 +66,25 @@ export const workspaceRouter = router({
 					email,
 					userId: user.id,
 					slug,
+				}),
+			);
+		}),
+	joinWorkspace: privateProcedure
+		.input(z.object({ workspaceId: z.string(), role: workspaceRoleEnum }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService, user } = ctx;
+			const { workspaceId, role } = input;
+			return c.superjson(
+				await workspaceService.joinWorkspace(TODO, {
+					role,
+					workspaceId,
+					user: {
+						email: user.emailAddresses[0].emailAddress,
+						id: user.id,
+						name:
+							user.fullName ??
+							user.emailAddresses[0].emailAddress.split("@")[0],
+					},
 				}),
 			);
 		}),

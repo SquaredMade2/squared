@@ -193,28 +193,43 @@ export class WorkspaceService implements WorkspaceRpc {
 		return workspaces.map((workspace) => workspace.Workspace);
 	}
 	async joinWorkspace({
-		token,
-		userId,
-	}: { token: string; userId: string }): Promise<Workspace | null> {
-		this.logger.info(`User ${userId} attempting to join workspace with token`);
+		user: { id, name, email },
+		workspaceId,
+		role,
+	}: {
+		user: { id: string; name: string; email: string };
+		workspaceId: string;
+		role: WorkspaceRole;
+	}): Promise<Workspace | null> {
+		this.logger.info(
+			`User ${name} attempting to join workspace ${workspaceId}`,
+		);
+		const [workspace] = await this.db.transaction(async (tx) => {
+			const [user] = await tx
+				.insert(usersTable)
+				.values({
+					externalId: id,
+					name,
+					email,
+				})
+				.onConflictDoNothing({ target: [usersTable.externalId] })
+				.returning();
 
-		const workspaceId = this.verifyToken(token);
-		if (!workspaceId) {
-			this.throwError("Invalid token");
-		}
+			await tx
+				.insert(userWorkspacesTable)
+				.values({
+					userId: user.externalId,
+					workspaceId,
+					role,
+				})
+				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
+				.returning();
 
-		const { userWorkspace, workspace, user, teams } =
-			await this.fetchWorkspaceData(workspaceId, userId);
-
-		if (!user) this.throwError("User not found.");
-		if (userWorkspace) return workspace;
-
-		this.validateJoinWorkspaceData(workspace, teams, user);
-
-		Promise.all([
-			this.createUserWorkspaceConnections(userId, workspaceId, teams),
-			this.updateUserOnboarding(user),
-		]);
+			return await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId));
+		});
 
 		return workspace;
 	}

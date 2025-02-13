@@ -1,58 +1,57 @@
 "use client";
 
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { workspaceService } from "@/lib/services";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
+import type { WorkspaceRole } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function JoinWorkspace() {
-	const { isLoaded, isSignedIn, user } = useUser();
 	const router = useRouter();
-	const searchParams = useSearchParams();
-	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
+	const { organization, membership, isLoaded } = useOrganization();
 
-	const token = searchParams.get("token");
-
-	useEffect(() => {
-		if (isLoaded && !isSignedIn) {
-			router.push(`/sign-in?token=${token}`);
-		}
-	}, [isLoaded, router, token]);
-
-	const handleJoin = async () => {
-		if (!isLoaded || !isSignedIn) return;
-
-		setIsLoading(true);
-		try {
-			if (!token) {
-				throw new Error("Invalid token");
-			}
-			const workspace = await workspaceService.joinWorkspace(TODO, {
-				token,
-				userId: user.id,
+	const { mutate: handleJoin, isPending } = useMutation({
+		mutationKey: ["joinWorkspace", organization?.id],
+		mutationFn: async () => {
+			if (!organization || !membership?.role) return;
+			await client.workspace.joinWorkspace.$post({
+				role: membership?.role as WorkspaceRole,
+				workspaceId: organization?.id,
 			});
+		},
+		onSuccess: () => {
 			toast({ title: "Workspace joined successfully" });
-			if (workspace?.url) {
-				router.push(`/${workspace.url}`);
-			}
-		} catch (error) {
+			router.push(`/${organization?.slug}`);
+		},
+		onError: (error) => {
 			console.error("Error joining workspace:", error);
 			toast({
 				title: "Failed to join workspace",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		} finally {
-			setIsLoading(false);
-		}
-	};
+		},
+	});
 
-	if (status === "loading" || status === "unauthenticated") {
-		return <div>Loading...</div>;
+	if (!isLoaded) {
+		return (
+			<div className="h-screen w-full">
+				<div className="flex h-full items-center justify-center">
+					<div className="flex flex-col items-center gap-4">
+						<div className="font-bold text-3xl">
+							Loading Workspace Invite...
+						</div>
+						<SquaredLoader />
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
@@ -67,8 +66,12 @@ export default function JoinWorkspace() {
 					<p className="text-center">
 						You've been invited to join a workspace.
 					</p>
-					<Button onClick={handleJoin} className="w-full" disabled={isLoading}>
-						{isLoading ? "Joining..." : "Join Workspace"}
+					<Button
+						onClick={() => handleJoin()}
+						className="w-full"
+						disabled={isPending}
+					>
+						{isPending ? "Joining..." : "Join Workspace"}
 					</Button>
 				</CardContent>
 			</Card>

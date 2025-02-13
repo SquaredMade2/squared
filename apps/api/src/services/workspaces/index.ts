@@ -5,13 +5,29 @@ import {
 } from "@squared/rpc";
 import { z } from "zod";
 import { workspaceRoleEnum, workspaceSchema } from "../schema";
-import type { WorkspaceParams, WorkspaceRpc } from "./types";
+import type {
+	JoinWorkspaceParams,
+	WorkspaceParams,
+	WorkspaceRpc,
+} from "./types";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 	z.object({
 		url: z.string(),
 		name: z.string(),
 		defaultView: z.string().nullable(),
+	}),
+);
+
+const joinWorkspaceParamsSchema = createSchema<JoinWorkspaceParams>()(
+	z.object({
+		user: z.object({
+			id: z.string(),
+			name: z.string(),
+			email: z.string(),
+		}),
+		workspaceId: z.string(),
+		role: workspaceRoleEnum,
 	}),
 );
 
@@ -58,11 +74,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		output: z.array(workspaceSchema),
 	},
 	joinWorkspace: {
-		input: z.object({
-			token: z.string(),
-			userId: z.string(),
-			role: workspaceRoleEnum.optional(),
-		}),
+		input: joinWorkspaceParamsSchema,
 		output: workspaceSchema.nullable(),
 	},
 	removeUserFromWorkspace: {
