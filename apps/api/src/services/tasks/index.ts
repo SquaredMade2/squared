@@ -109,7 +109,7 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 			sprintId: z.string(),
 			taskIds: z.array(z.string()),
 		}),
-		output: z.number(),
+		output: z.array(taskSchema),
 	},
 	reorderSubtasks: {
 		input: z.object({
