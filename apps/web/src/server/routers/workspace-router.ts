@@ -88,4 +88,33 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	updateWorkspace: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				workspace: z.object({
+					name: z.string(),
+					url: z.string(),
+					defaultView: z.string().nullable(),
+				}),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceId, workspace } = input;
+			return c.superjson(
+				await workspaceService.updateWorkspace(TODO, {
+					workspaceId,
+					workspace,
+				}),
+			);
+		}),
+	deleteWorkspace: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceId } = input;
+			await workspaceService.deleteWorkspace(TODO, { workspaceId });
+			return c.json({ success: true });
+		}),
 });
