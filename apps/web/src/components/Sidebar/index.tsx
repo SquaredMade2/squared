@@ -21,7 +21,7 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import type { Workspace } from "@squared/db";
-import { Clipboard, Inbox, Moon, Search, Sun } from "@squared/icons";
+import { Clipboard, Inbox, Moon, Search, Settings, Sun } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";

@@ -8,11 +8,11 @@ import {
 	Check,
 	Handshake,
 	Inbox,
-	type LucideIcon,
 	MapPin,
 	MessageCircleMore,
 } from "@squared/icons";
 import { Label } from "@squaredmade/ui/label";
+import type { FC } from "react";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;
@@ -22,10 +22,17 @@ type SidebarProps = {
 	workspaces: Workspace[];
 	workspace: string | null;
 };
+type IconProps = {
+	className?: string;
+	size?: number;
+	color?: string;
+	strokeWidth?: number;
+	absoluteStrokeWidth?: boolean;
+};
 
 type FilterButtonProps = {
 	type: NotificationFilter;
-	icon: LucideIcon;
+	icon: FC<IconProps>;
 	label: string;
 	unreadCount?: number;
 	isSelected: boolean;
@@ -105,7 +112,7 @@ export function InboxSidebar({
 }: SidebarProps) {
 	const filters: {
 		type: NotificationFilter;
-		icon: LucideIcon;
+		icon: FC<IconProps>;
 		label: string;
 	}[] = [
 		{ type: "INBOX", icon: Inbox, label: "Inbox" },
