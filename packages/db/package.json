@@ -7,7 +7,8 @@
 	},
 	"scripts": {
 		"build": "drizzle-kit generate",
-		"db:backup": "sh src/backup/index.sh",
+		"db:backup:staging": "dotenv -e .env -- sh -c './src/backup/index.sh $STAGING_READONLY_STRING squared-staging-backup'",
+		"db:backup:prod": "dotenv -e .env -- sh -c './src/backup/index.sh $PRODUCTION_READONLY_STRING squared-prod-backup'",
 		"db:gen": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
