@@ -66,7 +66,7 @@ const TaskGrid = ({
 									<Tooltip>
 										<TooltipTrigger>
 											<UserSearch className="size-6 text-[#9597AD]" />
-											<TooltipContent>Assign task...</TooltipContent>
+											<TooltipContent>Assign task</TooltipContent>
 										</TooltipTrigger>
 									</Tooltip>
 								</TooltipProvider>

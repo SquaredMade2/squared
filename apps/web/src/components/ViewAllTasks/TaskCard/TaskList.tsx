@@ -1,6 +1,12 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";
@@ -72,14 +78,28 @@ const TaskList = ({
 							)}
 							{showAvatar &&
 								(user?.name ? (
-									<Avatar className="size-6 flex-shrink-0">
-										<AvatarImage src={user.avatarUrl ?? undefined} />
-										<AvatarFallback className="text-xxs">
-											{getInitials(user.name)}
-										</AvatarFallback>
-									</Avatar>
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger>
+												<Avatar className="size-6 flex-shrink-0">
+													<AvatarImage src={user.avatarUrl ?? undefined} />
+													<AvatarFallback className="text-xxs">
+														{getInitials(user.name)}
+													</AvatarFallback>
+												</Avatar>
+											</TooltipTrigger>
+											<TooltipContent>{user.name}</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
 								) : (
-									<UserSearch className="size-6 flex-shrink-0 text-[#9597AD]" />
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger>
+												<UserSearch className="size-6 flex-shrink-0 text-[#9597AD]" />
+											</TooltipTrigger>
+											<TooltipContent>Assign task</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
 								))}
 						</div>
 					</div>
