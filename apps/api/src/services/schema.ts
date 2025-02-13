@@ -101,7 +101,7 @@ export const commitSchema = createSchema<Commit>()(
 export const workspaceSchema = createSchema<Workspace>()(
 	z.object({
 		id: z.string(),
-		externalId: z.string().nullable(),
+		externalId: z.string(),
 		name: z.string(),
 		url: z.string(),
 		companySize: z.number().nullable(),

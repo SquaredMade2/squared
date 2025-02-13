@@ -70,7 +70,7 @@ export function WorkspaceDropdown() {
 			>
 				{workspaces.map((workspace) => (
 					<DropdownMenuItem
-						key={workspace.id}
+						key={workspace.externalId}
 						onSelect={() => {
 							setWorkspace(workspace);
 							updatePathWithWorkspace(workspace);

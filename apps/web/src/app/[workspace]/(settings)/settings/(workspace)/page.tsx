@@ -132,7 +132,7 @@ export default function WorkspaceSettings() {
 		}
 		try {
 			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
-				workspaceId: workspace.id,
+				workspaceId: workspace.externalId,
 				workspace: { name: values.name, url: values.url, defaultView },
 			});
 			updateWorkspace(updatedWorkspace);
@@ -150,7 +150,7 @@ export default function WorkspaceSettings() {
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		deleteWorkspace(workspace.id);
+		deleteWorkspace(workspace.externalId);
 		if (user) {
 			if (workspaces.length > 0) {
 				router.replace(`/${workspaces[0].id}`);

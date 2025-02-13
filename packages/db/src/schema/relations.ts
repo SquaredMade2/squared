@@ -23,7 +23,7 @@ import {
 export const teamRelations = relations(teamsTable, ({ one, many }) => ({
 	workspace: one(workspacesTable, {
 		fields: [teamsTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	sprints: many(sprintsTable),
 	tasks: many(tasksTable),
@@ -76,7 +76,7 @@ export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 	}),
 	workspace: one(workspacesTable, {
 		fields: [tasksTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	sprint: one(sprintsTable, {
 		fields: [tasksTable.sprintId],
@@ -136,7 +136,7 @@ export const notificationRelations = relations(
 		}),
 		workspace: one(workspacesTable, {
 			fields: [notificationsTable.workspaceId],
-			references: [workspacesTable.id],
+			references: [workspacesTable.externalId],
 		}),
 		user: one(usersTable, {
 			fields: [notificationsTable.userId],
@@ -149,7 +149,7 @@ export const userRelations = relations(usersTable, ({ one, many }) => ({
 	notifications: many(notificationsTable),
 	workspace: one(workspacesTable, {
 		fields: [usersTable.defaultWorkspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	task: one(tasksTable, {
 		fields: [usersTable.lastViewedTaskId],
@@ -186,7 +186,7 @@ export const workspaceRepositoriesRelations = relations(
 	({ one }) => ({
 		workspace: one(workspacesTable, {
 			fields: [workspaceRepositoriesTable.workspaceId],
-			references: [workspacesTable.id],
+			references: [workspacesTable.externalId],
 		}),
 		githubRepoInfo: one(githubRepoInfoTable, {
 			fields: [workspaceRepositoriesTable.repoId],
@@ -202,7 +202,7 @@ export const projectRelations = relations(projectsTable, ({ one }) => ({
 	}),
 	workspace: one(workspacesTable, {
 		fields: [projectsTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 }));
 
@@ -231,7 +231,7 @@ export const taskEventRelations = relations(taskEventsTable, ({ one }) => ({
 export const savedFilterRelations = relations(savedFiltersTable, ({ one }) => ({
 	workspace: one(workspacesTable, {
 		fields: [savedFiltersTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	team: one(teamsTable, {
 		fields: [savedFiltersTable.teamId],
@@ -289,7 +289,7 @@ export const userWorkspaceRelations = relations(
 	({ one }) => ({
 		workspace: one(workspacesTable, {
 			fields: [userWorkspacesTable.workspaceId],
-			references: [workspacesTable.id],
+			references: [workspacesTable.externalId],
 		}),
 		user: one(usersTable, {
 			fields: [userWorkspacesTable.userId],
