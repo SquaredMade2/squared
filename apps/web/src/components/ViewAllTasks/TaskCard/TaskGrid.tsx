@@ -1,6 +1,12 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { formatDate } from "date-fns";
@@ -42,14 +48,28 @@ const TaskGrid = ({
 						)}
 						{showAvatar &&
 							(user?.name ? (
-								<Avatar className="size-6">
-									<AvatarImage src={user.avatarUrl ?? undefined} />
-									<AvatarFallback className="text-xxs">
-										{getInitials(user.name)}
-									</AvatarFallback>
-								</Avatar>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger>
+											<Avatar className="size-6">
+												<AvatarImage src={user.avatarUrl ?? undefined} />
+												<AvatarFallback className="text-xxs">
+													{getInitials(user.name)}
+												</AvatarFallback>
+											</Avatar>
+										</TooltipTrigger>
+										<TooltipContent>{user.name}</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 							) : (
-								<UserSearch className="size-6 text-[#9597AD]" />
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger>
+											<UserSearch className="size-6 text-[#9597AD]" />
+											<TooltipContent>Assign task...</TooltipContent>
+										</TooltipTrigger>
+									</Tooltip>
+								</TooltipProvider>
 							))}
 					</div>
 
