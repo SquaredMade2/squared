@@ -52,7 +52,7 @@ export const joinWorkspace = async (
 			db
 				.select()
 				.from(workspacesTable)
-				.where(eq(workspacesTable.id, decoded.workspaceId)),
+				.where(eq(workspacesTable.externalId, decoded.workspaceId)),
 			db.select().from(usersTable).where(eq(usersTable.externalId, userId)),
 			db
 				.select()

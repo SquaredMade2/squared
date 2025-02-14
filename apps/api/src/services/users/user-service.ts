@@ -330,7 +330,7 @@ export class UserService implements UserRpc {
 				.from(usersTable)
 				.leftJoin(
 					workspacesTable,
-					eq(usersTable.defaultWorkspaceId, workspacesTable.id),
+					eq(usersTable.defaultWorkspaceId, workspacesTable.externalId),
 				)
 				.where(eq(usersTable.externalId, userId))
 				.then((results) => results[0]?.workspace);
@@ -347,7 +347,7 @@ export class UserService implements UserRpc {
 				.from(userWorkspacesTable)
 				.innerJoin(
 					workspacesTable,
-					eq(userWorkspacesTable.workspaceId, workspacesTable.id),
+					eq(userWorkspacesTable.workspaceId, workspacesTable.externalId),
 				)
 				.where(eq(userWorkspacesTable.userId, userId))
 				.orderBy(desc(workspacesTable.createdAt))

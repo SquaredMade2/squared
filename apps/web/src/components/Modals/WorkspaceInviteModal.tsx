@@ -39,7 +39,7 @@ export const WorkspaceInviteModal = () => {
 
 		try {
 			await workspaceService.inviteToWorkspace(TODO, {
-				workspaceId: workspace.id,
+				workspaceId: workspace.externalId,
 				email: emails,
 			});
 			setInviteEmails("");
