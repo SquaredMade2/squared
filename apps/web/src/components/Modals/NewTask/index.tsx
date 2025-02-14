@@ -20,10 +20,13 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
-import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { client } from "@/lib/client";
+import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight, LayoutGrid } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ChevronRight } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,6 +35,7 @@ import { EffortDropdownButton } from "./EffortDropdownButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
 import { StatusDropdownButton } from "./StatusDropdownButton";
+import TeamSelector from "./TeamSelector";
 export * from "./NewTaskButton";
 export * from "./NewTaskCollapsible";
 
@@ -49,8 +53,8 @@ export const NewTaskModal = () => {
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
 	const { createTask, isLoading } = useCreateTask();
-	const { team } = useTeamStore((state) => state);
-	const { workspace } = useWorkspaceStore((state) => state);
+	const { team, setTeams, setTeam } = useTeamStore((state) => state);
+	const { organization } = useOrganization();
 
 	const {
 		status,
@@ -83,7 +87,7 @@ export const NewTaskModal = () => {
 	};
 
 	const handleCreateTask = (values: FormValues) => {
-		if (!team || !workspace) {
+		if (!team || !organization) {
 			toast({
 				title: "Error",
 				description: "Team or workspace not found",
@@ -101,7 +105,7 @@ export const NewTaskModal = () => {
 			dueDate: dueDate || null,
 			effortEstimate: effortEstimate || null,
 			teamId: team.id,
-			workspaceId: workspace.externalId,
+			workspaceId: organization.id,
 			sprintId,
 		};
 
@@ -124,14 +128,27 @@ export const NewTaskModal = () => {
 		});
 	};
 
+	useQuery({
+		queryKey: ["teams", organization?.id],
+		queryFn: async () => {
+			if (!organization) return [];
+			const teams = await client.team.getUserTeams
+				.$get({
+					workspaceId: organization.id,
+				})
+				.then((res) => res.json());
+			setTeams(teams);
+			setTeam(teams[0]);
+		},
+		enabled: !team,
+	});
+
 	return (
 		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>
 			<DialogContent className="max-w-full bg-popover">
 				<DialogHeader>
 					<div className="flex items-center">
-						<div className="mr-2 inline-flex items-center justify-center rounded-md border border-border px-2 py-0.5 text-muted-foreground shadow-md">
-							<LayoutGrid className="h-4 w-4 text-[#9577FF]" />
-						</div>
+						<TeamSelector />
 						<ChevronRight />
 						<DialogTitle className="text-sm">New Task</DialogTitle>
 					</div>
