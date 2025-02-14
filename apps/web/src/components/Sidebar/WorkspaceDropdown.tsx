@@ -14,6 +14,7 @@ import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { ChevronDown, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export function WorkspaceDropdown() {
 	const pathName = usePathname();
@@ -38,7 +39,12 @@ export function WorkspaceDropdown() {
 		}
 	};
 
-	console.log("User Organizations: ", userMemberships);
+	useEffect(() => {
+		if (!organization && userMemberships.data?.length) {
+			setActive?.({ organization: userMemberships.data[0].organization });
+			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
+		}
+	}, [organization]);
 
 	return (
 		<DropdownMenu>
