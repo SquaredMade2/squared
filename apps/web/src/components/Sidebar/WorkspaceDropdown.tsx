@@ -44,7 +44,7 @@ export function WorkspaceDropdown() {
 			setActive?.({ organization: userMemberships.data[0].organization });
 			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
 		}
-	}, [organization]);
+	}, [userMemberships.data, organization]);
 
 	return (
 		<DropdownMenu>
