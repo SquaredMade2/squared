@@ -15,12 +15,14 @@ jobs:
     env:
       S3_BUCKET_NAME: 'squared-prod-backup'
       AWS_REGION: 'us-east-1'
+      PG_VERSION: '16'
 
     steps:
-      - name: Install PostgreSQL
-        run: |
-          sudo apt update
-          sudo apt install -y postgresql-client
+      - uses: actions/checkout@v4
+      - name: Setup PostgreSQL
+        uses: tj-actions/install-postgresql@v3
+        with:
+          postgresql-version: ${{env.PG_VERSION}}
 
       - name: Install AWS CLI
         run: |
