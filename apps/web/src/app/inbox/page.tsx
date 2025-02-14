@@ -8,12 +8,8 @@ import {
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
-import {
-	useEventStore,
-	useUserStore,
-	useViewStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useEventStore, useUserStore, useViewStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import type { NotificationType } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
@@ -28,12 +24,11 @@ export type NotificationFilter =
 
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
-	const { workspaces, workspace } = useWorkspaceStore((state) => state);
+	const { organization } = useOrganization();
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
-	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 	const { setUserAvatars, user } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
 	const pathname = usePathname();
@@ -41,11 +36,11 @@ export default function InboxPage() {
 	useQuery({
 		queryKey: ["notifications"],
 		queryFn: async () => {
-			if (!workspace) throw new Error("No workspace found");
+			if (!organization) throw new Error("No workspace found");
 			const [avatars, notifications] = await Promise.all([
 				client.user.getWorkspaceAvatars
 					.$get({
-						workspaceId: workspace.externalId,
+						workspaceId: organization.id,
 					})
 					.then((res) => res.json()),
 				client.notification.getNotifications.$get({}).then((res) => res.json()),
@@ -54,7 +49,7 @@ export default function InboxPage() {
 			setUserAvatars(avatars);
 			return notifications;
 		},
-		enabled: !!workspace,
+		enabled: !!organization,
 	});
 
 	useEffect(() => {
@@ -97,14 +92,14 @@ export default function InboxPage() {
 			case "WORKSPACE":
 				setFilteredNotifications(
 					notifications.filter(
-						(n) => n.workspaceId === workspace?.id && !n.dismissed,
+						(n) => n.workspaceId === organization?.id && !n.dismissed,
 					),
 				);
 				break;
 			default:
 				setFilteredNotifications(notifications);
 		}
-	}, [filterType, notifications, workspace, user]);
+	}, [filterType, notifications, organization, user]);
 
 	useEffect(() => {
 		if (pathname === "/inbox") {
@@ -127,10 +122,7 @@ export default function InboxPage() {
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
 								filterType={filterType}
-								setWorkspace={setWorkspaceName}
 								readNotifications={notifications.filter((n) => !n.read)}
-								workspaces={workspaces}
-								workspace={workspaceName}
 								filterRead={filterRead}
 								setFilterRead={setFilterRead}
 							/>
@@ -147,12 +139,9 @@ export default function InboxPage() {
 						<InboxSidebar
 							setFilterType={setFilterType}
 							filterType={filterType}
-							setWorkspace={setWorkspaceName}
 							readNotifications={notifications.filter(
 								(n) => !n.read || !n.dismissed,
 							)}
-							workspaces={workspaces}
-							workspace={workspaceName}
 						/>
 					</div>
 				</div>
