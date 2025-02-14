@@ -19,7 +19,9 @@ export function WorkspaceDropdown() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const { organization } = useOrganization();
-	const { userMemberships, setActive } = useOrganizationList();
+	const { userMemberships, setActive } = useOrganizationList({
+		userMemberships: true,
+	});
 	const { state } = useSidebar();
 
 	const updatePathWithWorkspace = (url: string | null) => {
@@ -35,6 +37,8 @@ export function WorkspaceDropdown() {
 			}
 		}
 	};
+
+	console.log("User Organizations: ", userMemberships);
 
 	return (
 		<DropdownMenu>

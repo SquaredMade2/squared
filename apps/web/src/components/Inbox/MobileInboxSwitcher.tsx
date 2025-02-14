@@ -53,7 +53,9 @@ export function MobileInboxSwitcher({
 }: MobileInboxSwitcherProps) {
 	const [open, setOpen] = useState(false);
 	const { organization } = useOrganization();
-	const { userMemberships, setActive } = useOrganizationList();
+	const { userMemberships, setActive } = useOrganizationList({
+		userMemberships: true,
+	});
 
 	const filters = [
 		{ type: "INBOX" as const, label: "Inbox", icon: Inbox },

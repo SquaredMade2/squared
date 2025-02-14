@@ -121,7 +121,9 @@ export function InboxSidebar({
 			.filter((n) => !n.dismissed).length;
 	};
 	const { organization } = useOrganization();
-	const { userMemberships, setActive } = useOrganizationList();
+	const { userMemberships, setActive } = useOrganizationList({
+		userMemberships: true,
+	});
 
 	return (
 		<div className="hidden h-screen w-72 border-border border-l bg-card p-4 lg:block dark:bg-transparent">
