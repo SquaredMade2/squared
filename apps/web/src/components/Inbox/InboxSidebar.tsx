@@ -1,7 +1,9 @@
 import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { Notification, Workspace } from "@squared/db";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
+import type { Notification } from "@squared/db";
 import { Label } from "@squaredmade/ui/label";
 import {
 	BadgePlus,
@@ -16,11 +18,8 @@ import {
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;
-	setWorkspace: (workspace: string) => void;
 	filterType: NotificationFilter;
 	readNotifications: Notification[];
-	workspaces: Workspace[];
-	workspace: string | null;
 };
 
 type FilterButtonProps = {
@@ -33,7 +32,7 @@ type FilterButtonProps = {
 };
 
 type WorkspaceFilterButtonProps = {
-	workspace: Workspace;
+	workspace: OrganizationResource;
 	unreadCount: number;
 	isSelected: boolean;
 	onClick: () => void;
@@ -97,11 +96,8 @@ const WorkspaceFilterButton = ({
 
 export function InboxSidebar({
 	setFilterType,
-	setWorkspace,
 	filterType,
 	readNotifications,
-	workspaces,
-	workspace,
 }: SidebarProps) {
 	const filters: {
 		type: NotificationFilter;
@@ -124,6 +120,8 @@ export function InboxSidebar({
 			.filter((n) => n.type === type)
 			.filter((n) => !n.dismissed).length;
 	};
+	const { organization } = useOrganization();
+	const { userMemberships, setActive } = useOrganizationList();
 
 	return (
 		<div className="hidden h-screen w-72 border-border border-l bg-card p-4 lg:block dark:bg-transparent">
@@ -166,7 +164,7 @@ export function InboxSidebar({
 					<Separator />
 					<div className="space-y-2">
 						<Label className="ml-4 text-muted-foreground">Workspaces</Label>
-						{workspaces.map((w) => (
+						{userMemberships.data?.map(({ organization: w }) => (
 							<li key={w.id}>
 								<WorkspaceFilterButton
 									workspace={w}
@@ -175,9 +173,11 @@ export function InboxSidebar({
 											.filter((n) => n.workspaceId === w.id)
 											.filter((n) => !n.dismissed).length
 									}
-									isSelected={workspace === w.id && filterType === "WORKSPACE"}
+									isSelected={
+										organization?.id === w.id && filterType === "WORKSPACE"
+									}
 									onClick={() => {
-										setWorkspace(w.id);
+										setActive?.({ organization: w });
 										setFilterType("WORKSPACE");
 									}}
 								/>

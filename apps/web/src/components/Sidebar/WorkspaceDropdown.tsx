@@ -19,7 +19,7 @@ export function WorkspaceDropdown() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const { organization } = useOrganization();
-	const { userMemberships } = useOrganizationList();
+	const { userMemberships, setActive } = useOrganizationList();
 	const { state } = useSidebar();
 
 	const updatePathWithWorkspace = (url: string | null) => {
@@ -71,6 +71,7 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={organization.id}
 						onSelect={() => {
+							setActive?.({ organization });
 							updatePathWithWorkspace(organization.slug);
 						}}
 						className="hover:cursor-pointer"
