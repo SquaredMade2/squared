@@ -141,7 +141,7 @@ export class TeamService implements TeamRpc {
 		identifier: string;
 		workspaceId: string;
 	}): Promise<Team | null> {
-		this.logger.info("Finding team", identifier);
+		this.logger.info("Finding team: ", identifier);
 		return await this.db.transaction(async (tx) => {
 			const team = await tx
 				.select()

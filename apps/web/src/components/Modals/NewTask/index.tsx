@@ -139,6 +139,7 @@ export const NewTaskModal = () => {
 				.then((res) => res.json());
 			setTeams(teams);
 			setTeam(teams[0]);
+			return teams;
 		},
 		enabled: !team,
 	});
