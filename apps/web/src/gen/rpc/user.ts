@@ -14,7 +14,6 @@ export type OnBoardUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -37,7 +36,6 @@ export type UpdateUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -59,7 +57,6 @@ export type UpdateUserAvatarResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -101,7 +98,6 @@ export type GetUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -159,12 +155,6 @@ export type GetUserAvatarsResponse = {
 	id: string;
 	name: string;
 }[];
-
-export type GetUserRepositoriesRequest = {
-	userId: string;
-};
-
-export type GetUserRepositoriesResponse = string[];
 
 export type GetUserTeamsRequest = {
 	userId: string;
@@ -255,11 +245,17 @@ export type GetDefaultWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -353,16 +349,6 @@ export class UserService extends RPCContextClient {
 		req: GetUserAvatarsRequest,
 	): Promise<GetUserAvatarsResponse> {
 		return this.request(ctx, "getUserAvatars", req);
-	}
-
-	/**
-	 * getUserRepositories method
-	 */
-	getUserRepositories(
-		ctx: Context,
-		req: GetUserRepositoriesRequest,
-	): Promise<GetUserRepositoriesResponse> {
-		return this.request(ctx, "getUserRepositories", req);
 	}
 
 	/**
