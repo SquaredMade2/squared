@@ -44,7 +44,7 @@ export const InviteModal = () => {
 						expirationPeriod === "never" ? undefined : expirationPeriod,
 					uses: numberUses,
 				})
-				.then((res) => res.json());
+				.then((res) => res.text());
 
 			return inviteLink;
 		},
@@ -139,7 +139,7 @@ export const InviteModal = () => {
 					<hr className="w-full border border-border" />
 					<DialogFooter>
 						<div className="w-full flex items-center justify-between gap-2 p-2 border border-border rounded-lg">
-							<p className="text-white/35">
+							<p>
 								{(!link && "Create Invite Link") ||
 									(link.includes("Failed") && link) ||
 									`/join?link=true&token=${link}`}
