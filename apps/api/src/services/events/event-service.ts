@@ -68,7 +68,7 @@ export class EventService implements EventRpc {
 			.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
 			.leftJoin(
 				workspacesTable,
-				eq(notificationsTable.workspaceId, workspacesTable.id),
+				eq(notificationsTable.workspaceId, workspacesTable.externalId),
 			)
 			.where(eq(notificationsTable.userId, userId));
 
@@ -202,7 +202,7 @@ export class EventService implements EventRpc {
 				.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
 				.leftJoin(
 					workspacesTable,
-					eq(notificationsTable.workspaceId, workspacesTable.id),
+					eq(notificationsTable.workspaceId, workspacesTable.externalId),
 				)
 				.where(inArray(notificationsTable.id, notificationIds));
 

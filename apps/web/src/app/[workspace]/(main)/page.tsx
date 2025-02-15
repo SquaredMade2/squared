@@ -41,7 +41,7 @@ export default function Home() {
 
 			const allTeams = await teamService.getUserTeams(TODO, {
 				userId: user.id,
-				workspaceId: currentWorkspace.id,
+				workspaceId: currentWorkspace.externalId,
 			});
 			if (allTeams[0].identifier) {
 				console.log("FirstTeamIdentifier: ", allTeams[0].identifier);
