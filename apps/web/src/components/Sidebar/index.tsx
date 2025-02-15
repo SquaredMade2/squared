@@ -18,9 +18,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useModalStore, useTeamStore, } from "@/store";
-import { useOrganization, } from "@clerk/nextjs";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useModalStore, useTeamStore } from "@/store";
+import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
 import { Clipboard, Inbox, Moon, Search, Settings, Sun } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";

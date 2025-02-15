@@ -198,7 +198,7 @@ const ForgotPasswordPage = () => {
 										onClick={() => setHidePassword(!hidePassword)}
 									>
 										{hidePassword ? (
-											<EyeOff className="h-6 w-6" />
+											<Eye className="h-6 w-6" />
 										) : (
 											<EyeOff className="h-6 w-6" />
 										)}

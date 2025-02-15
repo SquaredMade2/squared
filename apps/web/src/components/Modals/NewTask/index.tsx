@@ -25,7 +25,7 @@ import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight, } from "@squared/icons";
+import { ChevronRight } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
