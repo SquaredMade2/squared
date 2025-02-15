@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useModalStore, useTeamStore, } from "@/store";
+import { useOrganization, } from "@clerk/nextjs";
 import { useClerk, useUser } from "@clerk/nextjs";
-import type { Workspace } from "@squared/db";
 import { Clipboard, Inbox, Moon, Search, Settings, Sun } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
@@ -32,7 +32,7 @@ import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
-function SidebarContent({ workspace }: { workspace: Workspace | null }) {
+function SidebarContent() {
 	const { setTeams, team } = useTeamStore((state) => state);
 	const { user } = useUser();
 	const { setShowCommand } = useModalStore((state) => state);
@@ -41,6 +41,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const { state } = useSidebar();
 	const { signOut } = useClerk();
+	const { organization } = useOrganization();
 
 	const { data: notifications = [] } = useQuery({
 		queryKey: ["notifications", user?.id],
@@ -53,18 +54,18 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	});
 
 	const { data: teams = [] } = useQuery({
-		queryKey: ["teams", user?.id, workspace?.id],
+		queryKey: ["teams", user?.id, organization?.id],
 		queryFn: async () => {
-			if (!workspace) return [];
+			if (!organization) return [];
 			const teams = await client.team.getUserTeams
 				.$get({
-					workspaceId: workspace?.id,
+					workspaceId: organization?.id,
 				})
 				.then((res) => res.json());
 			setTeams(teams);
 			return teams;
 		},
-		enabled: !!workspace,
+		enabled: !!organization,
 	});
 
 	const handleLogout = async (): Promise<void> => {
@@ -133,16 +134,18 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					<IconButton
 						icon={Clipboard}
 						label="My Tasks"
-						onClick={() => navigateTo(`${workspace?.url}/my-tasks/assigned`)}
+						onClick={() =>
+							navigateTo(`${organization?.slug}/my-tasks/assigned`)
+						}
 					/>
 				</div>
 			</SidebarHeader>
-			{state === "expanded" && (
+			{state === "expanded" && organization?.slug && (
 				<SidebarContainer className="px-2">
 					<TeamAccordion
 						teams={teams}
 						currentTeam={team}
-						workspaceUrl={workspace?.url}
+						workspaceUrl={organization.slug}
 					/>
 				</SidebarContainer>
 			)}
@@ -163,8 +166,6 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 }
 
 export function SidebarNav() {
-	const { workspace } = useWorkspaceStore((state) => state);
-
 	return (
 		<TooltipProvider delayDuration={0}>
 			<SidebarProvider className={"relative"}>
@@ -172,7 +173,7 @@ export function SidebarNav() {
 					collapsible="icon"
 					className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 				>
-					<SidebarContent workspace={workspace} />
+					<SidebarContent />
 				</Sidebar>
 				<ToggleSidebarButton />
 			</SidebarProvider>
