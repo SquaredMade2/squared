@@ -60,6 +60,8 @@ jobs:
 
   setup:
     name: Setup
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.only-go-changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
