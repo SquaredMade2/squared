@@ -51,7 +51,6 @@ const Join = () => {
 	const { data: defaultWorkspace } = useQuery({
 		queryKey: ["defaultWorkspace"],
 		queryFn: async () => {
-			if (!user?.id) return;
 			return await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
