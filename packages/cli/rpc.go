@@ -334,7 +334,13 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 	endpoint := fmt.Sprintf("%s/{{$.Name}}/{{.MethodName}}", s.baseURL)
 
 	{{if ne .InputType "undefined"}}
-	reqBody, err := json.Marshal(req)
+	wrappedReq := struct {
+		JSON {{capitalizeFirst .MethodName}}Request "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
 		return {{if ne .OutputType "void"}}{{capitalizeFirst .MethodName}}Response{}, {{end}}fmt.Errorf("error marshaling request: %w", err)
 	}

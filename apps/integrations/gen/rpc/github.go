@@ -45,7 +45,13 @@ func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepo
 	endpoint := fmt.Sprintf("%s/github/getUserRepositories", s.baseURL)
 
 	
-	reqBody, err := json.Marshal(req)
+	wrappedReq := struct {
+		JSON GetUserRepositoriesRequest "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
 		return GetUserRepositoriesResponse{}, fmt.Errorf("error marshaling request: %w", err)
 	}
@@ -111,7 +117,13 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 	endpoint := fmt.Sprintf("%s/github/upsertPullRequest", s.baseURL)
 
 	
-	reqBody, err := json.Marshal(req)
+	wrappedReq := struct {
+		JSON UpsertPullRequestRequest "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
 		return UpsertPullRequestResponse{}, fmt.Errorf("error marshaling request: %w", err)
 	}
@@ -174,7 +186,13 @@ func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (
 	endpoint := fmt.Sprintf("%s/github/pushCommit", s.baseURL)
 
 	
-	reqBody, err := json.Marshal(req)
+	wrappedReq := struct {
+		JSON PushCommitRequest "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
 		return PushCommitResponse{}, fmt.Errorf("error marshaling request: %w", err)
 	}
