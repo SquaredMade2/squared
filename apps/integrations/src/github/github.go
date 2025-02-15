@@ -1,6 +1,7 @@
 package github
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"log"
@@ -56,5 +57,12 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService) {
 	}
 
 	pullRequest := webhookEvent.PullRequest
-	githubService.UpsertPullRequest()
+	request := rpc.UpsertPullRequestRequest{
+		Author: pullRequest.User.Login,
+		Body:   pullRequest.Body,
+		Branch: pullRequest.Head.Ref,
+		Id:     pullRequest.NodeId,
+		Number: pullRequest.Number,
+	}
+	githubService.UpsertPullRequest(context.TODO(), request)
 }

@@ -87,4 +87,66 @@ func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepo
 
 
 // UpsertPullRequestRequest represents the request for upsertPullRequest method
-type UpsertPullRequestRequest 
+type UpsertPullRequestRequest struct {
+	Author string `json:"author"`
+	Body string `json:"body"`
+	Branch string `json:"branch"`
+	Id string `json:"id"`
+	Number float64 `json:"number"`
+	RepoId string `json:"repoId"`
+	State string `json:"state"`
+	Title string `json:"title"`
+	Url string `json:"url"`
+}
+
+
+
+// UpsertPullRequestResponse represents the response from upsertPullRequest method
+type UpsertPullRequestResponse struct{}
+
+
+// UpsertPullRequest calls the upsertPullRequest RPC method
+func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullRequestRequest) (UpsertPullRequestResponse, error) {
+	endpoint := fmt.Sprintf("%s/github/upsertPullRequest", s.baseURL)
+
+	
+	reqBody, err := json.Marshal(req)
+	if err != nil {
+		return UpsertPullRequestResponse{}, fmt.Errorf("error marshaling request: %w", err)
+	}
+	
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return UpsertPullRequestResponse{}, fmt.Errorf("error creating request: %w", err)
+	}
+
+	requestID := make([]byte, 6)
+	if _, err := rand.Read(requestID); err != nil {
+		return UpsertPullRequestResponse{}, fmt.Errorf("error generating request ID: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("X-Request-ID", base64.URLEncoding.EncodeToString(requestID))
+
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return UpsertPullRequestResponse{}, fmt.Errorf("error sending request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return UpsertPullRequestResponse{}, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	
+	var response UpsertPullRequestResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return UpsertPullRequestResponse{}, fmt.Errorf("error decoding response: %w", err)
+	}
+
+	return response, nil
+	
+}
+
