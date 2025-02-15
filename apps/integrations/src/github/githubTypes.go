@@ -85,6 +85,7 @@ type Team struct {
 	LdapDn string `json:"ldap_dn"`
 }
 
+// License Simple
 type License struct {
 	Key     string `json:"key"`
 	Name    string `json:"name"`
@@ -104,101 +105,151 @@ type Permissions struct {
 
 // A Repository on GitHub
 type Repo struct {
-	Id               int         `json:"id"`
-	NodeId           string      `json:"node_id"`
-	Name             string      `json:"name"`
-	FullName         string      `json:"full_name"`
-	License          License     `json:"license"`
-	Forks            int         `json:"forks"`
-	Permissions      Permissions `json:"permissions"`
-	Owner            User        `json:"owner"`
-	Private          bool        `json:"private"`
-	HtmlUrl          string      `json:"html_url"`
-	Description      string      `json:"description"`
-	Fork             bool        `json:"fork"`
-	Url              string      `json:"url"`
-	ArchiveUrl       string      `json:"archive_url"`
-	AssigneesUrl     string      `json:"assignees_url"`
-	BlobsUrl         string      `json:"blobs_url"`
-	BranchesUrl      string      `json:"branches_url"`
-	CollaboratorsUrl string      `json:"collaborators_url"`
-	CommentsUrl      string      `json:"comments_url"`
-	CommitsUrl       string      `json:"commits_url"`
-	CompareUrl       string      `json:"compare_url"`
-	ContentsUrl      string      `json:"contents_url"`
-	ContributorsUrl  string      `json:"contributors_url"`
-	DeploymentsUrl   string      `json:"deployments_url"`
-	DownloadsUrl     string      `json:"downloads_url"`
-	EventsUrl        string      `json:"events_url"`
-	ForksUrl         string      `json:"forks_url"`
-	GitCommitsUrl    string      `json:"git_commits_url"`
-	GitRefsUrl       string      `json:"git_refs_url"`
-	GitTagsUrl       string      `json:"git_tags_url"`
-	GitUrl           string      `json:"git_url"`
-	IssueCommentUrl  string      `json:"issue_comment_url"`
-	IssueEventsUrl   string      `json:"issue_events_url"`
-	IssuesUrl        string      `json:"issues_url"`
-	KeysUrl          string      `json:"keys_url"`
-	LabelsUrl        string      `json:"labels_url"`
-	LanguagesUrl     string      `json:"languages_url"`
-	MergesUrl        string      `json:"merges_url"`
-	MilestonesUrl    string      `json:"milestones_url"`
-	NotificationsUrl string      `json:"notifications_url"`
-	PullsUrl         string      `json:"pulls_url"`
-	ReleasesUrl      string      `json:"releases_url"`
-	SshUrl           string      `json:"ssh_url"`
-	StargazersUrl    string      `json:"stargazers_url"`
-	StatusesUrl      string      `json:"statuses_url"`
-	SubscribersUrl   string      `json:"subscribers_url"`
-	SubscriptionUrl  string      `json:"subscription_url"`
-	TagsUrl          string      `json:"tags_url"`
-	TeamsUrl         string      `json:"teams_url"`
-	TreesUrl         string      `json:"trees_url"`
-	CloneUrl         string      `json:"clone_url"`
-	MirrorUrl        string      `json:"mirror_url"`
-	HooksUrl         string      `json:"hooks_url"`
-	SvnUrl           string      `json:"svn_url"`
-	Homepage         string      `json:"homepage"`
-	Language         string      `json:"language"`
-	ForksCount       int         `json:"forks_count"`
-	StargazersCount  int         `json:"stargazers_count"`
-	WatchersCount    int         `json:"watchers_count"`
-	Size             int         `json:"size"`
-	DefaultBranch    string      `json:"default_branch"`
-	OpenIssuesCount  int         `json:"open_issues_count"`
-	IsTemplate       bool        `json:"is_template"`
-	Topics           []string    `json:"topics"`
-	HasIssues        bool        `json:"has_issues"`
-	HasProjects      bool        `json:"has_projects"`
-	HasWiki          bool        `json:"has_wiki"`
-	HasPages         bool        `json:"has_pages"`
-	HasDownloads     bool        `json:"has_downloads"`
-	HasDiscussions   bool        `json:"has_discussions"`
-	Archived         bool        `json:"archived"`
-	Disabled         bool        `json:"disabled"`
-	// Can be "public", "private", or "internal"
-	Visibility                string    `json:"visibility"`
-	PushedAt                  time.Time `json:"pushed_at"`
-	CreatedAt                 time.Time `json:"created_at"`
-	UpdatedAt                 time.Time `json:"updated_at"`
-	AllowRebaseMerge          bool      `json:"allow_rebase_merge"`
-	TempCloneToken            string    `json:"temp_clone_token"`
-	AllowSquashMerge          bool      `json:"allow_squash_merge"`
-	DeleteBranchOnMerge       bool      `json:"delete_branch_on_merge"`
-	AllowUpdateBranch         bool      `json:"allow_update_branch"`
-	UseSquashPrTitleAsDefault bool      `json:"use_squash_pr_title_as_default"`
-	SquashMergeCommitTitle    string    `json:"squash_merge_commit_title"`
-	SquashMergeCommitMessage  string    `json:"squash_merge_commit_message"`
-	MergeCommitTitle          string    `json:"merge_commit_title"`
-	MergeCommitMessage        string    `json:"merge_commit_message"`
-	AllowMergeCommit          bool      `json:"allow_merge_commit"`
-	AllowForking              bool      `json:"allow_forking"`
-	WebCommitSignoffRequired  bool      `json:"web_commit_signoff_required"`
-	OpenIssues                int       `json:"open_issues"`
-	Watchers                  int       `json:"watchers"`
-	MasterBranch              string    `json:"master_branch"`
-	StarredAt                 string    `json:"starred_at"`
-	AnonymousAccessEnabled    bool      `json:"anonymous_access_enabled"`
+	// Unique identifier of the repository
+	Id     int    `json:"id"`
+	NodeId string `json:"node_id"`
+	// The name of the repository.
+	Name        string      `json:"name"`
+	FullName    string      `json:"full_name"`
+	License     License     `json:"license"`
+	Forks       int         `json:"forks"`
+	Permissions Permissions `json:"permissions"`
+	Owner       User        `json:"owner"`
+	// Whether the repository is private or public.
+	Private          bool   `json:"private"`
+	HtmlUrl          string `json:"html_url"`
+	Description      string `json:"description"`
+	Fork             bool   `json:"fork"`
+	Url              string `json:"url"`
+	ArchiveUrl       string `json:"archive_url"`
+	AssigneesUrl     string `json:"assignees_url"`
+	BlobsUrl         string `json:"blobs_url"`
+	BranchesUrl      string `json:"branches_url"`
+	CollaboratorsUrl string `json:"collaborators_url"`
+	CommentsUrl      string `json:"comments_url"`
+	CommitsUrl       string `json:"commits_url"`
+	CompareUrl       string `json:"compare_url"`
+	ContentsUrl      string `json:"contents_url"`
+	ContributorsUrl  string `json:"contributors_url"`
+	DeploymentsUrl   string `json:"deployments_url"`
+	DownloadsUrl     string `json:"downloads_url"`
+	EventsUrl        string `json:"events_url"`
+	ForksUrl         string `json:"forks_url"`
+	GitCommitsUrl    string `json:"git_commits_url"`
+	GitRefsUrl       string `json:"git_refs_url"`
+	GitTagsUrl       string `json:"git_tags_url"`
+	GitUrl           string `json:"git_url"`
+	IssueCommentUrl  string `json:"issue_comment_url"`
+	IssueEventsUrl   string `json:"issue_events_url"`
+	IssuesUrl        string `json:"issues_url"`
+	KeysUrl          string `json:"keys_url"`
+	LabelsUrl        string `json:"labels_url"`
+	LanguagesUrl     string `json:"languages_url"`
+	MergesUrl        string `json:"merges_url"`
+	MilestonesUrl    string `json:"milestones_url"`
+	NotificationsUrl string `json:"notifications_url"`
+	PullsUrl         string `json:"pulls_url"`
+	ReleasesUrl      string `json:"releases_url"`
+	SshUrl           string `json:"ssh_url"`
+	StargazersUrl    string `json:"stargazers_url"`
+	StatusesUrl      string `json:"statuses_url"`
+	SubscribersUrl   string `json:"subscribers_url"`
+	SubscriptionUrl  string `json:"subscription_url"`
+	TagsUrl          string `json:"tags_url"`
+	TeamsUrl         string `json:"teams_url"`
+	TreesUrl         string `json:"trees_url"`
+	CloneUrl         string `json:"clone_url"`
+	MirrorUrl        string `json:"mirror_url"`
+	HooksUrl         string `json:"hooks_url"`
+	SvnUrl           string `json:"svn_url"`
+	Homepage         string `json:"homepage"`
+	Language         string `json:"language"`
+	ForksCount       int    `json:"forks_count"`
+	StargazersCount  int    `json:"stargazers_count"`
+	WatchersCount    int    `json:"watchers_count"`
+	// The size of the repository, in kilobytes. Size is calculated hourly. When a repository is initially created, the size is 0.
+	Size int `json:"size"`
+	// The default branch of the repository.
+	DefaultBranch   string `json:"default_branch"`
+	OpenIssuesCount int    `json:"open_issues_count"`
+	// Whether this repository acts as a template that can be used to generate new repositories.
+	IsTemplate bool     `json:"is_template"`
+	Topics     []string `json:"topics"`
+	// Whether issues are enabled.
+	HasIssues bool `json:"has_issues"`
+	// Whether projects are enabled.
+	HasProjects bool `json:"has_projects"`
+	// Whether the wiki is enabled.
+	HasWiki  bool `json:"has_wiki"`
+	HasPages bool `json:"has_pages"`
+	// Whether downloads are enabled.
+	HasDownloads bool `json:"has_downloads"`
+	// Whether discussions are enabled.
+	HasDiscussions bool `json:"has_discussions"`
+	// Whether the repository is archived.
+	Archived bool `json:"archived"`
+	// Whether the repository is disabled.
+	Disabled bool `json:"disabled"`
+	// The repository visibility: public, private, or internal.
+	Visibility string    `json:"visibility"`
+	PushedAt   time.Time `json:"pushed_at"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	// Whether to allow rebase merges for pull requests.
+	AllowRebaseMerge bool   `json:"allow_rebase_merge"`
+	TempCloneToken   string `json:"temp_clone_token"`
+	// Whether to allow squash merges for pull requests.
+	AllowSquashMerge bool `json:"allow_squash_merge"`
+	// Whether to allow auto-merging for pull requests.
+	AllowAutoMerge bool `json:"allow_auto_merge"`
+	// Whether to delte head branches when pull requests are merged.
+	DeleteBranchOnMerge bool `json:"delete_branch_on_merge"`
+	// Whether or not a pull request head branch that is behind its base branch can always be updated even if it is not required to be up to date before merging.
+	AllowUpdateBranch bool `json:"allow_update_branch"`
+	// Whether a squash merge commit can use the pull request title as default.
+	UseSquashPrTitleAsDefault bool `json:"use_squash_pr_title_as_default"`
+	/*
+		The default value for a squash merge commit title:
+			`PR_TITLE` - default to the pull request's title.
+			`COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
+		Can be one of: `PR_TITLE`, `COMMIT_OR_PR_TITLE`
+	*/
+	SquashMergeCommitTitle string `json:"squash_merge_commit_title"`
+	/*
+		The default value for a squash merge commit message:
+			`PR_BODY` - default to the pull request's body.
+			`COMMIT_MESSAGES` - default to the branch's commit messages.
+			`BLANK` - default to a blank commit message.
+		Can be one of: `PR_BODY`, `COMMIT_MESSAGES`, `BLANK`
+	*/
+	SquashMergeCommitMessage string `json:"squash_merge_commit_message"`
+	/*
+		The default value for a merge commit title.
+			`PR_TITLE` - default to the pull request's title.
+			`MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
+		Can be one of: `PR_TITLE`, `MERGE_MESSAGE`
+	*/
+	MergeCommitTitle string `json:"merge_commit_title"`
+	/*
+		The default value for a merge commit message.
+			`PR_TITLE` - default to the pull request's title.
+			`PR_BODY` - default to the pull request's body.
+			`BLANK` - default to a blank commit message.
+		Can be one of: `PR_BODY`, `PR_TITLE`, `BLANK`
+	*/
+	MergeCommitMessage string `json:"merge_commit_message"`
+	// Whether to allow merge commits for pull requests.
+	AllowMergeCommit bool `json:"allow_merge_commit"`
+	// Whether to allow forking this repo
+	AllowForking bool `json:"allow_forking"`
+	// Whether to require contributors to sign off on web-based commits
+	WebCommitSignoffRequired bool   `json:"web_commit_signoff_required"`
+	OpenIssues               int    `json:"open_issues"`
+	Watchers                 int    `json:"watchers"`
+	MasterBranch             string `json:"master_branch"`
+	StarredAt                string `json:"starred_at"`
+	// Whether anonymous git access is enabled for this repository
+	AnonymousAccessEnabled bool `json:"anonymous_access_enabled"`
 }
 
 type Head struct {
@@ -219,6 +270,7 @@ type Base struct {
 	User User `json:"user"`
 }
 
+// Hypermedia Link
 type Link struct {
 	Href string `json:"href"`
 }
@@ -253,44 +305,80 @@ type PullRequest struct {
 	State  string `json:"state"`
 	Locked bool   `json:"locked"`
 	// The title of the pull request
-	Title                     string    `json:"title"`
-	User                      User      `json:"user"`
-	Body                      string    `json:"body"`
-	Labels                    []Label   `json:"labels"`
-	Milestone                 Milestone `json:"milestone"`
-	ActiveLockReason          string    `json:"active_lock_reason"`
-	CreatedAt                 time.Time `json:"created_at"`
-	UpdatedAt                 time.Time `json:"updated_at"`
-	ClosedAt                  time.Time `json:"closed_at"`
-	MergedAt                  time.Time `json:"merged_at"`
-	MergeCommitSha            string    `json:"merge_commit_sha"`
-	Assignee                  User      `json:"assignee"`
-	Assignees                 []User    `json:"assignees"`
-	RequestedReviewers        []User    `json:"requested_reviewers"`
-	RequestedTeams            []Team    `json:"requested_teams"`
-	Head                      Head      `json:"head"`
-	Base                      Base      `json:"base"`
-	Links                     Links     `json:"_links"`
-	AuthorAssociation         string    `json:"author_association"`
-	Draft                     bool      `json:"draft"`
-	Merged                    bool      `json:"merged"`
-	Mergeable                 bool      `json:"mergeable"`
-	Rebaseable                bool      `json:"rebaseable"`
-	MergeableState            string    `json:"mergeable_state"`
-	MergedBy                  User      `json:"merged_by"`
-	Comments                  int       `json:"comments"`
-	ReviewComments            int       `json:"review_comments"`
-	MaintainerCanModify       bool      `json:"maintainer_can_modify"`
-	Commits                   int       `json:"commits"`
-	Additions                 int       `json:"additions"`
-	Deletions                 int       `json:"deletions"`
-	ChangedFiles              int       `json:"changed_files"`
-	AllowAutoMerge            bool      `json:"allow_auto_merge"`
-	AllowUpdateBranch         bool      `json:"allow_update_branch"`
-	DeleteBranchOnMerge       bool      `json:"delete_branch_on_merge"`
-	MergeCommitMessage        string    `json:"merge_commit_message"`
-	MergeCommitTitle          string    `json:"merge_commit_title"`
-	SquashMergeCommitMessagse string    `json:"squash_merge_commit_message"`
-	SquashMergeCommitTitle    string    `json:"squash_merge_commit_title"`
-	UseSquashPrTitleAsDefault bool      `json:"use_squash_pr_title_as_default"`
+	Title              string    `json:"title"`
+	User               User      `json:"user"`
+	Body               string    `json:"body"`
+	Labels             []Label   `json:"labels"`
+	Milestone          Milestone `json:"milestone"`
+	ActiveLockReason   string    `json:"active_lock_reason"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+	ClosedAt           time.Time `json:"closed_at"`
+	MergedAt           time.Time `json:"merged_at"`
+	MergeCommitSha     string    `json:"merge_commit_sha"`
+	Assignee           User      `json:"assignee"`
+	Assignees          []User    `json:"assignees"`
+	RequestedReviewers []User    `json:"requested_reviewers"`
+	RequestedTeams     []Team    `json:"requested_teams"`
+	Head               Head      `json:"head"`
+	Base               Base      `json:"base"`
+	Links              Links     `json:"_links"`
+	/*
+		How the author is associated with the repository.
+		Can be one of: `COLLABORATOR`, `CONTRIBUTOR`, `FIRST_TIMER`, `FIRST_TIME_CONTRIBUTOR`, `MANNEQUIN`, `MEMBER`, `NONE`, `OWNER`
+	*/
+	AuthorAssociation string `json:"author_association"`
+	// Indicates whether or not the pull request is a draft.
+	Draft          bool   `json:"draft"`
+	Merged         bool   `json:"merged"`
+	Mergeable      bool   `json:"mergeable"`
+	Rebaseable     bool   `json:"rebaseable"`
+	MergeableState string `json:"mergeable_state"`
+	MergedBy       User   `json:"merged_by"`
+	Comments       int    `json:"comments"`
+	ReviewComments int    `json:"review_comments"`
+	// Indicates whether maintainers can modify the pull request.
+	MaintainerCanModify bool `json:"maintainer_can_modify"`
+	Commits             int  `json:"commits"`
+	Additions           int  `json:"additions"`
+	Deletions           int  `json:"deletions"`
+	ChangedFiles        int  `json:"changed_files"`
+	// Whether to allow auto-merge for pull requests.
+	AllowAutoMerge bool `json:"allow_auto_merge"`
+	// Whether to allow updating the pull request's branch.
+	AllowUpdateBranch bool `json:"allow_update_branch"`
+	// Whether to delete head branches when pull requests are merged.
+	DeleteBranchOnMerge bool `json:"delete_branch_on_merge"`
+	/*
+		The default value for a merge commit message.
+			`PR_TITLE` - default to the pull request's title.
+			`PR_BODY` - default to the pull request's body.
+			`BLANK` - default to a blank commit message.
+		Can be one of: `PR_BODY`, `PR_TITLE`, `BLANK`
+	*/
+	MergeCommitMessage string `json:"merge_commit_message"`
+	/*
+		The default value for a merge commit title.
+			`PR_TITLE` - default to the pull request's title.
+			`MERGE_MESSAGE` - default to the classic title for a merge message (e.g., "Merge pull request #123 from branch-name").
+		Can be one of: `PR_TITLE`, `MERGE_MESSAGE`
+	*/
+	MergeCommitTitle string `json:"merge_commit_title"`
+	/*
+		The default value for a squash merge commit message:
+			`PR_BODY` - default to the pull request's body.
+			`COMMIT_MESSAGES` - default to the branch's commit messages.
+			`BLANK` - default to a blank commit message.
+		Can be one of: `PR_BODY`, `COMMIT_MESSAGES`, `BLANK`
+	*/
+	SquashMergeCommitMessagse string `json:"squash_merge_commit_message"`
+	/*
+		The default value for a squash merge commit title:
+			`PR_TITLE` - default to the pull request's title.
+			`COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
+		Can be one of: `PR_TITLE`, `COMMIT_OR_PR_TITLE`
+	*/
+	SquashMergeCommitTitle string `json:"squash_merge_commit_title"`
+	// Whether a squash merge commit can use the pull request title as default.
+	UseSquashPrTitleAsDefault bool `json:"use_squash_pr_title_as_default"`
 }
