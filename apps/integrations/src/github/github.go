@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/SquaredMade2/squared/apps/integrations/src/gen/rpc"
 	"github.com/joho/godotenv"
 )
 
@@ -23,7 +24,7 @@ func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
 	}
 }
 
-func webhookHandler(r *http.Request) {
+func webhookHandler(r *http.Request, w http.ResponseWriter, rpc *rpc.Services) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Printf("Error loading .env file")
@@ -41,16 +42,19 @@ func webhookHandler(r *http.Request) {
 
 	switch headers.XGitHubEvent {
 	case "pull_request":
-		handlePullRequestEvent(body)
+		handlePullRequestEvent(body, rpc.GithubService)
 	default:
 		log.Printf("Unsupported event: %s", headers.XGitHubEvent)
 	}
 }
 
-func handlePullRequestEvent(body []byte) {
+func handlePullRequestEvent(body []byte, githubService *rpc.GithubService) {
 	var webhookEvent WebhookPullRequest
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 	}
+
+	pullRequest := webhookEvent.PullRequest
+	githubService.UpsertPullRequest()
 }

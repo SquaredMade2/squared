@@ -40,8 +40,8 @@ type GetUserRepositoriesRequest struct {
 type GetUserRepositoriesResponse []string
 
 
-// getUserRepositories calls the getUserRepositories RPC method
-func (s *GithubService) getUserRepositories(ctx context.Context, req GetUserRepositoriesRequest) (GetUserRepositoriesResponse, error) {
+// GetUserRepositories calls the getUserRepositories RPC method
+func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepositoriesRequest) (GetUserRepositoriesResponse, error) {
 	endpoint := fmt.Sprintf("%s/github/getUserRepositories", s.baseURL)
 
 	
@@ -85,3 +85,6 @@ func (s *GithubService) getUserRepositories(ctx context.Context, req GetUserRepo
 	
 }
 
+
+// UpsertPullRequestRequest represents the request for upsertPullRequest method
+type UpsertPullRequestRequest 
