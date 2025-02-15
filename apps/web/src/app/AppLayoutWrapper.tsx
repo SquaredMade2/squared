@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	NewTaskModal,
 	TaskSelector,
 	WorkspaceInviteModal,
 	WorkspaceSwitcher,
@@ -65,6 +66,7 @@ export default function ClientLayoutWrapper({
 								<SearchCommand />
 								<WorkspaceSwitcher />
 								<TaskSelector />
+								<NewTaskModal />
 								{children}
 							</>
 						)}

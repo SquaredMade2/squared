@@ -74,7 +74,7 @@ export default function CreateTeam() {
 				.$post({
 					name: values.teamName.trim(),
 					identifier: values.teamIdentifier.toUpperCase(),
-					workspaceId: workspace.id,
+					workspaceId: workspace.externalId,
 				})
 				.then((res) => res.json());
 

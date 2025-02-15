@@ -207,7 +207,10 @@ async function handleBranchAndCommitEvents(
 	const [task] = await db
 		.select()
 		.from(tasksTable)
-		.innerJoin(workspacesTable, eq(workspacesTable.id, tasksTable.workspaceId))
+		.innerJoin(
+			workspacesTable,
+			eq(workspacesTable.externalId, tasksTable.workspaceId),
+		)
 		.where(eq(tasksTable.identifier, identifier))
 		.limit(1);
 
