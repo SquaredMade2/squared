@@ -8,14 +8,12 @@ import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useTeams } from "@/hooks/useTeams";
-import { filterService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useFilterStore, useViewStore } from "@/store";
-import type { SavedFilter } from "@/store/filters";
 import { parseParams } from "@/utils/parseParams";
-import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -25,31 +23,25 @@ export default function FilterViewPage() {
 	);
 	const { view, getGridOptions } = useViewStore((state) => state);
 
-	const [filter, setFilter] = useState<SavedFilter | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		const getData = async () => {
-			if (teamLoading) return;
-			if (team) {
-				setIsLoading(true);
-				const filters = await filterService.getFilters(TODO, {
+	const { data: filter, isPending } = useQuery({
+		queryKey: ["filters", { teamId: team?.id }],
+		queryFn: async () => {
+			if (!team) throw new Error("No team found");
+			const filters = await client.filter.getFilters
+				.$get({
 					teamId: team.id,
-				});
-				setSavedFilters(filters);
-				const filterId = parseParams(params.filterId);
-				const filterSlug = filterId?.split("-").pop();
-				const foundFilter = filters.find((f) =>
-					f.id.startsWith(filterSlug || ""),
-				);
-				if (foundFilter) {
-					setFilter(foundFilter);
-				}
-				setIsLoading(false);
-			}
-		};
-		getData();
-	}, [params.filterId, team, teamLoading]);
+				})
+				.then((res) => res.json());
+			setSavedFilters(filters);
+			const filterId = parseParams(params.filterId);
+			const filterSlug = filterId?.split("-").pop();
+			const foundFilter = filters.find((f) =>
+				f.id.startsWith(filterSlug || ""),
+			);
+			return foundFilter;
+		},
+		enabled: !!team,
+	});
 
 	const filterTasksWithFilter = (tasks: Task[]) => {
 		if (!filter) {
@@ -66,7 +58,7 @@ export default function FilterViewPage() {
 		filterTasksWithFilter,
 	);
 
-	if (loading || teamLoading || isLoading) {
+	if (loading || teamLoading || isPending) {
 		return (
 			<div className="flex w-full items-center justify-center">
 				<SquaredLoader />
