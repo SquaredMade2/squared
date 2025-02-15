@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { workspaceService } from "@/lib/services";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function JoinWorkspace() {
 	const { isLoaded, isSignedIn, user } = useUser();
@@ -16,50 +17,50 @@ export default function JoinWorkspace() {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 
-	const token = searchParams.get("token");
+	const token = searchParams.get("token") || "";
 	const isLink = searchParams.has("link");
 	const currentURL = window.location.href;
 	const workspaceName = currentURL.match(/(?<=\/)[^/]*(?=\/)/);
 
-	useEffect(() => {
-		if (isLoaded && !isSignedIn) {
-			if (!isLink) {
-				router.push(`/sign-in?token=${token}`);
-			}
-			router.push(`/sign-in?link=true&token=${token}`);
-		}
-	}, [isLoaded, router, token]);
+	const joinWorkspaceMutation = useMutation({
+		mutationFn: async () => {
+			const workspace = await client.workspace.joinWorkspace
+				.$post({
+					token,
+					isLink,
+					userId: user?.id || "",
+					workspaceName: workspaceName ? workspaceName[0] : undefined,
+				})
+				.then((res) => res.json());
 
-	const handleJoin = async () => {
-		if (!isLoaded || !isSignedIn) return;
-
-		setIsLoading(true);
-		try {
-			if (!token) {
-				throw new Error("Invalid token");
-			}
-			const workspace = await workspaceService.joinWorkspace(TODO, {
-				token,
-				isLink,
-				userId: user.id,
-				workspaceName: workspaceName ? workspaceName[0] : null,
-			});
+			return workspace;
+		},
+		onSuccess: (workspace) => {
 			toast({ title: "Workspace joined successfully" });
 			if (workspace?.url) {
 				router.push(`/${workspace.url}`);
 			}
-		} catch (error) {
-			console.error("Error joining workspace:", error);
+		},
+		onError: (error) => {
 			toast({
 				title: "Failed to join workspace",
 				variant: "destructive",
+				description: parseError(error, "An unknown error occurred"),
 			});
-		} finally {
-			setIsLoading(false);
+		},
+	});
+
+	const handleJoin = async () => {
+		setIsLoading(true);
+
+		if (token && user) {
+			joinWorkspaceMutation.mutate();
 		}
+
+		setIsLoading(false);
 	};
 
-	if (status === "loading" || status === "unauthenticated") {
+	if (isLoaded || !isSignedIn) {
 		return <div>Loading...</div>;
 	}
 
@@ -75,7 +76,11 @@ export default function JoinWorkspace() {
 					<p className="text-center">
 						You've been invited to join a workspace.
 					</p>
-					<Button onClick={handleJoin} className="w-full" disabled={isLoading}>
+					<Button
+						onClick={handleJoin}
+						className="w-full"
+						disabled={isLoading || !token}
+					>
 						{isLoading ? "Joining..." : "Join Workspace"}
 					</Button>
 				</CardContent>

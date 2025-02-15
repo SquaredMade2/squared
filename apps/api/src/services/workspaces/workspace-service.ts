@@ -355,27 +355,29 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		const link = generateSecureRandomString();
 
-		const currentLinks = await this.db
-			.select({ inviteLinks: workspacesTable.inviteLinks })
-			.from(workspacesTable)
-			.where(eq(workspacesTable.id, workspaceId))
-			.then((results) => results[0].inviteLinks);
+		await this.db.transaction(async (tx) => {
+			const currentLinks = await tx
+				.select({ inviteLinks: workspacesTable.inviteLinks })
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.then((results) => results[0].inviteLinks);
 
-		await this.db
-			.update(workspacesTable)
-			.set({
-				inviteLinks: [
-					...currentLinks,
-					{
-						link,
-						expiration: expiration
-							? expirationTimeFormat(expiration)
-							: undefined,
-						uses,
-					},
-				],
-			})
-			.where(eq(workspacesTable.id, workspaceId));
+			await tx
+				.update(workspacesTable)
+				.set({
+					inviteLinks: [
+						...currentLinks,
+						{
+							link,
+							expiration: expiration
+								? expirationTimeFormat(expiration)
+								: undefined,
+							uses,
+						},
+					],
+				})
+				.where(eq(workspacesTable.id, workspaceId));
+		});
 
 		return link;
 	}

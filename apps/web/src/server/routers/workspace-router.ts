@@ -31,4 +31,44 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	joinWorkspace: privateProcedure
+		.input(
+			z.object({
+				token: z.string(),
+				isLink: z.boolean(),
+				userId: z.string(),
+				workspaceName: z.string().optional(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { token, isLink, userId, workspaceName } = input;
+			return c.superjson(
+				await workspaceService.joinWorkspace(TODO, {
+					token,
+					isLink,
+					userId,
+					workspaceName,
+				}),
+			);
+		}),
+	generateWorkspaceInviteLink: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				expiration: z.string().optional(),
+				uses: z.number().optional(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceId, expiration, uses } = input;
+			return c.text(
+				await workspaceService.generateWorkspaceInviteLink(TODO, {
+					workspaceId,
+					expiration,
+					uses,
+				}),
+			);
+		}),
 });

@@ -1,8 +1,8 @@
 "use client";
 
-import { workspaceService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -35,26 +35,34 @@ export const InviteModal = () => {
 
 	const expirationTimes = ["15m", "30m", "1h", "6h", "12h", "1d", "7d"];
 
-	const generateLink = async () => {
-		console.log(expirationPeriod, numberUses, isUnlimitedUses);
-		try {
-			workspace &&
-				setLink(
-					await workspaceService.generateWorkspaceInviteLink(TODO, {
-						workspaceId: workspace?.id,
-						expiration:
-							expirationPeriod === "never" ? undefined : expirationPeriod,
-						uses: numberUses,
-					}),
-				);
-		} catch (error) {
+	const createWorkspaceLinkMutation = useMutation({
+		mutationFn: async () => {
+			const inviteLink = await client.workspace.generateWorkspaceInviteLink
+				.$post({
+					workspaceId: workspace?.id || "",
+					expiration:
+						expirationPeriod === "never" ? undefined : expirationPeriod,
+					uses: numberUses,
+				})
+				.then((res) => res.json());
+
+			return inviteLink;
+		},
+		onSuccess: (inviteLink) => {
+			setLink(inviteLink);
+		},
+		onError: (error) => {
 			toast({
 				title: "Error creating link",
 				description: error instanceof Error && error.message,
 				variant: "destructive",
 			});
 			setLink("Failed to generate link");
-		}
+		},
+	});
+
+	const generateLink = () => {
+		workspace && createWorkspaceLinkMutation.mutate();
 	};
 
 	const handleCopy = async () => {
