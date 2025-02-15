@@ -98,7 +98,6 @@ const Join = () => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!user || !user) return;
 
 		if (inputValue.length === 0) {
 			toast({
