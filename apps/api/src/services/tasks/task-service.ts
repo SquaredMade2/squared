@@ -355,18 +355,11 @@ export class TaskService implements TaskRpc {
 	}: {
 		sprintId: string;
 		taskIds: string[];
-	}): Promise<number> {
+	}): Promise<Task[]> {
 		this.logger.info("Adding tasks to sprint with id %s", sprintId);
 
 		return await this.db.transaction(async (tx) => {
-			// First, update all tasks to the sprint
-			const updateResult = await tx
-				.update(tasksTable)
-				.set({ sprintId })
-				.where(inArray(tasksTable.id, taskIds))
-				.returning();
-
-			// Then, update the status of backlog tasks to todo
+			// First, update the status of backlog tasks to todo
 			await tx
 				.update(tasksTable)
 				.set({ status: "todo" })
@@ -376,8 +369,14 @@ export class TaskService implements TaskRpc {
 						eq(tasksTable.status, "backlog"),
 					),
 				);
+			// Then, return the updated Tasks
+			const updateResult = await tx
+				.update(tasksTable)
+				.set({ sprintId })
+				.where(inArray(tasksTable.id, taskIds))
+				.returning();
 
-			return updateResult.length;
+			return updateResult;
 		});
 	}
 

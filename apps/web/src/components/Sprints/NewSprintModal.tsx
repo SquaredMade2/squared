@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { sprintService } from "@/lib/services";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
 import type { Team } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -37,22 +37,34 @@ export const NewSprintModal = ({
 	const router = useRouter();
 	const { toast } = useToast();
 
-	const handleConfirm = async () => {
-		if (!team) return;
-		await sprintService.startNextSprint(TODO, {
-			teamId: team.id,
-			sprintData: {
-				name: sprintName,
-				description: sprintDescription,
-			},
-		});
-		toast({
-			title: "Sprint Created",
-			description: "The new sprint has been successfully created.",
-		});
-		router.push(redirectUrl);
-		onClose();
-	};
+	const { mutate: startNextSprint } = useMutation({
+		mutationKey: ["sprint", "startNextSprint"],
+		mutationFn: async () => {
+			if (!team) throw new Error("Team not found");
+			await client.sprint.startNextSprint.$post({
+				teamId: team.id,
+				sprintData: {
+					name: sprintName,
+					description: sprintDescription,
+				},
+			});
+		},
+		onError: (error) => {
+			toast({
+				title: "Error Creating Sprint",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+		onSuccess: () => {
+			toast({
+				title: "Sprint Created",
+				description: "The new sprint has been successfully created.",
+			});
+			router.push(redirectUrl);
+			onClose();
+		},
+	});
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
@@ -92,7 +104,7 @@ export const NewSprintModal = ({
 					<Button type="button" variant="outline" onClick={onClose}>
 						Cancel
 					</Button>
-					<Button type="submit" onClick={handleConfirm}>
+					<Button type="submit" onClick={() => startNextSprint()}>
 						Create Sprint
 					</Button>
 				</DialogFooter>

@@ -4,6 +4,7 @@ import { handle } from "hono/vercel";
 import { authRouter } from "./routers/auth-router";
 import { commentRouter } from "./routers/comment-router";
 import { eventRouter } from "./routers/event-router";
+import { filterRouter } from "./routers/filter-router";
 import { integrationRouter } from "./routers/integration-router";
 import { notificationRouter } from "./routers/notification-router";
 import { sprintRouter } from "./routers/sprint-router";
@@ -24,6 +25,7 @@ const appRouter = app
 	.route("/comment", commentRouter)
 	.route("/event", eventRouter)
 	.route("/integration", integrationRouter)
+	.route("/filter", filterRouter)
 	.route("/notification", notificationRouter)
 	.route("/sprint", sprintRouter)
 	.route("/team", teamRouter)
