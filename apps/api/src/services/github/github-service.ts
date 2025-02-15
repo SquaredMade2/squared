@@ -1,7 +1,11 @@
 import {
 	type DBClient,
 	eq,
+	githubPullRequestTaskTable,
+	githubPullRequestsTable,
 	githubRepoInfoTable,
+	inArray,
+	tasksTable,
 	usersTable,
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
@@ -36,6 +40,77 @@ export class GithubService implements GithubRpc {
 				.where(eq(githubRepoInfoTable.owner, user.githubUsername));
 
 			return connectedRepos.map((repo) => repo.repoName);
+		});
+	}
+	async upsertPullRequest({
+		id,
+		number,
+		state,
+		title,
+		url,
+		branch,
+		body,
+		author,
+		repoId,
+	}: {
+		id: string;
+		number: number;
+		state: "open" | "closed";
+		title: string;
+		url: string;
+		branch: string;
+		body: string;
+		author: string;
+		repoId: string;
+	}) {
+		this.logger.info(
+			`Upserting pull request with id: ${id} and number: ${number}`,
+		);
+
+		const taskIdMatches = [
+			...title.matchAll(/\[(.*?)\]/g),
+			...(body?.matchAll(/\[(.*?)\]/g) ?? []),
+		].map((match) => match[1]);
+
+		return await this.db.transaction(async (tx) => {
+			const tasks = await tx
+				.select({ id: tasksTable.id })
+				.from(tasksTable)
+				.where(inArray(tasksTable.identifier, taskIdMatches));
+
+			if (tasks.length === 0) {
+				this.logger.warn(
+					`No tasks found for pull request with id: ${id} and number: ${number}`,
+				);
+				return;
+			}
+
+			const [pull] = await tx
+				.insert(githubPullRequestsTable)
+				.values({
+					externalId: id,
+					number,
+					state,
+					title,
+					url,
+					branch,
+					body,
+					author,
+					githubRepoInfoId: repoId,
+				})
+				.onConflictDoUpdate({
+					target: githubPullRequestsTable.externalId,
+					set: { number, state, title, url, branch, body, author },
+				})
+				.returning();
+
+			await Promise.all(
+				tasks.map((task) =>
+					tx
+						.insert(githubPullRequestTaskTable)
+						.values({ taskId: task.id, pullRequestId: pull.externalId }),
+				),
+			);
 		});
 	}
 }

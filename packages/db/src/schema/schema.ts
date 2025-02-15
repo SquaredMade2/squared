@@ -16,6 +16,7 @@ import {
 	effortType,
 	notificationType,
 	priorityType,
+	pullRequestState,
 	retrospectiveItemType,
 	savedFilterType,
 	sprintStatusType,
@@ -53,25 +54,48 @@ export const teamsTable = pgTable(
 	],
 );
 
-export const branchesTable = pgTable(
-	"Branch",
+export const commitsTable = pgTable(
+	"Commit",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		taskId: uuid().notNull(),
-		githubRepoInfoId: uuid().notNull(),
+		message: text().notNull(),
+		url: text().notNull(),
+		authorName: text(),
+		repoName: text(),
+		owner: text(),
+		pullId: text().notNull(),
+		taskId: uuid(),
+		timestamp: timestamp({ precision: 3 }).notNull(),
 	},
 	(table) => [
 		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [tasksTable.id],
-			name: "Branch_taskId_fkey",
+			columns: [table.pullId],
+			foreignColumns: [githubPullRequestsTable.externalId],
+			name: "Commit_pull_request_fkey",
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
+	],
+);
+
+export const githubPullRequestsTable = pgTable(
+	"GithubPullRequest",
+	{
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().notNull(),
+		number: integer().notNull(),
+		state: pullRequestState().notNull(),
+		title: text().notNull(),
+		url: text().notNull(),
+		branch: text().notNull(),
+		body: text(),
+		author: text().notNull(),
+		githubRepoInfoId: text().notNull(),
+	},
+	(table) => [
 		foreignKey({
 			columns: [table.githubRepoInfoId],
-			foreignColumns: [githubRepoInfoTable.id],
+			foreignColumns: [githubRepoInfoTable.externalId],
 			name: "Branch_githubRepoInfoId_fkey",
 		})
 			.onUpdate("cascade")
@@ -83,6 +107,10 @@ export const githubRepoInfoTable = pgTable(
 	"GithubRepoInfo",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().notNull(),
+		private: boolean().default(false).notNull(),
+		description: text(),
+		url: text().notNull(),
 		repoName: text().default("").notNull(),
 		owner: text().default("").notNull(),
 	},
@@ -378,37 +406,6 @@ export const projectsTable = pgTable(
 	],
 );
 
-export const commitsTable = pgTable(
-	"Commit",
-	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		message: text().notNull(),
-		url: text().notNull(),
-		authorName: text(),
-		repoName: text(),
-		owner: text(),
-		branchId: uuid().notNull(),
-		taskId: uuid(),
-		timestamp: timestamp({ precision: 3 }).notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.branchId],
-			foreignColumns: [branchesTable.id],
-			name: "Commit_branchId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [tasksTable.id],
-			name: "Commit_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-	],
-);
-
 export const taskEventsTable = pgTable(
 	"TaskEvent",
 	{
@@ -614,8 +611,36 @@ export const userTeamsTable = pgTable(
 	],
 );
 
+export const githubPullRequestTaskTable = pgTable(
+	"GithubPullRequestTask",
+	{
+		pullRequestId: text().notNull(),
+		taskId: uuid().notNull(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.pullRequestId],
+			foreignColumns: [githubPullRequestsTable.externalId],
+			name: "GithubPullRequestTask_pullRequestId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		foreignKey({
+			columns: [table.taskId],
+			foreignColumns: [tasksTable.id],
+			name: "GithubPullRequestTask_taskId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		primaryKey({
+			columns: [table.pullRequestId, table.taskId],
+			name: "GithubPullRequestTask_pkey",
+		}),
+	],
+);
+
 export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
-export type Branch = typeof branchesTable.$inferSelect;
+export type GithubPullRequest = typeof githubPullRequestsTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
 export type Commit = typeof commitsTable.$inferSelect;
 export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;

@@ -286,6 +286,29 @@ type Links struct {
 	Self           Link `json:"self"`
 }
 
+type Commit struct {
+	// An array of files added in the commit. A maximum of 3000 changed files will be reported per commit.
+	Added []string `json:"added"`
+	// Metaproperties for Git author/committer information.
+	Author User `json:"author"`
+	// Metaproperties for Git author/committer information.
+	Committer User `json:"committer"`
+	// Whether this commit is distinct from any that have been pushed before.
+	Distinct bool   `json:"distinct"`
+	Id       string `json:"id"`
+	// The commit message.
+	Message string `json:"message"`
+	// An array of files modified by the commit. A maximum of 3000 changed files will be reported per commit.
+	Modified []string `json:"modified"`
+	// An array of files removed in the commit. A maximum of 3000 changed files will be reported per commit.
+	Removed []string `json:"removed"`
+	// The ISO 8601 timestamp of the commit.
+	Timestamp string `json:"timestamp"`
+	TreeId    string `json:"tree_id"`
+	// The URL to the commit API resource.
+	Url string `json:"url"`
+}
+
 type PullRequest struct {
 	Id                int    `json:"id"`
 	Url               string `json:"url"`
@@ -407,4 +430,35 @@ type WebhookPullRequest struct {
 	PullRequest PullRequest `json:"pull_request"`
 	Repository  Repo        `json:"repository"`
 	Sender      User        `json:"sender"`
+}
+
+// Metaproperties for Git author/committer information.
+type Pusher struct {
+	Date  string `json:"date"`
+	Email string `json:"email"`
+	// The git author's name.
+	Name     string `json:"name"`
+	Username string `json:"username"`
+}
+
+type WebhookPush struct {
+	// The SHA of the most recent commit on `ref` after the push.
+	After   string `json:"after"`
+	BaseRef string `json:"base_ref"`
+	// The SHA of the most recent commit on `ref` before the push.
+	Before string `json:"before"`
+	// An array of commit objects describing the pushed commits. (Pushed commits are all commits that are included in the compare between the `before` commit and the `after` commit.) The array includes a maximum of 2048 commits. If necessary, you can use the Commits API to fetch additional commits.
+	Commits []Commit `json:"commits"`
+	// URL that shows the changes in this ref update, from the `before` commit to the `after` commit. For a newly created ref that is directly based on the default branch, this is the comparison between the head of the default branch and the `after` commit. Otherwise, this shows all commits until the `after` commit.
+	Compare string `json:"compare"`
+	// Whether this push created the `ref`.
+	Created    bool   `json:"created"`
+	Deleted    bool   `json:"deleted"`
+	Forced     bool   `json:"forced"`
+	HeadCommit Commit `json:"head_commit"`
+	Pusher     Pusher `json:"pusher"`
+	// The full git ref that was pushed. Example: `refs/heads/main` or `refs/tags/v3.14.1`.
+	Ref        string `json:"ref"`
+	Repository Repo   `json:"repository"`
+	Sender     User   `json:"sender"`
 }

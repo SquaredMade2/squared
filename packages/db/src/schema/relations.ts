@@ -1,9 +1,10 @@
 import { relations } from "drizzle-orm/relations";
 import {
 	blockedTasksTable,
-	branchesTable,
 	commentsTable,
 	commitsTable,
+	githubPullRequestTaskTable,
+	githubPullRequestsTable,
 	githubRepoInfoTable,
 	notificationsTable,
 	projectsTable,
@@ -43,20 +44,20 @@ export const workspaceRelations = relations(workspacesTable, ({ many }) => ({
 	userWorkspaces: many(userWorkspacesTable),
 }));
 
-export const branchRelations = relations(branchesTable, ({ one, many }) => ({
-	task: one(tasksTable, {
-		fields: [branchesTable.taskId],
-		references: [tasksTable.id],
+export const githubPullRequestRelations = relations(
+	githubPullRequestsTable,
+	({ one, many }) => ({
+		githubPullRequestTasks: many(githubPullRequestTaskTable),
+		githubRepoInfo: one(githubRepoInfoTable, {
+			fields: [githubPullRequestsTable.githubRepoInfoId],
+			references: [githubRepoInfoTable.externalId],
+		}),
+		commits: many(commitsTable),
 	}),
-	githubRepoInfo: one(githubRepoInfoTable, {
-		fields: [branchesTable.githubRepoInfoId],
-		references: [githubRepoInfoTable.id],
-	}),
-	commits: many(commitsTable),
-}));
+);
 
 export const taskRelations = relations(tasksTable, ({ one, many }) => ({
-	branches: many(branchesTable),
+	githubPullRequestTasks: many(githubPullRequestTaskTable),
 	notifications: many(notificationsTable),
 	users: many(usersTable, {
 		relationName: "user_lastViewedTaskId_task_id",
@@ -92,7 +93,6 @@ export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 		references: [usersTable.externalId],
 		relationName: "task_assigneeId_user_externalId",
 	}),
-	commits: many(commitsTable),
 	taskEvents: many(taskEventsTable),
 	blockedTasks_a: many(blockedTasksTable, {
 		relationName: "blockedTasks_a_task_id",
@@ -105,7 +105,7 @@ export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 export const githubRepoInfoRelations = relations(
 	githubRepoInfoTable,
 	({ many }) => ({
-		branches: many(branchesTable),
+		pullRequests: many(githubPullRequestsTable),
 		workspaceRepositories: many(workspaceRepositoriesTable),
 	}),
 );
@@ -207,9 +207,9 @@ export const projectRelations = relations(projectsTable, ({ one }) => ({
 }));
 
 export const commitRelations = relations(commitsTable, ({ one }) => ({
-	branch: one(branchesTable, {
-		fields: [commitsTable.branchId],
-		references: [branchesTable.id],
+	pullRequest: one(githubPullRequestsTable, {
+		fields: [commitsTable.pullId],
+		references: [githubPullRequestsTable.externalId],
 	}),
 	task: one(tasksTable, {
 		fields: [commitsTable.taskId],

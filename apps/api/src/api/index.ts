@@ -9,7 +9,6 @@ import "dotenv/config";
 import http from "node:http";
 import express from "express";
 import { Server } from "socket.io";
-import { createApiRouter } from "./generated-routes";
 
 export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
 
@@ -64,9 +63,6 @@ app.use(createErrorHandler({ log: logger }));
 
 // Initialize the router
 const router = express.Router();
-
-// Create the API router
-createApiRouter(router, { db });
 
 // Use the router
 app.use(router);
