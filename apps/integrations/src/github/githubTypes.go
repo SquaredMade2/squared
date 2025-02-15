@@ -382,3 +382,29 @@ type PullRequest struct {
 	// Whether a squash merge commit can use the pull request title as default.
 	UseSquashPrTitleAsDefault bool `json:"use_squash_pr_title_as_default"`
 }
+
+type Action string
+
+const (
+	ActionOpened Action = "opened"
+)
+
+type GitHubWebhookHeaders struct {
+	XGitHubHookID                     string `header:"X-GitHub-Hook-ID"`
+	XGitHubEvent                      string `header:"X-GitHub-Event"`
+	XGitHubDelivery                   string `header:"X-GitHub-Delivery"`
+	XHubSignature                     string `header:"X-Hub-Signature"`
+	XHubSignature256                  string `header:"X-Hub-Signature-256"`
+	UserAgent                         string `header:"User-Agent"`
+	XGitHubHookInstallationTargetType string `header:"X-GitHub-Hook-Installation-Target-Type"`
+	XGitHubHookInstallationTargetID   string `header:"X-GitHub-Hook-Installation-Target-ID"`
+}
+
+// Pull Request Webhook type
+type WebhookPullRequest struct {
+	// The type of action that was performed on the pull request.
+	Action      string      `json:"action"`
+	PullRequest PullRequest `json:"pull_request"`
+	Repository  Repo        `json:"repository"`
+	Sender      User        `json:"sender"`
+}
