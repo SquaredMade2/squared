@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/SquaredMade2/squared/apps/integrations/src/gen/rpc"
+	"github.com/SquaredMade2/squared/apps/integrations/gen/rpc"
 	"github.com/joho/godotenv"
 )
 
@@ -40,7 +40,7 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	githubService := rpc.NewGithubService(os.Getenv("SERVER_URL"))
+	githubService := rpc.NewGithubService(os.Getenv("SERVER_URL") + "/rpc")
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -57,7 +57,6 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unsupported event", http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {

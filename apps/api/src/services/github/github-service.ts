@@ -70,6 +70,19 @@ export class GithubService implements GithubRpc {
 			`Upserting pull request with id: ${id} and number: ${number}`,
 		);
 
+		console.log("Args: ", {
+			id,
+			number,
+			state,
+			title,
+			url,
+			branch,
+			body,
+			author,
+			repoId,
+			timestamp,
+		});
+
 		const taskIdMatches = [
 			...title.matchAll(/\[(.*?)\]/g),
 			...(body?.matchAll(/\[(.*?)\]/g) ?? []),
