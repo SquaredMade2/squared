@@ -14,6 +14,7 @@
 		"db:migrate": "pnpm --filter=@squared/db db:migrate",
 		"db:push": "pnpm --filter=@squared/db db:push",
 		"dev": "turbo run dev",
+		"dev:go": "turbo run dev:go",
 		"docker:build": "docker compose build",
 		"docker:db": "pnpm --filter=@squared/seed run docker:db",
 		"docker:db:down": "pnpm --filter=@squared/seed run docker:db:down",
