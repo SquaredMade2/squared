@@ -1,9 +1,10 @@
 import {
 	type DBClient,
+	commitsTable,
 	eq,
 	githubPullRequestTaskTable,
 	githubPullRequestsTable,
-	githubRepoInfoTable,
+	githubRepoTable,
 	inArray,
 	tasksTable,
 	usersTable,
@@ -35,9 +36,9 @@ export class GithubService implements GithubRpc {
 			}
 
 			const connectedRepos = await tx
-				.select({ repoName: githubRepoInfoTable.repoName })
-				.from(githubRepoInfoTable)
-				.where(eq(githubRepoInfoTable.owner, user.githubUsername));
+				.select({ repoName: githubRepoTable.repoName })
+				.from(githubRepoTable)
+				.where(eq(githubRepoTable.owner, user.githubUsername));
 
 			return connectedRepos.map((repo) => repo.repoName);
 		});
@@ -111,6 +112,43 @@ export class GithubService implements GithubRpc {
 						.values({ taskId: task.id, pullRequestId: pull.externalId }),
 				),
 			);
+		});
+	}
+	async pushCommit({
+		id,
+		message,
+		url,
+		author,
+		repoId,
+		pullId,
+		timestamp,
+	}: {
+		id: string;
+		message: string;
+		url: string;
+		author: string;
+		repoId: string;
+		pullId: string;
+		timestamp: string;
+	}) {
+		this.logger.info(`Pushing commit with id: ${id}`);
+		return await this.db.transaction(async (tx) => {
+			const [pull] = await tx
+				.select({ id: githubPullRequestsTable.id })
+				.from(githubPullRequestsTable)
+				.where(eq(githubPullRequestsTable.externalId, pullId))
+				.limit(1);
+			if (!pull) return;
+
+			await tx.insert(commitsTable).values({
+				externalId: id,
+				message,
+				url,
+				author,
+				repoId,
+				pullId,
+				timestamp: new Date(timestamp),
+			});
 		});
 	}
 }

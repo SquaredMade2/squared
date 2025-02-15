@@ -11,4 +11,13 @@ export interface GithubRpc {
 		author: string;
 		repoId: string;
 	}) => Promise<void>;
+	pushCommit: (args: {
+		id: string;
+		message: string;
+		url: string;
+		author: string;
+		repoId: string;
+		pullId: string;
+		timestamp: string;
+	}) => Promise<void>;
 }

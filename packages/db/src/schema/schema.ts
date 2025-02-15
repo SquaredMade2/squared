@@ -58,13 +58,12 @@ export const commitsTable = pgTable(
 	"Commit",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		message: text().notNull(),
+		externalId: text().notNull().unique(),
+		message: text(),
 		url: text().notNull(),
-		authorName: text(),
-		repoName: text(),
-		owner: text(),
+		author: text(),
+		repoId: text().notNull(),
 		pullId: text().notNull(),
-		taskId: uuid(),
 		timestamp: timestamp({ precision: 3 }).notNull(),
 	},
 	(table) => [
@@ -75,6 +74,13 @@ export const commitsTable = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
+		foreignKey({
+			columns: [table.repoId],
+			foreignColumns: [githubRepoTable.externalId],
+			name: "Commit_task_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
 	],
 );
 
@@ -82,7 +88,7 @@ export const githubPullRequestsTable = pgTable(
 	"GithubPullRequest",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().notNull(),
+		externalId: text().notNull().unique(),
 		number: integer().notNull(),
 		state: pullRequestState().notNull(),
 		title: text().notNull(),
@@ -95,7 +101,7 @@ export const githubPullRequestsTable = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.githubRepoInfoId],
-			foreignColumns: [githubRepoInfoTable.externalId],
+			foreignColumns: [githubRepoTable.externalId],
 			name: "Branch_githubRepoInfoId_fkey",
 		})
 			.onUpdate("cascade")
@@ -103,11 +109,11 @@ export const githubPullRequestsTable = pgTable(
 	],
 );
 
-export const githubRepoInfoTable = pgTable(
-	"GithubRepoInfo",
+export const githubRepoTable = pgTable(
+	"GithubRepo",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().notNull(),
+		externalId: text().notNull().unique(),
 		private: boolean().default(false).notNull(),
 		description: text(),
 		url: text().notNull(),
@@ -372,7 +378,7 @@ export const workspaceRepositoriesTable = pgTable(
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.repoId],
-			foreignColumns: [githubRepoInfoTable.id],
+			foreignColumns: [githubRepoTable.id],
 			name: "WorkspaceRepositories_repoId_fkey",
 		})
 			.onUpdate("cascade")
@@ -643,7 +649,7 @@ export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
 export type GithubPullRequest = typeof githubPullRequestsTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
 export type Commit = typeof commitsTable.$inferSelect;
-export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;
+export type GithubRepoInfo = typeof githubRepoTable.$inferSelect;
 export type Label = {
 	name: string;
 	description?: string | null;

@@ -24,6 +24,18 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 		}),
 		output: z.void(),
 	},
+	pushCommit: {
+		input: z.object({
+			id: z.string(),
+			message: z.string(),
+			url: z.string(),
+			author: z.string(),
+			repoId: z.string(),
+			pullId: z.string(),
+			timestamp: z.string(),
+		}),
+		output: z.void(),
+	},
 });
 
 export type GithubRpcSchema = typeof githubRpcSchema;
@@ -32,4 +44,5 @@ export const createGithubRpcHandler = (githubService: GithubService) =>
 	createRpcHandler("github", githubRpcSchema, {
 		getUserRepositories: (input) => githubService.getUserRepositories(input),
 		upsertPullRequest: (input) => githubService.upsertPullRequest(input),
+		pushCommit: (input) => githubService.pushCommit(input),
 	});

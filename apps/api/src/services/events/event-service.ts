@@ -5,9 +5,13 @@ import {
 	type NotificationType,
 	type Task,
 	type TaskEvent,
+	and,
 	asc,
 	commitsTable,
+	desc,
 	eq,
+	githubPullRequestTaskTable,
+	githubPullRequestsTable,
 	inArray,
 	notificationsTable,
 	sprintsTable,
@@ -42,10 +46,32 @@ export class EventService implements EventRpc {
 				.where(eq(taskEventsTable.taskId, taskId))
 				.orderBy(asc(taskEventsTable.createdAt)),
 			this.db
-				.select()
+				.select({
+					id: commitsTable.id,
+					externalId: commitsTable.externalId,
+					message: commitsTable.message,
+					url: commitsTable.url,
+					author: commitsTable.author,
+					timestamp: commitsTable.timestamp,
+					repoId: commitsTable.repoId,
+					pullId: githubPullRequestsTable.externalId,
+				})
 				.from(commitsTable)
-				.where(eq(commitsTable.taskId, taskId))
-				.orderBy(asc(commitsTable.timestamp)),
+				.innerJoin(
+					githubPullRequestsTable,
+					eq(commitsTable.pullId, githubPullRequestsTable.externalId),
+				)
+				.innerJoin(
+					githubPullRequestTaskTable,
+					and(
+						eq(
+							githubPullRequestsTable.externalId,
+							githubPullRequestTaskTable.pullRequestId,
+						),
+						eq(githubPullRequestTaskTable.taskId, taskId),
+					),
+				)
+				.orderBy(desc(commitsTable.timestamp)),
 		]);
 
 		this.logger.info(

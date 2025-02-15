@@ -87,13 +87,12 @@ export const notificationSchema = createSchema<Notification>()(
 export const commitSchema = createSchema<Commit>()(
 	z.object({
 		id: z.string(),
-		message: z.string(),
+		externalId: z.string(),
+		message: z.string().nullable(),
 		url: z.string(),
-		authorName: z.string().nullable(),
-		repoName: z.string().nullable(),
-		owner: z.string().nullable(),
+		author: z.string().nullable(),
+		repoId: z.string(),
 		pullId: z.string(),
-		taskId: z.string().nullable(),
 		timestamp: z.date(),
 	}),
 );

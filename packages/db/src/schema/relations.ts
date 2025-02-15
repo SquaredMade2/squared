@@ -5,7 +5,7 @@ import {
 	commitsTable,
 	githubPullRequestTaskTable,
 	githubPullRequestsTable,
-	githubRepoInfoTable,
+	githubRepoTable,
 	notificationsTable,
 	projectsTable,
 	retrospectiveItemsTable,
@@ -48,9 +48,9 @@ export const githubPullRequestRelations = relations(
 	githubPullRequestsTable,
 	({ one, many }) => ({
 		githubPullRequestTasks: many(githubPullRequestTaskTable),
-		githubRepoInfo: one(githubRepoInfoTable, {
+		githubRepoInfo: one(githubRepoTable, {
 			fields: [githubPullRequestsTable.githubRepoInfoId],
-			references: [githubRepoInfoTable.externalId],
+			references: [githubRepoTable.externalId],
 		}),
 		commits: many(commitsTable),
 	}),
@@ -103,7 +103,7 @@ export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 }));
 
 export const githubRepoInfoRelations = relations(
-	githubRepoInfoTable,
+	githubRepoTable,
 	({ many }) => ({
 		pullRequests: many(githubPullRequestsTable),
 		workspaceRepositories: many(workspaceRepositoriesTable),
@@ -188,9 +188,9 @@ export const workspaceRepositoriesRelations = relations(
 			fields: [workspaceRepositoriesTable.workspaceId],
 			references: [workspacesTable.externalId],
 		}),
-		githubRepoInfo: one(githubRepoInfoTable, {
+		githubRepoInfo: one(githubRepoTable, {
 			fields: [workspaceRepositoriesTable.repoId],
-			references: [githubRepoInfoTable.id],
+			references: [githubRepoTable.id],
 		}),
 	}),
 );
@@ -211,9 +211,9 @@ export const commitRelations = relations(commitsTable, ({ one }) => ({
 		fields: [commitsTable.pullId],
 		references: [githubPullRequestsTable.externalId],
 	}),
-	task: one(tasksTable, {
-		fields: [commitsTable.taskId],
-		references: [tasksTable.id],
+	repo: one(githubRepoTable, {
+		fields: [commitsTable.repoId],
+		references: [githubRepoTable.externalId],
 	}),
 }));
 
