@@ -95,6 +95,7 @@ type UpsertPullRequestRequest struct {
 	Number int `json:"number"`
 	RepoId string `json:"repoId"`
 	State string `json:"state"`
+	Timestamp string `json:"timestamp"`
 	Title string `json:"title"`
 	Url string `json:"url"`
 }
@@ -144,6 +145,69 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 	var response UpsertPullRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		return UpsertPullRequestResponse{}, fmt.Errorf("error decoding response: %w", err)
+	}
+
+	return response, nil
+	
+}
+
+
+// PushCommitRequest represents the request for pushCommit method
+type PushCommitRequest struct {
+	Author string `json:"author"`
+	Branch string `json:"branch"`
+	Id string `json:"id"`
+	Message string `json:"message"`
+	RepoId string `json:"repoId"`
+	Timestamp string `json:"timestamp"`
+	Url string `json:"url"`
+}
+
+
+
+// PushCommitResponse represents the response from pushCommit method
+type PushCommitResponse struct{}
+
+
+// PushCommit calls the pushCommit RPC method
+func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (PushCommitResponse, error) {
+	endpoint := fmt.Sprintf("%s/github/pushCommit", s.baseURL)
+
+	
+	reqBody, err := json.Marshal(req)
+	if err != nil {
+		return PushCommitResponse{}, fmt.Errorf("error marshaling request: %w", err)
+	}
+	
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return PushCommitResponse{}, fmt.Errorf("error creating request: %w", err)
+	}
+
+	requestID := make([]byte, 6)
+	if _, err := rand.Read(requestID); err != nil {
+		return PushCommitResponse{}, fmt.Errorf("error generating request ID: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("X-Request-ID", base64.URLEncoding.EncodeToString(requestID))
+
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return PushCommitResponse{}, fmt.Errorf("error sending request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return PushCommitResponse{}, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	
+	var response PushCommitResponse
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return PushCommitResponse{}, fmt.Errorf("error decoding response: %w", err)
 	}
 
 	return response, nil

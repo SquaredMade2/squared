@@ -10,6 +10,7 @@ export interface GithubRpc {
 		body: string;
 		author: string;
 		repoId: string;
+		timestamp: string;
 	}) => Promise<void>;
 	pushCommit: (args: {
 		id: string;
@@ -17,7 +18,7 @@ export interface GithubRpc {
 		url: string;
 		author: string;
 		repoId: string;
-		pullId: string;
+		branch: string;
 		timestamp: string;
 	}) => Promise<void>;
 }

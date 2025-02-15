@@ -94,6 +94,7 @@ export const githubPullRequestsTable = pgTable(
 		title: text().notNull(),
 		url: text().notNull(),
 		branch: text().notNull(),
+		timestamp: timestamp({ precision: 3 }).notNull(),
 		body: text(),
 		author: text().notNull(),
 		githubRepoInfoId: text().notNull(),

@@ -53,6 +53,7 @@ export class GithubService implements GithubRpc {
 		body,
 		author,
 		repoId,
+		timestamp,
 	}: {
 		id: string;
 		number: number;
@@ -63,6 +64,7 @@ export class GithubService implements GithubRpc {
 		body: string;
 		author: string;
 		repoId: string;
+		timestamp: string;
 	}) {
 		this.logger.info(
 			`Upserting pull request with id: ${id} and number: ${number}`,
@@ -98,6 +100,7 @@ export class GithubService implements GithubRpc {
 					body,
 					author,
 					githubRepoInfoId: repoId,
+					timestamp: new Date(timestamp),
 				})
 				.onConflictDoUpdate({
 					target: githubPullRequestsTable.externalId,
@@ -120,7 +123,7 @@ export class GithubService implements GithubRpc {
 		url,
 		author,
 		repoId,
-		pullId,
+		branch,
 		timestamp,
 	}: {
 		id: string;
@@ -128,15 +131,15 @@ export class GithubService implements GithubRpc {
 		url: string;
 		author: string;
 		repoId: string;
-		pullId: string;
+		branch: string;
 		timestamp: string;
 	}) {
 		this.logger.info(`Pushing commit with id: ${id}`);
 		return await this.db.transaction(async (tx) => {
 			const [pull] = await tx
-				.select({ id: githubPullRequestsTable.id })
+				.select({ externalId: githubPullRequestsTable.externalId })
 				.from(githubPullRequestsTable)
-				.where(eq(githubPullRequestsTable.externalId, pullId))
+				.where(eq(githubPullRequestsTable.branch, branch))
 				.limit(1);
 			if (!pull) return;
 
@@ -146,7 +149,7 @@ export class GithubService implements GithubRpc {
 				url,
 				author,
 				repoId,
-				pullId,
+				pullId: pull.externalId,
 				timestamp: new Date(timestamp),
 			});
 		});

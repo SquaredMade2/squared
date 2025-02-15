@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/SquaredMade2/squared/apps/integrations/src/gen/rpc"
 	"github.com/joho/godotenv"
@@ -67,19 +68,44 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 
 	pullRequest := webhookEvent.PullRequest
 	request := rpc.UpsertPullRequestRequest{
-		Author: pullRequest.User.Login,
-		Body:   pullRequest.Body,
-		Branch: pullRequest.Head.Ref,
-		Id:     pullRequest.NodeId,
-		Number: pullRequest.Number,
-		RepoId: pullRequest.Base.Repo.NodeId,
-		State:  pullRequest.State,
-		Title:  pullRequest.Title,
-		Url:    pullRequest.HTMLUrl,
+		Author:    pullRequest.User.Login,
+		Body:      pullRequest.Body,
+		Branch:    pullRequest.Head.Ref,
+		Id:        pullRequest.NodeId,
+		Number:    pullRequest.Number,
+		RepoId:    pullRequest.Base.Repo.NodeId,
+		State:     pullRequest.State,
+		Title:     pullRequest.Title,
+		Url:       pullRequest.HTMLUrl,
+		Timestamp: pullRequest.CreatedAt.Format(time.RFC3339),
 	}
 	if _, err := githubService.UpsertPullRequest(context.TODO(), request); err != nil {
 		log.Printf("Error upserting pull request: %v", err)
 		http.Error(w, "Error upserting pull request", http.StatusInternalServerError)
+		return
+	}
+}
+
+func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
+	var webhookEvent WebhookPushCommit
+	err := json.Unmarshal(body, &webhookEvent)
+	if err != nil {
+		log.Printf("Error parsing JSON: %v", err)
+	}
+
+	commit := webhookEvent.HeadCommit
+	request := rpc.PushCommitRequest{
+		Author:    commit.Author.Name,
+		Branch:    commit.TreeId,
+		Id:        commit.Id,
+		Message:   commit.Message,
+		RepoId:    webhookEvent.Repository.NodeId,
+		Timestamp: commit.Timestamp,
+		Url:       commit.Url,
+	}
+	if _, err := githubService.PushCommit(context.TODO(), request); err != nil {
+		log.Printf("Error uploading commit: %v", err)
+		http.Error(w, "Error uploading commit", http.StatusInternalServerError)
 		return
 	}
 }

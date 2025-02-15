@@ -441,7 +441,7 @@ type Pusher struct {
 	Username string `json:"username"`
 }
 
-type WebhookPush struct {
+type WebhookPushCommit struct {
 	// The SHA of the most recent commit on `ref` after the push.
 	After   string `json:"after"`
 	BaseRef string `json:"base_ref"`
