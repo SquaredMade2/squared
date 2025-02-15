@@ -1,7 +1,5 @@
 package github
 
-import "time"
-
 // A Github User
 type User struct {
 	Name              string `json:"name"`
@@ -50,15 +48,15 @@ type Milestone struct {
 	// The state of the milestone. Can be "open" or "closed"
 	State string `json:"state"`
 	// The title of the milestone
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
-	Creator      User      `json:"creator"`
-	OpenIssues   int       `json:"open_issues"`
-	ClosedIssues int       `json:"closed_issues"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	ClosedAt     time.Time `json:"closed_at"`
-	DueOn        time.Time `json:"due_on"`
+	Title        string `json:"title"`
+	Description  string `json:"description"`
+	Creator      User   `json:"creator"`
+	OpenIssues   int    `json:"open_issues"`
+	ClosedIssues int    `json:"closed_issues"`
+	CreatedAt    string `json:"created_at"`
+	UpdatedAt    string `json:"updated_at"`
+	ClosedAt     string `json:"closed_at"`
+	DueOn        string `json:"due_on"`
 }
 
 type Team struct {
@@ -191,10 +189,10 @@ type Repo struct {
 	// Whether the repository is disabled.
 	Disabled bool `json:"disabled"`
 	// The repository visibility: public, private, or internal.
-	Visibility string    `json:"visibility"`
-	PushedAt   time.Time `json:"pushed_at"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	Visibility string `json:"visibility"`
+	PushedAt   string `json:"pushed_at"`
+	CreatedAt  string `json:"created_at"`
+	UpdatedAt  string `json:"updated_at"`
 	// Whether to allow rebase merges for pull requests.
 	AllowRebaseMerge bool   `json:"allow_rebase_merge"`
 	TempCloneToken   string `json:"temp_clone_token"`
@@ -334,10 +332,10 @@ type PullRequest struct {
 	Labels             []Label   `json:"labels"`
 	Milestone          Milestone `json:"milestone"`
 	ActiveLockReason   string    `json:"active_lock_reason"`
-	CreatedAt          time.Time `json:"created_at"`
-	UpdatedAt          time.Time `json:"updated_at"`
-	ClosedAt           time.Time `json:"closed_at"`
-	MergedAt           time.Time `json:"merged_at"`
+	CreatedAt          string    `json:"created_at"`
+	UpdatedAt          string    `json:"updated_at"`
+	ClosedAt           string    `json:"closed_at"`
+	MergedAt           string    `json:"merged_at"`
 	MergeCommitSha     string    `json:"merge_commit_sha"`
 	Assignee           User      `json:"assignee"`
 	Assignees          []User    `json:"assignees"`

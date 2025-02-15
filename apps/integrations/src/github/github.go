@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/SquaredMade2/squared/apps/integrations/src/gen/rpc"
 	"github.com/joho/godotenv"
@@ -77,7 +76,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
 		Url:       pullRequest.HTMLUrl,
-		Timestamp: pullRequest.CreatedAt.Format(time.RFC3339),
+		Timestamp: pullRequest.CreatedAt,
 	}
 	if _, err := githubService.UpsertPullRequest(context.TODO(), request); err != nil {
 		log.Printf("Error upserting pull request: %v", err)
