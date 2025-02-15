@@ -66,6 +66,11 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 	}
+	if webhookEvent.Action != "opened" && webhookEvent.Action != "edited" {
+		log.Printf("Unsupported action: %s", webhookEvent.Action)
+		http.Error(w, "Unsupported action", http.StatusBadRequest)
+		return
+	}
 
 	pullRequest := webhookEvent.PullRequest
 	request := rpc.UpsertPullRequestRequest{
