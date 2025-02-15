@@ -38,13 +38,11 @@ const Join = () => {
 		{
 			queryKey: ["workspaces", user?.id],
 			queryFn: async () => {
-				if (!user?.id) return;
 				const res = await client.workspace.getTakenUrls
 					.$get()
 					.then((res) => res.json());
 				return res;
 			},
-			enabled: !!user?.id,
 		},
 	);
 
@@ -59,7 +57,6 @@ const Join = () => {
 
 	const createWorkspaceMutation = useMutation({
 		mutationFn: async (newWorkspace: { name: string; url: string }) => {
-			if (!user?.id) return;
 			return await client.workspace.createWorkspace
 				.$post(newWorkspace)
 				.then((res) => res.json());
