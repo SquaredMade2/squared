@@ -80,11 +80,12 @@ export const workspaceRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceId, updatedLabel } = input;
+			const { workspaceId, updatedLabel, labelName } = input;
 			const { workspaceService } = ctx;
 			return c.superjson(
 				await workspaceService.updateWorkspaceLabel(TODO, {
 					workspaceId,
+					labelName,
 					updatedLabel,
 				}),
 			);

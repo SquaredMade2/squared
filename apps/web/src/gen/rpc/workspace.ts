@@ -198,6 +198,7 @@ export type CreateWorkspaceLabelResponse = {
 };
 
 export type UpdateWorkspaceLabelRequest = {
+	labelName: string;
 	updatedLabel: {
 		color: string;
 		description?: string | null;
