@@ -20,7 +20,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
-import { Clipboard, Inbox, Moon, Search, Settings, Sun } from "@squared/icons";
+import { Clipboard, Inbox, Moon, Search, Sun } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -107,16 +107,6 @@ function SidebarContent() {
 				</div>
 				<NewTaskButton />
 				<div className="flex flex-col space-y-2">
-					<IconButton
-						icon={Search}
-						label="Search"
-						onClick={() => setShowCommand(true)}
-					/>
-					<IconButton
-						icon={Settings}
-						label="Settings"
-						onClick={() => navigateTo(`${workspace?.url}/settings`)}
-					/>
 					{state === "collapsed" && (
 						<IconButton
 							icon={Search}
