@@ -35,13 +35,8 @@ type GetUserRepositoriesRequest struct {
 }
 
 
-
-// GetUserRepositoriesResponse represents the response from getUserRepositories method
-type GetUserRepositoriesResponse []string
-
-
 // GetUserRepositories calls the getUserRepositories RPC method
-func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepositoriesRequest) (GetUserRepositoriesResponse, error) {
+func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepositoriesRequest) error {
 	endpoint := fmt.Sprintf("%s/github/getUserRepositories", s.baseURL)
 
 	
@@ -53,18 +48,18 @@ func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepo
 
 	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
-		return GetUserRepositoriesResponse{}, fmt.Errorf("error marshaling request: %w", err)
+		return fmt.Errorf("error marshaling request: %w", err)
 	}
 	
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
 	if err != nil {
-		return GetUserRepositoriesResponse{}, fmt.Errorf("error creating request: %w", err)
+		return fmt.Errorf("error creating request: %w", err)
 	}
 
 	requestID := make([]byte, 6)
 	if _, err := rand.Read(requestID); err != nil {
-		return GetUserRepositoriesResponse{}, fmt.Errorf("error generating request ID: %w", err)
+		return fmt.Errorf("error generating request ID: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -72,23 +67,16 @@ func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepo
 
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
-		return GetUserRepositoriesResponse{}, fmt.Errorf("error sending request: %w", err)
+		return fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return GetUserRepositoriesResponse{}, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+		return fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	
-	var response GetUserRepositoriesResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return GetUserRepositoriesResponse{}, fmt.Errorf("error decoding response: %w", err)
-	}
-
-	return response, nil
-	
+	return nil
 }
 
 
@@ -107,13 +95,8 @@ type UpsertPullRequestRequest struct {
 }
 
 
-
-// UpsertPullRequestResponse represents the response from upsertPullRequest method
-type UpsertPullRequestResponse struct{}
-
-
 // UpsertPullRequest calls the upsertPullRequest RPC method
-func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullRequestRequest) (UpsertPullRequestResponse, error) {
+func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullRequestRequest) error {
 	endpoint := fmt.Sprintf("%s/github/upsertPullRequest", s.baseURL)
 
 	
@@ -125,18 +108,18 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 
 	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
-		return UpsertPullRequestResponse{}, fmt.Errorf("error marshaling request: %w", err)
+		return fmt.Errorf("error marshaling request: %w", err)
 	}
 	
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
 	if err != nil {
-		return UpsertPullRequestResponse{}, fmt.Errorf("error creating request: %w", err)
+		return fmt.Errorf("error creating request: %w", err)
 	}
 
 	requestID := make([]byte, 6)
 	if _, err := rand.Read(requestID); err != nil {
-		return UpsertPullRequestResponse{}, fmt.Errorf("error generating request ID: %w", err)
+		return fmt.Errorf("error generating request ID: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -144,23 +127,16 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
-		return UpsertPullRequestResponse{}, fmt.Errorf("error sending request: %w", err)
+		return fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return UpsertPullRequestResponse{}, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+		return fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	
-	var response UpsertPullRequestResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return UpsertPullRequestResponse{}, fmt.Errorf("error decoding response: %w", err)
-	}
-
-	return response, nil
-	
+	return nil
 }
 
 
@@ -176,13 +152,8 @@ type PushCommitRequest struct {
 }
 
 
-
-// PushCommitResponse represents the response from pushCommit method
-type PushCommitResponse struct{}
-
-
 // PushCommit calls the pushCommit RPC method
-func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (PushCommitResponse, error) {
+func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) error {
 	endpoint := fmt.Sprintf("%s/github/pushCommit", s.baseURL)
 
 	
@@ -194,18 +165,18 @@ func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (
 
 	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
-		return PushCommitResponse{}, fmt.Errorf("error marshaling request: %w", err)
+		return fmt.Errorf("error marshaling request: %w", err)
 	}
 	
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
 	if err != nil {
-		return PushCommitResponse{}, fmt.Errorf("error creating request: %w", err)
+		return fmt.Errorf("error creating request: %w", err)
 	}
 
 	requestID := make([]byte, 6)
 	if _, err := rand.Read(requestID); err != nil {
-		return PushCommitResponse{}, fmt.Errorf("error generating request ID: %w", err)
+		return fmt.Errorf("error generating request ID: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -213,22 +184,15 @@ func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (
 
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
-		return PushCommitResponse{}, fmt.Errorf("error sending request: %w", err)
+		return fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return PushCommitResponse{}, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+		return fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	
-	var response PushCommitResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return PushCommitResponse{}, fmt.Errorf("error decoding response: %w", err)
-	}
-
-	return response, nil
-	
+	return nil
 }
 
