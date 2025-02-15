@@ -10,7 +10,6 @@ export default function createSquaredIcon(name: string, svgContent: string) {
       color?: string;
       strokeWidth?: number;
       absoluteStrokeWidth?: boolean;
-      onClick?: () => void
     }
     
   export const ${name}: FC<${name}Props> = ({
