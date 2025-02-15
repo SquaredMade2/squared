@@ -25,16 +25,22 @@ func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
 	}
 }
 
-func webhookHandler(r *http.Request, w http.ResponseWriter, rpc *rpc.Services) {
+func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Printf("Error loading .env file")
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
 	}
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
 	headers := getGitHubWebhookHeaders(r)
 	if headers.XHubSignature != webhookSecret {
 		log.Printf("X-Hub-Signature is missing")
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
 	}
+
+	githubService := rpc.NewGithubService(os.Getenv("SERVER_URL"))
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -43,13 +49,16 @@ func webhookHandler(r *http.Request, w http.ResponseWriter, rpc *rpc.Services) {
 
 	switch headers.XGitHubEvent {
 	case "pull_request":
-		handlePullRequestEvent(body, rpc.GithubService)
+		handlePullRequestEvent(body, githubService, w)
 	default:
 		log.Printf("Unsupported event: %s", headers.XGitHubEvent)
+		http.Error(w, "Unsupported event", http.StatusBadRequest)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
-func handlePullRequestEvent(body []byte, githubService *rpc.GithubService) {
+func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
 	var webhookEvent WebhookPullRequest
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
@@ -68,5 +77,9 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService) {
 		Title:  pullRequest.Title,
 		Url:    pullRequest.HTMLUrl,
 	}
-	githubService.UpsertPullRequest(context.TODO(), request)
+	if _, err := githubService.UpsertPullRequest(context.TODO(), request); err != nil {
+		log.Printf("Error upserting pull request: %v", err)
+		http.Error(w, "Error upserting pull request", http.StatusInternalServerError)
+		return
+	}
 }
