@@ -528,16 +528,8 @@ func zodToGo(schema ZodSchema) string {
 		return "[]interface{}"
 	case "string":
 		return "string"
-	case "integer":
-		return "int"
 	case "number":
-		for _, firstProp := range schema.Properties {
-			if zodToGo(firstProp) == "int" {
-				return "int"
-			}
-			break
-		}
-		return "float64"
+		return "int"
 	case "boolean":
 		return "bool"
 	case "date":

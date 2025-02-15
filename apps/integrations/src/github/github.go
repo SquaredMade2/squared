@@ -63,6 +63,10 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService) {
 		Branch: pullRequest.Head.Ref,
 		Id:     pullRequest.NodeId,
 		Number: pullRequest.Number,
+		RepoId: pullRequest.Base.Repo.NodeId,
+		State:  pullRequest.State,
+		Title:  pullRequest.Title,
+		Url:    pullRequest.HTMLUrl,
 	}
 	githubService.UpsertPullRequest(context.TODO(), request)
 }

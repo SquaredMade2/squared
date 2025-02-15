@@ -297,15 +297,7 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 		return { type: "string" };
 	}
 	if (schema instanceof z.ZodNumber) {
-		return {
-			type: "number",
-			properties: {
-				step: {
-					type: schema.isInt ? "integer" : "number",
-					value: 1,
-				},
-			},
-		};
+		return { type: "number" };
 	}
 	if (schema instanceof z.ZodBoolean) {
 		return { type: "boolean" };

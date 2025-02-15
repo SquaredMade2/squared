@@ -92,7 +92,7 @@ type UpsertPullRequestRequest struct {
 	Body string `json:"body"`
 	Branch string `json:"branch"`
 	Id string `json:"id"`
-	Number float64 `json:"number"`
+	Number int `json:"number"`
 	RepoId string `json:"repoId"`
 	State string `json:"state"`
 	Title string `json:"title"`

@@ -13,7 +13,7 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 	upsertPullRequest: {
 		input: z.object({
 			id: z.string(),
-			number: z.number().int(),
+			number: z.number(),
 			state: z.enum(["open", "closed"]),
 			title: z.string(),
 			url: z.string(),
