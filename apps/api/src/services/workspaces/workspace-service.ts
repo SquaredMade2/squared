@@ -2,6 +2,7 @@ import { getRandomValues } from "node:crypto";
 import { expirationTimeFormat } from "@/utils/helpers";
 import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
+import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
 	type Team,
@@ -45,12 +46,15 @@ export class WorkspaceService implements WorkspaceRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
 	private readonly JWT_SECRET: string;
+	private readonly clerkClient: ClerkClient;
 
-	constructor(db: DBClient, JWT_SECRET?: string) {
+	constructor(db: DBClient, JWT_SECRET?: string, CLERK_SECRET?: string) {
 		this.db = db;
-		if (!JWT_SECRET) this.throwError("JWT_SECRET is not defined.");
-		this.JWT_SECRET = JWT_SECRET;
 		this.logger = createCustomLogger("workspace");
+		if (!JWT_SECRET) this.throwError("JWT_SECRET is not defined.");
+		if (!CLERK_SECRET) this.throwError("CLERK_SECRET is not defined.");
+		this.JWT_SECRET = JWT_SECRET;
+		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 	}
 
 	async createWorkspace({
@@ -64,20 +68,34 @@ export class WorkspaceService implements WorkspaceRpc {
 		);
 
 		return await this.db.transaction(async (tx) => {
-			const existingWorkspace = await tx
-				.select()
-				.from(workspacesTable)
-				.where(eq(workspacesTable.url, workspace.url))
-				.limit(1);
+			const [existingWorkspace, [user]] = await Promise.all([
+				tx
+					.select()
+					.from(workspacesTable)
+					.where(eq(workspacesTable.url, workspace.url))
+					.limit(1),
+				tx
+					.select({ externalId: usersTable.externalId })
+					.from(usersTable)
+					.where(eq(usersTable.externalId, userId))
+					.limit(1),
+			]);
 
 			if (existingWorkspace.length > 0) {
 				throw new Error("Workspace already exists");
 			}
+			const organization =
+				await this.clerkClient.organizations.createOrganization({
+					name: workspace.name,
+					slug: workspace.url,
+					createdBy: user.externalId,
+				});
 
 			const [newWorkspace] = await tx
 				.insert(workspacesTable)
 				.values({
 					...workspace,
+					externalId: organization.id,
 					labels: DEFAULT_LABELS,
 					admins: [userId],
 				})
@@ -90,20 +108,20 @@ export class WorkspaceService implements WorkspaceRpc {
 			const [_, [newTeam]] = await Promise.all([
 				tx.insert(userWorkspacesTable).values({
 					userId: userId,
-					workspaceId: newWorkspace.id,
+					workspaceId: newWorkspace.externalId,
 					role: "owner",
 				}),
 
 				tx
 					.insert(teamsTable)
 					.values({
-						workspaceId: newWorkspace.id,
+						workspaceId: newWorkspace.externalId,
 						name: newWorkspace.name,
 						identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
 					})
 					.returning(),
 			]);
-			tx.insert(userTeamsTable).values({
+			await tx.insert(userTeamsTable).values({
 				userId: userId,
 				teamId: newTeam.id,
 			});
@@ -118,7 +136,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		return await this.db
 			.select()
 			.from(workspacesTable)
-			.where(eq(workspacesTable.id, workspaceId))
+			.where(eq(workspacesTable.externalId, workspaceId))
 			.then((results) => results[0]);
 	}
 
@@ -147,7 +165,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		return await this.db
 			.update(workspacesTable)
 			.set(workspace)
-			.where(eq(workspacesTable.id, workspaceId))
+			.where(eq(workspacesTable.externalId, workspaceId))
 			.returning()
 			.then((results) => results[0]);
 	}
@@ -159,19 +177,19 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		await this.db
 			.delete(workspacesTable)
-			.where(eq(workspacesTable.id, workspaceId));
+			.where(eq(workspacesTable.externalId, workspaceId));
 	}
 
 	async getUserWorkspaces({
 		userId,
 	}: { userId: string }): Promise<Workspace[]> {
-		this.logger.info("Getting workspaces for user %s", userId);
+		this.logger.info("Getting workspaces for user: ", userId);
 		const workspaces = await this.db
 			.select()
 			.from(workspacesTable)
 			.innerJoin(
 				userWorkspacesTable,
-				eq(userWorkspacesTable.workspaceId, workspacesTable.id),
+				eq(userWorkspacesTable.workspaceId, workspacesTable.externalId),
 			)
 			.where(eq(userWorkspacesTable.userId, userId));
 
@@ -302,7 +320,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}): Promise<{ success: boolean }> {
-		this.logger.info("Inviting user to workspace: %0", {
+		this.logger.info("Inviting user to workspace", {
 			email,
 			workspaceId,
 		});
@@ -317,13 +335,13 @@ export class WorkspaceService implements WorkspaceRpc {
 				.from(workspacesTable)
 				.leftJoin(
 					userWorkspacesTable,
-					eq(userWorkspacesTable.workspaceId, workspacesTable.id),
+					eq(userWorkspacesTable.workspaceId, workspacesTable.externalId),
 				)
 				.leftJoin(
 					usersTable,
 					eq(userWorkspacesTable.userId, usersTable.externalId),
 				)
-				.where(eq(workspacesTable.id, workspaceId));
+				.where(eq(workspacesTable.externalId, workspaceId));
 
 			if (workspaceWithUsers.length === 0) {
 				this.throwError("Workspace not found.");
@@ -364,6 +382,14 @@ export class WorkspaceService implements WorkspaceRpc {
 
 			return { success: true };
 		});
+	}
+  async getTakenWorkspaceUrls(): Promise<string[]> {
+		this.logger.info("Getting taken workspace urls");
+
+		return await this.db
+			.select({ url: workspacesTable.url })
+			.from(workspacesTable)
+			.then((results) => results.map((result) => result.url));
 	}
 	async generateWorkspaceInviteLink({
 		workspaceId,
@@ -481,7 +507,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				tx
 					.select()
 					.from(workspacesTable)
-					.where(eq(workspacesTable.id, workspaceId))
+					.where(eq(workspacesTable.externalId, workspaceId))
 					.then((results) => results[0]),
 
 				// Query 3: Find user

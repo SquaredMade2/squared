@@ -110,17 +110,17 @@ export const commitSchema = createSchema<Commit>()(
 export const workspaceSchema = createSchema<Workspace>()(
 	z.object({
 		id: z.string(),
+		externalId: z.string(),
 		name: z.string(),
 		url: z.string(),
 		companySize: z.number().nullable(),
 		tasksCreated: z.number(),
-		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
-		createdAt: z.date(),
 		labels: z.array(labelSchema),
 		inviteLinks: z.array(workspaceInviteLinkSchema),
+		createdAt: z.date(),
 	}),
 );
 
@@ -170,7 +170,6 @@ export const userSchema = createSchema<User>()(
 		username: z.string().nullable(),
 		email: z.string().email(),
 		externalId: z.string(),
-		lastLogin: z.date(),
 		createdAt: z.date(),
 		onBoarding: z.boolean(),
 		defaultWorkspaceId: z.string().nullable(),

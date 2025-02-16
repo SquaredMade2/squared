@@ -6,7 +6,8 @@ import { notFound } from "next/navigation";
 
 type Params = { uid: string };
 
-export default async function DocPage({ params }: { params: Params }) {
+export default async function DocPage(props: { params: Promise<Params> }) {
+	const params = await props.params;
 	const client = createClient();
 	const page = await client
 		.getByUID("documentation", params.uid)
@@ -20,9 +21,10 @@ export default async function DocPage({ params }: { params: Params }) {
 	);
 }
 
-export async function generateMetadata({
-	params,
-}: { params: Params }): Promise<Metadata> {
+export async function generateMetadata(props: {
+	params: Promise<Params>;
+}): Promise<Metadata> {
+	const params = await props.params;
 	const client = createClient();
 	const page = await client
 		.getByUID("documentation", params.uid)

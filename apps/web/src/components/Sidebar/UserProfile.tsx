@@ -35,9 +35,14 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="ghost"
-					className={`w-full justify-start ${state === "collapsed" && "px-1"}`}
+					size={state === "collapsed" ? "icon" : "default"}
+					className={`relative ${
+						state === "collapsed"
+							? "mx-1 justify-center px-3"
+							: "w-full justify-start"
+					}`}
 				>
-					<Avatar className="mr-2 h-6 w-6">
+					<Avatar className="size-5">
 						<AvatarImage src={user?.imageUrl ?? ""} />
 						<AvatarFallback>{user?.firstName?.charAt(0) || "U"}</AvatarFallback>
 					</Avatar>

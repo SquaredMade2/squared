@@ -21,20 +21,20 @@ export type CreateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
 	inviteLinks: {
-	expiration?: number;
-	link: string;
-	uses?: number;
-}[];
+	  expiration?: number;
+	  link: string;
+	  uses?: number;
+  }[];
 	labels: {
-	color: string;
-	description?: string | null;
-	name: string;
-}[];
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -53,20 +53,20 @@ export type GetWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
 	inviteLinks: {
-	expiration?: number;
-	link: string;
-	uses?: number;
-}[];
+	  expiration?: number;
+	  link: string;
+	  uses?: number;
+  }[];
 	labels: {
-	color: string;
-	description?: string | null;
-	name: string;
-}[];
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -85,20 +85,20 @@ export type GetWorkspaceByUrlResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
 	inviteLinks: {
-	expiration?: number;
-	link: string;
-	uses?: number;
-}[];
+	  expiration?: number;
+	  link: string;
+	  uses?: number;
+  }[];
 	labels: {
-	color: string;
-	description?: string | null;
-	name: string;
-}[];
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -122,20 +122,20 @@ export type UpdateWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
 	inviteLinks: {
-	expiration?: number;
-	link: string;
-	uses?: number;
-}[];
+	  expiration?: number;
+	  link: string;
+	  uses?: number;
+  }[];
 	labels: {
-	color: string;
-	description?: string | null;
-	name: string;
-}[];
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 };
 
@@ -163,20 +163,20 @@ export type GetUserWorkspacesResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
 	inviteLinks: {
-	expiration?: number;
-	link: string;
-	uses?: number;
-}[];
+	  expiration?: number;
+	  link: string;
+	  uses?: number;
+  }[];
 	labels: {
-	color: string;
-	description?: string | null;
-	name: string;
-}[];
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 }[];
 
@@ -199,20 +199,20 @@ export type JoinWorkspaceResponse = {
 	companySize: number | null;
 	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
 	inviteLinks: {
-	expiration?: number;
-	link: string;
-	uses?: number;
-}[];
+	  expiration?: number;
+	  link: string;
+	  uses?: number;
+  }[];
 	labels: {
-	color: string;
-	description?: string | null;
-	name: string;
-}[];
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -244,98 +244,122 @@ export type InviteToWorkspaceResponse = {
 	success: boolean;
 };
 
-
-
-
 export type GenerateWorkspaceInviteLinkRequest = {
 	expiration?: string;
 	uses?: number;
 	workspaceId: string;
 };
 
-
-
 export type GenerateWorkspaceInviteLinkResponse = string;
 
-
-
+export type GetTakenWorkspaceUrlsResponse = string[];
 
 /**
  * workspace service
  */
 export class WorkspaceService extends RPCContextClient {
-  constructor(baseUrl: string) {
-    super(baseUrl, "workspace");
-  }
+	constructor(baseUrl: string) {
+		super(baseUrl, "workspace");
+	}
+
+	/**
+	 * createWorkspace method
+	 */
+	createWorkspace(
+		ctx: Context,
+		req: CreateWorkspaceRequest,
+	): Promise<CreateWorkspaceResponse> {
+		return this.request(ctx, "createWorkspace", req);
+	}
+
+	/**
+	 * getWorkspace method
+	 */
+	getWorkspace(
+		ctx: Context,
+		req: GetWorkspaceRequest,
+	): Promise<GetWorkspaceResponse> {
+		return this.request(ctx, "getWorkspace", req);
+	}
+
+	/**
+	 * getWorkspaceByUrl method
+	 */
+	getWorkspaceByUrl(
+		ctx: Context,
+		req: GetWorkspaceByUrlRequest,
+	): Promise<GetWorkspaceByUrlResponse> {
+		return this.request(ctx, "getWorkspaceByUrl", req);
+	}
+
+	/**
+	 * updateWorkspace method
+	 */
+	updateWorkspace(
+		ctx: Context,
+		req: UpdateWorkspaceRequest,
+	): Promise<UpdateWorkspaceResponse> {
+		return this.request(ctx, "updateWorkspace", req);
+	}
+
+	/**
+	 * deleteWorkspace method
+	 */
+	deleteWorkspace(ctx: Context, req: DeleteWorkspaceRequest): Promise<void> {
+		return this.request(ctx, "deleteWorkspace", req);
+	}
+
+	/**
+	 * getUserWorkspaces method
+	 */
+	getUserWorkspaces(
+		ctx: Context,
+		req: GetUserWorkspacesRequest,
+	): Promise<GetUserWorkspacesResponse> {
+		return this.request(ctx, "getUserWorkspaces", req);
+	}
+
+	/**
+	 * joinWorkspace method
+	 */
+	joinWorkspace(
+		ctx: Context,
+		req: JoinWorkspaceRequest,
+	): Promise<JoinWorkspaceResponse> {
+		return this.request(ctx, "joinWorkspace", req);
+	}
+
+	/**
+	 * removeUserFromWorkspace method
+	 */
+	removeUserFromWorkspace(
+		ctx: Context,
+		req: RemoveUserFromWorkspaceRequest,
+	): Promise<RemoveUserFromWorkspaceResponse> {
+		return this.request(ctx, "removeUserFromWorkspace", req);
+	}
+
+	/**
+	 * inviteToWorkspace method
+	 */
+	inviteToWorkspace(
+		ctx: Context,
+		req: InviteToWorkspaceRequest,
+	): Promise<InviteToWorkspaceResponse> {
+		return this.request(ctx, "inviteToWorkspace", req);
+	}
+
+	/**
+	 * getTakenWorkspaceUrls method
+	 */
+	getTakenWorkspaceUrls(ctx: Context): Promise<GetTakenWorkspaceUrlsResponse> {
+		return this.request(ctx, "getTakenWorkspaceUrls");
+	}
   
-  /**
-   * createWorkspace method
-   */
-  createWorkspace(ctx: Context, req: CreateWorkspaceRequest): Promise<CreateWorkspaceResponse> {
-    return this.request(ctx, "createWorkspace", req);
-  }
-  
-  /**
-   * getWorkspace method
-   */
-  getWorkspace(ctx: Context, req: GetWorkspaceRequest): Promise<GetWorkspaceResponse> {
-    return this.request(ctx, "getWorkspace", req);
-  }
-  
-  /**
-   * getWorkspaceByUrl method
-   */
-  getWorkspaceByUrl(ctx: Context, req: GetWorkspaceByUrlRequest): Promise<GetWorkspaceByUrlResponse> {
-    return this.request(ctx, "getWorkspaceByUrl", req);
-  }
-  
-  /**
-   * updateWorkspace method
-   */
-  updateWorkspace(ctx: Context, req: UpdateWorkspaceRequest): Promise<UpdateWorkspaceResponse> {
-    return this.request(ctx, "updateWorkspace", req);
-  }
-  
-  /**
-   * deleteWorkspace method
-   */
-  deleteWorkspace(ctx: Context, req: DeleteWorkspaceRequest): Promise<void> {
-    return this.request(ctx, "deleteWorkspace", req);
-  }
-  
-  /**
-   * getUserWorkspaces method
-   */
-  getUserWorkspaces(ctx: Context, req: GetUserWorkspacesRequest): Promise<GetUserWorkspacesResponse> {
-    return this.request(ctx, "getUserWorkspaces", req);
-  }
-  
-  /**
-   * joinWorkspace method
-   */
-  joinWorkspace(ctx: Context, req: JoinWorkspaceRequest): Promise<JoinWorkspaceResponse> {
-    return this.request(ctx, "joinWorkspace", req);
-  }
-  
-  /**
-   * removeUserFromWorkspace method
-   */
-  removeUserFromWorkspace(ctx: Context, req: RemoveUserFromWorkspaceRequest): Promise<RemoveUserFromWorkspaceResponse> {
-    return this.request(ctx, "removeUserFromWorkspace", req);
-  }
-  
-  /**
-   * inviteToWorkspace method
-   */
-  inviteToWorkspace(ctx: Context, req: InviteToWorkspaceRequest): Promise<InviteToWorkspaceResponse> {
-    return this.request(ctx, "inviteToWorkspace", req);
-  }
-  
-  /**
+   /**
    * generateWorkspaceInviteLink method
    */
   generateWorkspaceInviteLink(ctx: Context, req: GenerateWorkspaceInviteLinkRequest): Promise<GenerateWorkspaceInviteLinkResponse> {
     return this.request(ctx, "generateWorkspaceInviteLink", req);
   }
-  
 }

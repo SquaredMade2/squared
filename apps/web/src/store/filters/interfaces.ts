@@ -30,7 +30,7 @@ export type FilterState = {
 	currentFilterTypes: string[];
 	savedFilters: SavedFilter[];
 	showSaveForm: boolean;
-	searchFilterValue: string
+	searchFilterValue: string;
 };
 
 export interface FilterResponse {

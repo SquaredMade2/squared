@@ -10,6 +10,10 @@ export const workspaceRouter = router({
 			await workspaceService.getUserWorkspaces(TODO, { userId: user.id }),
 		);
 	}),
+	getTakenUrls: privateProcedure.query(async ({ c, ctx }) => {
+		const { workspaceService } = ctx;
+		return c.json(await workspaceService.getTakenWorkspaceUrls(TODO));
+	}),
 	getWorkspaceByUrl: privateProcedure
 		.input(z.object({ workspaceUrl: z.string() }))
 		.query(async ({ c, ctx, input }) => {

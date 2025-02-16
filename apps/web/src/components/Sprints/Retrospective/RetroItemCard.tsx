@@ -18,7 +18,7 @@ export const RetroItemCard = ({
 }: {
 	item: RetroItem;
 	index: number;
-	onLikeItem: (itemId: string, userId: string) => void;
+	onLikeItem: (itemId: string) => void;
 }) => {
 	const { users } = useUserStore((state) => state);
 	const author = users.find((u) => u.externalId === item.authorId);
@@ -51,7 +51,7 @@ export const RetroItemCard = ({
 											<Button
 												variant="outline"
 												className="gap-2"
-												onClick={() => onLikeItem(item.id, author.id)}
+												onClick={() => onLikeItem(item.id)}
 											>
 												<ThumbsUp className="h-4 w-4" />
 												{item.likes.length}

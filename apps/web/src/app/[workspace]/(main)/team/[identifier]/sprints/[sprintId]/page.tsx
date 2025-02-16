@@ -1,22 +1,5 @@
 "use client";
 
-import { differenceInDays, format } from "date-fns";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import {
-	Cell,
-	Line,
-	LineChart,
-	Pie,
-	PieChart,
-	ReferenceLine,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts";
-
 import {
 	AssignTasksDialog,
 	SprintError,
@@ -45,15 +28,30 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
-
 import { useSprints } from "@/hooks/useSprints";
-import { sprintService, taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
-import { TODO } from "@squared/context";
 import type { Sprint, Status, Task } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
+import { differenceInDays, format } from "date-fns";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import {
+	Cell,
+	Line,
+	LineChart,
+	Pie,
+	PieChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 
@@ -160,36 +158,60 @@ export default function SprintDashboardPage() {
 		}));
 	};
 
-	const handleBulkAssign = async () => {
-		if (!sprint) return;
-		await taskService.addSprintTasks(TODO, {
-			sprintId: sprint.id,
-			taskIds: selectedTasks.map((t) => t.id),
-		});
-		setSelectedTasks([]);
-		team && setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
-	};
+	const { mutate: handleBulkAssign } = useMutation({
+		mutationKey: ["sprintAssign", sprint?.id],
+		mutationFn: async () => {
+			if (!sprint) throw new Error("Sprint not found");
+			return await client.sprint.addSprintTasks
+				.$post({
+					sprintId: sprint.id,
+					taskIds: selectedTasks.map((t) => t.id),
+				})
+				.then((res) => res.json());
+		},
+		onError: (error) => {
+			toast({
+				title: "Failed to assign tasks to sprint",
+				description: parseError(error, "Unknown error"),
+				variant: "destructive",
+			});
+		},
+		onSuccess: (data) => {
+			toast({ title: "Tasks assigned to sprint" });
+			setTasks(data);
+		},
+	});
+
+	const { mutate: endSprint } = useMutation({
+		mutationKey: ["sprintEnd", sprint?.id],
+		mutationFn: async () => {
+			if (!sprint) throw new Error("Sprint not found");
+			return await client.sprint.endSprint
+				.$post({
+					sprintId: sprint.id,
+				})
+				.then((res) => res.json());
+		},
+		onError: (error) => {
+			toast({
+				title: "Failed to end the sprint.",
+				description: parseError(error, "Unknown error"),
+				variant: "destructive",
+			});
+		},
+		onSuccess: () => {
+			toast({ title: "Sprint ended successfully" });
+			router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
+		},
+	});
 
 	const handleEndSprintConfirm = async () => {
 		if (!sprint || !team) return;
 
-		try {
-			if (newSprint) {
-				setShowNextSprint(true);
-			} else {
-				await sprintService.endSprint(TODO, {
-					sprintId: sprint.id,
-				});
-				toast({ title: "Sprint ended successfully" });
-				router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
-			}
-		} catch (error) {
-			console.error("Error ending sprint:", error);
-			toast({
-				title: "Failed to end the sprint.",
-				description: error instanceof Error ? error.message : "Unknown error",
-				variant: "destructive",
-			});
+		if (newSprint) {
+			setShowNextSprint(true);
+		} else {
+			endSprint();
 		}
 	};
 
@@ -391,7 +413,7 @@ export default function SprintDashboardPage() {
 				<div className="space-x-4">
 					<AssignTasksDialog
 						activeSprint={sprint}
-						handleBulkAssign={handleBulkAssign}
+						handleBulkAssign={() => handleBulkAssign()}
 						selectedTasks={selectedTasks}
 						setSelectedTasks={setSelectedTasks}
 						unassignedTasks={unassignedTasks}
@@ -414,29 +436,31 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="all">
-					<TaskList tasks={sprintTasks} />
-				</TabsContent>
-				<TabsContent value="todo">
-					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "todo")}
-					/>
-				</TabsContent>
-				<TabsContent value="inProgress">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) =>
-								task.status === "inProgress" || task.status === "inReview",
-						)}
-					/>
-				</TabsContent>
-				<TabsContent value="done">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) => task.status === "done" || task.status === "canceled",
-						)}
-					/>
-				</TabsContent>
+				<div className="scrollbar-thumb-[hsl(var(--border))] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
+					<TabsContent value="all">
+						<TaskList tasks={sprintTasks} />
+					</TabsContent>
+					<TabsContent value="todo">
+						<TaskList
+							tasks={sprintTasks.filter((task) => task.status === "todo")}
+						/>
+					</TabsContent>
+					<TabsContent value="inProgress">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) =>
+									task.status === "inProgress" || task.status === "inReview",
+							)}
+						/>
+					</TabsContent>
+					<TabsContent value="done">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) => task.status === "done" || task.status === "canceled",
+							)}
+						/>
+					</TabsContent>
+				</div>
 			</Tabs>
 
 			<AlertDialog
@@ -472,20 +496,35 @@ export default function SprintDashboardPage() {
 
 function TaskList({ tasks }: { tasks: Task[] }) {
 	return (
-		<div className="space-y-2">
-			{tasks.map((task) => (
-				<Card key={task.id}>
-					<CardHeader>
-						<CardTitle>{task.title}</CardTitle>
-						<CardDescription>
-							Status: {formatStatus(task.status)}
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p>{task.description}</p>
-					</CardContent>
-				</Card>
-			))}
+		<div>
+			{tasks.length > 0 ? (
+				<div className="space-y-2">
+					{tasks.map((task) => (
+						<Card key={task.id}>
+							<CardHeader>
+								<CardTitle>{task.title}</CardTitle>
+								<CardDescription className="w-fit rounded-lg border-2 px-2 py-1">
+									Status: {formatStatus(task.status)}
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<p>{task.description}</p>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+			) : (
+				<div className="space-y-2">
+					<Card className="text-center text-muted-foreground">
+						<CardHeader>
+							<CardTitle>No tasks</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p>There are no tasks within this category for this sprint.</p>
+						</CardContent>
+					</Card>
+				</div>
+			)}
 		</div>
 	);
 }

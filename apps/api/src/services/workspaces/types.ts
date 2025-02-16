@@ -48,4 +48,5 @@ export interface WorkspaceRpc {
 		expiration?: string;
 		uses?: number;
 	}) => Promise<string>;
+	getTakenWorkspaceUrls: () => Promise<string[]>;
 }

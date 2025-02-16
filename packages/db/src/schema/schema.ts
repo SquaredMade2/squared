@@ -29,7 +29,7 @@ export const teamsTable = pgTable(
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		name: text(),
 		identifier: text().notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		sprintsEnabled: boolean().default(false).notNull(),
 		sprintDuration: integer().default(2).notNull(),
 		cooldownDuration: integer().default(1).notNull(),
@@ -45,7 +45,7 @@ export const teamsTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Team_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -131,7 +131,7 @@ export const notificationsTable = pgTable(
 		description: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		dismissed: boolean().default(false).notNull(),
 		type: notificationType().notNull(),
 		userId: text().notNull(),
@@ -146,7 +146,7 @@ export const notificationsTable = pgTable(
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Notification_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -165,11 +165,11 @@ export const workspacesTable = pgTable(
 	"Workspace",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().notNull().unique(),
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
 		tasksCreated: integer().default(0).notNull(),
-		universalTokenLinkId: text(),
 		avatarUrl: text(),
 		admins: text().array().default([]).notNull(),
 		defaultView: text(),
@@ -192,9 +192,8 @@ export const usersTable = pgTable(
 		name: text().notNull(),
 		username: text(),
 		email: text().notNull(),
-		lastLogin: timestamp({ precision: 3 }).defaultNow().notNull(),
 		onBoarding: boolean().default(true).notNull(),
-		defaultWorkspaceId: uuid(),
+		defaultWorkspaceId: text(),
 		avatarUrl: text(),
 		savedNotificationIds: uuid().array().default([]).notNull(),
 		subscribedTasks: text().array().default([]).notNull(),
@@ -210,7 +209,7 @@ export const usersTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.defaultWorkspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "User_defaultWorkspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -257,7 +256,7 @@ export const tasksTable = pgTable(
 		teamId: uuid().notNull(),
 		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		deleted: boolean().default(false).notNull(),
 		parentId: uuid(),
@@ -295,7 +294,7 @@ export const tasksTable = pgTable(
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Task_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -324,34 +323,11 @@ export const tasksTable = pgTable(
 	],
 );
 
-export const universalTokenLinksTable = pgTable(
-	"UniversalTokenLink",
-	{
-		id: uuid().primaryKey().notNull(),
-		token: text().notNull(),
-		isEnabled: boolean().default(true).notNull(),
-		workspaceId: uuid().notNull(),
-	},
-	(table) => [
-		uniqueIndex("UniversalTokenLink_workspaceId_key").using(
-			"btree",
-			table.workspaceId.asc().nullsLast().op("uuid_ops"),
-		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
-			name: "UniversalTokenLink_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
-
 export const workspaceRepositoriesTable = pgTable(
 	"WorkspaceRepositories",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		repoId: uuid().notNull(),
 	},
 	(table) => [
@@ -362,7 +338,7 @@ export const workspaceRepositoriesTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "WorkspaceRepositories_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -383,7 +359,7 @@ export const projectsTable = pgTable(
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		teamId: uuid(),
-		workspaceId: uuid(),
+		workspaceId: text(),
 	},
 	(table) => [
 		foreignKey({
@@ -395,7 +371,7 @@ export const projectsTable = pgTable(
 			.onDelete("set null"),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "Project_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -468,7 +444,7 @@ export const savedFiltersTable = pgTable(
 		name: text().notNull(),
 		description: text().default(""),
 		filter: jsonb().$type<FilterCondition[]>().notNull(),
-		workspaceId: uuid(),
+		workspaceId: text(),
 		teamId: uuid(),
 		type: savedFilterType().notNull(),
 		sprintId: uuid(),
@@ -485,7 +461,7 @@ export const savedFiltersTable = pgTable(
 		),
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "SavedFilter_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -585,14 +561,14 @@ export const blockedTasksTable = pgTable(
 export const userWorkspacesTable = pgTable(
 	"UserWorkspace",
 	{
-		workspaceId: uuid().notNull(),
+		workspaceId: text().notNull(),
 		userId: text().notNull(),
 		role: workspaceRoleType().notNull(),
 	},
 	(table) => [
 		foreignKey({
 			columns: [table.workspaceId],
-			foreignColumns: [workspacesTable.id],
+			foreignColumns: [workspacesTable.externalId],
 			name: "UserWorkspace_workspaceId_fkey",
 		})
 			.onUpdate("cascade")
@@ -657,7 +633,6 @@ export type Sprint = typeof sprintsTable.$inferSelect;
 export type Task = typeof tasksTable.$inferSelect;
 export type TaskEvent = typeof taskEventsTable.$inferSelect;
 export type Team = typeof teamsTable.$inferSelect;
-export type UniversalTokenLink = typeof universalTokenLinksTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
 export type UserTeam = typeof userTeamsTable.$inferSelect;
 export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;

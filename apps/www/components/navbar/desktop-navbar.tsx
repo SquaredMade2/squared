@@ -69,11 +69,11 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 				<Button
 					variant="simple"
 					as={Link}
-					href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}
+					href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-in`}
 				>
 					Login
 				</Button>
-				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}>
 					Sign Up
 				</Button>
 			</div>

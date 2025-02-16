@@ -2,6 +2,7 @@
 
 import {
 	InviteModal,
+	NewTaskModal,
 	TaskSelector,
 	WorkspaceInviteModal,
 	WorkspaceSwitcher,
@@ -67,6 +68,7 @@ export default function ClientLayoutWrapper({
 								<WorkspaceSwitcher />
 								<TaskSelector />
 								<InviteModal />
+								<NewTaskModal />
 								{children}
 							</>
 						)}

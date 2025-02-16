@@ -250,7 +250,38 @@ export type AddSprintTasksRequest = {
 	taskIds: string[];
 };
 
-export type AddSprintTasksResponse = number;
+export type AddSprintTasksResponse = {
+	assigneeId: string | null;
+	authorId: string;
+	dateCreated: Date;
+	deleted: boolean;
+	description: string | null;
+	dueDate: Date | null;
+	effortEstimate: number | null;
+	id: string;
+	identifier: string;
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
+	order: number;
+	parentId: string | null;
+	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId: string | null;
+	status:
+		| "backlog"
+		| "todo"
+		| "inProgress"
+		| "inReview"
+		| "done"
+		| "canceled"
+		| "archived";
+	teamId: string;
+	title: string;
+	updatedAt: Date;
+	workspaceId: string;
+}[];
 
 export type ReorderSubtasksRequest = {
 	newOrder: string[];

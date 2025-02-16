@@ -299,4 +299,25 @@ export const taskRouter = router({
 				}),
 			);
 		}),
+	updateSubtaskOrder: privateProcedure
+		.input(
+			z.object({
+				parentId: z.string(),
+				newOrder: z.string().array(),
+				teamId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { parentId, newOrder, teamId } = input;
+			await taskService.reorderSubtasks(TODO, {
+				parentId,
+				newOrder,
+			});
+			return c.superjson(
+				await taskService.getTeamTasks(TODO, {
+					teamId,
+				}),
+			);
+		}),
 });

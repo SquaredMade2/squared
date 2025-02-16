@@ -18,7 +18,7 @@ export const createFilterStore = (
 		currentFilterTypes: [],
 		savedFilters: [],
 		showSaveForm: false,
-		searchFilterValue: '',
+		searchFilterValue: "",
 	},
 ) => {
 	return createStore<FilterStore>()(
@@ -29,17 +29,18 @@ export const createFilterStore = (
 					set({ currentFilters: filter });
 				},
 				setSearchFilter: (input: string): void => {
-					set({searchFilterValue: input})
+					set({ searchFilterValue: input });
 				},
 				filterSearchTasks: (tasks: Task[]): Task[] => {
 					const filterValue = get().searchFilterValue;
 					if (!filterValue) {
-					  return tasks;
+						return tasks;
 					}
-		  
+
 					return tasks.filter((task) =>
-					  task.title.toLowerCase().includes(filterValue.toLowerCase()));
-				  },
+						task.title.toLowerCase().includes(filterValue.toLowerCase()),
+					);
+				},
 				setShowSaveForm: (input): void => {
 					set({ showSaveForm: input });
 				},

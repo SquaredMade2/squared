@@ -23,7 +23,7 @@ export class FilterService implements FilterRpc {
 	}
 
 	async createFilter(params: CreateFilterParams): Promise<SavedFilter> {
-		this.logger.info("Creating filter with payload: %0", params);
+		this.logger.info("Creating filter with payload", params);
 		return await this.db
 			.insert(savedFiltersTable)
 			.values({
@@ -44,7 +44,7 @@ export class FilterService implements FilterRpc {
 	}
 
 	async getFilters({ teamId }: { teamId: string }): Promise<SavedFilter[]> {
-		this.logger.info("Getting filters for team with id: %s", teamId);
+		this.logger.info("Getting filters for team with id", teamId);
 		return this.db
 			.select()
 			.from(savedFiltersTable)
@@ -68,7 +68,7 @@ export class FilterService implements FilterRpc {
 			filter: FilterCondition[];
 		};
 	}): Promise<SavedFilter> {
-		this.logger.info("Updating filter with id: %s", filterId);
+		this.logger.info("Updating filter with id", filterId);
 
 		const [updatedFilter] = await this.db
 			.update(savedFiltersTable)
@@ -88,7 +88,7 @@ export class FilterService implements FilterRpc {
 	}
 
 	async deleteFilter({ filterId }: { filterId: string }): Promise<void> {
-		this.logger.info("Deleting filter with id: %s", filterId);
+		this.logger.info("Deleting filter with id", filterId);
 
 		const result = await this.db
 			.delete(savedFiltersTable)

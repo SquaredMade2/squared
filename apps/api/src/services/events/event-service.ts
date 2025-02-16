@@ -57,7 +57,7 @@ export class EventService implements EventRpc {
 	async getNotifications({
 		userId,
 	}: { userId: string }): Promise<FullNotification[]> {
-		this.logger.info(`Fetching Notifications for User ID ${userId}...`);
+		this.logger.info("Fetching Notifications for userId: ", userId);
 		const notifications = await this.db
 			.select({
 				notification: notificationsTable,
@@ -68,7 +68,7 @@ export class EventService implements EventRpc {
 			.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
 			.leftJoin(
 				workspacesTable,
-				eq(notificationsTable.workspaceId, workspacesTable.id),
+				eq(notificationsTable.workspaceId, workspacesTable.externalId),
 			)
 			.where(eq(notificationsTable.userId, userId));
 
@@ -202,7 +202,7 @@ export class EventService implements EventRpc {
 				.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
 				.leftJoin(
 					workspacesTable,
-					eq(notificationsTable.workspaceId, workspacesTable.id),
+					eq(notificationsTable.workspaceId, workspacesTable.externalId),
 				)
 				.where(inArray(notificationsTable.id, notificationIds));
 

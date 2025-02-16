@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import { z } from "zod";
-import { workspaceLabelSchema, workspaceRoleEnum } from "../schema";
+import { workspaceRoleEnum, workspaceSchema } from "../schema";
 import type { WorkspaceParams, WorkspaceRpc } from "./types";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
@@ -24,26 +24,26 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 				name: z.string(),
 			}),
 		}),
-		output: workspaceLabelSchema,
+		output: workspaceSchema,
 	},
 	getWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
 		}),
-		output: workspaceLabelSchema.nullable(),
+		output: workspaceSchema.nullable(),
 	},
 	getWorkspaceByUrl: {
 		input: z.object({
 			url: z.string(),
 		}),
-		output: workspaceLabelSchema.nullable(),
+		output: workspaceSchema.nullable(),
 	},
 	updateWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
 			workspace: workspaceParamsSchema,
 		}),
-		output: workspaceLabelSchema,
+		output: workspaceSchema,
 	},
 	deleteWorkspace: {
 		input: z.object({
@@ -55,7 +55,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		input: z.object({
 			userId: z.string(),
 		}),
-		output: z.array(workspaceLabelSchema),
+		output: z.array(workspaceSchema),
 	},
 	joinWorkspace: {
 		input: z.object({
@@ -65,7 +65,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			workspaceName: z.string().optional(),
 			role: workspaceRoleEnum.optional(),
 		}),
-		output: workspaceLabelSchema.nullable(),
+		output: workspaceSchema.nullable(),
 	},
 	removeUserFromWorkspace: {
 		input: z.object({
@@ -88,6 +88,10 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			uses: z.number().optional(),
 		}),
 		output: z.string(),
+  },
+	getTakenWorkspaceUrls: {
+		input: z.undefined(),
+		output: z.array(z.string()),
 	},
 });
 
@@ -107,6 +111,7 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
 		generateWorkspaceInviteLink: (input) =>
 			workspaceService.generateWorkspaceInviteLink(input),
+		getTakenWorkspaceUrls: () => workspaceService.getTakenWorkspaceUrls(),
 	});
 
 export { WorkspaceService } from "./workspace-service";
