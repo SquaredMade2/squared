@@ -2,17 +2,28 @@ package github
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/SquaredMade2/squared/apps/integrations/gen/rpc"
 	"github.com/joho/godotenv"
 )
 
 func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
+	fmt.Println("Received Headers:")
+	for name, values := range r.Header {
+		for _, value := range values {
+			fmt.Printf("%s: %s\n", name, value)
+		}
+	}
 	return GitHubWebhookHeaders{
 		XGitHubHookID:                     r.Header.Get("X-GitHub-Hook-ID"),
 		XGitHubEvent:                      r.Header.Get("X-GitHub-Event"),
@@ -25,6 +36,36 @@ func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
 	}
 }
 
+func verifySignature256(r *http.Request, secret string, headers GitHubWebhookHeaders) bool {
+	// Read the request body
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Error reading request body:", err)
+		return false
+	}
+
+	// Reset request body so it can be read again downstream
+	r.Body = io.NopCloser(strings.NewReader(string(body)))
+
+	// Compute HMAC-SHA256 using webhook secret
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write(body)
+	expectedMAC := mac.Sum(nil)
+	expectedSignature := "sha256=" + hex.EncodeToString(expectedMAC)
+
+	// Compare computed signature with the one in the header
+	return hmac.Equal([]byte(headers.XHubSignature256), []byte(expectedSignature))
+}
+
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
+}
+
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	err := godotenv.Load()
 	if err != nil {
@@ -33,10 +74,15 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
+	if webhookSecret == "" {
+		log.Println("WEBHOOK_SECRET is not set")
+		http.Error(w, "Server error", http.StatusInternalServerError)
+		return
+	}
 	headers := getGitHubWebhookHeaders(r)
-	if headers.XHubSignature != webhookSecret {
-		log.Printf("X-Hub-Signature is missing")
-		http.Error(w, "Error reading request body", http.StatusBadRequest)
+	if !verifySignature256(r, webhookSecret, headers) {
+		log.Println("X-Hub-Signature-256 is incorrect")
+		http.Error(w, "Error verifying request signature", http.StatusBadRequest)
 		return
 	}
 
@@ -65,7 +111,10 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 	}
-	if webhookEvent.Action != "opened" && webhookEvent.Action != "edited" {
+
+	supportedActions := []string{"opened", "edited", "reopened"}
+
+	if !contains(supportedActions, webhookEvent.Action) {
 		log.Printf("Unsupported action: %s", webhookEvent.Action)
 		http.Error(w, "Unsupported action", http.StatusBadRequest)
 		return
