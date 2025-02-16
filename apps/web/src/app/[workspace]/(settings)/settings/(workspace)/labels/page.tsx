@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 export default function WorkspaceLabelsPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 
-	const { data: workspaceLabels = [] } = useQuery({
+	const { data: workspaceLabels = [], refetch } = useQuery({
 		queryKey: ["workspaceLabels", workspace?.id],
 		queryFn: async () => {
 			if (!workspace) return [];
@@ -28,7 +28,7 @@ export default function WorkspaceLabelsPage() {
 		meta: {
 			page: "workspaceLabels",
 			pageId: workspace?.id,
-			workspaceLabels: workspaceLabels,
+			refetch: refetch,
 		},
 	}));
 

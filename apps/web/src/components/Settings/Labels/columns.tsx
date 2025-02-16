@@ -50,14 +50,13 @@ export const columns: ColumnDef<Label>[] = [
 		accessorKey: "delete",
 		cell: ({ row, column }) => {
 			const labelName = row.original.name;
-			const { pageId, labels, refetch } = column.columnDef.meta || {};
+			const { pageId, refetch } = column.columnDef.meta || {};
 
 			return (
 				<div className="flex w-[80px] justify-center">
 					<DeleteLabelButton
 						labelName={labelName}
 						pageId={pageId}
-						labels={labels}
 						refetch={refetch}
 					/>
 				</div>

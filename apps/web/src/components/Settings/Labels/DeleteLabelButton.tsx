@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import type { Label } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
 
 export const DeleteLabelButton = ({
 	labelName,
 	pageId,
-	labels,
 	refetch,
 }: {
 	labelName: string;
 	pageId: string;
-	labels: Label[];
 	refetch: () => void;
 }) => {
 	const { toast } = useToast();
@@ -26,7 +23,7 @@ export const DeleteLabelButton = ({
 		},
 		onSuccess: () => {
 			toast({ title: `${labelName} successfully deleted` });
-			labels && refetch();
+			refetch();
 		},
 		onError: (error) => {
 			console.error(error);
