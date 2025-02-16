@@ -7,12 +7,48 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
+var server *http.Server
+
+func startServer() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/rpc/github/upsertPullRequest", handleRequest)
+	mux.HandleFunc("/rpc/github/pushCommit", handleRequest)
+
+	server = &http.Server{
+		Addr:    ":5173",
+		Handler: mux,
+	}
+
+	log.Println("Test API server starting on port 5173")
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Could not listen on :5173: %v\n", err)
+		}
+	}()
+}
+
+func stopServer() {
+	if server != nil {
+		if err := server.Close(); err != nil {
+			log.Fatalf("Could not stop server: %v\n", err)
+		}
+		log.Println("Test API server stopped")
+	}
+}
+
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
+}
+
 func TestWebhookHandler(t *testing.T) {
+	startServer()
 	// Test cases
 	testCases := []struct {
 		name           string
@@ -90,6 +126,7 @@ func TestWebhookHandler(t *testing.T) {
 			}
 		})
 	}
+	stopServer()
 }
 
 func TestVerifySignature256(t *testing.T) {
