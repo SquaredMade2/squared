@@ -6,12 +6,14 @@ import (
 	"os"
 
 	"github.com/SquaredMade2/squared/apps/integrations/github"
+	"github.com/SquaredMade2/squared/apps/integrations/vercel"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/github", github.WebhookHandler)
+	http.HandleFunc("/vercel", vercel.WebhookHandler)
 	err := godotenv.Load()
 	if err != nil {
 		log.Printf("Error loading .env file")
@@ -19,7 +21,7 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8081"
+		port = "3131"
 	}
 	log.Printf("Server starting on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

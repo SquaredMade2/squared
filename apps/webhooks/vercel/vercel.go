@@ -1,4 +1,4 @@
-package main
+package vercel
 
 import (
 	"crypto/hmac"
@@ -73,17 +73,7 @@ var logLevelToPriority = map[LogLevel]syslog.Priority{
 	LogLevelInfo:  syslog.LOG_INFO,
 }
 
-func main() {
-	http.HandleFunc("/", handleRequest)
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3131"
-	}
-	log.Printf("Server starting on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
-}
-
-func handleRequest(w http.ResponseWriter, r *http.Request) {
+func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	integrationSecret := os.Getenv("VERCEL_SIGNATURE")
 	if integrationSecret == "" {
 		log.Println("Missing integration secret")

@@ -1,4 +1,4 @@
-package main
+package vercel
 
 import (
 	"crypto/hmac"
@@ -174,7 +174,7 @@ func TestHandleRequest(t *testing.T) {
 			}
 
 			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(handleRequest)
+			handler := http.HandlerFunc(WebhookHandler)
 
 			handler.ServeHTTP(rr, req)
 
