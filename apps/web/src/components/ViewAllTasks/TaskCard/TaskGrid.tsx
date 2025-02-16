@@ -2,6 +2,11 @@ import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
@@ -12,6 +17,7 @@ import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 
@@ -24,6 +30,7 @@ const TaskGrid = ({
 	isDisabled = false,
 }: TaskGridProps) => {
 	const { getGridOptions } = useViewStore((state) => state);
+	const [isOpen, setIsOpen] = useState(false);
 
 	const {
 		identifier: showIdentifier,
@@ -50,15 +57,29 @@ const TaskGrid = ({
 							(user?.name ? (
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger>
-											<Avatar className="size-6">
-												<AvatarImage src={user.avatarUrl ?? undefined} />
-												<AvatarFallback className="text-xxs">
-													{getInitials(user.name)}
-												</AvatarFallback>
-											</Avatar>
-										</TooltipTrigger>
-										<TooltipContent>{user.name}</TooltipContent>
+										<Popover open={isOpen}>
+											<TooltipTrigger asChild>
+												<PopoverTrigger asChild>
+													<Avatar
+														className="size-6"
+														onClick={(e) => {
+															e.preventDefault();
+															setIsOpen(!isOpen);
+														}}
+													>
+														<AvatarImage src={user.avatarUrl ?? undefined} />
+														<AvatarFallback className="text-xxs">
+															{getInitials(user.name)}
+														</AvatarFallback>
+													</Avatar>
+												</PopoverTrigger>
+											</TooltipTrigger>
+											<TooltipContent>{user.name}</TooltipContent>
+											<PopoverContent className="w-48">
+												<p>{user.email}</p>
+												<p>Profile settings</p>
+											</PopoverContent>
+										</Popover>
 									</Tooltip>
 								</TooltipProvider>
 							) : (
