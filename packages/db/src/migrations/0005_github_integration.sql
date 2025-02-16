@@ -49,7 +49,6 @@ ALTER TABLE "GithubRepoInfo" DISABLE ROW LEVEL SECURITY;--> statement-breakpoint
 DROP TABLE "Branch" CASCADE;--> statement-breakpoint
 DROP TABLE "Commit" CASCADE;--> statement-breakpoint
 DROP TABLE "GithubRepoInfo" CASCADE;--> statement-breakpoint
-ALTER TABLE "WorkspaceRepositories" DROP CONSTRAINT "WorkspaceRepositories_repoId_fkey";
 --> statement-breakpoint
 ALTER TABLE "GithubCommit" ADD CONSTRAINT "Commit_pull_request_fkey" FOREIGN KEY ("pullId") REFERENCES "public"."GithubPullRequest"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "GithubCommit" ADD CONSTRAINT "Commit_task_fkey" FOREIGN KEY ("repoId") REFERENCES "public"."GithubRepo"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
