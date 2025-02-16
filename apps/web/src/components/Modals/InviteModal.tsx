@@ -3,7 +3,8 @@
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { number } from "zod";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -27,7 +28,7 @@ import { toast } from "../ui/use-toast";
 
 export const InviteModal = () => {
 	const [expirationPeriod, setExpirationPeriod] = useState<string>("7d");
-	const [numberUses, setNumberUses] = useState<number | undefined>();
+	const [numberUses, setNumberUses] = useState<number | undefined>(undefined);
 	const [isUnlimitedUses, setIsUnlimitedUses] = useState<boolean>(false);
 	const [link, setLink] = useState<string>("");
 	const { showInvite, setShowInvite } = useModalStore((state) => state);
@@ -70,6 +71,20 @@ export const InviteModal = () => {
 			setLink("Failed to generate link");
 		},
 	});
+
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const updateUses = useCallback((e: { target: HTMLInputElement }) => {
+		const uses = Number(e.target.value);
+
+		if (timerRef.current) {
+			clearTimeout(timerRef.current);
+		}
+
+		timerRef.current = setTimeout(() => {
+			setNumberUses(uses);
+		}, 1000);
+	}, []);
 
 	const generateLink = () => {
 		workspace && createWorkspaceLinkMutation.mutate();
@@ -135,7 +150,7 @@ export const InviteModal = () => {
 								type="number"
 								min={1}
 								disabled={isUnlimitedUses}
-								onChange={() => setNumberUses(1)}
+								onChange={(e: { target: HTMLInputElement }) => updateUses(e)}
 							/>
 							<div className="flex gap-2">
 								<Checkbox
