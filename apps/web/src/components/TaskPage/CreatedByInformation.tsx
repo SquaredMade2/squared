@@ -43,7 +43,7 @@ export const CreatedByInformation = () => {
 	const getName = (user?: PublicUserData) => {
 		return user?.firstName
 			? `${user.firstName} ${user.lastName}`
-			: "Uknown User";
+			: "Unknown User";
 	};
 
 	return (
