@@ -1,4 +1,4 @@
-module github.com/SquaredMade2/squared/apps/integrations
+module github.com/SquaredMade2/squared/apps/webhooks
 
 go 1.23.4
 

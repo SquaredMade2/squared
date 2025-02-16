@@ -12,7 +12,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/SquaredMade2/squared/apps/integrations/gen/rpc"
+	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
 	"github.com/joho/godotenv"
 )
 

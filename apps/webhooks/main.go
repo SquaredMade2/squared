@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/SquaredMade2/squared/apps/integrations/github"
-	"github.com/SquaredMade2/squared/apps/integrations/vercel"
+	"github.com/SquaredMade2/squared/apps/webhooks/github"
+	"github.com/SquaredMade2/squared/apps/webhooks/vercel"
 	"github.com/joho/godotenv"
 )
 
