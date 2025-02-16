@@ -36,6 +36,13 @@
 			"when": 1739304372753,
 			"tag": "0004_clerk_organizations",
 			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1739681494585,
+			"tag": "0005_github_integration",
+			"breakpoints": true
 		}
 	]
 }

@@ -44,18 +44,6 @@ export const workspaceRelations = relations(workspacesTable, ({ many }) => ({
 	userWorkspaces: many(userWorkspacesTable),
 }));
 
-export const githubPullRequestRelations = relations(
-	githubPullRequestsTable,
-	({ one, many }) => ({
-		githubPullRequestTasks: many(githubPullRequestTaskTable),
-		githubRepoInfo: one(githubRepoTable, {
-			fields: [githubPullRequestsTable.githubRepoInfoId],
-			references: [githubRepoTable.externalId],
-		}),
-		commits: many(githubCommitsTable),
-	}),
-);
-
 export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 	githubPullRequestTasks: many(githubPullRequestTaskTable),
 	notifications: many(notificationsTable),
@@ -101,14 +89,6 @@ export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 		relationName: "blockedTasks_b_task_id",
 	}),
 }));
-
-export const githubRepoInfoRelations = relations(
-	githubRepoTable,
-	({ many }) => ({
-		pullRequests: many(githubPullRequestsTable),
-		workspaceRepositories: many(workspaceRepositoriesTable),
-	}),
-);
 
 export const sprintRelations = relations(sprintsTable, ({ one, many }) => ({
 	team: one(teamsTable, {
@@ -181,20 +161,6 @@ export const commentRelations = relations(commentsTable, ({ one }) => ({
 	}),
 }));
 
-export const workspaceRepositoriesRelations = relations(
-	workspaceRepositoriesTable,
-	({ one }) => ({
-		workspace: one(workspacesTable, {
-			fields: [workspaceRepositoriesTable.workspaceId],
-			references: [workspacesTable.externalId],
-		}),
-		githubRepoInfo: one(githubRepoTable, {
-			fields: [workspaceRepositoriesTable.repoId],
-			references: [githubRepoTable.id],
-		}),
-	}),
-);
-
 export const projectRelations = relations(projectsTable, ({ one }) => ({
 	team: one(teamsTable, {
 		fields: [projectsTable.teamId],
@@ -203,17 +169,6 @@ export const projectRelations = relations(projectsTable, ({ one }) => ({
 	workspace: one(workspacesTable, {
 		fields: [projectsTable.workspaceId],
 		references: [workspacesTable.externalId],
-	}),
-}));
-
-export const commitRelations = relations(githubCommitsTable, ({ one }) => ({
-	pullRequest: one(githubPullRequestsTable, {
-		fields: [githubCommitsTable.pullId],
-		references: [githubPullRequestsTable.externalId],
-	}),
-	repo: one(githubRepoTable, {
-		fields: [githubCommitsTable.repoId],
-		references: [githubRepoTable.externalId],
 	}),
 }));
 
@@ -308,3 +263,63 @@ export const userTeamRelations = relations(userTeamsTable, ({ one }) => ({
 		references: [usersTable.externalId],
 	}),
 }));
+
+// Github
+export const githubPullRequestRelations = relations(
+	githubPullRequestsTable,
+	({ one, many }) => ({
+		githubPullRequestTasks: many(githubPullRequestTaskTable),
+		githubRepoInfo: one(githubRepoTable, {
+			fields: [githubPullRequestsTable.githubRepoInfoId],
+			references: [githubRepoTable.externalId],
+		}),
+		commits: many(githubCommitsTable),
+	}),
+);
+
+export const githubRepoRelations = relations(githubRepoTable, ({ many }) => ({
+	pullRequests: many(githubPullRequestsTable),
+	workspaceRepositories: many(workspaceRepositoriesTable),
+}));
+
+export const githubWorkspaceRepositoriesRelations = relations(
+	workspaceRepositoriesTable,
+	({ one }) => ({
+		workspace: one(workspacesTable, {
+			fields: [workspaceRepositoriesTable.workspaceId],
+			references: [workspacesTable.externalId],
+		}),
+		githubRepoInfo: one(githubRepoTable, {
+			fields: [workspaceRepositoriesTable.repoId],
+			references: [githubRepoTable.id],
+		}),
+	}),
+);
+
+export const githubCommitRelations = relations(
+	githubCommitsTable,
+	({ one }) => ({
+		pullRequest: one(githubPullRequestsTable, {
+			fields: [githubCommitsTable.pullId],
+			references: [githubPullRequestsTable.externalId],
+		}),
+		repo: one(githubRepoTable, {
+			fields: [githubCommitsTable.repoId],
+			references: [githubRepoTable.externalId],
+		}),
+	}),
+);
+
+export const githubPullRequestTaskRelations = relations(
+	githubPullRequestTaskTable,
+	({ one }) => ({
+		pullRequest: one(githubPullRequestsTable, {
+			fields: [githubPullRequestTaskTable.pullRequestId],
+			references: [githubPullRequestsTable.externalId],
+		}),
+		task: one(tasksTable, {
+			fields: [githubPullRequestTaskTable.taskId],
+			references: [tasksTable.id],
+		}),
+	}),
+);
