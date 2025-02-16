@@ -3,7 +3,7 @@
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -34,6 +34,16 @@ export const InviteModal = () => {
 	const { workspace } = useWorkspaceStore((state) => state);
 
 	const expirationTimes = ["15m", "30m", "1h", "6h", "12h", "1d", "7d"];
+
+	// This counter-acts some known funny business when a dialog is opened from another dialog.
+	// A delay is necessary to properly reset the pointer-events on the body.
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			document.body.style.pointerEvents = `${showInvite ? "none" : "auto"}`;
+		}, 1);
+
+		return () => clearTimeout(timer);
+	}, [showInvite]);
 
 	const createWorkspaceLinkMutation = useMutation({
 		mutationFn: async () => {
@@ -72,7 +82,7 @@ export const InviteModal = () => {
 	};
 
 	return (
-		<Dialog open={showInvite} onOpenChange={setShowInvite}>
+		<Dialog open={showInvite} onOpenChange={() => setShowInvite(!showInvite)}>
 			<DialogContent className="md:w-[500px]">
 				<div className="flex flex-col gap-6 px-1">
 					<DialogHeader>
