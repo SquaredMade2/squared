@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm/relations";
 import {
 	blockedTasksTable,
 	commentsTable,
-	commitsTable,
+	githubCommitsTable,
 	githubPullRequestTaskTable,
 	githubPullRequestsTable,
 	githubRepoTable,
@@ -52,7 +52,7 @@ export const githubPullRequestRelations = relations(
 			fields: [githubPullRequestsTable.githubRepoInfoId],
 			references: [githubRepoTable.externalId],
 		}),
-		commits: many(commitsTable),
+		commits: many(githubCommitsTable),
 	}),
 );
 
@@ -206,13 +206,13 @@ export const projectRelations = relations(projectsTable, ({ one }) => ({
 	}),
 }));
 
-export const commitRelations = relations(commitsTable, ({ one }) => ({
+export const commitRelations = relations(githubCommitsTable, ({ one }) => ({
 	pullRequest: one(githubPullRequestsTable, {
-		fields: [commitsTable.pullId],
+		fields: [githubCommitsTable.pullId],
 		references: [githubPullRequestsTable.externalId],
 	}),
 	repo: one(githubRepoTable, {
-		fields: [commitsTable.repoId],
+		fields: [githubCommitsTable.repoId],
 		references: [githubRepoTable.externalId],
 	}),
 }));

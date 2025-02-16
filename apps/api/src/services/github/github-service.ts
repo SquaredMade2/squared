@@ -1,7 +1,7 @@
 import {
 	type DBClient,
-	commitsTable,
 	eq,
+	githubCommitsTable,
 	githubPullRequestTaskTable,
 	githubPullRequestsTable,
 	githubRepoTable,
@@ -156,7 +156,7 @@ export class GithubService implements GithubRpc {
 				.limit(1);
 			if (!pull) return;
 
-			await tx.insert(commitsTable).values({
+			await tx.insert(githubCommitsTable).values({
 				externalId: id,
 				message,
 				url,

@@ -54,8 +54,8 @@ export const teamsTable = pgTable(
 	],
 );
 
-export const commitsTable = pgTable(
-	"Commit",
+export const githubCommitsTable = pgTable(
+	"GithubCommit",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		externalId: text().notNull().unique(),
@@ -649,7 +649,7 @@ export const githubPullRequestTaskTable = pgTable(
 export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
 export type GithubPullRequest = typeof githubPullRequestsTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
-export type Commit = typeof commitsTable.$inferSelect;
+export type Commit = typeof githubCommitsTable.$inferSelect;
 export type GithubRepoInfo = typeof githubRepoTable.$inferSelect;
 export type Label = {
 	name: string;

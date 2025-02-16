@@ -7,9 +7,9 @@ import {
 	type TaskEvent,
 	and,
 	asc,
-	commitsTable,
 	desc,
 	eq,
+	githubCommitsTable,
 	githubPullRequestTaskTable,
 	githubPullRequestsTable,
 	inArray,
@@ -47,19 +47,19 @@ export class EventService implements EventRpc {
 				.orderBy(asc(taskEventsTable.createdAt)),
 			this.db
 				.select({
-					id: commitsTable.id,
-					externalId: commitsTable.externalId,
-					message: commitsTable.message,
-					url: commitsTable.url,
-					author: commitsTable.author,
-					timestamp: commitsTable.timestamp,
-					repoId: commitsTable.repoId,
+					id: githubCommitsTable.id,
+					externalId: githubCommitsTable.externalId,
+					message: githubCommitsTable.message,
+					url: githubCommitsTable.url,
+					author: githubCommitsTable.author,
+					timestamp: githubCommitsTable.timestamp,
+					repoId: githubCommitsTable.repoId,
 					pullId: githubPullRequestsTable.externalId,
 				})
-				.from(commitsTable)
+				.from(githubCommitsTable)
 				.innerJoin(
 					githubPullRequestsTable,
-					eq(commitsTable.pullId, githubPullRequestsTable.externalId),
+					eq(githubCommitsTable.pullId, githubPullRequestsTable.externalId),
 				)
 				.innerJoin(
 					githubPullRequestTaskTable,
@@ -71,7 +71,7 @@ export class EventService implements EventRpc {
 						eq(githubPullRequestTaskTable.taskId, taskId),
 					),
 				)
-				.orderBy(desc(commitsTable.timestamp)),
+				.orderBy(desc(githubCommitsTable.timestamp)),
 		]);
 
 		this.logger.info(
