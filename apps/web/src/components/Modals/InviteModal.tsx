@@ -4,7 +4,6 @@ import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { number } from "zod";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
