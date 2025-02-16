@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/bob", handleRequest)
-	http.HandleFunc("/", github.WebhookHandler)
+	http.HandleFunc("/", handleRequest)
+	http.HandleFunc("/github", github.WebhookHandler)
 	err := godotenv.Load()
 	if err != nil {
 		log.Printf("Error loading .env file")
