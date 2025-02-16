@@ -162,7 +162,7 @@ export const InviteModal = () => {
 					</div>
 					<hr className="w-full border border-border" />
 					<DialogFooter>
-						<div className="w-full flex items-center justify-between gap-2 p-2 border border-border rounded-lg">
+						<div className="flex w-full items-center justify-between gap-2 rounded-lg border border-border p-2">
 							<p>
 								{(!link && "Create Invite Link") ||
 									(link.includes("Failed") && link) ||

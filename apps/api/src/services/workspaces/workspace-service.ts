@@ -383,7 +383,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			return { success: true };
 		});
 	}
-  async getTakenWorkspaceUrls(): Promise<string[]> {
+	async getTakenWorkspaceUrls(): Promise<string[]> {
 		this.logger.info("Getting taken workspace urls");
 
 		return await this.db

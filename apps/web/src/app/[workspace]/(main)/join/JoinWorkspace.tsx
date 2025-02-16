@@ -64,7 +64,7 @@ export default function JoinWorkspace() {
 
 	if (isLoading || !isSignedIn) {
 		return (
-			<div className="flex flex-col gap-4 min-h-screen items-center justify-center">
+			<div className="flex min-h-screen flex-col items-center justify-center gap-4">
 				<SquaredLoader />
 				<p className="text-lg">Loading...</p>
 			</div>

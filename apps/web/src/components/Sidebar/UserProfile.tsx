@@ -73,7 +73,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 						<Button
 							onClick={() => setShowInvite(true)}
 							variant="ghost"
-							className="w-full h-min flex justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-none: focus-visible:ring-offset-0"
+							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-none: focus-visible:ring-offset-0"
 						>
 							<UserRoundPlus className="mr-2 h-4 w-4" />
 							<span>Invite People</span>

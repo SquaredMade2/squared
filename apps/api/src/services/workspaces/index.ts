@@ -88,7 +88,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			uses: z.number().optional(),
 		}),
 		output: z.string(),
-  },
+	},
 	getTakenWorkspaceUrls: {
 		input: z.undefined(),
 		output: z.array(z.string()),

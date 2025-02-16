@@ -72,6 +72,11 @@ export type GetNotificationsResponse = {
 		defaultView: string | null;
 		externalId: string;
 		id: string;
+		inviteLinks: {
+			expiration?: number;
+			link: string;
+			uses?: number;
+		}[];
 		labels: {
 			color: string;
 			description?: string | null;
@@ -209,6 +214,11 @@ export type ToggleNotificationResponse = {
 		defaultView: string | null;
 		externalId: string;
 		id: string;
+		inviteLinks: {
+			expiration?: number;
+			link: string;
+			uses?: number;
+		}[];
 		labels: {
 			color: string;
 			description?: string | null;

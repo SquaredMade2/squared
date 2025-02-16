@@ -25,8 +25,10 @@ export default function TokenVerificationPage(props: {
 		const verifyToken = async () => {
 			if (user) {
 				try {
+					// Will refactor in separate ticket
 					const workspace = await workspaceService.joinWorkspace(TODO, {
 						token: params.token,
+						isLink: false,
 						userId: user.id,
 					});
 					if (workspace) {
