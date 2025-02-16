@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
 )
 
 type VercelLog struct {
@@ -74,6 +76,7 @@ var logLevelToPriority = map[LogLevel]syslog.Priority{
 }
 
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.LoadEnv()
 	integrationSecret := os.Getenv("VERCEL_SIGNATURE")
 	if integrationSecret == "" {
 		log.Println("Missing integration secret")

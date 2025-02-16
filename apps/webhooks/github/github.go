@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
-	"github.com/joho/godotenv"
+	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
 )
 
 func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
@@ -65,12 +65,8 @@ func contains(slice []string, item string) bool {
 }
 
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Printf("Error loading .env file")
-		http.Error(w, "Error reading request body", http.StatusInternalServerError)
-		return
-	}
+	helpers.LoadEnv()
+
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
 	if webhookSecret == "" {
 		log.Println("WEBHOOK_SECRET is not set")
