@@ -33,8 +33,12 @@ const GithubSettings: React.FC = () => {
 	const { data: connectedRepos } = useQuery({
 		queryKey: ["user", user?.externalId],
 		queryFn: async () => {
-			return await client.github.getRepos.$get().then((res) => res.json());
+			if (!organization) return [];
+			return await client.github.getRepos
+				.$get({ workspaceId: organization.id })
+				.then((res) => res.json());
 		},
+		enabled: !!organization,
 	});
 
 	const githubAccount = user?.externalAccounts.find(

@@ -5,7 +5,6 @@ import { createErrorHandler, createRequestHandler } from "@squared/rpc";
 import cors from "cors";
 import express from "express";
 import "dotenv/config";
-import { createApiRouter } from "./generated-routes";
 
 export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
 
@@ -64,7 +63,6 @@ function createApp() {
 	app.use(createErrorHandler({ log: logger }));
 
 	const router = express.Router();
-	createApiRouter(router, { db });
 	app.use(router);
 
 	return app;
