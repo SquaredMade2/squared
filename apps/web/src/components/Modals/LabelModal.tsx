@@ -70,12 +70,11 @@ export const LabelModal = () => {
 		form.reset();
 		setShowLabelModal(false);
 	};
-	// console.log(labelData.name);
+
 	const updateLabelMutation = useMutation({
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!workspace) throw new Error("Workspace not found");
 			if (!labelData.name) throw new Error("Label name not found");
-			console.log(labelData.name);
 			const res = await client.workspace.updateWorkspaceLabel.$post({
 				workspaceId: workspace.id,
 				labelName: labelData.name,
@@ -222,6 +221,7 @@ export const LabelModal = () => {
 						</div>
 						<DialogFooter>
 							<Button
+								type="button"
 								onClick={handleResetForm}
 								className="bg-transparent text-foreground hover:cursor-pointer"
 								variant="destructive"
