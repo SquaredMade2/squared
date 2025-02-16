@@ -13,7 +13,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set GH_TOKEN using GitHub's token
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4
@@ -32,6 +32,7 @@ jobs:
             "ellischung") echo "273201608685387786" ;;
             "harpreetsingh100") echo "1014779425637814312" ;;
             "jamhdev") echo "1220824900365844522" ;;
+            "Mioara82") echo "1063780250611355669" ;;
             "napqueenkaila") echo "1074750793128882247" ;;
             "NateCummens") echo "447548944122380309" ;;
             "npinak") echo "748245605587091577" ;;
@@ -39,16 +40,15 @@ jobs:
             "Smerly") echo "277576312686641153" ;;
             "THEjacob1000") echo "213438742315139073" ;;
             "velinakennedy") echo "669209137376264221" ;;
-            "yachi98") echo "1218179333953421374" ;;
             *) echo "" ;;
           esac
         }
 
-        # Fetch all open PRs and store them in an array
+        # Fetch all open PRs
         prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author,updatedAt)
         echo "Raw PR data: $prs"
 
-        # Process each PR individually using jq
+        # Process each PR
         echo "$prs" | jq -c '.[]' | while read pr; do
           pr_number=$(echo "$pr" | jq -r '.number')
           pr_title=$(echo "$pr" | jq -r '.title')
@@ -57,6 +57,15 @@ jobs:
           pr_created_at=$(echo "$pr" | jq -r '.createdAt')
           pr_updated_at=$(echo "$pr" | jq -r '.updatedAt')
           reviewers=$(echo "$pr" | jq -r '.reviewRequests[].login')
+
+          # Fetch PR review details
+          reviews=$(gh pr view "$pr_number" --json reviews)
+          unresolved_reviews=$(echo "$reviews" | jq '[.reviews[] | select(.state == "CHANGES_REQUESTED" or .state == "COMMENTED")] | length')
+
+          if [[ "$unresolved_reviews" -gt 0 ]]; then
+            echo "Skipping PR #$pr_number due to unresolved reviews or comments"
+            continue
+          fi
 
           # Calculate PR age and stale time
           current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
