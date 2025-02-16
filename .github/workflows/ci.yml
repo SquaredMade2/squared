@@ -265,7 +265,34 @@ jobs:
 
       - name: Get dependencies
         working-directory: apps/webhooks
-        run: pwd && go mod download
+        run: go mod download
+
+      - name: Create .env file
+        working-directory: apps/webhooks
+        run: |
+          cat << EOF > .env
+          # Main
+          SERVER_URL=http://localhost:5173
+          BASE_URL=http://localhost:8081
+          PORT=3131
+
+          # Github
+          WEBHOOK_SECRET=squared
+
+          EOF
+
+      - name: Verify .env file
+        working-directory: apps/webhooks
+        run: |
+          if [ -f .env ]; then
+            echo ".env file created successfully"
+            ls -la .env
+            # Print contents without showing the CLIENT_ID
+            sed 's/^CLIENT_ID=.*/CLIENT_ID=<redacted>/' .env
+          else
+            echo ".env file not found"
+            exit 1
+          fi
 
       - name: Run tests
         working-directory: apps/webhooks
