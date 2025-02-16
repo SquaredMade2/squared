@@ -68,7 +68,7 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Printf("Error loading .env file")
-		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
