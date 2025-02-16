@@ -90,13 +90,15 @@ function SettingsNavbarContent() {
 									>
 										Members
 									</Button>
+									{/* 
+									TODO: Uncomment when integrations page is ready
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("integrations")}
 									>
 										Integrations
-									</Button>
+									</Button> */}
 								</div>
 							</div>
 
