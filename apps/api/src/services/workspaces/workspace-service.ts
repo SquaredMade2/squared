@@ -7,6 +7,7 @@ import {
 	type Team,
 	type User,
 	type Workspace,
+	type WorkspaceInviteLink,
 	type WorkspaceRole,
 	and,
 	eq,
@@ -189,7 +190,11 @@ export class WorkspaceService implements WorkspaceRpc {
 	}): Promise<Workspace | null> {
 		this.logger.info(`User ${userId} attempting to join workspace with token`);
 
-		const workspaceId = await this.verifyToken(token, isLink, workspaceName);
+		const { workspaceId, inviteLinks } = await this.verifyToken(
+			token,
+			isLink,
+			workspaceName,
+		);
 		if (!workspaceId) {
 			this.throwError("Invalid token");
 		}
@@ -199,6 +204,31 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		if (!user) this.throwError("User not found.");
 		if (userWorkspace) return workspace;
+
+		// reduce link uses if new member and uses is finite
+
+		if (inviteLinks) {
+			const inviteLink = inviteLinks.find((data) => data.link === token);
+
+			if (inviteLink?.uses) {
+				const filteredLinks = inviteLinks.filter((data) => data.link !== token);
+				// reduce uses by 1
+				this.logger.info("Reducing InviteLink uses by 1");
+				await this.db
+					.update(workspacesTable)
+					.set({
+						inviteLinks: [
+							...filteredLinks,
+							{
+								link: inviteLink.link,
+								expiration: inviteLink.expiration,
+								uses: inviteLink.uses - 1,
+							},
+						],
+					})
+					.where(eq(workspacesTable.id, workspaceId));
+			}
+		}
 
 		this.validateJoinWorkspaceData(workspace, teams, user);
 
@@ -385,13 +415,16 @@ export class WorkspaceService implements WorkspaceRpc {
 		token: string,
 		isLink: boolean,
 		workspaceName?: string,
-	): Promise<string | null> {
+	): Promise<{
+		workspaceId: string | null;
+		inviteLinks?: WorkspaceInviteLink[];
+	}> {
 		try {
 			if (!isLink) {
 				const decoded = jwt.verify(token, this.JWT_SECRET) as {
 					workspaceId: string;
 				};
-				return decoded.workspaceId;
+				return { workspaceId: decoded.workspaceId };
 			}
 
 			if (workspaceName) {
@@ -411,32 +444,17 @@ export class WorkspaceService implements WorkspaceRpc {
 					(inviteLink?.expiration && Date.now() > inviteLink.expiration) ||
 					inviteLink?.uses === 0
 				) {
-					return null;
+					this.throwError(
+						`InviteLink has ${inviteLink?.uses === 0 ? "run out of allotted uses" : "expired"}`,
+					);
 				}
 
-				if (inviteLink?.uses) {
-					// reduce uses by 1
-					await this.db
-						.update(workspacesTable)
-						.set({
-							inviteLinks: [
-								...inviteLinks,
-								{
-									link: inviteLink.link,
-									expiration: inviteLink.expiration,
-									uses: inviteLink.uses - 1,
-								},
-							],
-						})
-						.where(eq(workspacesTable.id, id))
-						.returning();
-				}
-				return id;
+				return { workspaceId: id, inviteLinks };
 			}
-			return null;
+			return { workspaceId: null };
 		} catch (error) {
 			this.logger.error("Token verification failed", error);
-			return null;
+			return { workspaceId: null };
 		}
 	}
 	private throwError(message: string): never {

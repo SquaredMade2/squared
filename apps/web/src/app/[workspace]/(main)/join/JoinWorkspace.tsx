@@ -1,5 +1,6 @@
 "use client";
 
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -11,7 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function JoinWorkspace() {
-	const { isLoaded, isSignedIn, user } = useUser();
+	const { isSignedIn, user } = useUser();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +21,8 @@ export default function JoinWorkspace() {
 	const token = searchParams.get("token") || "";
 	const isLink = searchParams.has("link");
 	const currentURL = window.location.href;
-	const workspaceName = currentURL.match(/(?<=\/)[^/]*(?=\/)/);
+	// First non-capturing group matches up to "/" 3 times. Second capture matches up to next "/"
+	const workspaceName = currentURL.match(/^(?:[^\/]*\/){3}([^\/]+)/);
 
 	const joinWorkspaceMutation = useMutation({
 		mutationFn: async () => {
@@ -29,7 +31,7 @@ export default function JoinWorkspace() {
 					token,
 					isLink,
 					userId: user?.id || "",
-					workspaceName: workspaceName ? workspaceName[0] : undefined,
+					workspaceName: workspaceName ? workspaceName[1] : undefined,
 				})
 				.then((res) => res.json());
 
@@ -60,8 +62,13 @@ export default function JoinWorkspace() {
 		setIsLoading(false);
 	};
 
-	if (isLoaded || !isSignedIn) {
-		return <div>Loading...</div>;
+	if (isLoading || !isSignedIn) {
+		return (
+			<div className="flex flex-col gap-4 min-h-screen items-center justify-center">
+				<SquaredLoader />
+				<p className="text-lg">Loading...</p>
+			</div>
+		);
 	}
 
 	return (
