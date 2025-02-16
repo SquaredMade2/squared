@@ -32,6 +32,7 @@ jobs:
             "ellischung") echo "273201608685387786" ;;
             "harpreetsingh100") echo "1014779425637814312" ;;
             "jamhdev") echo "1220824900365844522" ;;
+            "Mioara82") echo "1063780250611355669" ;;
             "napqueenkaila") echo "1074750793128882247" ;;
             "NateCummens") echo "447548944122380309" ;;
             "npinak") echo "748245605587091577" ;;
@@ -39,7 +40,6 @@ jobs:
             "Smerly") echo "277576312686641153" ;;
             "THEjacob1000") echo "213438742315139073" ;;
             "velinakennedy") echo "669209137376264221" ;;
-            "yachi98") echo "1218179333953421374" ;;
             *) echo "" ;;
           esac
         }
