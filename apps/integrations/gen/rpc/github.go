@@ -29,19 +29,19 @@ func NewGithubService(baseURL string) *GithubService {
 
 
 
-// GetUserRepositoriesRequest represents the request for getUserRepositories method
-type GetUserRepositoriesRequest struct {
-	UserId string `json:"userId"`
+// GetWorkspaceRepositoriesRequest represents the request for getWorkspaceRepositories method
+type GetWorkspaceRepositoriesRequest struct {
+	WorkspaceId string `json:"workspaceId"`
 }
 
 
-// GetUserRepositories calls the getUserRepositories RPC method
-func (s *GithubService) GetUserRepositories(ctx context.Context, req GetUserRepositoriesRequest) error {
-	endpoint := fmt.Sprintf("%s/github/getUserRepositories", s.baseURL)
+// GetWorkspaceRepositories calls the getWorkspaceRepositories RPC method
+func (s *GithubService) GetWorkspaceRepositories(ctx context.Context, req GetWorkspaceRepositoriesRequest) error {
+	endpoint := fmt.Sprintf("%s/github/getWorkspaceRepositories", s.baseURL)
 
 	
 	wrappedReq := struct {
-		JSON GetUserRepositoriesRequest "json:\"json\""
+		JSON GetWorkspaceRepositoriesRequest "json:\"json\""
 	}{
 		JSON: req,
 	}
@@ -87,7 +87,13 @@ type UpsertPullRequestRequest struct {
 	Branch string `json:"branch"`
 	Id string `json:"id"`
 	Number int `json:"number"`
-	RepoId string `json:"repoId"`
+	Repo struct {
+	Description *string `json:"description"`
+	Id string `json:"id"`
+	Name string `json:"name"`
+	Private bool `json:"private"`
+	Url string `json:"url"`
+} `json:"repo"`
 	State string `json:"state"`
 	Timestamp string `json:"timestamp"`
 	Title string `json:"title"`

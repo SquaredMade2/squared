@@ -118,13 +118,12 @@ export const githubRepoTable = pgTable(
 		private: boolean().default(false).notNull(),
 		description: text(),
 		url: text().notNull(),
-		repoName: text().default("").notNull(),
-		owner: text().default("").notNull(),
+		name: text().default("").notNull(),
 	},
 	(table) => [
-		uniqueIndex("GithubRepoInfo_repoName_key").using(
+		uniqueIndex("GithubRepoInfo_name_key").using(
 			"btree",
-			table.repoName.asc().nullsLast().op("text_ops"),
+			table.name.asc().nullsLast().op("text_ops"),
 		),
 	],
 );
@@ -650,7 +649,7 @@ export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
 export type GithubPullRequest = typeof githubPullRequestsTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
 export type Commit = typeof githubCommitsTable.$inferSelect;
-export type GithubRepoInfo = typeof githubRepoTable.$inferSelect;
+export type GithubRepo = typeof githubRepoTable.$inferSelect;
 export type Label = {
 	name: string;
 	description?: string | null;

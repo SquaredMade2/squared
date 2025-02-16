@@ -38,8 +38,7 @@ CREATE TABLE "GithubRepo" (
 	"private" boolean DEFAULT false NOT NULL,
 	"description" text,
 	"url" text NOT NULL,
-	"repoName" text DEFAULT '' NOT NULL,
-	"owner" text DEFAULT '' NOT NULL,
+	"name" text DEFAULT '' NOT NULL,
 	CONSTRAINT "GithubRepo_externalId_unique" UNIQUE("externalId")
 );
 --> statement-breakpoint
@@ -55,5 +54,5 @@ ALTER TABLE "GithubCommit" ADD CONSTRAINT "Commit_task_fkey" FOREIGN KEY ("repoI
 ALTER TABLE "GithubPullRequestTask" ADD CONSTRAINT "GithubPullRequestTask_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."GithubPullRequest"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "GithubPullRequestTask" ADD CONSTRAINT "GithubPullRequestTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "GithubPullRequest" ADD CONSTRAINT "Branch_githubRepoInfoId_fkey" FOREIGN KEY ("githubRepoInfoId") REFERENCES "public"."GithubRepo"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-CREATE UNIQUE INDEX "GithubRepoInfo_repoName_key" ON "GithubRepo" USING btree ("repoName" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "GithubRepoInfo_name_key" ON "GithubRepo" USING btree ("name" text_ops);--> statement-breakpoint
 ALTER TABLE "WorkspaceRepositories" ADD CONSTRAINT "WorkspaceRepositories_repoId_fkey" FOREIGN KEY ("repoId") REFERENCES "public"."GithubRepo"("id") ON DELETE cascade ON UPDATE cascade;

@@ -1,12 +1,13 @@
 import { createRpcHandler, createServiceSchema } from "@squared/rpc";
 import z from "zod";
+import { githubRepoSchema } from "../schema";
 import type { GithubService } from "./github-service";
 import type { GithubRpc } from "./types";
 
 export const githubRpcSchema = createServiceSchema<GithubRpc>()({
-	getUserRepositories: {
+	getWorkspaceRepositories: {
 		input: z.object({
-			userId: z.string(),
+			workspaceId: z.string(),
 		}),
 		output: z.array(z.string()),
 	},
@@ -20,7 +21,7 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 			branch: z.string(),
 			body: z.string(),
 			author: z.string(),
-			repoId: z.string(),
+			repo: githubRepoSchema.omit({ externalId: true }),
 			timestamp: z.string(),
 		}),
 		output: z.void(),
@@ -43,7 +44,8 @@ export type GithubRpcSchema = typeof githubRpcSchema;
 
 export const createGithubRpcHandler = (githubService: GithubService) =>
 	createRpcHandler("github", githubRpcSchema, {
-		getUserRepositories: (input) => githubService.getUserRepositories(input),
+		getWorkspaceRepositories: (input) =>
+			githubService.getWorkspaceRepositories(input),
 		upsertPullRequest: (input) => githubService.upsertPullRequest(input),
 		pushCommit: (input) => githubService.pushCommit(input),
 	});

@@ -1,14 +1,18 @@
 import { TODO } from "@squared/context";
+import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
 export const githubRouter = router({
-	getRepos: privateProcedure.query(async ({ c, ctx }) => {
-		const { githubService, user } = ctx;
-		const repos = await githubService.getUserRepositories(TODO, {
-			userId: user.id,
-		});
+	getRepos: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { githubService } = ctx;
+			const { workspaceId } = input;
+			const repos = await githubService.getWorkspaceRepositories(TODO, {
+				workspaceId,
+			});
 
-		return c.json(repos);
-	}),
+			return c.json(repos);
+		}),
 });

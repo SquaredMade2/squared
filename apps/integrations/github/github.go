@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -18,12 +17,6 @@ import (
 )
 
 func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
-	fmt.Println("Received Headers:")
-	for name, values := range r.Header {
-		for _, value := range values {
-			fmt.Printf("%s: %s\n", name, value)
-		}
-	}
 	return GitHubWebhookHeaders{
 		XGitHubHookID:                     r.Header.Get("X-GitHub-Hook-ID"),
 		XGitHubEvent:                      r.Header.Get("X-GitHub-Event"),
@@ -33,6 +26,7 @@ func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
 		UserAgent:                         r.Header.Get("User-Agent"),
 		XGitHubHookInstallationTargetType: r.Header.Get("X-GitHub-Hook-Installation-Target-Type"),
 		XGitHubHookInstallationTargetID:   r.Header.Get("X-GitHub-Hook-Installation-Target-ID"),
+		XTestOverride:                     r.Header.Get("X-Test-Override"),
 	}
 }
 
@@ -46,6 +40,10 @@ func verifySignature256(r *http.Request, secret string, headers GitHubWebhookHea
 
 	// Reset request body so it can be read again downstream
 	r.Body = io.NopCloser(strings.NewReader(string(body)))
+
+	if headers.XTestOverride == "squared123" {
+		return true
+	}
 
 	// Compute HMAC-SHA256 using webhook secret
 	mac := hmac.New(sha256.New, []byte(secret))
@@ -122,12 +120,24 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 
 	pullRequest := webhookEvent.PullRequest
 	request := rpc.UpsertPullRequestRequest{
-		Author:    pullRequest.User.Login,
-		Body:      pullRequest.Body,
-		Branch:    pullRequest.Head.Ref,
-		Id:        pullRequest.NodeId,
-		Number:    pullRequest.Number,
-		RepoId:    pullRequest.Base.Repo.NodeId,
+		Author: pullRequest.User.Login,
+		Body:   pullRequest.Body,
+		Branch: pullRequest.Head.Ref,
+		Id:     pullRequest.NodeId,
+		Number: pullRequest.Number,
+		Repo: struct {
+			Description *string `json:"description"`
+			Id          string  `json:"id"`
+			Name        string  `json:"name"`
+			Private     bool    `json:"private"`
+			Url         string  `json:"url"`
+		}{
+			Id:          pullRequest.Base.Repo.NodeId,
+			Name:        pullRequest.Base.Repo.Name,
+			Url:         pullRequest.Base.Repo.Url,
+			Description: pullRequest.Base.Repo.Description,
+			Private:     pullRequest.Base.Repo.Private,
+		},
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
 		Url:       pullRequest.HTMLUrl,

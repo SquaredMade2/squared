@@ -1,6 +1,7 @@
 import type {
 	Comment,
 	Commit,
+	GithubRepo,
 	Label,
 	Notification,
 	Sprint,
@@ -94,6 +95,17 @@ export const commitSchema = createSchema<Commit>()(
 		repoId: z.string(),
 		pullId: z.string(),
 		timestamp: z.date(),
+	}),
+);
+
+export const githubRepoSchema = createSchema<GithubRepo>()(
+	z.object({
+		id: z.string(),
+		externalId: z.string(),
+		private: z.boolean(),
+		description: z.string().nullable(),
+		url: z.string(),
+		name: z.string(),
 	}),
 );
 

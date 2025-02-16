@@ -1,5 +1,6 @@
 import {
 	type DBClient,
+	type GithubRepo,
 	eq,
 	githubCommitsTable,
 	githubPullRequestTaskTable,
@@ -7,7 +8,8 @@ import {
 	githubRepoTable,
 	inArray,
 	tasksTable,
-	usersTable,
+	workspaceRepositoriesTable,
+	workspacesTable,
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
@@ -21,27 +23,23 @@ export class GithubService implements GithubRpc {
 		this.logger = createCustomLogger("github");
 	}
 
-	async getUserRepositories({ userId }: { userId: string }) {
-		this.logger.info("Fetching user repositories with id: ", userId);
-		return await this.db.transaction(async (tx) => {
-			const user = await tx
-				.select({ githubUsername: usersTable.githubUsername })
-				.from(usersTable)
-				.where(eq(usersTable.externalId, userId))
-				.limit(1)
-				.then((results) => results[0]);
-
-			if (!user?.githubUsername) {
-				throw new Error("GitHub username not found");
-			}
-
-			const connectedRepos = await tx
-				.select({ repoName: githubRepoTable.repoName })
-				.from(githubRepoTable)
-				.where(eq(githubRepoTable.owner, user.githubUsername));
-
-			return connectedRepos.map((repo) => repo.repoName);
-		});
+	async getWorkspaceRepositories({ workspaceId }: { workspaceId: string }) {
+		this.logger.info("Fetching workspace repositories with id: ", workspaceId);
+		return await this.db
+			.select({
+				name: githubRepoTable.name,
+			})
+			.from(workspacesTable)
+			.innerJoin(
+				workspaceRepositoriesTable,
+				eq(workspacesTable.externalId, workspaceRepositoriesTable.workspaceId),
+			)
+			.innerJoin(
+				githubRepoTable,
+				eq(workspaceRepositoriesTable.repoId, githubRepoTable.id),
+			)
+			.where(eq(workspacesTable.externalId, workspaceId))
+			.then((repos) => repos.map((repo) => repo.name));
 	}
 	async upsertPullRequest({
 		id,
@@ -52,8 +50,8 @@ export class GithubService implements GithubRpc {
 		branch,
 		body,
 		author,
-		repoId,
 		timestamp,
+		repo,
 	}: {
 		id: string;
 		number: number;
@@ -63,8 +61,8 @@ export class GithubService implements GithubRpc {
 		branch: string;
 		body: string;
 		author: string;
-		repoId: string;
 		timestamp: string;
+		repo: Omit<GithubRepo, "externalId">;
 	}) {
 		this.logger.info(
 			`Upserting pull request with id: ${id} and number: ${number}`,
@@ -79,7 +77,7 @@ export class GithubService implements GithubRpc {
 			branch,
 			body,
 			author,
-			repoId,
+			repo,
 			timestamp,
 		});
 
@@ -101,6 +99,15 @@ export class GithubService implements GithubRpc {
 				return;
 			}
 
+			const { id: externalId, ...rest } = repo;
+			await tx
+				.insert(githubRepoTable)
+				.values({ ...rest, externalId })
+				.onConflictDoUpdate({
+					target: githubRepoTable.externalId,
+					set: { ...rest },
+				});
+
 			const [pull] = await tx
 				.insert(githubPullRequestsTable)
 				.values({
@@ -112,7 +119,7 @@ export class GithubService implements GithubRpc {
 					branch,
 					body,
 					author,
-					githubRepoInfoId: repoId,
+					githubRepoInfoId: repo.id,
 					timestamp: new Date(timestamp),
 				})
 				.onConflictDoUpdate({

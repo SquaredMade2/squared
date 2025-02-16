@@ -1,5 +1,9 @@
+import type { GithubRepo } from "@squared/db";
+
 export interface GithubRpc {
-	getUserRepositories: (args: { userId: string }) => Promise<string[]>;
+	getWorkspaceRepositories: (args: { workspaceId: string }) => Promise<
+		string[]
+	>;
 	upsertPullRequest: (args: {
 		id: string;
 		number: number;
@@ -9,8 +13,8 @@ export interface GithubRpc {
 		branch: string;
 		body: string;
 		author: string;
-		repoId: string;
 		timestamp: string;
+		repo: Omit<GithubRepo, "externalId">;
 	}) => Promise<void>;
 	pushCommit: (args: {
 		id: string;
