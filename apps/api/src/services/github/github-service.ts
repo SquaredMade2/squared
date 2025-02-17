@@ -140,11 +140,11 @@ export class GithubService implements GithubRpc {
 					.map((task) => ({
 						identifier: task.identifier,
 						url: `/${task.workspaceUrl}/task/${task.identifier}/${this.formatUrl(task.title)}`,
+						title: task.title,
 					})),
 			};
 		});
 
-		console.log("Sending back tasks: ", tasks);
 		return tasks;
 	}
 	async pushCommit({

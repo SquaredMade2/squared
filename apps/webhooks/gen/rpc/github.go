@@ -123,6 +123,7 @@ type UpsertPullRequestRequest struct {
 type UpsertPullRequestResponse struct {
 	Tasks []struct {
 	Identifier string `json:"identifier"`
+	Title string `json:"title"`
 	Url string `json:"url"`
 } `json:"tasks"`
 }

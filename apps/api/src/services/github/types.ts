@@ -4,6 +4,7 @@ export interface UpsertPullRequestResponse {
 	tasks: {
 		identifier: string;
 		url: string;
+		title: string;
 	}[];
 }
 

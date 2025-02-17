@@ -29,6 +29,7 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 				z.object({
 					identifier: z.string(),
 					url: z.string(),
+					title: z.string(),
 				}),
 			),
 		}),
