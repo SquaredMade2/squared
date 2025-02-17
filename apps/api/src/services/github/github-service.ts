@@ -13,7 +13,7 @@ import {
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
-import type { GithubRpc } from "./types";
+import type { GithubRpc, UpsertPullRequestResponse } from "./types";
 
 export class GithubService implements GithubRpc {
 	private readonly db: DBClient;
@@ -63,23 +63,10 @@ export class GithubService implements GithubRpc {
 		author: string;
 		timestamp: string;
 		repo: Omit<GithubRepo, "externalId">;
-	}) {
+	}): Promise<UpsertPullRequestResponse> {
 		this.logger.info(
 			`Upserting pull request with id: ${id} and number: ${number}`,
 		);
-
-		console.log("Args: ", {
-			id,
-			number,
-			state,
-			title,
-			url,
-			branch,
-			body,
-			author,
-			repo,
-			timestamp,
-		});
 
 		const taskIdMatches = [
 			...title.matchAll(/\[(.*?)\]/g),
@@ -88,15 +75,24 @@ export class GithubService implements GithubRpc {
 
 		return await this.db.transaction(async (tx) => {
 			const tasks = await tx
-				.select({ id: tasksTable.id })
+				.select({
+					id: tasksTable.id,
+					identifier: tasksTable.identifier,
+					workspaceUrl: workspacesTable.url,
+					title: tasksTable.title,
+				})
 				.from(tasksTable)
+				.leftJoin(
+					workspacesTable,
+					eq(tasksTable.workspaceId, workspacesTable.externalId),
+				)
 				.where(inArray(tasksTable.identifier, taskIdMatches));
 
 			if (tasks.length === 0) {
 				this.logger.warn(
 					`No tasks found for pull request with id: ${id} and number: ${number}`,
 				);
-				return;
+				return { tasks: [] };
 			}
 
 			const { id: externalId, ...rest } = repo;
@@ -128,13 +124,24 @@ export class GithubService implements GithubRpc {
 				})
 				.returning();
 
-			await Promise.all(
-				tasks.map((task) =>
+			const newTasks = await Promise.all(
+				tasks.flatMap((task) =>
 					tx
 						.insert(githubPullRequestTaskTable)
-						.values({ taskId: task.id, pullRequestId: pull.externalId }),
+						.values({ taskId: task.id, pullRequestId: pull.externalId })
+						.onConflictDoNothing()
+						.returning(),
 				),
-			);
+			).then((results) => results.flat().map((row) => row.taskId));
+
+			return {
+				tasks: tasks
+					.filter(({ id }) => newTasks.includes(id))
+					.map((task) => ({
+						identifier: task.identifier,
+						url: `/${task.workspaceUrl}/task/${task.identifier}/${this.formatUrl(task.title)}`,
+					})),
+			};
 		});
 	}
 	async pushCommit({
@@ -173,5 +180,14 @@ export class GithubService implements GithubRpc {
 				timestamp: new Date(timestamp),
 			});
 		});
+	}
+
+	private formatUrl(title: string) {
+		const titleSlug = title
+			.toLowerCase()
+			.replace(/'/g, "")
+			.replace(/[^a-z0-9]+/g, "-")
+			.replace(/(^-|-$)/g, "");
+		return titleSlug;
 	}
 }

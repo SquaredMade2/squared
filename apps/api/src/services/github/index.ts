@@ -24,7 +24,14 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 			repo: githubRepoSchema.omit({ externalId: true }),
 			timestamp: z.string(),
 		}),
-		output: z.void(),
+		output: z.object({
+			tasks: z.array(
+				z.object({
+					identifier: z.string(),
+					url: z.string(),
+				}),
+			),
+		}),
 	},
 	pushCommit: {
 		input: z.object({
