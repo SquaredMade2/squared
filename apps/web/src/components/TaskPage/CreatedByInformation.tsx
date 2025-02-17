@@ -1,15 +1,25 @@
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
+import { useEventStore, useTaskStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
+import type { PublicUserData } from "@clerk/types";
 import type { Commit, TaskEvent } from "@squared/db";
 import { formatDate } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const CreatedByInformation = () => {
-	const { users } = useUserStore((state) => state);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
 	const events = useEventStore((state) => state.events);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const authorId = currentTask?.authorId;
-	const foundUser = users.find((user) => user.externalId === authorId);
+	const foundUser = users?.find((user) => user.userId === authorId);
 
 	const displayDate = () => {
 		if (currentTask) {
@@ -30,6 +40,12 @@ export const CreatedByInformation = () => {
 		throw new Error("Event does not have a timestamp or createdAt field");
 	};
 
+	const getName = (user?: PublicUserData) => {
+		return user?.firstName
+			? `${user.firstName} ${user.lastName}`
+			: "Unknown User";
+	};
+
 	return (
 		<div className="flex flex-col gap-2">
 			{/* Events */}
@@ -40,9 +56,9 @@ export const CreatedByInformation = () => {
 						new Date(getEventTime(a) || getEventTime(a)).getTime(),
 				)
 				.map((event) => {
-					const eventAuthor = users.find((user) => {
+					const eventAuthor = users?.find((user) => {
 						if (!("authorId" in event)) return false;
-						return user.externalId === event.authorId;
+						return user.userId === event.authorId;
 					});
 					return (
 						<div key={event.id} className="flex items-center px-8">
@@ -50,13 +66,13 @@ export const CreatedByInformation = () => {
 								{formatDate(new Date(getEventTime(event)), "dd MMM yyyy")}
 							</div>
 							<Avatar className="size-6 text-xxs">
-								<AvatarImage src={eventAuthor?.avatarUrl ?? ""} />
+								<AvatarImage src={eventAuthor?.imageUrl ?? ""} />
 								<AvatarFallback>
-									{getInitials(eventAuthor?.name)}
+									{getInitials(getName(eventAuthor))}
 								</AvatarFallback>
 							</Avatar>
 							<p className="mr-4 ml-2 text-foreground">
-								{eventAuthor?.name || "Unknown Author"}
+								{getName(eventAuthor)}
 							</p>
 							<p className="text-muted-foreground text-sm">{event.message}</p>
 						</div>
@@ -66,10 +82,10 @@ export const CreatedByInformation = () => {
 			<div className="flex items-center px-8">
 				<div className="mr-4 text-muted-foreground">{displayDate()}</div>
 				<Avatar className="size-6 text-xxs">
-					<AvatarImage src={foundUser?.avatarUrl ?? ""} />
-					<AvatarFallback>{getInitials(foundUser?.name)}</AvatarFallback>
+					<AvatarImage src={foundUser?.imageUrl ?? ""} />
+					<AvatarFallback>{getInitials(getName(foundUser))}</AvatarFallback>
 				</Avatar>
-				<p className="mr-4 ml-2 text-foreground">{foundUser?.name}</p>
+				<p className="mr-4 ml-2 text-foreground">{getName(foundUser)}</p>
 				<p className="text-muted-foreground text-sm">created the task</p>
 			</div>
 		</div>
