@@ -44,7 +44,6 @@ export default function Home() {
 				workspaceId: currentWorkspace.externalId,
 			});
 			if (allTeams[0].identifier) {
-				console.log("FirstTeamIdentifier: ", allTeams[0].identifier);
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
 			}
 			return allTeams;

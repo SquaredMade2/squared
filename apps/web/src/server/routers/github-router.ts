@@ -12,12 +12,6 @@ export const githubRouter = router({
 			const repos = await githubService.getWorkspaceOrganizations(TODO, {
 				workspaceId,
 			});
-
-			console.log(
-				"repos",
-				repos.map((r) => typeof r.createdAt),
-			);
-
 			return c.superjson(repos);
 		}),
 });

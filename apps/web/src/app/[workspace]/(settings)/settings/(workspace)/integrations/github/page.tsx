@@ -15,21 +15,11 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 import { client } from "@/lib/client";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, MoreVertical } from "lucide-react";
+import { ChevronRight, MoreVertical, Plus } from "lucide-react";
 import Link from "next/link";
 
 const GithubSettings: React.FC = () => {
@@ -40,15 +30,9 @@ const GithubSettings: React.FC = () => {
 		queryKey: ["user", user?.externalId],
 		queryFn: async () => {
 			if (!organization) return [];
-			const repos = await client.github.getRepos
+			return await client.github.getRepos
 				.$get({ workspaceId: organization.id })
 				.then((res) => res.json());
-
-			console.log(
-				"repos",
-				repos.map((r) => typeof r.createdAt),
-			);
-			return repos;
 		},
 		enabled: !!organization,
 	});
@@ -117,12 +101,23 @@ const GithubSettings: React.FC = () => {
 									</DropdownMenu>
 								</div>
 							))}
-							<Button
-								className="mt-4"
-								onClick={() => console.log("Add organization")}
-							>
-								Add Organization
-							</Button>
+							<Separator />
+							<div className="flex items-center justify-end">
+								<Button
+									className="mt-4"
+									variant="ghost"
+									onClick={() =>
+										window.open(
+											"https://github.com/apps/squaredmadeapp/installations/select_target",
+											"_blank",
+											"noopener,noreferrer",
+										)
+									}
+								>
+									<Plus className="mr-2 size-4" />
+									Add Organization
+								</Button>
+							</div>
 						</CardContent>
 					</Card>
 
@@ -148,6 +143,8 @@ const GithubSettings: React.FC = () => {
 						</CardContent>
 					</Card>
 
+					{/* 
+					TODO: Implement GitHub Issues integration
 					<Card className="mb-6">
 						<CardHeader>
 							<CardTitle>GitHub Issues</CardTitle>
@@ -190,8 +187,10 @@ const GithubSettings: React.FC = () => {
 								</div>
 							</div>
 						</CardContent>
-					</Card>
+					</Card> */}
 
+					{/* 
+					TODO: Implement branch format configuration
 					<Card className="mb-6">
 						<CardHeader>
 							<CardTitle>Branch Format</CardTitle>
@@ -212,8 +211,10 @@ const GithubSettings: React.FC = () => {
 								</p>
 							</div>
 						</CardContent>
-					</Card>
+					</Card> */}
 
+					{/* 
+					TODO: Implement linkbacks customization
 					<Card>
 						<CardHeader>
 							<CardTitle>Linkbacks</CardTitle>
@@ -238,7 +239,7 @@ const GithubSettings: React.FC = () => {
 								</div>
 							</div>
 						</CardContent>
-					</Card>
+					</Card> */}
 				</div>
 			</div>
 		</div>
