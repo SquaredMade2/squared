@@ -422,6 +422,17 @@ type GitHubWebhookHeaders struct {
 	XTestOverride                     string `header:"X-Test-Override"`
 }
 
+type Body struct {
+	From string `json:"from,omitempty"`
+}
+
+// The changes to the comment if the action was edited.
+type Changes struct {
+	Base  *Base `json:"base,omitempty"`
+	Body  *Body `json:"body,omitempty"`
+	Title *Body `json:"title,omitempty"`
+}
+
 // Pull Request Webhook type
 type WebhookPullRequest struct {
 	// The type of action that was performed on the pull request.
@@ -429,6 +440,7 @@ type WebhookPullRequest struct {
 	PullRequest PullRequest `json:"pull_request"`
 	Repository  Repo        `json:"repository"`
 	Sender      User        `json:"sender"`
+	Changes     *Changes    `json:"changes,omitempty"`
 }
 
 // Metaproperties for Git author/committer information.
