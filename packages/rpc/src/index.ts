@@ -123,7 +123,7 @@ export function createRequestHandler(
 					const result = await methodFn(
 						superjson.parse(JSON.stringify(req.body)),
 					);
-					res.json(result);
+					res.json(superjson.stringify(result));
 
 					// biome-ignore lint/suspicious/noExplicitAny: Error has to be any
 				} catch (err: any) {
