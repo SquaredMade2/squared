@@ -102,7 +102,7 @@ const LabelCombobox = () => {
 	};
 
 	return (
-		<div className="md:w-full">
+		<div className="h-10 md:w-full">
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
