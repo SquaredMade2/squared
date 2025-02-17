@@ -97,14 +97,14 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 				},
 			},
 		},
-	}, *tasks); err != nil {
+	}, *tasks, webhookEvent.Installation.Id); err != nil {
 
 		log.Printf("Error updating pull request description: %v", err)
 		http.Error(w, "Error updating pull request description", http.StatusInternalServerError)
 		return
 	}
 
-	if err := addCommentToPR(pullRequest.Base.Repo.Owner.Login, pullRequest.Base.Repo.Name, pullRequest.Number, *tasks); err != nil {
+	if err := addCommentToPR(pullRequest.Base.Repo.Owner.Login, pullRequest.Base.Repo.Name, pullRequest.Number, *tasks, webhookEvent.Installation.Id); err != nil {
 		log.Printf("Error adding comment to PR: %v", err)
 		http.Error(w, "Error adding comment to PR", http.StatusInternalServerError)
 		return
@@ -112,10 +112,10 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 
 }
 
-func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRequestResponse) error {
+func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRequestResponse, installationId int64) error {
 	// Create a GitHub client using the App's JWT
 	ctx := context.Background()
-	client, err := createGitHubClient()
+	client, err := createGitHubClient(installationId)
 	if err != nil {
 		return err
 	}
@@ -143,10 +143,10 @@ func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRe
 	return nil
 }
 
-func addCommentToPR(owner, repo string, prNumber int, tasks rpc.UpsertPullRequestResponse) error {
+func addCommentToPR(owner, repo string, prNumber int, tasks rpc.UpsertPullRequestResponse, installationId int64) error {
 	ctx := context.Background()
 	baseUrl := os.Getenv("APP_URL")
-	client, err := createGitHubClient()
+	client, err := createGitHubClient(installationId)
 
 	// Check if bot has already commented
 	comments, _, err := client.Issues.ListComments(ctx, owner, repo, prNumber, nil)

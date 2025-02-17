@@ -451,6 +451,12 @@ type Changes struct {
 	Title *Body `json:"title,omitempty"`
 }
 
+// The GitHub App installation. Webhook payloads contain the `installation` property when the event is configured for and sent to a GitHub App.
+type Installation struct {
+	Id     int64  `json:"id"`
+	NodeId string `json:"node_id"`
+}
+
 // Pull Request Webhook type
 type WebhookPullRequest struct {
 	// The type of action that was performed on the pull request.
@@ -460,6 +466,7 @@ type WebhookPullRequest struct {
 	Sender       User          `json:"sender"`
 	Changes      *Changes      `json:"changes,omitempty"`
 	Organization *Organization `json:"organization,omitempty"`
+	Installation Installation  `json:"installation"`
 }
 
 // Metaproperties for Git author/committer information.
