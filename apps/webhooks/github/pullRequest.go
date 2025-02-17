@@ -50,15 +50,6 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 			Private:     webhookEvent.Repository.Private,
 			OrgId:       webhookEvent.Repository.Owner.NodeId,
 		},
-		Org: struct {
-			Description *string `json:"description"`
-			Id          string  `json:"id"`
-			Name        string  `json:"name"`
-		}{
-			Id:          webhookEvent.Organization.NodeId,
-			Name:        webhookEvent.Organization.Login,
-			Description: webhookEvent.Organization.Description,
-		},
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
 		Url:       pullRequest.HTMLUrl,

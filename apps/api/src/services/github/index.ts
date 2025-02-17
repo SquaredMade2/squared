@@ -27,11 +27,6 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 			body: z.string(),
 			author: z.string(),
 			repo: githubRepoSchema.omit({ externalId: true }),
-			org: z.object({
-				id: z.string(),
-				name: z.string(),
-				description: z.string().nullable(),
-			}),
 			timestamp: z.string(),
 		}),
 		output: z.object({
