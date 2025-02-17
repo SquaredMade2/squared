@@ -82,14 +82,17 @@ func (s *GithubService) GetWorkspaceRepositories(ctx context.Context, req GetWor
 	}
 
 	
-	var wrappedResponse struct {
-		JSON GetWorkspaceRepositoriesResponse "json:\"json\""
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&wrappedResponse); err != nil {
+
+	var response GetWorkspaceRepositoriesResponse
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
 
-	return &wrappedResponse.JSON, nil
+	return &response, nil
 	
 }
 
@@ -167,14 +170,17 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 	}
 
 	
-	var wrappedResponse struct {
-		JSON UpsertPullRequestResponse "json:\"json\""
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&wrappedResponse); err != nil {
+
+	var response UpsertPullRequestResponse
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
 
-	return &wrappedResponse.JSON, nil
+	return &response, nil
 	
 }
 
@@ -238,14 +244,17 @@ func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (
 	}
 
 	
-	var wrappedResponse struct {
-		JSON PushCommitResponse "json:\"json\""
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&wrappedResponse); err != nil {
+
+	var response PushCommitResponse
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
 
-	return &wrappedResponse.JSON, nil
+	return &response, nil
 	
 }
 

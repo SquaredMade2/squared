@@ -73,7 +73,7 @@ export class GithubService implements GithubRpc {
 			...(body?.matchAll(/\[(.*?)\]/g) ?? []),
 		].map((match) => match[1]);
 
-		return await this.db.transaction(async (tx) => {
+		const tasks = await this.db.transaction(async (tx) => {
 			const tasks = await tx
 				.select({
 					id: tasksTable.id,
@@ -143,6 +143,9 @@ export class GithubService implements GithubRpc {
 					})),
 			};
 		});
+
+		console.log("Sending back tasks: ", tasks);
+		return tasks;
 	}
 	async pushCommit({
 		id,

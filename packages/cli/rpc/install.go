@@ -282,14 +282,17 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 	}
 
 	{{if and (ne .OutputType "void") (ne .OutputType "nil")}}
-	var wrappedResponse struct {
-		JSON {{capitalizeFirst .MethodName}}Response "json:\"json\""
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&wrappedResponse); err != nil {
+
+	var response {{capitalizeFirst .MethodName}}Response
+	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
 
-	return &wrappedResponse.JSON, nil
+	return &response, nil
 	{{else}}
 	return {{if eq .OutputType "nil"}}nil{{else}}nil{{end}}
 	{{end}}

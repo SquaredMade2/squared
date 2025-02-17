@@ -8,12 +8,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
-	"github.com/golang-jwt/jwt"
-	"github.com/google/go-github/v45/github"
-	"golang.org/x/oauth2"
+	"github.com/google/go-github/v69/github"
 )
 
 const (
@@ -101,15 +98,17 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRequestResponse) error {
 	// Create a GitHub client using the App's JWT
 	ctx := context.Background()
-	client, err := createGitHubClient(ctx)
+	client, err := createGitHubClient()
 	if err != nil {
 		return err
 	}
 
+	baseUrl := os.Getenv("APP_URL")
+
 	// Generate task links
 	var taskLinks strings.Builder
 	for _, task := range tasks.Tasks {
-		taskLinks.WriteString(fmt.Sprintf("[%s]: %s\n", task.Identifier, task.Url))
+		taskLinks.WriteString(fmt.Sprintf("\n[%s]: %s", task.Identifier, baseUrl+task.Url))
 	}
 
 	// Combine original body with task links
@@ -117,7 +116,7 @@ func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRe
 
 	// Update the pull request
 	updatedPR, _, err := client.PullRequests.Edit(ctx, pr.Base.Repo.Owner.GetLogin(), pr.Base.Repo.GetName(), int(pr.GetNumber()), &github.PullRequest{
-		Body: github.String(updatedBody),
+		Body: github.Ptr(updatedBody),
 	})
 	if err != nil {
 		return err
@@ -125,34 +124,4 @@ func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRe
 
 	log.Printf("Updated PR #%d: %s with %d task links", updatedPR.GetNumber(), updatedPR.GetTitle(), len(tasks.Tasks))
 	return nil
-}
-
-func createGitHubClient(ctx context.Context) (*github.Client, error) {
-	// Read the private key
-	privateKey, err := os.ReadFile(PRIVATE_KEY_PATH)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create the JWT
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
-		"iat": time.Now().Unix(),
-		"exp": time.Now().Add(10 * time.Minute).Unix(),
-		"iss": APP_ID,
-	})
-
-	// Sign the JWT with the private key
-	signedToken, err := token.SignedString(privateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a new OAuth2 client using the JWT
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: signedToken},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-
-	// Create and return the GitHub client
-	return github.NewClient(tc), nil
 }
