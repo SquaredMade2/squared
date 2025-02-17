@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import type { Team, User, Workspace, WorkspaceRole } from "@squared/db";
+import type { Team, User, WorkspaceRole } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
@@ -24,7 +24,6 @@ export type MemberWithRole = User & {
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
-	workspace: Workspace | null;
 	team: Team | null;
 }
 

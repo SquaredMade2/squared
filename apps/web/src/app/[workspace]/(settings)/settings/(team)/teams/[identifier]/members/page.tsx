@@ -56,7 +56,6 @@ export default function TeamMembersPage() {
 				columns={enhancedColumns}
 				members={membersWithRoles}
 				team={team}
-				workspace={workspace}
 			/>
 		</MemberSettingsWrapper>
 	);

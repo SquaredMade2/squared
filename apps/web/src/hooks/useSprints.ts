@@ -1,10 +1,5 @@
 import { client } from "@/lib/client";
-import {
-	useSprintStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
 import type { Sprint } from "@squared/db";
@@ -15,24 +10,8 @@ export function useSprints(sprintId?: string) {
 	const { organization, isLoaded } = useOrganization();
 	const { identifier: teamIdentifier } = useParams();
 	const { setTasks } = useTaskStore((state) => state);
-	const { setWorkspace } = useWorkspaceStore((state) => state);
 	const { setSprint } = useSprintStore((state) => state);
 	const { setTeam } = useTeamStore((state) => state);
-
-	const workspaceQuery = useQuery({
-		queryKey: ["workspace", organization?.slug],
-		queryFn: async () => {
-			if (!organization?.slug) throw new Error("Workspace not found");
-			const res = await client.workspace.getWorkspaceByUrl.$get({
-				workspaceUrl: organization.slug,
-			});
-			const workspace = await res.json();
-			if (!workspace) throw new Error("Workspace not found");
-			setWorkspace(workspace);
-			return workspace;
-		},
-		enabled: isLoaded && !!organization,
-	});
 
 	const teamQuery = useQuery({
 		queryKey: ["team", organization?.id, teamIdentifier],
@@ -106,21 +85,19 @@ export function useSprints(sprintId?: string) {
 
 	const isLoading =
 		!isLoaded ||
-		workspaceQuery.isLoading ||
 		teamQuery.isLoading ||
 		sprintsQuery.isLoading ||
 		sprintQuery.isLoading ||
 		tasksQuery.isLoading;
 
 	const error =
-		workspaceQuery.error ||
 		teamQuery.error ||
 		sprintsQuery.error ||
 		sprintQuery.error ||
 		tasksQuery.error;
 
 	return {
-		workspace: workspaceQuery.data,
+		organization,
 		team: teamQuery.data,
 		sprints: sprintsQuery.data || [],
 		sprint: sprintQuery.data,
