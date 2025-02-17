@@ -1,6 +1,5 @@
 import {
 	type DBClient,
-	type GithubOrg,
 	type GithubRepo,
 	eq,
 	githubCommitsTable,
@@ -48,7 +47,6 @@ export class GithubService implements GithubRpc {
 		author,
 		timestamp,
 		repo,
-		org,
 	}: {
 		id: string;
 		number: number;
@@ -60,7 +58,6 @@ export class GithubService implements GithubRpc {
 		author: string;
 		timestamp: string;
 		repo: Omit<GithubRepo, "externalId">;
-		org: Omit<GithubOrg, "externalId" | "workspaceId" | "createdAt">;
 	}): Promise<UpsertPullRequestResponse> {
 		this.logger.info(
 			`Upserting pull request with id: ${id} and number: ${number}`,
@@ -95,25 +92,14 @@ export class GithubService implements GithubRpc {
 			}
 
 			const { id: repoExternalId, ...repoRest } = repo;
-			const { id: orgExternalId, ...orgRest } = org;
 
-			await Promise.all([
-				tx
-					.insert(githubRepoTable)
-					.values({ ...repoRest, externalId: repoExternalId })
-					.onConflictDoUpdate({
-						target: githubRepoTable.externalId,
-						set: { ...repoRest },
-					}),
-				tx
-					.insert(githubOrgTable)
-					.values({
-						...orgRest,
-						externalId: orgExternalId,
-						workspaceId: tasks[0].workspaceId,
-					})
-					.onConflictDoNothing(),
-			]);
+			await tx
+				.insert(githubRepoTable)
+				.values({ ...repoRest, externalId: repoExternalId })
+				.onConflictDoUpdate({
+					target: githubRepoTable.externalId,
+					set: { ...repoRest },
+				});
 
 			const [pull] = await tx
 				.insert(githubPullRequestsTable)

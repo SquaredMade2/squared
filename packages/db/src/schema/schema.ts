@@ -126,6 +126,13 @@ export const githubRepoTable = pgTable(
 			"btree",
 			table.name.asc().nullsLast().op("text_ops"),
 		),
+		foreignKey({
+			columns: [table.orgId],
+			foreignColumns: [githubOrgTable.externalId],
+			name: "GithubRepoInfo_orgId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
 	],
 );
 

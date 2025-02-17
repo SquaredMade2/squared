@@ -68,6 +68,7 @@ ALTER TABLE "GithubOrg" ADD CONSTRAINT "GithubOrg_workspaceId_fkey" FOREIGN KEY 
 ALTER TABLE "GithubPullRequestTask" ADD CONSTRAINT "GithubPullRequestTask_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."GithubPullRequest"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "GithubPullRequestTask" ADD CONSTRAINT "GithubPullRequestTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "GithubPullRequest" ADD CONSTRAINT "Branch_githubRepoInfoId_fkey" FOREIGN KEY ("githubRepoInfoId") REFERENCES "public"."GithubRepo"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "GithubRepo" ADD CONSTRAINT "GithubRepoInfo_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "public"."GithubOrg"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 CREATE UNIQUE INDEX "GithubOrg_name_key" ON "GithubOrg" USING btree ("name" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "GithubOrg_workspaceId_key" ON "GithubOrg" USING btree ("workspaceId" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "GithubRepoInfo_name_key" ON "GithubRepo" USING btree ("name" text_ops);--> statement-breakpoint

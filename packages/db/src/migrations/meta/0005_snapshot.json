@@ -1,5 +1,5 @@
 {
-	"id": "427506f3-1bb7-4d94-89c9-22ca7d795138",
+	"id": "614d452a-d5c7-4493-aafd-872440ca3b81",
 	"prevId": "1514dbc7-3bf0-41f5-83bf-361dfa5d95ca",
 	"version": "7",
 	"dialect": "postgresql",
@@ -540,7 +540,17 @@
 					"with": {}
 				}
 			},
-			"foreignKeys": {},
+			"foreignKeys": {
+				"GithubRepoInfo_orgId_fkey": {
+					"name": "GithubRepoInfo_orgId_fkey",
+					"tableFrom": "GithubRepo",
+					"tableTo": "GithubOrg",
+					"columnsFrom": ["orgId"],
+					"columnsTo": ["externalId"],
+					"onDelete": "cascade",
+					"onUpdate": "cascade"
+				}
+			},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {
 				"GithubRepo_externalId_unique": {
