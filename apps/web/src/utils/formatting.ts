@@ -1,6 +1,7 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
+import type { PublicUserData } from "@clerk/types";
 import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
 
@@ -45,6 +46,11 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 	return typeof workspaceName === "string" && workspaceName.length > 20
 		? `${workspaceName.slice(0, 20)}...`
 		: workspaceName;
+};
+
+export const formatName = (user: PublicUserData | undefined): string => {
+	if (!user) return "Unknown User";
+	return `${user.firstName} ${user.lastName}`;
 };
 
 export const getInitials = (name?: string | null): string => {
