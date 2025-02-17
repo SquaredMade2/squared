@@ -3,9 +3,11 @@ package github
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
@@ -60,7 +62,8 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 		Timestamp: pullRequest.CreatedAt,
 	}
 
-	if _, err := githubService.UpsertPullRequest(context.TODO(), request); err != nil {
+	tasks, err := githubService.UpsertPullRequest(context.TODO(), request)
+	if err != nil {
 		log.Printf("Error upserting pull request: %v", err)
 		http.Error(w, "Error upserting pull request", http.StatusInternalServerError)
 		return
@@ -68,7 +71,26 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 
 	// If the action is "edited" and the body has changed, update the PR description
 	if webhookEvent.Action == "edited" && webhookEvent.Changes != nil && webhookEvent.Changes.Body != nil {
-		if err := updatePullRequestDescription(pullRequest); err != nil {
+		if err := updatePullRequestDescription(&github.PullRequest{
+			Body:    &pullRequest.Body,
+			Number:  &pullRequest.Number,
+			State:   &pullRequest.State,
+			Title:   &pullRequest.Title,
+			HTMLURL: &pullRequest.HTMLUrl,
+			Base: &github.PullRequestBranch{
+				Repo: &github.Repository{
+					NodeID:      &pullRequest.Base.Repo.NodeId,
+					Name:        &pullRequest.Base.Repo.Name,
+					URL:         &pullRequest.Base.Repo.Url,
+					Description: pullRequest.Base.Repo.Description,
+					Private:     &pullRequest.Base.Repo.Private,
+					Owner: &github.User{
+						Login: &pullRequest.Base.Repo.Owner.Login,
+					},
+				},
+			},
+		}, *tasks); err != nil {
+
 			log.Printf("Error updating pull request description: %v", err)
 			http.Error(w, "Error updating pull request description", http.StatusInternalServerError)
 			return
@@ -76,24 +98,32 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	}
 }
 
-func updatePullRequestDescription(pr *github.PullRequest) error {
-	// Create a GitHub client
+func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRequestResponse) error {
+	// Create a GitHub client using the App's JWT
 	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "YOUR_GITHUB_ACCESS_TOKEN"},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
+	client, err := createGitHubClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Generate task links
+	var taskLinks strings.Builder
+	for _, task := range tasks.Tasks {
+		taskLinks.WriteString(fmt.Sprintf("[%s]: %s\n", task.Identifier, task.Url))
+	}
+
+	// Combine original body with task links
+	updatedBody := pr.GetBody() + taskLinks.String()
 
 	// Update the pull request
 	updatedPR, _, err := client.PullRequests.Edit(ctx, pr.Base.Repo.Owner.GetLogin(), pr.Base.Repo.GetName(), int(pr.GetNumber()), &github.PullRequest{
-		Body: github.String(pr.GetBody()),
+		Body: github.String(updatedBody),
 	})
 	if err != nil {
 		return err
 	}
 
-	log.Printf("Updated PR #%d: %s", updatedPR.GetNumber(), updatedPR.GetTitle())
+	log.Printf("Updated PR #%d: %s with %d task links", updatedPR.GetNumber(), updatedPR.GetTitle(), len(tasks.Tasks))
 	return nil
 }
 

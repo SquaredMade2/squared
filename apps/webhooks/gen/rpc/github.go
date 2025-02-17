@@ -117,7 +117,12 @@ type UpsertPullRequestRequest struct {
 
 
 // UpsertPullRequestResponse represents the response for upsertPullRequest method
-type UpsertPullRequestResponse struct{}
+type UpsertPullRequestResponse struct {
+	Tasks []struct {
+	Identifier string `json:"identifier"`
+	Url string `json:"url"`
+} `json:"tasks"`
+}
 
 
 // UpsertPullRequest calls the upsertPullRequest RPC method
