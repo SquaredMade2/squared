@@ -44,14 +44,25 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 			Description *string `json:"description"`
 			Id          string  `json:"id"`
 			Name        string  `json:"name"`
+			OrgId       string  `json:"orgId"`
 			Private     bool    `json:"private"`
 			Url         string  `json:"url"`
 		}{
-			Id:          pullRequest.Base.Repo.NodeId,
-			Name:        pullRequest.Base.Repo.Name,
-			Url:         pullRequest.Base.Repo.Url,
-			Description: pullRequest.Base.Repo.Description,
-			Private:     pullRequest.Base.Repo.Private,
+			Id:          webhookEvent.Repository.NodeId,
+			Name:        webhookEvent.Repository.Name,
+			Url:         webhookEvent.Repository.Url,
+			Description: webhookEvent.Repository.Description,
+			Private:     webhookEvent.Repository.Private,
+			OrgId:       webhookEvent.Repository.Owner.NodeId,
+		},
+		Org: struct {
+			Description *string `json:"description"`
+			Id          string  `json:"id"`
+			Name        string  `json:"name"`
+		}{
+			Id:          webhookEvent.Organization.NodeId,
+			Name:        webhookEvent.Organization.Login,
+			Description: webhookEvent.Organization.Description,
 		},
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
@@ -171,7 +182,7 @@ Keeping tasks and PRs connected helps streamline progress and ensure visibility.
 
 🔍 Automated by Squared`, taskList.String())
 
-	comment := &github.IssueComment{Body: github.String(commentBody)}
+	comment := &github.IssueComment{Body: github.Ptr(commentBody)}
 	_, _, err = client.Issues.CreateComment(ctx, owner, repo, prNumber, comment)
 	if err != nil {
 		return fmt.Errorf("failed to create comment: %w", err)

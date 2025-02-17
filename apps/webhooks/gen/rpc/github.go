@@ -104,10 +104,16 @@ type UpsertPullRequestRequest struct {
 	Branch string `json:"branch"`
 	Id string `json:"id"`
 	Number int `json:"number"`
+	Org struct {
+	Description *string `json:"description"`
+	Id string `json:"id"`
+	Name string `json:"name"`
+} `json:"org"`
 	Repo struct {
 	Description *string `json:"description"`
 	Id string `json:"id"`
 	Name string `json:"name"`
+	OrgId string `json:"orgId"`
 	Private bool `json:"private"`
 	Url string `json:"url"`
 } `json:"repo"`

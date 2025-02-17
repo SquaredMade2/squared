@@ -307,6 +307,24 @@ type Commit struct {
 	Url string `json:"url"`
 }
 
+// A GitHub organization. Webhook payloads contain the `organization` property when the webhook is configured for an organization, or when the event occurs from activity in a repository owned by an organization.
+type Organization struct {
+	// Name of the organization
+	Login  string `json:"login"`
+	Id     int    `json:"id"`
+	NodeId string `json:"node_id"`
+	// URL for the organization
+	Url              string  `json:"url"`
+	ReposUrl         string  `json:"repos_url"`
+	EventsUrl        string  `json:"events_url"`
+	HooksUrl         string  `json:"hooks_url"`
+	IssuesUrl        string  `json:"issues_url"`
+	MembersUrl       string  `json:"members_url"`
+	PublicMembersUrl string  `json:"public_members_url"`
+	AvatarUrl        string  `json:"avatar_url"`
+	Description      *string `json:"description"`
+}
+
 type PullRequest struct {
 	Id                int    `json:"id"`
 	Url               string `json:"url"`
@@ -436,11 +454,12 @@ type Changes struct {
 // Pull Request Webhook type
 type WebhookPullRequest struct {
 	// The type of action that was performed on the pull request.
-	Action      string      `json:"action"`
-	PullRequest PullRequest `json:"pull_request"`
-	Repository  Repo        `json:"repository"`
-	Sender      User        `json:"sender"`
-	Changes     *Changes    `json:"changes,omitempty"`
+	Action       string        `json:"action"`
+	PullRequest  PullRequest   `json:"pull_request"`
+	Repository   Repo          `json:"repository"`
+	Sender       User          `json:"sender"`
+	Changes      *Changes      `json:"changes,omitempty"`
+	Organization *Organization `json:"organization,omitempty"`
 }
 
 // Metaproperties for Git author/committer information.
