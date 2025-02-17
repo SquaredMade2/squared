@@ -110,11 +110,13 @@ const LabelCombobox = () => {
 						className="h-8 w-fit justify-start md:h-10 md:w-full"
 					>
 						<>
-							<div className="item hidden md:flex">
+							<div className="item hidden items-center md:flex">
 								<Plus className="mr-2 size-4" />
 								<span>Add label</span>
 							</div>
-							<div className="md:hidden">{renderLabelButton()}</div>
+							<div className="flex items-center md:hidden">
+								{renderLabelButton()}
+							</div>
 						</>
 					</Button>
 				</PopoverTrigger>
