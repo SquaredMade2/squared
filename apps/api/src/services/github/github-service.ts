@@ -10,7 +10,6 @@ import {
 	githubRepoTable,
 	inArray,
 	tasksTable,
-	workspaceRepositoriesTable,
 	workspacesTable,
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
@@ -25,23 +24,18 @@ export class GithubService implements GithubRpc {
 		this.logger = createCustomLogger("github");
 	}
 
-	async getWorkspaceRepositories({ workspaceId }: { workspaceId: string }) {
+	async getWorkspaceOrganizations({ workspaceId }: { workspaceId: string }) {
 		this.logger.info("Fetching workspace repositories with id: ", workspaceId);
 		return await this.db
 			.select({
-				name: githubRepoTable.name,
+				name: githubOrgTable.name,
+				createdAt: githubOrgTable.createdAt,
 			})
-			.from(workspacesTable)
-			.innerJoin(
-				workspaceRepositoriesTable,
-				eq(workspacesTable.externalId, workspaceRepositoriesTable.workspaceId),
-			)
-			.innerJoin(
-				githubRepoTable,
-				eq(workspaceRepositoriesTable.repoId, githubRepoTable.id),
-			)
-			.where(eq(workspacesTable.externalId, workspaceId))
-			.then((repos) => repos.map((repo) => repo.name));
+			.from(githubOrgTable)
+			.where(eq(githubOrgTable.workspaceId, workspaceId))
+			.then((repos) =>
+				repos.map((repo) => ({ name: repo.name, createdAt: repo.createdAt })),
+			);
 	}
 	async upsertPullRequest({
 		id,
@@ -66,7 +60,7 @@ export class GithubService implements GithubRpc {
 		author: string;
 		timestamp: string;
 		repo: Omit<GithubRepo, "externalId">;
-		org: Omit<GithubOrg, "externalId" | "workspaceId">;
+		org: Omit<GithubOrg, "externalId" | "workspaceId" | "createdAt">;
 	}): Promise<UpsertPullRequestResponse> {
 		this.logger.info(
 			`Upserting pull request with id: ${id} and number: ${number}`,

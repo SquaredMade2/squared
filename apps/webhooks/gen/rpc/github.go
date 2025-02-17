@@ -29,24 +29,27 @@ func NewGithubService(baseURL string) *GithubService {
 
 
 
-// GetWorkspaceRepositoriesRequest represents the request for getWorkspaceRepositories method
-type GetWorkspaceRepositoriesRequest struct {
+// GetWorkspaceOrganizationsRequest represents the request for getWorkspaceOrganizations method
+type GetWorkspaceOrganizationsRequest struct {
 	WorkspaceId string `json:"workspaceId"`
 }
 
 
 
-// GetWorkspaceRepositoriesResponse represents the response for getWorkspaceRepositories method
-type GetWorkspaceRepositoriesResponse []string
+// GetWorkspaceOrganizationsResponse represents the response for getWorkspaceOrganizations method
+type GetWorkspaceOrganizationsResponse []struct {
+	CreatedAt time.Time `json:"createdAt"`
+	Name string `json:"name"`
+}
 
 
-// GetWorkspaceRepositories calls the getWorkspaceRepositories RPC method
-func (s *GithubService) GetWorkspaceRepositories(ctx context.Context, req GetWorkspaceRepositoriesRequest) (*GetWorkspaceRepositoriesResponse, error) {
-	endpoint := fmt.Sprintf("%s/github/getWorkspaceRepositories", s.baseURL)
+// GetWorkspaceOrganizations calls the getWorkspaceOrganizations RPC method
+func (s *GithubService) GetWorkspaceOrganizations(ctx context.Context, req GetWorkspaceOrganizationsRequest) (*GetWorkspaceOrganizationsResponse, error) {
+	endpoint := fmt.Sprintf("%s/github/getWorkspaceOrganizations", s.baseURL)
 
 	
 	wrappedReq := struct {
-		JSON GetWorkspaceRepositoriesRequest "json:\"json\""
+		JSON GetWorkspaceOrganizationsRequest "json:\"json\""
 	}{
 		JSON: req,
 	}
@@ -87,7 +90,7 @@ func (s *GithubService) GetWorkspaceRepositories(ctx context.Context, req GetWor
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	var response GetWorkspaceRepositoriesResponse
+	var response GetWorkspaceOrganizationsResponse
 	if err := json.Unmarshal(body, &response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}

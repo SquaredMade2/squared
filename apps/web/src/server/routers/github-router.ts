@@ -9,10 +9,15 @@ export const githubRouter = router({
 		.query(async ({ c, ctx, input }) => {
 			const { githubService } = ctx;
 			const { workspaceId } = input;
-			const repos = await githubService.getWorkspaceRepositories(TODO, {
+			const repos = await githubService.getWorkspaceOrganizations(TODO, {
 				workspaceId,
 			});
 
-			return c.json(repos);
+			console.log(
+				"repos",
+				repos.map((r) => typeof r.createdAt),
+			);
+
+			return c.superjson(repos);
 		}),
 });

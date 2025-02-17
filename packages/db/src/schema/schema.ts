@@ -137,6 +137,7 @@ export const githubOrgTable = pgTable(
 		name: text().notNull(),
 		description: text(),
 		workspaceId: text().notNull().unique(),
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	},
 	(table) => [
 		uniqueIndex("GithubOrg_name_key").using(

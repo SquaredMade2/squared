@@ -5,11 +5,16 @@ import type { GithubService } from "./github-service";
 import type { GithubRpc } from "./types";
 
 export const githubRpcSchema = createServiceSchema<GithubRpc>()({
-	getWorkspaceRepositories: {
+	getWorkspaceOrganizations: {
 		input: z.object({
 			workspaceId: z.string(),
 		}),
-		output: z.array(z.string()),
+		output: z.array(
+			z.object({
+				name: z.string(),
+				createdAt: z.date(),
+			}),
+		),
 	},
 	upsertPullRequest: {
 		input: z.object({
@@ -57,8 +62,8 @@ export type GithubRpcSchema = typeof githubRpcSchema;
 
 export const createGithubRpcHandler = (githubService: GithubService) =>
 	createRpcHandler("github", githubRpcSchema, {
-		getWorkspaceRepositories: (input) =>
-			githubService.getWorkspaceRepositories(input),
+		getWorkspaceOrganizations: (input) =>
+			githubService.getWorkspaceOrganizations(input),
 		upsertPullRequest: (input) => githubService.upsertPullRequest(input),
 		pushCommit: (input) => githubService.pushCommit(input),
 	});

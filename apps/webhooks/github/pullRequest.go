@@ -13,11 +13,6 @@ import (
 	"github.com/google/go-github/v69/github"
 )
 
-const (
-	PRIVATE_KEY_PATH = "githubAppPrivateKey.pem"
-	APP_ID           = "your-app-id"
-)
-
 func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
 	var webhookEvent WebhookPullRequest
 	err := json.Unmarshal(body, &webhookEvent)

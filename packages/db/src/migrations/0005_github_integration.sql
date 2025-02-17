@@ -17,6 +17,7 @@ CREATE TABLE "GithubOrg" (
 	"name" text NOT NULL,
 	"description" text,
 	"workspaceId" text NOT NULL,
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
 	CONSTRAINT "GithubOrg_externalId_unique" UNIQUE("externalId"),
 	CONSTRAINT "GithubOrg_workspaceId_unique" UNIQUE("workspaceId")
 );

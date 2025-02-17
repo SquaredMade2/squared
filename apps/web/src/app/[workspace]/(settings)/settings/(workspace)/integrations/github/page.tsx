@@ -36,13 +36,19 @@ const GithubSettings: React.FC = () => {
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
-	const { data: connectedRepos } = useQuery({
+	const { data: githubOrganizations } = useQuery({
 		queryKey: ["user", user?.externalId],
 		queryFn: async () => {
 			if (!organization) return [];
-			return await client.github.getRepos
+			const repos = await client.github.getRepos
 				.$get({ workspaceId: organization.id })
 				.then((res) => res.json());
+
+			console.log(
+				"repos",
+				repos.map((r) => typeof r.createdAt),
+			);
+			return repos;
 		},
 		enabled: !!organization,
 	});
@@ -50,11 +56,6 @@ const GithubSettings: React.FC = () => {
 	const githubAccount = user?.externalAccounts.find(
 		(account) => account.provider === "github",
 	);
-	const organizations = connectedRepos?.map((repo) => ({
-		name: repo,
-		dateAdded: "12/12/2021",
-		addedBy: "John Doe",
-	}));
 
 	return (
 		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
@@ -84,7 +85,7 @@ const GithubSettings: React.FC = () => {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							{organizations?.map((org) => (
+							{githubOrganizations?.map((org) => (
 								<div
 									key={org.name}
 									className="flex items-center justify-between py-2"
@@ -92,7 +93,7 @@ const GithubSettings: React.FC = () => {
 									<div>
 										<p className="font-medium">{org.name}</p>
 										<p className="text-muted-foreground text-sm">
-											Added on {org.dateAdded} by {org.addedBy}
+											Added on {org.createdAt.toDateString()}
 										</p>
 									</div>
 									<DropdownMenu>
@@ -167,9 +168,9 @@ const GithubSettings: React.FC = () => {
 											<SelectValue placeholder="Select a repository" />
 										</SelectTrigger>
 										<SelectContent>
-											{connectedRepos?.map((repo) => (
-												<SelectItem key={repo} value={repo}>
-													{repo}
+											{githubOrganizations?.map((org) => (
+												<SelectItem key={org.name} value={org.name}>
+													{org.name}
 												</SelectItem>
 											))}
 										</SelectContent>
