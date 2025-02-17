@@ -235,13 +235,13 @@ func New{{capitalizeFirst .Name}}Service(baseURL string) *{{capitalizeFirst .Nam
 type {{capitalizeFirst .MethodName}}Request {{zodToGo .RequestSchema}}
 {{end}}
 
-{{if ne .OutputType "void"}}
+{{if and (ne .OutputType "void") (ne .OutputType "nil")}}
 // {{capitalizeFirst .MethodName}}Response represents the response for {{.MethodName}} method
 type {{capitalizeFirst .MethodName}}Response {{zodToGo .ResponseSchema}}
 {{end}}
 
 // {{capitalizeFirst .MethodName}} calls the {{.MethodName}} RPC method
-func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx context.Context{{if ne .InputType "undefined"}}, req {{capitalizeFirst .MethodName}}Request{{end}}) ({{if ne .OutputType "void"}}*{{capitalizeFirst .MethodName}}Response, {{end}}error) {
+func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx context.Context{{if ne .InputType "undefined"}}, req {{capitalizeFirst .MethodName}}Request{{end}}) ({{if and (ne .OutputType "void") (ne .OutputType "nil")}}*{{capitalizeFirst .MethodName}}Response, {{end}}error) {
 	endpoint := fmt.Sprintf("%s/{{$.Name}}/{{.MethodName}}", s.baseURL)
 
 	{{if ne .InputType "undefined"}}
@@ -253,18 +253,18 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 
 	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
-		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error marshaling request: %w", err)
+		return {{if and (ne .OutputType "void") (ne .OutputType "nil")}}nil, {{end}}fmt.Errorf("error marshaling request: %w", err)
 	}
 	{{end}}
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, {{if ne .InputType "undefined"}}bytes.NewBuffer(reqBody){{else}}nil{{end}})
 	if err != nil {
-		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error creating request: %w", err)
+		return {{if and (ne .OutputType "void") (ne .OutputType "nil")}}nil, {{end}}fmt.Errorf("error creating request: %w", err)
 	}
 
 	requestID := make([]byte, 6)
 	if _, err := rand.Read(requestID); err != nil {
-		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error generating request ID: %w", err)
+		return {{if and (ne .OutputType "void") (ne .OutputType "nil")}}nil, {{end}}fmt.Errorf("error generating request ID: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -272,16 +272,16 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
-		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error sending request: %w", err)
+		return {{if and (ne .OutputType "void") (ne .OutputType "nil")}}nil, {{end}}fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+		return {{if and (ne .OutputType "void") (ne .OutputType "nil")}}nil, {{end}}fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	{{if ne .OutputType "void"}}
+	{{if and (ne .OutputType "void") (ne .OutputType "nil")}}
 	var response {{capitalizeFirst .MethodName}}Response
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
@@ -289,7 +289,7 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 
 	return &response, nil
 	{{else}}
-	return nil
+	return {{if eq .OutputType "nil"}}nil{{else}}nil{{end}}
 	{{end}}
 }
 {{end}}

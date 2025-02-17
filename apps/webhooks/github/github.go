@@ -139,7 +139,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 		Url:       pullRequest.HTMLUrl,
 		Timestamp: pullRequest.CreatedAt,
 	}
-	if err := githubService.UpsertPullRequest(context.TODO(), request); err != nil {
+	if _, err := githubService.UpsertPullRequest(context.TODO(), request); err != nil {
 		log.Printf("Error upserting pull request: %v", err)
 		http.Error(w, "Error upserting pull request", http.StatusInternalServerError)
 		return
@@ -163,7 +163,7 @@ func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http
 		Timestamp: commit.Timestamp,
 		Url:       commit.Url,
 	}
-	if err := githubService.PushCommit(context.TODO(), request); err != nil {
+	if _, err := githubService.PushCommit(context.TODO(), request); err != nil {
 		log.Printf("Error uploading commit: %v", err)
 		http.Error(w, "Error uploading commit", http.StatusInternalServerError)
 		return
