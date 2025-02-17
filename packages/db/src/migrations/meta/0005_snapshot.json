@@ -1,5 +1,5 @@
 {
-	"id": "eb5aa4c8-6420-44df-b2ab-a28eaf665de0",
+	"id": "fd8cb580-c80b-4184-8322-bd0160f8d423",
 	"prevId": "1514dbc7-3bf0-41f5-83bf-361dfa5d95ca",
 	"version": "7",
 	"dialect": "postgresql",
@@ -221,6 +221,104 @@
 			"checkConstraints": {},
 			"isRLSEnabled": false
 		},
+		"public.GithubOrg": {
+			"name": "GithubOrg",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"externalId": {
+					"name": "externalId",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"workspaceId": {
+					"name": "workspaceId",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {
+				"GithubOrg_name_key": {
+					"name": "GithubOrg_name_key",
+					"columns": [
+						{
+							"expression": "name",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last",
+							"opclass": "text_ops"
+						}
+					],
+					"isUnique": true,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				},
+				"GithubOrg_workspaceId_key": {
+					"name": "GithubOrg_workspaceId_key",
+					"columns": [
+						{
+							"expression": "workspaceId",
+							"isExpression": false,
+							"asc": true,
+							"nulls": "last",
+							"opclass": "text_ops"
+						}
+					],
+					"isUnique": true,
+					"concurrently": false,
+					"method": "btree",
+					"with": {}
+				}
+			},
+			"foreignKeys": {
+				"GithubOrg_workspaceId_fkey": {
+					"name": "GithubOrg_workspaceId_fkey",
+					"tableFrom": "GithubOrg",
+					"tableTo": "Workspace",
+					"columnsFrom": ["workspaceId"],
+					"columnsTo": ["externalId"],
+					"onDelete": "cascade",
+					"onUpdate": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"GithubOrg_externalId_unique": {
+					"name": "GithubOrg_externalId_unique",
+					"nullsNotDistinct": false,
+					"columns": ["externalId"]
+				},
+				"GithubOrg_workspaceId_unique": {
+					"name": "GithubOrg_workspaceId_unique",
+					"nullsNotDistinct": false,
+					"columns": ["workspaceId"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
 		"public.GithubPullRequestTask": {
 			"name": "GithubPullRequestTask",
 			"schema": "",
@@ -409,6 +507,12 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": "''"
+				},
+				"orgId": {
+					"name": "orgId",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
 				}
 			},
 			"indexes": {

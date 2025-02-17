@@ -1,8 +1,10 @@
 import {
 	type DBClient,
+	type GithubOrg,
 	type GithubRepo,
 	eq,
 	githubCommitsTable,
+	githubOrgTable,
 	githubPullRequestTaskTable,
 	githubPullRequestsTable,
 	githubRepoTable,
@@ -52,6 +54,7 @@ export class GithubService implements GithubRpc {
 		author,
 		timestamp,
 		repo,
+		org,
 	}: {
 		id: string;
 		number: number;
@@ -63,6 +66,7 @@ export class GithubService implements GithubRpc {
 		author: string;
 		timestamp: string;
 		repo: Omit<GithubRepo, "externalId">;
+		org: Omit<GithubOrg, "externalId" | "workspaceId">;
 	}): Promise<UpsertPullRequestResponse> {
 		this.logger.info(
 			`Upserting pull request with id: ${id} and number: ${number}`,
@@ -80,6 +84,7 @@ export class GithubService implements GithubRpc {
 					identifier: tasksTable.identifier,
 					workspaceUrl: workspacesTable.url,
 					title: tasksTable.title,
+					workspaceId: tasksTable.workspaceId,
 				})
 				.from(tasksTable)
 				.leftJoin(
@@ -95,14 +100,26 @@ export class GithubService implements GithubRpc {
 				return { tasks: [] };
 			}
 
-			const { id: externalId, ...rest } = repo;
-			await tx
-				.insert(githubRepoTable)
-				.values({ ...rest, externalId })
-				.onConflictDoUpdate({
-					target: githubRepoTable.externalId,
-					set: { ...rest },
-				});
+			const { id: repoExternalId, ...repoRest } = repo;
+			const { id: orgExternalId, ...orgRest } = org;
+
+			await Promise.all([
+				tx
+					.insert(githubRepoTable)
+					.values({ ...repoRest, externalId: repoExternalId })
+					.onConflictDoUpdate({
+						target: githubRepoTable.externalId,
+						set: { ...repoRest },
+					}),
+				tx
+					.insert(githubOrgTable)
+					.values({
+						...orgRest,
+						externalId: orgExternalId,
+						workspaceId: tasks[0].workspaceId,
+					})
+					.onConflictDoNothing(),
+			]);
 
 			const [pull] = await tx
 				.insert(githubPullRequestsTable)
@@ -120,7 +137,7 @@ export class GithubService implements GithubRpc {
 				})
 				.onConflictDoUpdate({
 					target: githubPullRequestsTable.externalId,
-					set: { number, state, title, url, branch, body, author },
+					set: { state, title, body },
 				})
 				.returning();
 

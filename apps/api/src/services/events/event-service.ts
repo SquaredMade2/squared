@@ -1,6 +1,6 @@
 import {
-	type Commit,
 	type DBClient,
+	type GithubCommit,
 	type Notification,
 	type NotificationType,
 	type Task,
@@ -34,7 +34,7 @@ export class EventService implements EventRpc {
 	}
 	async getTaskEvents({
 		taskId,
-	}: { taskId: string }): Promise<(TaskEvent | Commit)[]> {
+	}: { taskId: string }): Promise<(TaskEvent | GithubCommit)[]> {
 		this.logger.info(
 			`Fetching TaskEvents and Commits for Task ID ${taskId}...`,
 		);

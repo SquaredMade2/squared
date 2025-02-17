@@ -1,6 +1,6 @@
 import type {
 	Comment,
-	Commit,
+	GithubCommit,
 	GithubRepo,
 	Label,
 	Notification,
@@ -85,7 +85,7 @@ export const notificationSchema = createSchema<Notification>()(
 	}),
 );
 
-export const commitSchema = createSchema<Commit>()(
+export const commitSchema = createSchema<GithubCommit>()(
 	z.object({
 		id: z.string(),
 		externalId: z.string(),
@@ -106,6 +106,7 @@ export const githubRepoSchema = createSchema<GithubRepo>()(
 		description: z.string().nullable(),
 		url: z.string(),
 		name: z.string(),
+		orgId: z.string(),
 	}),
 );
 

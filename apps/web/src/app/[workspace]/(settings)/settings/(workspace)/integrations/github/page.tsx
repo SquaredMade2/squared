@@ -9,6 +9,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -23,7 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { client } from "@/lib/client";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MoreVertical } from "lucide-react";
 import Link from "next/link";
 
 const GithubSettings: React.FC = () => {
@@ -44,6 +50,11 @@ const GithubSettings: React.FC = () => {
 	const githubAccount = user?.externalAccounts.find(
 		(account) => account.provider === "github",
 	);
+	const organizations = connectedRepos?.map((repo) => ({
+		name: repo,
+		dateAdded: "12/12/2021",
+		addedBy: "John Doe",
+	}));
 
 	return (
 		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
@@ -73,38 +84,38 @@ const GithubSettings: React.FC = () => {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							{/* {organizations.map((org, index) => (
-										<div
-											key={index}
-											className="flex items-center justify-between py-2"
-										>
-											<div>
-												<p className="font-medium">{org.name}</p>
-												<p className="text-muted-foreground text-sm">
-													Added on {org.dateAdded} by {org.addedBy}
-												</p>
-											</div>
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<Button variant="ghost" size="sm">
-														<MoreVertical className="h-4 w-4" />
-													</Button>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent align="end">
-													<DropdownMenuItem
-														onSelect={() => console.log("Configure")}
-													>
-														Configure
-													</DropdownMenuItem>
-													<DropdownMenuItem
-														onSelect={() => console.log("Disconnect")}
-													>
-														Disconnect
-													</DropdownMenuItem>
-												</DropdownMenuContent>
-											</DropdownMenu>
-										</div>
-									))} */}
+							{organizations?.map((org) => (
+								<div
+									key={org.name}
+									className="flex items-center justify-between py-2"
+								>
+									<div>
+										<p className="font-medium">{org.name}</p>
+										<p className="text-muted-foreground text-sm">
+											Added on {org.dateAdded} by {org.addedBy}
+										</p>
+									</div>
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button variant="ghost" size="sm">
+												<MoreVertical className="h-4 w-4" />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											<DropdownMenuItem
+												onSelect={() => console.log("Configure")}
+											>
+												Configure
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onSelect={() => console.log("Disconnect")}
+											>
+												Disconnect
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</div>
+							))}
 							<Button
 								className="mt-4"
 								onClick={() => console.log("Add organization")}

@@ -119,11 +119,40 @@ export const githubRepoTable = pgTable(
 		description: text(),
 		url: text().notNull(),
 		name: text().default("").notNull(),
+		orgId: text().notNull(),
 	},
 	(table) => [
 		uniqueIndex("GithubRepoInfo_name_key").using(
 			"btree",
 			table.name.asc().nullsLast().op("text_ops"),
+		),
+	],
+);
+
+export const githubOrgTable = pgTable(
+	"GithubOrg",
+	{
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().notNull().unique(),
+		name: text().notNull(),
+		description: text(),
+		workspaceId: text().notNull().unique(),
+	},
+	(table) => [
+		uniqueIndex("GithubOrg_name_key").using(
+			"btree",
+			table.name.asc().nullsLast().op("text_ops"),
+		),
+		foreignKey({
+			columns: [table.workspaceId],
+			foreignColumns: [workspacesTable.externalId],
+			name: "GithubOrg_workspaceId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		uniqueIndex("GithubOrg_workspaceId_key").using(
+			"btree",
+			table.workspaceId.asc().nullsLast().op("text_ops"),
 		),
 	],
 );
@@ -647,9 +676,10 @@ export const githubPullRequestTaskTable = pgTable(
 
 export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
 export type GithubPullRequest = typeof githubPullRequestsTable.$inferSelect;
-export type Comment = typeof commentsTable.$inferSelect;
-export type Commit = typeof githubCommitsTable.$inferSelect;
+export type GithubCommit = typeof githubCommitsTable.$inferSelect;
 export type GithubRepo = typeof githubRepoTable.$inferSelect;
+export type GithubOrg = typeof githubOrgTable.$inferSelect;
+export type Comment = typeof commentsTable.$inferSelect;
 export type Label = {
 	name: string;
 	description?: string | null;
