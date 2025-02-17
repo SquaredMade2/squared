@@ -1,4 +1,4 @@
-package main
+package rpc
 
 import (
 	"encoding/json"
@@ -21,36 +21,15 @@ const (
 	configFile = "services.json"
 )
 
-type MethodInfo struct {
-	MethodName     string    `json:"methodName"`
-	ParamNames     []string  `json:"paramNames"`
-	MethodTimeout  int       `json:"methodTimeout"`
-	Help           string    `json:"help"`
-	RequestSchema  ZodSchema `json:"requestSchema"`
-	ResponseSchema ZodSchema `json:"responseSchema"`
-	InputType      string    // Generated TypeScript type
-	OutputType     string    // Generated TypeScript type
+func generateFile(service Service, isGoInstall bool) {
+	if isGoInstall {
+		generateGoFile(service)
+	} else {
+		generateTypeScriptFile(service)
+	}
 }
 
-type Service struct {
-	Name       string `json:"serviceName"`
-	MultiArg   bool   `json:"multiArg"`
-	Help       string `json:"help"`
-	URL        string
-	Interfaces []MethodInfo `json:"interfaces"`
-}
-
-type ZodSchema struct {
-	Type       string               `json:"type"`
-	Properties map[string]ZodSchema `json:"properties,omitempty"`
-	Items      *ZodSchema           `json:"items,omitempty"`
-	Values     []interface{}        `json:"values,omitempty"`
-	Options    []ZodSchema          `json:"options,omitempty"`
-	Value      interface{}          `json:"value,omitempty"`
-	Inner      *ZodSchema           `json:"inner,omitempty"`
-}
-
-func installService(cmd *cobra.Command, args []string) {
+func InstallService(cmd *cobra.Command, args []string) {
 	serviceURL := args[0]
 	isGoInstall := cmd.Name() == "go"
 
@@ -116,74 +95,6 @@ func installService(cmd *cobra.Command, args []string) {
 
 	fmt.Printf("Service '%s' installed successfully\n", service.Name)
 	generateFile(service, isGoInstall)
-}
-
-func generateFile(service Service, isGoInstall bool) {
-	if isGoInstall {
-		generateGoFile(service)
-	} else {
-		generateTypeScriptFile(service)
-	}
-}
-
-func listServices(cmd *cobra.Command, args []string) {
-	fmt.Println("Listing all available services:")
-
-	services, err := loadServices()
-	if err != nil {
-		fmt.Printf("Error loading services: %v\n", err)
-		return
-	}
-
-	if len(services) == 0 {
-		fmt.Println("No services installed")
-		return
-	}
-
-	for _, service := range services {
-		fmt.Printf("- %s\n", service.Name)
-		fmt.Printf("  URL: %s\n", service.URL)
-		if len(service.Interfaces) > 0 {
-			fmt.Println("  Interfaces:")
-			for _, iface := range service.Interfaces {
-				fmt.Printf("    - %s\n", iface.MethodName)
-			}
-		}
-		fmt.Println()
-	}
-}
-
-func loadServices() ([]Service, error) {
-	configPath := filepath.Join(os.Getenv("HOME"), ".squared", "services.json")
-	data, err := os.ReadFile(configPath)
-	if os.IsNotExist(err) {
-		return []Service{}, nil
-	} else if err != nil {
-		return nil, err
-	}
-
-	var services []Service
-	err = json.Unmarshal(data, &services)
-	if err != nil {
-		return nil, err
-	}
-
-	return services, nil
-}
-
-func saveServices(services []Service) error {
-	configPath := filepath.Join(os.Getenv("HOME"), ".squared", "services.json")
-	data, err := json.MarshalIndent(services, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	err = os.MkdirAll(filepath.Dir(configPath), 0755)
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(configPath, data, 0644)
 }
 
 func generateTypeScriptFile(service Service) {
@@ -324,8 +235,13 @@ func New{{capitalizeFirst .Name}}Service(baseURL string) *{{capitalizeFirst .Nam
 type {{capitalizeFirst .MethodName}}Request {{zodToGo .RequestSchema}}
 {{end}}
 
+{{if ne .OutputType "void"}}
+// {{capitalizeFirst .MethodName}}Response represents the response for {{.MethodName}} method
+type {{capitalizeFirst .MethodName}}Response {{zodToGo .ResponseSchema}}
+{{end}}
+
 // {{capitalizeFirst .MethodName}} calls the {{.MethodName}} RPC method
-func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx context.Context{{if ne .InputType "undefined"}}, req {{capitalizeFirst .MethodName}}Request{{end}}) error {
+func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx context.Context{{if ne .InputType "undefined"}}, req {{capitalizeFirst .MethodName}}Request{{end}}) ({{if ne .OutputType "void"}}*{{capitalizeFirst .MethodName}}Response, {{end}}error) {
 	endpoint := fmt.Sprintf("%s/{{$.Name}}/{{.MethodName}}", s.baseURL)
 
 	{{if ne .InputType "undefined"}}
@@ -337,18 +253,18 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 
 	reqBody, err := json.Marshal(wrappedReq)
 	if err != nil {
-		return fmt.Errorf("error marshaling request: %w", err)
+		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error marshaling request: %w", err)
 	}
 	{{end}}
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, {{if ne .InputType "undefined"}}bytes.NewBuffer(reqBody){{else}}nil{{end}})
 	if err != nil {
-		return fmt.Errorf("error creating request: %w", err)
+		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error creating request: %w", err)
 	}
 
 	requestID := make([]byte, 6)
 	if _, err := rand.Read(requestID); err != nil {
-		return fmt.Errorf("error generating request ID: %w", err)
+		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error generating request ID: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -356,16 +272,25 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 
 	resp, err := s.client.Do(httpReq)
 	if err != nil {
-		return fmt.Errorf("error sending request: %w", err)
+		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("error sending request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+		return {{if ne .OutputType "void"}}nil, {{end}}fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
+	{{if ne .OutputType "void"}}
+	var response {{capitalizeFirst .MethodName}}Response
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("error decoding response: %w", err)
+	}
+
+	return &response, nil
+	{{else}}
 	return nil
+	{{end}}
 }
 {{end}}
 `))
@@ -384,6 +309,21 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 	}
 
 	fmt.Printf("Generated Go file: %s\n", fileName)
+}
+
+func saveServices(services []Service) error {
+	configPath := filepath.Join(os.Getenv("HOME"), ".squared", "services.json")
+	data, err := json.MarshalIndent(services, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(filepath.Dir(configPath), 0755)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(configPath, data, 0644)
 }
 
 // capitalizeFirst capitalizes only the first letter of the input string
