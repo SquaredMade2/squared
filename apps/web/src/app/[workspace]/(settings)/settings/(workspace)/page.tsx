@@ -121,13 +121,12 @@ export default function WorkspaceSettings() {
 		return () => subscription.unsubscribe();
 	}, [watch, workspace]);
 
-	if (!organization) return null;
-
 	const { mutate: updateWorkspace, isPending: updatingWorkspace } = useMutation(
 		{
 			mutationKey: ["updateWorkspace", organization?.id],
 			mutationFn: async (values: z.infer<typeof formSchema>) => {
 				let defaultView: string | null = null;
+				if (!organization) throw new Error("Organization not found");
 				if (values.viewPage) {
 					defaultView = `${values.viewPage !== "sprint" ? values.viewPage : "sprints/current"}`;
 				}
@@ -160,6 +159,7 @@ export default function WorkspaceSettings() {
 	const { mutate: deleteWorkspace, isPaused: isDeleting } = useMutation({
 		mutationKey: ["deleteWorkspace", organization?.id],
 		mutationFn: async () => {
+			if (!organization) throw new Error("Organization not found");
 			await client.workspace.deleteWorkspace.$post({
 				workspaceId: organization.id,
 			});
@@ -191,6 +191,8 @@ export default function WorkspaceSettings() {
 				</div>
 			</div>
 		);
+
+	if (!organization) return null;
 
 	return (
 		<div className="container mx-auto w-full py-10 md:w-3/4 ">
