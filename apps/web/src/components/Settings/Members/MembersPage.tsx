@@ -1,20 +1,29 @@
+import { useOrganization } from "@clerk/nextjs";
 import type { Team } from "@squared/db";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable, type MemberWithRole } from "./data-table";
 
 export function MembersPage({
 	columns,
-	members,
 	team,
 }: {
 	columns: ColumnDef<MemberWithRole, unknown>[];
-	members: MemberWithRole[];
 	team?: Team | null;
 }) {
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+	const users = memberships?.data?.map((membership) => ({
+		...membership.publicUserData,
+		role: membership.role,
+	}));
 	return (
 		<>
-			{members.length > 0 && (
-				<DataTable columns={columns} data={members} team={team ? team : null} />
+			{users && users.length > 0 && (
+				<DataTable columns={columns} data={users} team={team ? team : null} />
 			)}
 		</>
 	);

@@ -4,7 +4,8 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import type { Team, User, WorkspaceRole } from "@squared/db";
+import type { PublicUserData } from "@clerk/types";
+import type { Team } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
@@ -17,8 +18,8 @@ import {
 import { useState } from "react";
 import { CSVLink } from "react-csv";
 
-export type MemberWithRole = User & {
-	role: WorkspaceRole;
+export type MemberWithRole = PublicUserData & {
+	role: string;
 };
 
 interface DataTableProps {

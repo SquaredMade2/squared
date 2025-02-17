@@ -30,7 +30,7 @@ const ManageMembersRoleButton = ({
 	const loggedInUser = useUserStore((state) => state.user);
 	const { toast } = useToast();
 	const selectedUserRole = membersWithRoles?.find(
-		(user) => user.id === userId,
+		(user) => user.identifier === userId,
 	)?.role;
 
 	const { data: loggedInUserRole, error } = useQuery({

@@ -9,22 +9,19 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 		accessorKey: "name",
 		cell: ({ row }) => {
 			const user = row.original;
-			const placeholder = user.name
-				.split(" ")
-				.map((name) => name[0])
-				.join("");
+			const placeholder = user.firstName;
+
 			return (
 				<div className="flex gap-2">
 					<Avatar>
-						<AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
+						<AvatarImage
+							src={user.imageUrl ?? undefined}
+							alt={user.firstName ?? "User"}
+						/>
 						<AvatarFallback>{placeholder}</AvatarFallback>
 					</Avatar>
-					<div className="flex flex-col items-start">
-						<div className="ml-2">{user.name}</div>
-						<div className="ml-2 text-muted-foreground text-sm">
-							{user.email}
-						</div>
-					</div>
+
+					<div className="ml-2">{user.firstName}</div>
 				</div>
 			);
 		},
@@ -32,23 +29,14 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "role",
 		cell: ({ row }) => {
-			if (
-				!["member", "admin", "owner"].includes(
-					row.original.role?.toLowerCase() || "",
-				)
-			) {
-				return "loading...";
-			}
-			return (
-				row.original?.role?.charAt(0).toUpperCase() +
-				row.original?.role?.slice(1)
-			);
+			const role = row.original.role.split(":")[1];
+			return role.charAt(0).toUpperCase() + role.slice(1);
 		},
 	},
 	{
 		accessorKey: "manage-role",
 		cell: ({ row, column }) => {
-			const userId: string = row.original.id;
+			const userId: string = row.original.identifier;
 			const { page, pageId, membersWithRoles, fetchWorkspaceUsersWithRoles } =
 				column.columnDef.meta || {};
 
@@ -66,7 +54,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "manage",
 		cell: ({ row, column }) => {
-			const userId: string = row.original.id;
+			const userId: string = row.original.identifier;
 			const { page, pageId, membersWithRoles, refetch } =
 				column.columnDef.meta || {};
 

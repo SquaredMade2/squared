@@ -4,30 +4,20 @@ import MemberSettingsWrapper from "@/app/[workspace]/(settings)/settings/MemberS
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { columns } from "@/components/Settings/Members/columns";
-import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { useQuery } from "@tanstack/react-query";
+import { useOrganization } from "@clerk/nextjs";
 
 export default function TeamMembersPage() {
 	const { team, loading: teamLoading } = useTeams();
-	const { workspace, loading: workspaceLoading } = useWorkspaces();
-
-	const { data: users = [], refetch } = useQuery({
-		queryKey: ["team", team?.id],
-		queryFn: async () => {
-			if (!team) return;
-			return await client.user.getTeamUsers
-				.$get({ teamId: team.id })
-				.then((res) => res.json());
+	const { memberships, isLoaded } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
 		},
-		enabled: !!team,
 	});
-
-	const membersWithRoles: MemberWithRole[] = users.map((user) => ({
-		...user,
-		role: workspace?.admins.includes(user.externalId) ? "admin" : "member",
+	const users = memberships?.data?.map((membership) => ({
+		...membership.publicUserData,
+		role: membership.role,
 	}));
 
 	const enhancedColumns = columns.map((col) => ({
@@ -35,12 +25,11 @@ export default function TeamMembersPage() {
 		meta: {
 			page: "team",
 			pageId: team?.id,
-			membersWithRoles,
-			refetch,
+			membersWithRoles: users,
 		},
 	}));
 
-	if (teamLoading || workspaceLoading) {
+	if (teamLoading || !isLoaded) {
 		return (
 			<MemberSettingsWrapper page="team">
 				<div className="flex w-full justify-center p-20">
@@ -52,11 +41,7 @@ export default function TeamMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="team">
-			<MembersPage
-				columns={enhancedColumns}
-				members={membersWithRoles}
-				team={team}
-			/>
+			<MembersPage columns={enhancedColumns} team={team} />
 		</MemberSettingsWrapper>
 	);
 }

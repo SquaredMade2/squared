@@ -3,36 +3,35 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { columns } from "@/components/Settings/Members/columns";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
-import { useOrganization } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
 export default function WorkspaceMembersPage() {
-	const { organization, isLoaded } = useOrganization();
-
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { data: pageUsers = [], isLoading: userLoading } = useQuery({
-		queryKey: ["workspaceUsers", organization?.id],
+		queryKey: ["workspaceUsers", workspace?.id],
 		queryFn: async () => {
-			if (!organization) return [];
+			if (!workspace) return [];
 			const users = await client.user.getWorkspaceUsersWithRoles
-				.$get({ workspaceId: organization.id })
+				.$get({ workspaceId: workspace.externalId })
 				.then((res) => res.json());
 			return users;
 		},
-		enabled: !!organization,
+		enabled: !!workspace,
 	});
 
 	const enhancedColumns = columns.map((col) => ({
 		...col,
 		meta: {
 			page: "workspace",
-			pageId: organization?.id,
+			pageId: workspace?.id,
 			membersWithRoles: pageUsers,
 		},
 	}));
 
-	if (!isLoaded || userLoading) {
+	if (workspaceLoading || userLoading) {
 		return (
 			<MemberSettingsWrapper page="workspace">
 				<div className="flex w-full justify-center p-20">
@@ -44,7 +43,7 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="workspace">
-			<MembersPage columns={enhancedColumns} members={pageUsers} />
+			<MembersPage columns={enhancedColumns} />
 		</MemberSettingsWrapper>
 	);
 }
