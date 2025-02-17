@@ -268,3 +268,74 @@ func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (
 	
 }
 
+
+// UploadOrgRequest represents the request for uploadOrg method
+type UploadOrgRequest struct {
+	Description string `json:"description"`
+	Id string `json:"id"`
+	Name string `json:"name"`
+	WorkspaceId string `json:"workspaceId"`
+}
+
+
+
+// UploadOrgResponse represents the response for uploadOrg method
+type UploadOrgResponse struct{}
+
+
+// UploadOrg calls the uploadOrg RPC method
+func (s *GithubService) UploadOrg(ctx context.Context, req UploadOrgRequest) (*UploadOrgResponse, error) {
+	endpoint := fmt.Sprintf("%s/github/uploadOrg", s.baseURL)
+
+	
+	wrappedReq := struct {
+		JSON UploadOrgRequest "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling request: %w", err)
+	}
+	
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	requestID := make([]byte, 6)
+	if _, err := rand.Read(requestID); err != nil {
+		return nil, fmt.Errorf("error generating request ID: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("X-Request-ID", base64.URLEncoding.EncodeToString(requestID))
+
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	var response UploadOrgResponse
+	if err := json.Unmarshal(body, &response); err != nil {
+		return nil, fmt.Errorf("error decoding response: %w", err)
+	}
+
+	return &response, nil
+	
+}
+

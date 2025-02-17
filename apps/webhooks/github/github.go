@@ -33,6 +33,11 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error reading request body: %v", err)
 	}
 
+	if r.URL.Query().Get("installation_id") != "" {
+		handleInstallEvent(githubService, r, w)
+		return
+	}
+
 	switch headers.XGitHubEvent {
 	case "pull_request":
 		handlePullRequestEvent(body, githubService, w)

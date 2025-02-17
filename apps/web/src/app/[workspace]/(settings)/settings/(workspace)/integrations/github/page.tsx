@@ -41,6 +41,10 @@ const GithubSettings: React.FC = () => {
 		(account) => account.provider === "github",
 	);
 
+	const callbackUrl = encodeURIComponent(
+		`${process.env.NEXT_PUBLIC_URL}/api/callback/github`,
+	);
+
 	return (
 		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
 			<div className="bg-background mdsm:visible lg:hidden">
@@ -108,7 +112,7 @@ const GithubSettings: React.FC = () => {
 									variant="ghost"
 									onClick={() =>
 										window.open(
-											"https://github.com/apps/squaredmadeapp/installations/select_target",
+											`https://github.com/apps/squaredmadeapp/installations/new?state=${organization?.id}&redirect_uri=${callbackUrl}`,
 											"_blank",
 											"noopener,noreferrer",
 										)

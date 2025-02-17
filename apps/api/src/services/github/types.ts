@@ -35,4 +35,10 @@ export interface GithubRpc {
 		branch: string;
 		timestamp: string;
 	}) => Promise<void>;
+	uploadOrg: (args: {
+		id: string;
+		name: string;
+		description: string;
+		workspaceId: string;
+	}) => Promise<void>;
 }

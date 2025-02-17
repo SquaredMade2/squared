@@ -196,6 +196,31 @@ export class GithubService implements GithubRpc {
 		});
 	}
 
+	async uploadOrg({
+		id,
+		name,
+		description,
+		workspaceId,
+	}: {
+		id: string;
+		name: string;
+		description: string;
+		workspaceId: string;
+	}) {
+		this.logger.info(`Uploading organization with id: ${id}`);
+		return await this.db.transaction(async (tx) => {
+			await tx
+				.insert(githubOrgTable)
+				.values({
+					externalId: id,
+					name,
+					description,
+					workspaceId,
+				})
+				.onConflictDoNothing();
+		});
+	}
+
 	private formatUrl(title: string) {
 		const titleSlug = title
 			.toLowerCase()

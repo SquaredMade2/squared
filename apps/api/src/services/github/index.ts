@@ -56,6 +56,15 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 		}),
 		output: z.void(),
 	},
+	uploadOrg: {
+		input: z.object({
+			id: z.string(),
+			name: z.string(),
+			description: z.string(),
+			workspaceId: z.string(),
+		}),
+		output: z.void(),
+	},
 });
 
 export type GithubRpcSchema = typeof githubRpcSchema;
@@ -66,4 +75,5 @@ export const createGithubRpcHandler = (githubService: GithubService) =>
 			githubService.getWorkspaceOrganizations(input),
 		upsertPullRequest: (input) => githubService.upsertPullRequest(input),
 		pushCommit: (input) => githubService.pushCommit(input),
+		uploadOrg: (input) => githubService.uploadOrg(input),
 	});
