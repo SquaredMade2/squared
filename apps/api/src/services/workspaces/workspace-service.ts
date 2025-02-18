@@ -235,7 +235,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					"Reducing InviteLink uses by 1 or removing link if it has run out of uses",
 				);
 				const inviteLinksUpdate =
-					inviteLink.uses - 1 === 0
+					inviteLink.uses - 1 <= 0
 						? [...filteredLinks]
 						: [
 								...filteredLinks,
