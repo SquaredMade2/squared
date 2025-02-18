@@ -86,7 +86,7 @@ export const notificationRouter = router({
 		.input(
 			z.object({
 				description: z.string(),
-				type: z.enum(Object.values(NotificationType) as [string, ...string[]]),
+				type: z.enum(Object.values(NotificationType) as [NotificationType]),
 				taskId: z.string(),
 				userId: z.string(),
 				workspaceId: z.string(),

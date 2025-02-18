@@ -3,6 +3,7 @@ import type {
 	CustomElement,
 	CustomText,
 } from "@/components/TextEditor";
+import type { User } from "@squared/db";
 import {
 	Editor,
 	type Editor as EditorType,
@@ -82,14 +83,17 @@ export const replaceTextOfCurrentNode = (
 	Transforms.insertText(editor, newText);
 };
 
-export const injectMentionConfirm = (editor: EditorType, newText: string) => {
+export const injectMentionConfirm = (editor: EditorType, user: User) => {
 	if (!editor.selection) return; // Ensure there's a selection
 
 	const [, path] = Editor.node(editor, editor.selection);
 	Transforms.select(editor, Editor.range(editor, path));
 
 	// Insert new text
-	Transforms.insertNodes(editor, { text: `@${newText}`, mentionConfirm: true });
+	Transforms.insertNodes(editor, {
+		text: `@${user.name}`,
+		mentionConfirm: user,
+	});
 };
 
 [

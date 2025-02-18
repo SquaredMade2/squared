@@ -153,6 +153,11 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 				if (leaf.url) {
 					return `[${leaf.text}](${leaf.url})`;
 				}
+				if (leaf.mentionConfirm) {
+					return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
+				}
+
+				// input mentionConfirms
 				// helper vars
 				const returnBoldMarks = leaf.bold ? "**" : "";
 				const returnItalicMarks = leaf.italic ? "*" : "";

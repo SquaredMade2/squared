@@ -7,6 +7,7 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
+import MentionHover from "../TextEditor/Menus/MentionHover";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "../ui/use-toast";
 // !!! This is all part of the code below !!! line 37
@@ -148,9 +149,11 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 				<p className="mr-4 ml-2 text-foreground">{authorName}</p>
 			</div>
-			<p className="markdown-content flex min-h-20 min-w-60 flex-col rounded-md bg-secondary p-3">
-				{"compiledSource" in commentData && <MDXRemote {...commentData} />}
-			</p>
+			<div className="markdown-content inline-flex min-h-20 min-w-60 flex-col items-start rounded-md bg-secondary p-3">
+				{"compiledSource" in commentData && (
+					<MDXRemote {...commentData} components={{ MentionHover }} />
+				)}
+			</div>
 		</div>
 	);
 };

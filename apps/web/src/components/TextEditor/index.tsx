@@ -19,6 +19,7 @@ import {
 	injectMentionConfirm,
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
+import type { User } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import {
 	type KeyboardEvent,
@@ -80,7 +81,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	// Mention search filter
 	const [mentionsFilter, setMentionsFilter] = useState("");
-	const [currentEnterUser, setCurrentEnterUser] = useState("");
+	const [currentEnterUser, setCurrentEnterUser] = useState<User | null>(null);
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
@@ -257,7 +258,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const isMarkActive = (type: MarkTypes): boolean => {
 		if (!editor.selection) return false;
 		const marks = Editor.marks(editor);
-		return type === "url" ? !!marks?.[type] : Boolean(marks?.[type]);
+		return type === "url" || type === "mentionConfirm"
+			? !!marks?.[type]
+			: Boolean(marks?.[type]);
 	};
 
 	const useEditorMarks = () => ({
@@ -297,7 +300,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				if (toggleMentions) {
 					e.preventDefault();
 					debounceRef.current = true;
-					injectMentionConfirm(editor, currentEnterUser);
+					if (currentEnterUser) injectMentionConfirm(editor, currentEnterUser);
 					setToggleMentions(false);
 				}
 				break;

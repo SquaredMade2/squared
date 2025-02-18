@@ -8,6 +8,7 @@ import { useUserStore } from "@/store/users";
 import { cn } from "@/utils/cn";
 import { truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
+import type { User } from "@squared/db";
 import { CommandItem } from "cmdk";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -24,7 +25,7 @@ const TextEditorMentions = ({
 	// State
 	const users = useUserStore((state) => state.users);
 
-	const usersRef = useRef<HTMLDivElement[]>([]);
+	const usersRef = useRef<User[]>([]);
 
 	// Helpers
 
@@ -32,15 +33,19 @@ const TextEditorMentions = ({
 		? cursorPosition
 		: { x: 10, y: 10 };
 
-	const handleMentionClick = (user: string) => {
+	const handleMentionClick = (user: User) => {
 		debounceRef.current = true;
 		injectMentionConfirm(editor, user);
 		setToggleMentions(false);
 	};
 
-	const handleUsersRef = (e: HTMLDivElement | null, index: number) => {
+	const handleUsersRef = (
+		e: HTMLDivElement | null,
+		index: number,
+		user: User,
+	) => {
 		if (e) {
-			usersRef.current[index] = e;
+			usersRef.current[index] = user;
 		}
 	};
 
@@ -48,12 +53,9 @@ const TextEditorMentions = ({
 
 	useEffect(() => {
 		if (usersRef.current.length > 0) {
-			const firstVisibleUser = usersRef.current.find((user) => user !== null);
+			const firstVisibleUser = usersRef.current[0];
 			if (firstVisibleUser) {
-				const firstName = firstVisibleUser.textContent
-					? firstVisibleUser.textContent?.trim()
-					: "";
-				setCurrentEnterUser(firstName);
+				setCurrentEnterUser(firstVisibleUser);
 			}
 		}
 	}, [mentionsFilter]);
@@ -68,7 +70,7 @@ const TextEditorMentions = ({
 		>
 			<CommandList>
 				<CommandEmpty>No results found.</CommandEmpty>
-				<CommandGroup heading="Users">
+				<CommandGroup heading="Users" className="h-60 overflow-y-scroll pt-0">
 					{users
 						.filter((user) =>
 							user.name
@@ -82,13 +84,15 @@ const TextEditorMentions = ({
 									className={cn(
 										`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
 									)}
-									ref={(e) => handleUsersRef(e, index)}
-									onSelect={() => handleMentionClick(user.name)}
+									ref={(e) => handleUsersRef(e, index, user)}
+									onSelect={() => handleMentionClick(user)}
 								>
-									{truncateString(user.name, 13)}
+									<label className="w-40 xl:text-sm">
+										{truncateString(user.name, 13)}
+									</label>
 									{index === 0 && (
 										<div className="flex w-32 select-none flex-row items-center justify-start ">
-											<div className="ml-auto flex w-10 flex-row rounded-lg border-2 px-2 py-1 text-muted-foreground">
+											<div className="ml-auto flex w-10 flex-row rounded-lg px-2 py-1 text-muted-foreground">
 												<CornerDownLeft
 													size={20}
 													color="hsl(217,5%, 44%)"
