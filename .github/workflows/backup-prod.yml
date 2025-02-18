@@ -27,10 +27,6 @@ jobs:
         with:
           postgresql-version: ${{env.PG_VERSION}}
 
-      - name: Install AWS CLI
-        run: |
-          sudo apt install -y awscli
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
