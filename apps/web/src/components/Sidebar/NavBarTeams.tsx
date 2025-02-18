@@ -1,8 +1,7 @@
 import { taskService } from "@/lib/services";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Copy, Layers3 } from "@squared/icons";
-import { Activity } from "@squared/icons";
+import { Activity, Copy, Layers3 } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";

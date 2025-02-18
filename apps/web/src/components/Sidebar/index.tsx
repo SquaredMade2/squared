@@ -21,10 +21,10 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
 import { Clipboard, Inbox, Moon, Search, Sun } from "@squared/icons";
+import type { SquaredIcon } from "@squared/icons/types";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
@@ -181,15 +181,8 @@ function ToggleSidebarButton() {
 		/>
 	);
 }
-interface IconProps {
-	className?: string;
-	size?: number;
-	color?: string;
-	strokeWidth?: number;
-	absoluteStrokeWidth?: boolean;
-}
 interface IconButtonProps {
-	icon: FC<IconProps>;
+	icon: SquaredIcon;
 	label: string;
 	onClick: () => void;
 	notificationCount?: number;

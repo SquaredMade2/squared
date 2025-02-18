@@ -13,25 +13,18 @@ import {
 	MapPin,
 	MessageCircleMore,
 } from "@squared/icons";
+import type { SquaredIcon } from "@squared/icons/types";
 import { Label } from "@squaredmade/ui/label";
-import type { FC } from "react";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;
 	filterType: NotificationFilter;
 	readNotifications: Notification[];
 };
-type IconProps = {
-	className?: string;
-	size?: number;
-	color?: string;
-	strokeWidth?: number;
-	absoluteStrokeWidth?: boolean;
-};
 
 type FilterButtonProps = {
 	type: NotificationFilter;
-	icon: FC<IconProps>;
+	icon: SquaredIcon;
 	label: string;
 	unreadCount?: number;
 	isSelected: boolean;
@@ -108,7 +101,7 @@ export function InboxSidebar({
 }: SidebarProps) {
 	const filters: {
 		type: NotificationFilter;
-		icon: FC<IconProps>;
+		icon: SquaredIcon;
 		label: string;
 	}[] = [
 		{ type: "INBOX", icon: Inbox, label: "Inbox" },

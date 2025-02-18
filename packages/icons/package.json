@@ -5,6 +5,10 @@
 		".": {
 			"import": "./components/index.ts",
 			"require": "./components/index.ts"
+		},
+		"./types": {
+			"import": "./types.ts",
+			"require": "./types.ts"
 		}
 	},
 	"scripts": {
@@ -13,6 +17,7 @@
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^11.0.4",
+		"@types/react": "19.0.8",
 		"@types/node": "^22.10.10",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.0.0",
@@ -22,8 +27,5 @@
 	"peerDependencies": {
 		"react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
 		"react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
-	},
-	"dependencies": {
-		"@types/react": "19.0.8"
 	}
 }
