@@ -2,6 +2,11 @@ import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
@@ -12,6 +17,8 @@ import { formatUrl, getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { UserSearch } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskListProps } from "./interfaces";
 
@@ -24,6 +31,7 @@ const TaskList = ({
 	taskLabels,
 }: TaskListProps) => {
 	const { getListOptions } = useViewStore((state) => state);
+	const [popoverOpen, setPopoverOpen] = useState(false);
 
 	const {
 		identifier: showIdentifier,
@@ -80,24 +88,64 @@ const TaskList = ({
 								(user?.name ? (
 									<TooltipProvider>
 										<Tooltip>
-											<TooltipTrigger>
-												<Avatar className="size-6 flex-shrink-0">
-													<AvatarImage src={user.avatarUrl ?? undefined} />
-													<AvatarFallback className="text-xxs">
-														{getInitials(user.name)}
-													</AvatarFallback>
-												</Avatar>
-											</TooltipTrigger>
-											<TooltipContent>{user.name}</TooltipContent>
+											<Popover open={popoverOpen}>
+												<TooltipTrigger asChild>
+													<PopoverTrigger asChild>
+														<Avatar
+															className="size-6 flex-shrink-0"
+															onClick={(e) => {
+																e.preventDefault();
+																setPopoverOpen(!popoverOpen);
+															}}
+														>
+															<AvatarImage src={user.avatarUrl ?? undefined} />
+															<AvatarFallback className="text-xxs">
+																{getInitials(user.name)}
+															</AvatarFallback>
+														</Avatar>
+													</PopoverTrigger>
+												</TooltipTrigger>
+												<TooltipContent>{user.name}</TooltipContent>
+												<PopoverContent
+													className="w-48"
+													onClick={(e) => e.preventDefault()}
+													onBlur={() => setPopoverOpen(false)}
+												>
+													<AssigneeBox
+														task={task}
+														closeMenu={() => setPopoverOpen(false)}
+													/>
+												</PopoverContent>
+											</Popover>
 										</Tooltip>
 									</TooltipProvider>
 								) : (
 									<TooltipProvider>
 										<Tooltip>
-											<TooltipTrigger>
-												<UserSearch className="size-6 flex-shrink-0 text-[#9597AD]" />
-											</TooltipTrigger>
-											<TooltipContent>Assign task</TooltipContent>
+											<Popover open={popoverOpen}>
+												<TooltipTrigger asChild>
+													<PopoverTrigger>
+														<UserSearch
+															className="size-6 flex-shrink-0 text-[#9597AD]"
+															onClick={(e) => {
+																e.preventDefault();
+																setPopoverOpen(!popoverOpen);
+															}}
+														/>
+														<TooltipContent>Assign task</TooltipContent>
+													</PopoverTrigger>
+												</TooltipTrigger>
+												<PopoverContent
+													className="w-48"
+													onClick={(e) => e.preventDefault()}
+													onBlur={() => setPopoverOpen(false)}
+												>
+													<AssigneeBox
+														task={task}
+														closeMenu={() => setPopoverOpen(false)}
+													/>
+												</PopoverContent>
+											</Popover>
 										</Tooltip>
 									</TooltipProvider>
 								))}

@@ -18,6 +18,7 @@ import { formatDate } from "date-fns";
 import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 
@@ -30,7 +31,7 @@ const TaskGrid = ({
 	isDisabled = false,
 }: TaskGridProps) => {
 	const { getGridOptions } = useViewStore((state) => state);
-	const [isOpen, setIsOpen] = useState(false);
+	const [popoverOpen, setPopoverOpen] = useState(false);
 
 	const {
 		identifier: showIdentifier,
@@ -57,14 +58,14 @@ const TaskGrid = ({
 							(user?.name ? (
 								<TooltipProvider>
 									<Tooltip>
-										<Popover open={isOpen}>
+										<Popover open={popoverOpen}>
 											<TooltipTrigger asChild>
 												<PopoverTrigger asChild>
 													<Avatar
 														className="size-6"
 														onClick={(e) => {
 															e.preventDefault();
-															setIsOpen(!isOpen);
+															setPopoverOpen(!popoverOpen);
 														}}
 													>
 														<AvatarImage src={user.avatarUrl ?? undefined} />
@@ -75,9 +76,15 @@ const TaskGrid = ({
 												</PopoverTrigger>
 											</TooltipTrigger>
 											<TooltipContent>{user.name}</TooltipContent>
-											<PopoverContent className="w-48">
-												<p>{user.email}</p>
-												<p>Profile settings</p>
+											<PopoverContent
+												className="w-48"
+												onClick={(e) => e.preventDefault()}
+												onBlur={() => setPopoverOpen(false)}
+											>
+												<AssigneeBox
+													task={task}
+													closeMenu={() => setPopoverOpen(false)}
+												/>
 											</PopoverContent>
 										</Popover>
 									</Tooltip>
@@ -85,10 +92,30 @@ const TaskGrid = ({
 							) : (
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger>
-											<UserSearch className="size-6 text-[#9597AD]" />
-											<TooltipContent>Assign task</TooltipContent>
-										</TooltipTrigger>
+										<Popover open={popoverOpen}>
+											<TooltipTrigger asChild>
+												<PopoverTrigger>
+													<UserSearch
+														className="size-6 text-[#9597AD]"
+														onClick={(e) => {
+															e.preventDefault();
+															setPopoverOpen(!popoverOpen);
+														}}
+													/>
+													<TooltipContent>Assign task</TooltipContent>
+												</PopoverTrigger>
+											</TooltipTrigger>
+											<PopoverContent
+												className="w-48"
+												onClick={(e) => e.preventDefault()}
+												onBlur={() => setPopoverOpen(false)}
+											>
+												<AssigneeBox
+													task={task}
+													closeMenu={() => setPopoverOpen(false)}
+												/>
+											</PopoverContent>
+										</Popover>
 									</Tooltip>
 								</TooltipProvider>
 							))}
