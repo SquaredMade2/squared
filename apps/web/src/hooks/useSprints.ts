@@ -6,51 +6,50 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import { useUser } from "@clerk/nextjs";
+import { useOrganization } from "@clerk/nextjs";
 import type { Sprint } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 export function useSprints(sprintId?: string) {
-	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
+	const { organization, isLoaded } = useOrganization();
+	const { identifier: teamIdentifier } = useParams();
 	const { setTasks } = useTaskStore((state) => state);
 	const { setWorkspace } = useWorkspaceStore((state) => state);
 	const { setSprint } = useSprintStore((state) => state);
 	const { setTeam } = useTeamStore((state) => state);
-	const { isLoaded } = useUser();
 
 	const workspaceQuery = useQuery({
-		queryKey: ["workspace", workspaceUrl],
+		queryKey: ["workspace", organization?.slug],
 		queryFn: async () => {
-			const parsedWorkspaceUrl = parseParams(workspaceUrl);
-			if (!parsedWorkspaceUrl) throw new Error("Workspace not found");
+			if (!organization?.slug) throw new Error("Workspace not found");
 			const res = await client.workspace.getWorkspaceByUrl.$get({
-				workspaceUrl: parsedWorkspaceUrl,
+				workspaceUrl: organization.slug,
 			});
 			const workspace = await res.json();
 			if (!workspace) throw new Error("Workspace not found");
 			setWorkspace(workspace);
 			return workspace;
 		},
-		enabled: isLoaded && !!workspaceUrl,
+		enabled: isLoaded && !!organization,
 	});
 
 	const teamQuery = useQuery({
-		queryKey: ["team", workspaceQuery.data?.id, teamIdentifier],
+		queryKey: ["team", organization?.id, teamIdentifier],
 		queryFn: async () => {
 			const parsedTeamIdentifier = parseParams(teamIdentifier);
-			if (!workspaceQuery.data) return;
+			if (!organization) return;
 			if (!parsedTeamIdentifier) throw new Error("Team not found");
 			const res = await client.team.getTeamByIdentifier.$get({
 				identifier: parsedTeamIdentifier,
-				workspaceId: workspaceQuery.data.id,
+				workspaceId: organization.id,
 			});
 			const team = await res.json();
 			if (!team) throw new Error("Team not found");
 			setTeam(team);
 			return team;
 		},
-		enabled: !!workspaceQuery.data && !!teamIdentifier,
+		enabled: !!organization && !!teamIdentifier,
 	});
 
 	const sprintsQuery = useQuery({

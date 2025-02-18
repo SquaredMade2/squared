@@ -59,7 +59,7 @@ class BaseClient {
 				mapError(this.serviceName, methodName, errorData, response.status);
 			}
 
-			return superjson.parse(superjson.stringify(await response.json()));
+			return superjson.parse(await response.json());
 		} catch (error) {
 			console.error("Error occurred during RPC request: ", error);
 			if (error instanceof Error) {
