@@ -230,19 +230,25 @@ export class WorkspaceService implements WorkspaceRpc {
 
 			if (inviteLink?.uses) {
 				const filteredLinks = inviteLinks.filter((data) => data.link !== token);
-				// reduce uses by 1
-				this.logger.info("Reducing InviteLink uses by 1");
+				// reduce uses by 1 or remove link if out of uses
+				this.logger.info(
+					"Reducing InviteLink uses by 1 or removing link if it has run out of uses",
+				);
+				const inviteLinksUpdate =
+					inviteLink.uses - 1 === 0
+						? [...filteredLinks]
+						: [
+								...filteredLinks,
+								{
+									link: inviteLink.link,
+									expiration: inviteLink.expiration,
+									uses: inviteLink.uses - 1,
+								},
+							];
 				await this.db
 					.update(workspacesTable)
 					.set({
-						inviteLinks: [
-							...filteredLinks,
-							{
-								link: inviteLink.link,
-								expiration: inviteLink.expiration,
-								uses: inviteLink.uses - 1,
-							},
-						],
+						inviteLinks: inviteLinksUpdate,
 					})
 					.where(eq(workspacesTable.id, workspaceId));
 			}
