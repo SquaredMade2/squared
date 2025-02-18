@@ -7,30 +7,29 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useTeams } from "@/hooks/useTeams";
-import { filterService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useFilterStore } from "@/store";
 import type { SavedFilter } from "@/store/filters";
-import { TODO } from "@squared/context";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function ViewsPage() {
 	const router = useRouter();
-	const { savedFilters, setSavedFilters } = useFilterStore((state) => state);
+	const { setSavedFilters } = useFilterStore((state) => state);
 	const { team, loading: teamLoading } = useTeams();
-	const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {
-		const fetchSavedFilters = async () => {
-			if (teamLoading) return;
-			team &&
-				setSavedFilters(
-					await filterService.getFilters(TODO, { teamId: team.id }),
-				);
-			setIsLoading(false);
-		};
-		fetchSavedFilters();
-	}, [team, teamLoading]);
+	const { data: savedFilters = [], isLoading } = useQuery({
+		queryKey: ["filters", team?.id],
+		queryFn: async () => {
+			if (!team) return;
+			const filters = await client.filter.getFilters
+				.$get({ teamId: team.id })
+				.then((res) => res.json());
+			setSavedFilters(filters);
+			return filters;
+		},
+		enabled: !!team,
+	});
 
 	const handleFilterSelect = (filter: SavedFilter) => {
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");

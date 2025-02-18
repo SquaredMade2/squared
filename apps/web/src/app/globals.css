@@ -257,3 +257,10 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 		filter: grayscale(0.8);
 	}
 }
+
+@layer utilities {
+	.dropdown-content-width-full {
+		width: var(--squared-dropdown-menu-trigger-width);
+		max-height: var(--squared-dropdown-menu-content-available-height);
+	}
+}

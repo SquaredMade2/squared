@@ -1,4 +1,4 @@
-import { filterService } from "@/lib/services";
+import { client } from "@/lib/client";
 import {
 	useFilterStore,
 	useTaskStore,
@@ -8,8 +8,9 @@ import {
 } from "@/store";
 import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
-import { TODO } from "@squared/context";
+import { parseError } from "@/utils/parseError";
 import type { Task } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { Info, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,6 +28,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { useToast } from "../ui/use-toast";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;
@@ -46,6 +48,7 @@ const ViewsDetailSidebar = ({
 	const filteredTasks = filterTasksWithFilter(tasks);
 	const allLabels = workspace?.labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	const { toast } = useToast();
 
 	const author = users.find((u) => u.externalId === filter.authorId);
 
@@ -77,11 +80,30 @@ const ViewsDetailSidebar = ({
 	const assigneeCount = getAssigneeCount();
 	const labelCount = getLabelCount();
 
-	const handleDeleteSavedFilter = async () => {
-		await filterService.deleteFilter(TODO, { filterId: filter.id });
-		deleteSavedFilter(filter.id);
-		router.back();
-	};
+	const { mutate: handleDeleteSavedFilter, isPending } = useMutation({
+		mutationKey: ["deleteFilter", filter.id],
+		mutationFn: async () => {
+			await client.filter.deleteFilter.$post({ filterId: filter.id });
+		},
+		onSuccess: () => {
+			deleteSavedFilter(filter.id);
+			toast({
+				title: "Filter Deleted",
+				description: "The filter has been successfully deleted.",
+			});
+			router.back();
+		},
+		onError: (error) => {
+			toast({
+				title: "Error deleting filter",
+				description: parseError(
+					error,
+					"An error occurred while deleting the filter.",
+				),
+				variant: "destructive",
+			});
+		},
+	});
 
 	return (
 		<div>
@@ -185,7 +207,8 @@ const ViewsDetailSidebar = ({
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-destructive"
-							onClick={handleDeleteSavedFilter}
+							disabled={isPending}
+							onClick={() => handleDeleteSavedFilter()}
 						>
 							Delete
 						</AlertDialogAction>
