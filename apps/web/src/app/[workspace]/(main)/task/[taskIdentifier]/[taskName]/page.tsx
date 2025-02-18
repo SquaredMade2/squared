@@ -11,12 +11,10 @@ import {
 import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { userService } from "@/lib/services";
-import { useUserStore } from "@/store";
-import { TODO } from "@squared/context";
-
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
@@ -25,22 +23,21 @@ const TaskPage = () => {
 	const { isLoading, error, subtasks, currentTaskBlockedBy } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
-	const user = useUserStore((state) => state.user);
+
+	const lastViewedTaskMutation = useMutation({
+		mutationFn: async () => {
+			await client.user.setLastViewedTask.$post({
+				taskId: currentTask?.id || "",
+			});
+		},
+		onError: (error) => {
+			console.error(error);
+		},
+	});
+
 	useEffect(() => {
-		if (currentTask && user?.externalId) {
-			userService
-				.setLastViewedTask(TODO, {
-					userId: user.externalId,
-					taskId: currentTask.id,
-				})
-				.catch((error) => {
-					toast({
-						title: error,
-						variant: "destructive",
-					});
-				});
-		}
-	}, [currentTask, user]);
+		currentTask && lastViewedTaskMutation.mutate();
+	}, [currentTask]);
 
 	useEffect(() => {
 		if (error) {

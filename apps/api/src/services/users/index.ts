@@ -86,7 +86,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 			userId: z.string(),
 			taskId: z.string(),
 		}),
-		output: userSchema,
+		output: z.void(),
 	},
 	getUserWorkspaceRole: {
 		input: z.object({

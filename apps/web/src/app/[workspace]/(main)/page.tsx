@@ -1,11 +1,10 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { teamService, workspaceService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -29,9 +28,12 @@ export default function Home() {
 				return;
 			}
 
-			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
-				url: workspaceUrl,
-			});
+			const currentWorkspace = await client.workspace.getWorkspaceByUrl
+				.$get({
+					workspaceUrl,
+				})
+				.then((res) => res.json());
+
 			if (!currentWorkspace) {
 				setWorkspaceFound(false);
 				setLoading(false);
@@ -39,10 +41,12 @@ export default function Home() {
 			}
 			setWorkspace(currentWorkspace);
 
-			const allTeams = await teamService.getUserTeams(TODO, {
-				userId: user.id,
-				workspaceId: currentWorkspace.externalId,
-			});
+			const allTeams = await client.team.getUserTeams
+				.$get({
+					workspaceId: currentWorkspace.externalId,
+				})
+				.then((res) => res.json());
+
 			if (allTeams[0].identifier) {
 				console.log("FirstTeamIdentifier: ", allTeams[0].identifier);
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);

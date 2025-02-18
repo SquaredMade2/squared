@@ -103,4 +103,14 @@ export const userRouter = router({
 			const { workspaceId } = input;
 			return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
 		}),
+	setLastViewedTask: privateProcedure
+		.input(z.object({ taskId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { userService, user } = ctx;
+			const { taskId } = input;
+
+			await userService.setLastViewedTask(TODO, { userId: user.id, taskId });
+
+			return c.json({ success: true });
+		}),
 });

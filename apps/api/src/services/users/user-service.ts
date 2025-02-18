@@ -303,18 +303,17 @@ export class UserService implements UserRpc {
 	}: {
 		userId: string;
 		taskId: string;
-	}) {
+	}): Promise<void> {
 		this.logger.info(
 			"Setting last viewed task for userId, taskId: ",
 			userId,
 			taskId,
 		);
-		return await this.db
+		await this.db
 			.update(usersTable)
 			.set({ lastViewedTaskId: taskId })
-			.where(eq(usersTable.externalId, userId))
-			.returning()
-			.then((user) => user[0]);
+			.where(eq(usersTable.externalId, userId));
+		return;
 	}
 
 	async getDefaultWorkspace({
