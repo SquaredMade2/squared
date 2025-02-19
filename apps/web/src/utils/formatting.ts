@@ -111,11 +111,6 @@ export const formatPriority = (priority: Priority) => {
 	}
 };
 
-export const formatName = (user?: PublicUserData) => {
-	if (!user) return "Unknown User";
-	return user.firstName ? `${user.firstName} ${user.lastName}` : "Unknown User";
-};
-
 // TODO: Implement formatting link
 // export const handleFormatLink = (url: string) => {
 // // if is in url link format [nameOfLink]LinkUrl
