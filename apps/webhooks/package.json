@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev:go": "go run main.go",
-		"server": "smee -u https://smee.io/xFrqLYhBh7KSCwP -p 3031",
+		"server": "smee -u https://smee.io/xFrqLYhBh7KSCwP -p 3131",
 		"test": "go test -v ./..."
 	},
 	"devDependencies": {
