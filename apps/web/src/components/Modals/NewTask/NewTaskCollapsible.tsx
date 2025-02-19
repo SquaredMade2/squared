@@ -14,19 +14,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import {
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
+import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
+import { useMutation } from "@tanstack/react-query";
 import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -38,7 +40,6 @@ import { StatusDropdownButton } from "./StatusDropdownButton";
 
 export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { toast } = useToast();
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
@@ -65,42 +66,16 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 		},
 	});
 
-	const handleCreateTask = async (values: z.infer<typeof formSchema>) => {
-		const { title, description } = values;
-		setIsSubmitting(true);
+	const { mutate: handleCreateTask, isPending } = useMutation({
+		mutationKey: ["task", "create"],
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			const { title, description } = values;
+			if (tasks.some((task) => task.title === title))
+				throw new Error(`${title} already exists`);
+			if (!workspace) throw new Error("Workspace not found");
+			if (!team) throw new Error("Team not found");
+			if (!user) throw new Error("User not authenticated");
 
-		if (tasks.some((task) => task.title === title)) {
-			toast({
-				title: `${title} already exists`,
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (!workspace) {
-			toast({
-				title: "Workspace not found",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (!team) {
-			toast({
-				title: "Team not found",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		if (!user) {
-			toast({
-				title: "User not authenticated",
-				variant: "destructive",
-			});
-			return;
-		}
-		try {
 			const { transformedInput: transformedTitle } =
 				transformingMentionInputs(title);
 
@@ -123,7 +98,9 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
-			const createdTask = await taskService.createTask(TODO, newTask);
+			const createdTask = await client.task.createTask
+				.$post(newTask)
+				.then((res) => res.json());
 			createdTask.order = subtasks.length + 1;
 			createTask(createdTask);
 			setSubtasks([...subtasks, createdTask]);
@@ -131,30 +108,29 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				...workspace,
 				tasksCreated: workspace.tasksCreated + 1,
 			});
-
+			return createdTask;
+		},
+		onSuccess(data) {
 			toast({
-				title: "Task created successfully",
+				title: "Task Created Successfully",
+				description: (
+					<Link
+						href={`/${workspace?.url}/task/${data.identifier}/${formatUrl(data.title)}`}
+					>
+						{data.title}
+					</Link>
+				),
 			});
-
-			setIsOpen("");
 			setNewTaskData({});
-			form.reset({
-				title: "",
-				description: "",
-			});
-			toast({
-				title: "New Task Created",
-			});
-		} catch (error) {
+		},
+		onError: (error) => {
 			toast({
 				title: "Error creating Task",
-				description: error instanceof Error ? error.message : "Unknown error",
+				description: error.message,
 				variant: "destructive",
 			});
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
+		},
+	});
 
 	const handleCancel = () => {
 		setIsOpen("");
@@ -187,7 +163,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				<AccordionContent className="px-1">
 					<Form {...form}>
 						<form
-							onSubmit={form.handleSubmit(handleCreateTask)}
+							onSubmit={form.handleSubmit((values) => handleCreateTask(values))}
 							className="space-y-4"
 						>
 							<div className="flex flex-col space-y-4">
@@ -241,8 +217,12 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 								>
 									Cancel
 								</Button>
-								<Button type="submit" className="hover:cursor-pointer">
-									{isSubmitting ? "Creating..." : "Create Task"}{" "}
+								<Button
+									type="submit"
+									className="hover:cursor-pointer"
+									disabled={isPending}
+								>
+									{isPending ? "Creating..." : "Create Task"}
 								</Button>
 							</div>
 						</form>

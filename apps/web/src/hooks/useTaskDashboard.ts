@@ -104,7 +104,6 @@ export function useTaskDashboard() {
 				.$post({
 					parentId: draggedTask.parentId,
 					newOrder: items.map((item) => item.id),
-					teamId: team.id,
 				})
 				.then((res) => res.json());
 			setTasks(teamTasks);
