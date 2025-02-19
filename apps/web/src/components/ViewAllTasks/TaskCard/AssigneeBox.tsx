@@ -1,9 +1,9 @@
 import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandItem,
-} from "@/components/ui/command";
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useOrganization } from "@clerk/nextjs";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -11,7 +11,7 @@ import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import type { AssigneeBoxProps } from "./TaskContextMenu/interfaces";
 
-export const AssigneeBox = ({ task, closeMenu }: AssigneeBoxProps) => {
+export const AssigneeBox = ({ task }: AssigneeBoxProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
@@ -21,15 +21,12 @@ export const AssigneeBox = ({ task, closeMenu }: AssigneeBoxProps) => {
 			pageSize: 100,
 		},
 	});
+
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
 	);
 
-	if (!users) return <CommandEmpty>No users found</CommandEmpty>;
-
-	const updateAssignee = async (userId: string | undefined) => {
-		if (!userId) return;
-		closeMenu();
+	const updateAssignee = async (userId: string | null) => {
 		try {
 			const res = await client.task.updateAssignee.$post({
 				taskId,
@@ -46,17 +43,22 @@ export const AssigneeBox = ({ task, closeMenu }: AssigneeBoxProps) => {
 	};
 
 	return (
-		<Command>
-			<CommandGroup>
-				{users.map((user) => (
-					<CommandItem
+		<>
+			<DropdownMenuLabel>Assign to...</DropdownMenuLabel>
+			<DropdownMenuSeparator />
+			<DropdownMenuGroup className="h-[400px] overflow-y-scroll">
+				<DropdownMenuItem key="unassign" onSelect={() => updateAssignee(null)}>
+					Unassign
+				</DropdownMenuItem>
+				{users?.map((user) => (
+					<DropdownMenuItem
 						key={user.userId}
-						onSelect={() => updateAssignee(user.userId)}
+						onSelect={() => updateAssignee(user.userId as string)}
 					>
 						{user.firstName}
-					</CommandItem>
+					</DropdownMenuItem>
 				))}
-			</CommandGroup>
-		</Command>
+			</DropdownMenuGroup>
+		</>
 	);
 };

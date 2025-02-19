@@ -2,10 +2,10 @@ import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
 	Tooltip,
 	TooltipContent,
@@ -58,14 +58,13 @@ const TaskGrid = ({
 							(user?.name ? (
 								<TooltipProvider>
 									<Tooltip>
-										<Popover open={popoverOpen}>
-											<TooltipTrigger asChild>
-												<PopoverTrigger asChild>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<TooltipTrigger asChild>
 													<Avatar
 														className="size-6"
 														onClick={(e) => {
 															e.preventDefault();
-															setPopoverOpen(!popoverOpen);
 														}}
 													>
 														<AvatarImage src={user.avatarUrl ?? undefined} />
@@ -73,28 +72,21 @@ const TaskGrid = ({
 															{getInitials(user.name)}
 														</AvatarFallback>
 													</Avatar>
-												</PopoverTrigger>
-											</TooltipTrigger>
+												</TooltipTrigger>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
+												<AssigneeBox task={task} />
+											</DropdownMenuContent>
 											<TooltipContent>{user.name}</TooltipContent>
-											<PopoverContent
-												className="w-48"
-												onClick={(e) => e.preventDefault()}
-												onBlur={() => setPopoverOpen(false)}
-											>
-												<AssigneeBox
-													task={task}
-													closeMenu={() => setPopoverOpen(false)}
-												/>
-											</PopoverContent>
-										</Popover>
+										</DropdownMenu>
 									</Tooltip>
 								</TooltipProvider>
 							) : (
 								<TooltipProvider>
 									<Tooltip>
-										<Popover open={popoverOpen}>
-											<TooltipTrigger asChild>
-												<PopoverTrigger>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<TooltipTrigger asChild>
 													<UserSearch
 														className="size-6 text-[#9597AD]"
 														onClick={(e) => {
@@ -102,20 +94,13 @@ const TaskGrid = ({
 															setPopoverOpen(!popoverOpen);
 														}}
 													/>
-													<TooltipContent>Assign task</TooltipContent>
-												</PopoverTrigger>
-											</TooltipTrigger>
-											<PopoverContent
-												className="w-48"
-												onClick={(e) => e.preventDefault()}
-												onBlur={() => setPopoverOpen(false)}
-											>
-												<AssigneeBox
-													task={task}
-													closeMenu={() => setPopoverOpen(false)}
-												/>
-											</PopoverContent>
-										</Popover>
+												</TooltipTrigger>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
+												<AssigneeBox task={task} />
+											</DropdownMenuContent>
+											<TooltipContent>Assign task</TooltipContent>
+										</DropdownMenu>
 									</Tooltip>
 								</TooltipProvider>
 							))}

@@ -6,5 +6,4 @@ export interface ContextMenuProps {
 
 export interface AssigneeBoxProps {
 	task: Task;
-	closeMenu: () => void;
 }
