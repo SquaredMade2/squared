@@ -1,5 +1,8 @@
+import { useOrganizationList } from "@clerk/nextjs";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { useQuery } from "@tanstack/react-query";
 import { NextResponse } from "next/server";
+import { client } from "./lib/client";
 
 const getDeploymentUrl = () => {
 	if (process.env.VERCEL_TARGET_ENV === "preview") {
@@ -20,9 +23,26 @@ export default clerkMiddleware(
 		}
 
 		if (!isPublicRoute(request)) {
-			const { orgId } = await auth.protect();
+			const { userId, orgId } = await auth.protect();
 
 			if (!orgId) {
+				const { data: defaultWorkspace } = useQuery({
+					queryKey: ["defaultWorkspace"],
+					queryFn: async () => {
+						if (!userId) return;
+						return await client.user.getDefaultWorkpace
+							.$get()
+							.then((res) => res.json());
+					},
+				});
+
+				if (defaultWorkspace?.id && defaultWorkspace?.url) {
+					const { setActive } = useOrganizationList();
+					setActive ? setActive({ organization: defaultWorkspace?.id }) : "";
+					return NextResponse.redirect(
+						new URL(`${deploymentUrl}/${defaultWorkspace.url}`),
+					);
+				}
 				return NextResponse.redirect(new URL(`${deploymentUrl}/join`));
 			}
 		}

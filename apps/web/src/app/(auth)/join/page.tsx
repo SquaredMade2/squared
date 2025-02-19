@@ -67,9 +67,15 @@ const Join = () => {
 		queryKey: ["defaultWorkspace"],
 		queryFn: async () => {
 			if (!clerkUser?.id) return;
-			return await client.user.getDefaultWorkpace
+			const defaultWorkspace = await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
+
+			if (defaultWorkspace?.id) {
+				setActive ? setActive({ organization: defaultWorkspace?.id }) : "";
+			}
+
+			return defaultWorkspace;
 		},
 	});
 
