@@ -43,7 +43,7 @@ export interface TaskRpc {
 	addSprintTasks: (args: {
 		sprintId: string;
 		taskIds: string[];
-	}) => Promise<number>;
+	}) => Promise<Task[]>;
 	reorderSubtasks: (args: {
 		parentId: string;
 		newOrder: string[];
