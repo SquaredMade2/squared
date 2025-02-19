@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useClerk, useOrganizationList, useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +21,7 @@ const Join = () => {
 	const { toast } = useToast();
 	const router = useRouter();
 	const { signOut } = useClerk();
+	const { setActive } = useOrganizationList();
 	const queryClient = useQueryClient();
 
 	// List of restricted routes (initial set)
@@ -83,6 +84,7 @@ const Join = () => {
 			if (!data) return;
 			createWorkspace(data);
 			toast({ title: "Workspace created successfully" });
+			setActive ? setActive({ organization: data.externalId }) : "";
 			if (data) {
 				if (user?.onBoarding) {
 					onBoardUserMutation.mutate();

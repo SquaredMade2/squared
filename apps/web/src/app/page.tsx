@@ -2,13 +2,14 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useClerk, useOrganizationList, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 const HomePage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
+	const { setActive } = useOrganizationList();
 	const { signOut } = useClerk();
 
 	const { isLoading: workspaceLoading, error: workspaceError } = useQuery({
@@ -22,6 +23,7 @@ const HomePage = () => {
 				router.push("/join");
 				return res;
 			}
+			setActive ? setActive({ organization: res.id }) : "";
 			router.push(`/${res.url}`);
 			return null;
 		},

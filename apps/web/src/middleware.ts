@@ -20,7 +20,11 @@ export default clerkMiddleware(
 		}
 
 		if (!isPublicRoute(request)) {
-			await auth.protect();
+			const { orgId } = await auth.protect();
+
+			if (!orgId) {
+				return NextResponse.redirect(new URL(`${deploymentUrl}/join`));
+			}
 		}
 	},
 	() => ({

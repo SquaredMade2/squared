@@ -7,8 +7,7 @@ import { TaskService } from "@/gen/rpc/task";
 import { TeamService } from "@/gen/rpc/team";
 import { UserService } from "@/gen/rpc/user";
 import { WorkspaceService } from "@/gen/rpc/workspace";
-import { currentUser } from "@clerk/nextjs/server";
-import { TODO } from "@squared/context";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
 // import { HTTPException } from "hono/http-exception";
@@ -30,8 +29,9 @@ const extendedContextMiddleware = j.middleware(async ({ c, next }) => {
 
 const authMiddleware = j.middleware(async ({ c, next }) => {
 	// Get the current user to add it to the context
-	const auth = await currentUser();
-	if (!auth) throw new HTTPException(401, { message: "Unauthorized" });
+	const clerkUser = await currentUser();
+	const { orgId } = await auth();
+	if (!clerkUser) throw new HTTPException(401, { message: "Unauthorized" });
 
 	const variables = env(c);
 	const serverUrl = variables.NEXT_PUBLIC_SERVER;
@@ -46,11 +46,11 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 	const userService = new UserService(serverUrl);
 	const workspaceService = new WorkspaceService(serverUrl);
 
-	const user = await userService.getUser(TODO, { userId: auth.id });
-	if (!user) throw new HTTPException(401, { message: "Unauthorized" });
+	if (!clerkUser) throw new HTTPException(401, { message: "Unauthorized" });
 
 	return await next({
-		user: auth,
+		userId: clerkUser.id,
+		workspaceId: orgId,
 		authService,
 		commentService,
 		eventService,
