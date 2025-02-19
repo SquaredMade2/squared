@@ -62,6 +62,14 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		const taskFilter = filterTasks(tasks);
 		switch (groupTasksBy) {
 			case "Status":
+				if (group === Status.done) {
+					return taskFilter.filter(
+						(task) =>
+							task.status === Status.done ||
+							task.status === Status.canceled ||
+							task.status === Status.duplicated,
+					);
+				}
 				return taskFilter.filter((task) => task.status === group);
 			case "Assignee":
 				return taskFilter.filter((task) => task.assigneeId === group);

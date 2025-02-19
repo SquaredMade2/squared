@@ -1,6 +1,7 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
+import type { PublicUserData } from "@clerk/types";
 import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
 
@@ -103,6 +104,11 @@ export const formatPriority = (priority: Priority) => {
 		default:
 			return "No priority";
 	}
+};
+
+export const formatName = (user?: PublicUserData) => {
+	if (!user) return "Unknown User";
+	return user.firstName ? `${user.firstName} ${user.lastName}` : "Unknown User";
 };
 
 // TODO: Implement formatting link
