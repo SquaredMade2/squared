@@ -99,23 +99,21 @@ export class GithubService implements GithubRpc {
 
 			this.logger.debug("Tasks found for pull request: ", tasks);
 
-			await Promise.all([
-				tx
-					.insert(githubRepoTable)
-					.values({ ...repoRest, externalId: repoExternalId })
-					.onConflictDoUpdate({
-						target: githubRepoTable.externalId,
-						set: { ...repoRest },
-					}),
-				tx
-					.insert(githubOrgTable)
-					.values({
-						...orgRest,
-						externalId: orgExternalId,
-						workspaceId: tasks[0].workspaceId,
-					})
-					.onConflictDoNothing(),
-			]);
+			await tx
+				.insert(githubOrgTable)
+				.values({
+					...orgRest,
+					externalId: orgExternalId,
+					workspaceId: tasks[0].workspaceId,
+				})
+				.onConflictDoNothing();
+			await tx
+				.insert(githubRepoTable)
+				.values({ ...repoRest, externalId: repoExternalId })
+				.onConflictDoUpdate({
+					target: githubRepoTable.externalId,
+					set: { ...repoRest },
+				});
 
 			const [pull] = await tx
 				.insert(githubPullRequestsTable)

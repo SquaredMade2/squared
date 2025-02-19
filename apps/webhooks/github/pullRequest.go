@@ -19,6 +19,9 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 	}
+	if webhookEvent.Sender.NodeId == os.Getenv("GITHUB_BOT_ID") {
+		return
+	}
 
 	supportedActions := []string{"opened", "edited", "reopened"}
 
@@ -124,7 +127,7 @@ func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRe
 	}
 
 	// Combine original body with task links
-	updatedBody := pr.GetBody() + taskLinks.String()
+	updatedBody := pr.GetBody() + "\n" + taskLinks.String()
 
 	// Update the pull request
 	updatedPR, _, err := client.PullRequests.Edit(ctx, pr.Base.Repo.Owner.GetLogin(), pr.Base.Repo.GetName(), int(pr.GetNumber()), &github.PullRequest{
@@ -158,7 +161,6 @@ func addCommentToPR(owner, repo string, prNumber int, tasks rpc.UpsertPullReques
 	}
 
 	if botCommented {
-		fmt.Println("Bot has already commented on this PR.")
 		return nil
 	}
 
