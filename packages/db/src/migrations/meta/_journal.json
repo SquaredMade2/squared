@@ -43,6 +43,13 @@
 			"when": 1739851077634,
 			"tag": "0005_add_duplicated",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1739985329067,
+			"tag": "0006_workspace_inviteLink",
+			"breakpoints": true
 		}
 	]
 }
