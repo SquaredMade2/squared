@@ -15,6 +15,19 @@ import type {
 import { createEnumSchema, createSchema } from "@squared/rpc";
 import z from "zod";
 
+export const statusEnum = createEnumSchema<Task["status"]>()(
+	z.enum([
+		"backlog",
+		"todo",
+		"inProgress",
+		"inReview",
+		"done",
+		"canceled",
+		"archived",
+		"duplicated",
+	]),
+);
+
 export const labelSchema = createSchema<Label>()(
 	z.object({
 		name: z.string(),
@@ -28,15 +41,7 @@ export const taskSchema = createSchema<Task>()(
 		id: z.string(),
 		title: z.string(),
 		description: z.string().nullable(),
-		status: z.enum([
-			"backlog",
-			"todo",
-			"inProgress",
-			"inReview",
-			"done",
-			"canceled",
-			"archived",
-		]),
+		status: statusEnum,
 		sprintId: z.string().nullable(),
 		teamId: z.string(),
 		updatedAt: z.date(),

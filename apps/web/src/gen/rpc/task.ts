@@ -22,7 +22,8 @@ export type CreateTaskRequest = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 };
@@ -53,7 +54,8 @@ export type CreateTaskResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -81,7 +83,8 @@ export type UpdateTaskRequest = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	title?: string;
 	updaterId: string;
 };
@@ -112,7 +115,8 @@ export type UpdateTaskResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -157,7 +161,8 @@ export type GetTaskResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -195,7 +200,8 @@ export type GetTaskByIdentifierResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -232,7 +238,8 @@ export type GetTeamTasksResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -276,7 +283,8 @@ export type AddSprintTasksResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -314,7 +322,8 @@ export type ReorderSubtasksResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -353,7 +362,8 @@ export type UpdateBlockedOrBlockingTasksResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;
@@ -391,7 +401,8 @@ export type GetTaskBlockedByAndBlockingResponse = {
 			| "inReview"
 			| "done"
 			| "canceled"
-			| "archived";
+			| "archived"
+			| "duplicated";
 		teamId: string;
 		title: string;
 		updatedAt: Date;
@@ -436,7 +447,8 @@ export type GetSubtasksResponse = {
 		| "inReview"
 		| "done"
 		| "canceled"
-		| "archived";
+		| "archived"
+		| "duplicated";
 	teamId: string;
 	title: string;
 	updatedAt: Date;

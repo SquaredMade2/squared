@@ -38,6 +38,7 @@ export const statusType = pgEnum("Status", [
 	"inReview",
 	"done",
 	"canceled",
+	"duplicated",
 	"archived",
 ]);
 
