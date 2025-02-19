@@ -12,6 +12,7 @@ const statusEnum = z.enum([
 	"done",
 	"canceled",
 	"archived",
+	"duplicated",
 ]);
 
 const priorityEnum = z.enum(["noPriority", "low", "medium", "high", "urgent"]);

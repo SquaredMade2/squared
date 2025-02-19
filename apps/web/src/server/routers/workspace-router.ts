@@ -109,6 +109,38 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
+	getWorkspaceLabels: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceId } = input;
+			return c.superjson(
+				await workspaceService.getWorkspaceLabels(TODO, {
+					workspaceId: workspaceId,
+				}),
+			);
+		}),
+	createWorkspaceLabel: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				label: z.object({
+					name: z.string(),
+					description: z.string().nullable().optional(),
+					color: z.string(),
+				}),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceId, label } = input;
+			const { workspaceService } = ctx;
+			return c.superjson(
+				await workspaceService.createWorkspaceLabel(TODO, {
+					workspaceId,
+					label,
+				}),
+			);
+		}),
 	deleteWorkspace: privateProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
@@ -116,5 +148,40 @@ export const workspaceRouter = router({
 			const { workspaceId } = input;
 			await workspaceService.deleteWorkspace(TODO, { workspaceId });
 			return c.json({ success: true });
+		}),
+	updateWorkspaceLabel: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				labelName: z.string(),
+				updatedLabel: z.object({
+					name: z.string(),
+					description: z.string().nullable().optional(),
+					color: z.string(),
+				}),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceId, updatedLabel, labelName } = input;
+			const { workspaceService } = ctx;
+			return c.superjson(
+				await workspaceService.updateWorkspaceLabel(TODO, {
+					workspaceId,
+					labelName,
+					updatedLabel,
+				}),
+			);
+		}),
+	deleteWorkspaceLabel: privateProcedure
+		.input(z.object({ workspaceId: z.string(), labelName: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceId, labelName } = input;
+			const { workspaceService } = ctx;
+			return c.superjson(
+				await workspaceService.deleteWorkspaceLabel(TODO, {
+					workspaceId,
+					labelName,
+				}),
+			);
 		}),
 });

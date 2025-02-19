@@ -3,6 +3,7 @@ import { joinWorkspaceTemplate } from "@/utils/templates";
 import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
+	type Label,
 	type Team,
 	type User,
 	type Workspace,
@@ -10,6 +11,7 @@ import {
 	and,
 	eq,
 	inArray,
+	sql,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -126,6 +128,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			return newWorkspace;
 		});
 	}
+
 	async getWorkspace({
 		workspaceId,
 	}: { workspaceId: string }): Promise<Workspace | null> {
@@ -192,6 +195,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		return workspaces.map((workspace) => workspace.Workspace);
 	}
+
 	async joinWorkspace({
 		user: { id, name, email },
 		workspaceId,
@@ -385,6 +389,141 @@ export class WorkspaceService implements WorkspaceRpc {
 			.from(workspacesTable)
 			.then((results) => results.map((result) => result.url));
 	}
+
+	async getWorkspaceLabels({
+		workspaceId,
+	}: { workspaceId: string }): Promise<Label[]> {
+		this.logger.info("Getting labels for workspace with id %s", workspaceId);
+		return await this.db
+			.select()
+			.from(workspacesTable)
+			.where(eq(workspacesTable.id, workspaceId))
+			.then((results) => results[0].labels);
+	}
+
+	async createWorkspaceLabel({
+		workspaceId,
+		label,
+	}: { workspaceId: string; label: Label }): Promise<{
+		success: boolean;
+		labels?: Label[];
+	}> {
+		this.logger.info("Creating label for workspace with id %s", workspaceId);
+
+		return await this.db.transaction(async (tx) => {
+			const workspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.limit(1)
+				.then((results) => results[0]);
+
+			if (!workspace) {
+				throw new Error("Workspace not found.");
+			}
+
+			const updated = await tx
+				.update(workspacesTable)
+				.set({
+					labels: sql`COALESCE(${workspacesTable.labels}, '[]'::jsonb) || ${JSON.stringify(label)}::jsonb`,
+				})
+				.where(eq(workspacesTable.id, workspaceId))
+				.returning({ labels: workspacesTable.labels })
+				.then((res) => res[0]);
+
+			if (!updated) {
+				throw new Error("Update failed.");
+			}
+
+			return { success: true, labels: updated.labels };
+		});
+	}
+
+	async updateWorkspaceLabel({
+		workspaceId,
+		labelName,
+		updatedLabel,
+	}: { workspaceId: string; labelName: string; updatedLabel: Label }): Promise<{
+		success: boolean;
+		labels: Label[];
+	}> {
+		this.logger.info(
+			"Editing label %s for workspace with id %s",
+			labelName,
+			workspaceId,
+		);
+		return await this.db.transaction(async (tx) => {
+			const workspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.limit(1)
+				.then((results) => results[0]);
+			if (!workspace) {
+				throw new Error("Workspace not found.");
+			}
+			this.logger.error("workspace", workspace);
+
+			//Find label to update
+			const labels = workspace.labels;
+			const labelIndex = labels.findIndex((l) => l.name === labelName);
+			if (labelIndex === -1) {
+				throw new Error("Label not found.");
+			}
+
+			const updatedLabels = [...labels];
+			updatedLabels[labelIndex] = { ...labels[labelIndex], ...updatedLabel };
+
+			const updated = await tx
+				.update(workspacesTable)
+				.set({ labels: updatedLabels })
+				.where(eq(workspacesTable.id, workspaceId))
+				.returning({ labels: workspacesTable.labels })
+				.then((res) => res[0]);
+
+			if (!updated) {
+				throw new Error("Update failed.");
+			}
+			return { success: true, labels: updated.labels };
+		});
+	}
+
+	async deleteWorkspaceLabel({
+		workspaceId,
+		labelName,
+	}: { workspaceId: string; labelName: string }): Promise<{
+		success: boolean;
+	}> {
+		this.logger.info(
+			"Deleting label %s for workspace with id %s",
+			labelName,
+			workspaceId,
+		);
+
+		return await this.db.transaction(async (tx) => {
+			const workspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId))
+				.then((results) => results[0]);
+
+			if (!workspace) {
+				this.throwError("Workspace not found.");
+			}
+
+			const updatedLabels = workspace.labels.filter(
+				(label) => label.name !== labelName,
+			);
+
+			await tx
+				.update(workspacesTable)
+				.set({ labels: updatedLabels })
+				.where(eq(workspacesTable.id, workspaceId));
+
+			return { success: true };
+		});
+	}
+
 	private verifyToken(token: string): string | null {
 		try {
 			const decoded = jwt.verify(token, this.JWT_SECRET) as {
