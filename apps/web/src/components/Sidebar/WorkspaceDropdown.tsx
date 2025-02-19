@@ -12,7 +12,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { ChevronDown, Settings } from "lucide-react";
+import { ChevronDown, PlusCircle, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -93,6 +93,15 @@ export function WorkspaceDropdown() {
 					</DropdownMenuItem>
 				))}
 				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onSelect={() => {
+						router.push("/join");
+					}}
+					className="hover:cursor-pointer"
+				>
+					<PlusCircle />
+					<span className="ml-2">Create New</span>
+				</DropdownMenuItem>
 				<DropdownMenuItem
 					onSelect={() => {
 						router.push(`/${organization?.slug}/settings`);
