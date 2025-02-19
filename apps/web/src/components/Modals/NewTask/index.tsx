@@ -22,11 +22,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
+import { useWorkspaceStore } from "@/store";
+import { formatUrl } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,6 +58,9 @@ export const NewTaskModal = () => {
 	const { createTask, isLoading } = useCreateTask();
 	const { team, setTeams, setTeam } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
+	const currentWorkspaceUrl = useWorkspaceStore(
+		(state) => state.workspace,
+	)?.url;
 
 	const {
 		status,
@@ -110,9 +116,19 @@ export const NewTaskModal = () => {
 		};
 
 		createTask(createTaskParams, {
-			onSuccess: () => {
+			onSuccess: (newTask) => {
 				toast({
 					title: "Task Created Successfully",
+					description: (
+						<>
+							<Link
+								href={`/${currentWorkspaceUrl}/task/${newTask.identifier}/${formatUrl(newTask.title)}`}
+								className="cursor-pointer text-blue-500"
+							>
+								View Task
+							</Link>
+						</>
+					),
 				});
 				setShowNewTask(false);
 				setNewTaskData({});
