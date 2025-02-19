@@ -97,6 +97,13 @@ function SettingsNavbarContent() {
 									>
 										Integrations
 									</Button>
+									<Button
+										variant="ghost"
+										className="w-full justify-start"
+										onClick={() => navigateTo("labels")}
+									>
+										Labels
+									</Button>
 								</div>
 							</div>
 
