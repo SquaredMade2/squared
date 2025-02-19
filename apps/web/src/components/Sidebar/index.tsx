@@ -20,8 +20,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
-import { Clipboard, Inbox, Moon, Search, Sun } from "@squared/icons";
-import type { SquaredIcon } from "@squared/icons/types";
+import {
+	Clipboard,
+	Inbox,
+	Moon,
+	Search,
+	type SquaredIcon,
+	Sun,
+} from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";

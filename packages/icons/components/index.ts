@@ -82,3 +82,4 @@ export * from "./ArrowDown";
 export * from "./ArrowDownWideNarrow";
 export * from "./Archive";
 export * from "./Activity";
+export * from "../types";

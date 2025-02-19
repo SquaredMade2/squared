@@ -12,8 +12,8 @@ import {
 	Inbox,
 	MapPin,
 	MessageCircleMore,
+	type SquaredIcon,
 } from "@squared/icons";
-import type { SquaredIcon } from "@squared/icons/types";
 import { Label } from "@squaredmade/ui/label";
 
 type SidebarProps = {
