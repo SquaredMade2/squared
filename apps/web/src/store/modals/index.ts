@@ -50,7 +50,7 @@ export const createModalStore = (
 		},
 		setShowInvite: (input) => {
 			set({ showInvite: input });
-    },
+		},
 		setShowLabelModal: (input) => {
 			set({ showLabelModal: input });
 		},

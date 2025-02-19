@@ -1,0 +1,48 @@
+{
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1737722568712,
+			"tag": "0000_init_db",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1738196966871,
+			"tag": "0001_merge_labels",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1739073122450,
+			"tag": "0002_remove_last_login",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1739150372875,
+			"tag": "0003_clerk_prep",
+			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1739304372753,
+			"tag": "0004_clerk_organizations",
+			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1739851077634,
+			"tag": "0005_add_duplicated",
+			"breakpoints": true
+		}
+	]
+}

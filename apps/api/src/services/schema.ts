@@ -21,7 +21,8 @@ export const workspaceInviteLinkSchema = createSchema<WorkspaceInviteLink>()(
 		expiration: z.number().optional(),
 		uses: z.number().optional(),
 	}),
-  
+);
+
 export const statusEnum = createEnumSchema<Task["status"]>()(
 	z.enum([
 		"backlog",

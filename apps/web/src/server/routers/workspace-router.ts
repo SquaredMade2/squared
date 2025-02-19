@@ -7,7 +7,9 @@ export const workspaceRouter = router({
 	getAllWorkspaces: privateProcedure.query(async ({ c, ctx }) => {
 		const { workspaceService, user } = ctx;
 		return c.superjson(
-			await workspaceService.getUserWorkspaces(TODO, { userId: user.id }),
+			await workspaceService.getUserWorkspaces(TODO, {
+				userId: user?.id || "",
+			}),
 		);
 	}),
 	getTakenUrls: privateProcedure.query(async ({ c, ctx }) => {
@@ -30,7 +32,7 @@ export const workspaceRouter = router({
 			const { name, url } = input;
 			return c.superjson(
 				await workspaceService.createWorkspace(TODO, {
-					userId: ctx.user.id,
+					userId: ctx.user?.id || "",
 					workspace: { name, url },
 				}),
 			);
@@ -72,9 +74,9 @@ export const workspaceRouter = router({
 					workspaceId,
 					expiration,
 					uses,
-        }),
-      );
-  }),
+				}),
+			);
+		}),
 	getWorkspaceLabels: privateProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
