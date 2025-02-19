@@ -1,4 +1,4 @@
-import type { GithubRepo } from "@squared/db";
+import type { GithubOrg, GithubRepo } from "@squared/db";
 
 export interface UpsertPullRequestResponse {
 	tasks: {
@@ -23,6 +23,7 @@ export interface GithubRpc {
 		author: string;
 		timestamp: string;
 		// Omitting externalIds as it makes more sense on the other end to be sending over a param called "id"
+		org: Omit<GithubOrg, "externalId" | "workspaceId" | "createdAt">;
 		repo: Omit<GithubRepo, "externalId">;
 	}) => Promise<UpsertPullRequestResponse>;
 	pushCommit: (args: {
