@@ -14,6 +14,8 @@ export const createModalStore = (
 		showTaskSelector: false,
 		showLinkForm: false,
 		newTaskData: {},
+		showLabelModal: false,
+		labelData: {},
 	},
 ) => {
 	return createStore<ModalStore>()((set) => ({
@@ -44,6 +46,12 @@ export const createModalStore = (
 		},
 		setShowTaskSelector: (input) => {
 			set({ showTaskSelector: input });
+		},
+		setShowLabelModal: (input) => {
+			set({ showLabelModal: input });
+		},
+		setLabelData: (input) => {
+			set({ labelData: input });
 		},
 	}));
 };
