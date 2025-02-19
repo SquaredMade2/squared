@@ -18,9 +18,10 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
+import { useEventStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
-import { getInitials } from "@/utils/formatting";
+import { formatName, getInitials } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
 import type { TaskEvent } from "@squared/db";
 import { Check, ChevronsUpDown, UserSearch } from "@squared/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,12 +32,20 @@ const AssigneeCombobox = () => {
 	const { toast } = useToast();
 	const { setEvents } = useEventStore((state) => state);
 	const queryClient = useQueryClient();
-	const { users } = useUserStore((state) => state);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
 
-	const assignee = users.find((u) => u.externalId === currentTask?.assigneeId);
+	const assignee = users?.find((u) => u.identifier === currentTask?.assigneeId);
 
 	const updateAssigneeMutation = useMutation({
 		mutationFn: async (assigneeId: string | null) => {
@@ -91,11 +100,13 @@ const AssigneeCombobox = () => {
 					{assignee ? (
 						<div className="flex w-28 items-center">
 							<Avatar className="size-6 text-xxs">
-								<AvatarImage src={assignee.avatarUrl ?? ""} />
-								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+								<AvatarImage src={assignee.imageUrl ?? ""} />
+								<AvatarFallback>
+									{getInitials(formatName(assignee))}
+								</AvatarFallback>
 							</Avatar>
 							<span className="ml-2 w-1/2 truncate text-xs">
-								{assignee.name}
+								{formatName(assignee)}
 							</span>
 						</div>
 					) : (
@@ -125,24 +136,26 @@ const AssigneeCombobox = () => {
 									/>
 								</CommandItem>
 								{users
-									.sort((a, b) => a.name.localeCompare(b.name))
+									?.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
 										<CommandItem
-											key={user.externalId}
-											onSelect={() => handleSelectAssignee(user.externalId)}
+											key={user.identifier}
+											onSelect={() => handleSelectAssignee(user.identifier)}
 											className="w-full"
 										>
 											<Avatar className="size-6 text-xxs">
-												<AvatarImage src={user.avatarUrl ?? ""} />
+												<AvatarImage src={user.imageUrl ?? ""} />
 												<AvatarFallback>
-													{getInitials(user.name)}
+													{getInitials(formatName(user))}
 												</AvatarFallback>
 											</Avatar>
-											<span className="ml-2 w-2/3 truncate">{user.name}</span>
+											<span className="ml-2 w-2/3 truncate">
+												{formatName(user)}
+											</span>
 											<Check
 												className={cn(
 													"ml-auto h-4 w-4",
-													currentTask.assigneeId === user.externalId
+													currentTask.assigneeId === user.identifier
 														? "opacity-100"
 														: "opacity-0",
 												)}

@@ -1,5 +1,5 @@
 import { cn } from "@/utils/cn";
-import type { Priority, Status } from "@squared/db";
+import { Priority, Status } from "@squared/db";
 import {
 	Archive,
 	ArrowDown,
@@ -9,6 +9,7 @@ import {
 	CircleCheck,
 	CircleDot,
 	CircleX,
+	Copy,
 	Eye,
 	Hourglass,
 	Inbox,
@@ -21,25 +22,25 @@ export const PriorityIcon = ({
 }: { priority: Priority; className?: string }) => {
 	const Icon = () => {
 		switch (priority) {
-			case "low":
+			case Priority.low:
 				return (
 					<ArrowDown
 						className={cn("size-4 shrink-0 text-blue-500", className)}
 					/>
 				);
-			case "medium":
+			case Priority.medium:
 				return (
 					<ArrowRight
 						className={cn("size-4 shrink-0 text-yellow-500", className)}
 					/>
 				);
-			case "high":
+			case Priority.high:
 				return (
 					<ArrowUp
 						className={cn("size-4 shrink-0 text-orange-500", className)}
 					/>
 				);
-			case "urgent":
+			case Priority.urgent:
 				return (
 					<TriangleAlert
 						className={cn("size-4 shrink-0 text-destructive", className)}
@@ -54,9 +55,9 @@ export const PriorityIcon = ({
 
 export const StatusIcon = ({ status }: { status: Status }) => {
 	switch (status) {
-		case "backlog":
+		case Status.backlog:
 			return <Inbox className="size-4 shrink-0 text-gray-500" />;
-		case "todo":
+		case Status.todo:
 			return <Circle className="size-4 shrink-0 text-blue-500" />;
 		case "inProgress":
 			return <Hourglass className="size-4 shrink-0 text-yellow-500" />;
@@ -68,6 +69,8 @@ export const StatusIcon = ({ status }: { status: Status }) => {
 			return <CircleX className="size-4 shrink-0 text-red-500" />;
 		case "archived":
 			return <Archive className="size-4 shrink-0 text-gray-400" />;
+		case Status.duplicated:
+			return <Copy className="size-4 shrink-0 text-indigo-500" />;
 		default:
 			return null;
 	}
