@@ -15,7 +15,7 @@ export default function Home() {
 	const workspaceUrl = parseParams(params.workspace) ?? "";
 
 	const { data, isPending } = useQuery({
-		queryKey: ["workspacePage", workspaceUrl],
+		queryKey: ["team", "workspacePage", workspaceUrl],
 		queryFn: async () => {
 			if (!organization) return null;
 			const allTeams = await client.team.getUserTeams

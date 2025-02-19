@@ -34,7 +34,7 @@ const ManageMembersRoleButton = ({
 	)?.role;
 
 	const { data: loggedInUserRole, error } = useQuery({
-		queryKey: ["userRole", user?.id, pageId],
+		queryKey: ["user", "role", user?.id],
 		queryFn: async () => {
 			if (!user || !pageId) throw new Error("User or Page not found");
 			const response = await client.user.getUserWorkspaceRole.$get({

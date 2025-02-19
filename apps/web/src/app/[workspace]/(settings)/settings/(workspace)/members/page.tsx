@@ -11,7 +11,7 @@ import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { data: pageUsers = [], isLoading: userLoading } = useQuery({
-		queryKey: ["workspaceUsers", workspace?.id],
+		queryKey: ["user", "workspaceUsers", workspace?.id],
 		queryFn: async () => {
 			if (!workspace) return [];
 			const users = await client.user.getWorkspaceUsersWithRoles

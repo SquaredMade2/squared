@@ -34,7 +34,7 @@ export const RenameModal = () => {
 	};
 
 	const { mutate: handleSubmit, isPending } = useMutation({
-		mutationKey: ["task", "update"],
+		mutationKey: ["task", "updateMetadata", task?.id],
 		mutationFn: async () => {
 			if (task && inputValue.length > 2 && user && inputValue !== task.title) {
 				const updatedTask = await client.task.updateMetadata

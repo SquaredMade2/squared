@@ -17,7 +17,7 @@ export default function JoinWorkspace() {
 	const { organization, membership, isLoaded } = useOrganization();
 
 	const { mutate: handleJoin, isPending } = useMutation({
-		mutationKey: ["joinWorkspace", organization?.id],
+		mutationKey: ["workspace", "joinWorkspace", organization?.id],
 		mutationFn: async () => {
 			if (!organization || !membership?.role) return;
 			await client.workspace.joinWorkspace.$post({

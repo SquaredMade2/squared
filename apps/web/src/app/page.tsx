@@ -12,7 +12,7 @@ const HomePage = () => {
 	const { signOut } = useClerk();
 
 	const { isLoading: workspaceLoading, error: workspaceError } = useQuery({
-		queryKey: ["defaultWorkspace"],
+		queryKey: ["user", "defaultWorkspace"],
 		queryFn: async () => {
 			if (isLoaded && !user) await signOut();
 			const res = await client.user.getDefaultWorkpace

@@ -39,7 +39,7 @@ export const DeleteTaskAlertDialog = ({
 	const router = useRouter();
 
 	const { mutate: handleDelete } = useMutation({
-		mutationKey: ["task", "delete"],
+		mutationKey: ["task", "deleteTask", task.id],
 		mutationFn: async () => {
 			await client.task.deleteTask.$post({
 				taskId: task.id,

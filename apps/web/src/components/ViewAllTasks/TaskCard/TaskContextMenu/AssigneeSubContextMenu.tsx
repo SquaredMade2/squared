@@ -31,7 +31,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const taskId = task.id;
 
 	const { mutate: updateAssignee } = useMutation({
-		mutationKey: ["updateTaskAssignee", taskId],
+		mutationKey: ["task", "updateAssignee", taskId],
 		mutationFn: async (userId: string | null) => {
 			const res = await client.task.updateAssignee.$post({
 				taskId,

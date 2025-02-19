@@ -18,7 +18,7 @@ const GithubSettings: React.FC = () => {
 	const { user, setConnectedRepos } = useUserStore((state) => state);
 	const router = useRouter();
 	const { data: connectedRepos = [] } = useQuery({
-		queryKey: ["getGithubRepos", user?.externalId],
+		queryKey: ["integration", "getGithubRepos", user?.externalId],
 		queryFn: async () => {
 			const repos = await client.integration.getGithubRepos
 				.$get()

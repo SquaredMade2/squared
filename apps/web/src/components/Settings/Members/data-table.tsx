@@ -63,7 +63,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 	};
 
 	const { data: membersCsv } = useQuery({
-		queryKey: ["memberships", organization?.id],
+		queryKey: ["user", "memberships", organization?.id],
 		queryFn: async () => {
 			if (!organization) return;
 			const teams = await client.team.getUserTeams

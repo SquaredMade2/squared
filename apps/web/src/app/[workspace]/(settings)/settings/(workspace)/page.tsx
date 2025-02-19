@@ -123,7 +123,7 @@ export default function WorkspaceSettings() {
 
 	const { mutate: updateWorkspace, isPending: updatingWorkspace } = useMutation(
 		{
-			mutationKey: ["updateWorkspace", organization?.id],
+			mutationKey: ["workspace", "updateWorkspace", organization?.id],
 			mutationFn: async (values: z.infer<typeof formSchema>) => {
 				let defaultView: string | null = null;
 				if (!organization) throw new Error("Workspace not found");
@@ -157,7 +157,7 @@ export default function WorkspaceSettings() {
 	);
 
 	const { mutate: deleteWorkspace, isPaused: isDeleting } = useMutation({
-		mutationKey: ["deleteWorkspace", organization?.id],
+		mutationKey: ["workspace", "deleteWorkspace", organization?.id],
 		mutationFn: async () => {
 			if (!organization) throw new Error("Workspace not found");
 			await client.workspace.deleteWorkspace.$post({

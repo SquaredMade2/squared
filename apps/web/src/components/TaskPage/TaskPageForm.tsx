@@ -52,7 +52,7 @@ export const TaskPageForm = () => {
 				})
 				.then((res) => res.json());
 			setEvents(updatedEvents);
-			queryClient.invalidateQueries({ queryKey: ["taskEvents", task?.id] });
+			queryClient.invalidateQueries({ queryKey: ["event", task?.id] });
 			toast({ title: "Task updated successfully" });
 		},
 		onError: (error) => {
