@@ -17,7 +17,6 @@ import { formatUrl, getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { UserSearch } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskListProps } from "./interfaces";
@@ -31,7 +30,6 @@ const TaskList = ({
 	taskLabels,
 }: TaskListProps) => {
 	const { getListOptions } = useViewStore((state) => state);
-	const [popoverOpen, setPopoverOpen] = useState(false);
 
 	const {
 		identifier: showIdentifier,
@@ -123,7 +121,6 @@ const TaskList = ({
 															className="size-6 flex-shrink-0 text-[#9597AD]"
 															onClick={(e) => {
 																e.preventDefault();
-																setPopoverOpen(!popoverOpen);
 															}}
 														/>
 													</TooltipTrigger>

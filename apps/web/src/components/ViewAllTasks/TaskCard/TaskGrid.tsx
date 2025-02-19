@@ -17,7 +17,6 @@ import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
@@ -31,7 +30,6 @@ const TaskGrid = ({
 	isDisabled = false,
 }: TaskGridProps) => {
 	const { getGridOptions } = useViewStore((state) => state);
-	const [popoverOpen, setPopoverOpen] = useState(false);
 
 	const {
 		identifier: showIdentifier,
@@ -91,7 +89,6 @@ const TaskGrid = ({
 														className="size-6 text-[#9597AD]"
 														onClick={(e) => {
 															e.preventDefault();
-															setPopoverOpen(!popoverOpen);
 														}}
 													/>
 												</TooltipTrigger>
