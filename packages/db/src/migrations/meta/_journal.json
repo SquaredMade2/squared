@@ -43,6 +43,13 @@
 			"when": 1739851077634,
 			"tag": "0005_add_duplicated",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1740002461029,
+			"tag": "0006_github_integration",
+			"breakpoints": true
 		}
 	]
 }
