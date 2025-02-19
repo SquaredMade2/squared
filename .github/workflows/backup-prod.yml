@@ -2,7 +2,7 @@ name: squared-prod
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # runs every monday at midnight UTC
+    - cron: '0 0 * * 1' # runs monday at midnight UTC
   workflow_dispatch:
 
 jobs:
