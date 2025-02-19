@@ -9,7 +9,7 @@ import { useOrganization } from "@clerk/nextjs";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
-import type { AssigneeBoxProps } from "./TaskContextMenu/interfaces";
+import type { AssigneeBoxProps } from "./interfaces";
 
 export const AssigneeBox = ({ task }: AssigneeBoxProps) => {
 	const { toast } = useToast();
