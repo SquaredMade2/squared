@@ -130,7 +130,10 @@ export const notificationsTable = pgTable(
 		saved: boolean().default(false).notNull(),
 		description: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		updatedAt: timestamp({ precision: 3 })
+			.defaultNow()
+			.$onUpdateFn(() => new Date())
+			.notNull(),
 		workspaceId: text().notNull(),
 		dismissed: boolean().default(false).notNull(),
 		type: notificationType().notNull(),
@@ -256,7 +259,10 @@ export const tasksTable = pgTable(
 		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
 		workspaceId: text().notNull(),
-		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		updatedAt: timestamp({ precision: 3 })
+			.defaultNow()
+			.$onUpdateFn(() => new Date())
+			.notNull(),
 		deleted: boolean().default(false).notNull(),
 		parentId: uuid(),
 		sprintId: uuid(),
