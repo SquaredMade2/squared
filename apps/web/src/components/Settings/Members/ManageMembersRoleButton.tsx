@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { useUser } from "@clerk/nextjs";
 import type { WorkspaceRole } from "@squared/db";
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -27,27 +27,27 @@ const ManageMembersRoleButton = ({
 	fetchWorkspaceUsersWithRoles: () => void;
 }) => {
 	const queryClient = useQueryClient();
-	const loggedInUser = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const { toast } = useToast();
 	const selectedUserRole = membersWithRoles?.find(
 		(user) => user.identifier === userId,
 	)?.role;
 
 	const { data: loggedInUserRole, error } = useQuery({
-		queryKey: ["userRole", loggedInUser?.id, pageId],
+		queryKey: ["userRole", user?.id, pageId],
 		queryFn: async () => {
-			if (!loggedInUser || !pageId) throw new Error("User or Page not found");
+			if (!user || !pageId) throw new Error("User or Page not found");
 			const response = await client.user.getUserWorkspaceRole.$get({
 				workspaceId: pageId,
 			});
 			return response.json();
 		},
-		enabled: !!loggedInUser && !!pageId,
+		enabled: !!user && !!pageId,
 	});
 
 	const updateRoleMutation = useMutation({
 		mutationFn: async (newRole: WorkspaceRole) => {
-			if (!pageId || !loggedInUser) throw new Error("Missing required data");
+			if (!pageId || !user) throw new Error("Missing required data");
 			return await client.user.updateUsersRole.$post({
 				userId,
 				workspaceId: pageId,
@@ -59,7 +59,7 @@ const ManageMembersRoleButton = ({
 				queryKey: ["workspaceUsers", pageId],
 			});
 			queryClient.invalidateQueries({
-				queryKey: ["userRole", loggedInUser?.id, pageId],
+				queryKey: ["userRole", user?.id, pageId],
 			});
 			toast({ title: `Member role updated to ${newRole}` });
 		},
@@ -89,7 +89,7 @@ const ManageMembersRoleButton = ({
 				<Button
 					variant="ghost"
 					className="items-center"
-					disabled={userId === loggedInUser?.id}
+					disabled={userId === user?.id}
 				>
 					<UserCog />
 				</Button>
