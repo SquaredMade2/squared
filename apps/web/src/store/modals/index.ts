@@ -15,6 +15,8 @@ export const createModalStore = (
 		showLinkForm: false,
 		showInvite: false,
 		newTaskData: {},
+		showLabelModal: false,
+		labelData: {},
 	},
 ) => {
 	return createStore<ModalStore>()((set) => ({
@@ -48,6 +50,12 @@ export const createModalStore = (
 		},
 		setShowInvite: (input) => {
 			set({ showInvite: input });
+    },
+		setShowLabelModal: (input) => {
+			set({ showLabelModal: input });
+		},
+		setLabelData: (input) => {
+			set({ labelData: input });
 		},
 	}));
 };

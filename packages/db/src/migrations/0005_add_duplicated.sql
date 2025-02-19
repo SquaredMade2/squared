@@ -1,0 +1,1 @@
+ALTER TYPE "public"."Status" ADD VALUE 'duplicated' BEFORE 'archived';

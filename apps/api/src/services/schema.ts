@@ -21,6 +21,18 @@ export const workspaceInviteLinkSchema = createSchema<WorkspaceInviteLink>()(
 		expiration: z.number().optional(),
 		uses: z.number().optional(),
 	}),
+  
+export const statusEnum = createEnumSchema<Task["status"]>()(
+	z.enum([
+		"backlog",
+		"todo",
+		"inProgress",
+		"inReview",
+		"done",
+		"canceled",
+		"archived",
+		"duplicated",
+	]),
 );
 
 export const labelSchema = createSchema<Label>()(
@@ -36,15 +48,7 @@ export const taskSchema = createSchema<Task>()(
 		id: z.string(),
 		title: z.string(),
 		description: z.string().nullable(),
-		status: z.enum([
-			"backlog",
-			"todo",
-			"inProgress",
-			"inReview",
-			"done",
-			"canceled",
-			"archived",
-		]),
+		status: statusEnum,
 		sprintId: z.string().nullable(),
 		teamId: z.string(),
 		updatedAt: z.date(),

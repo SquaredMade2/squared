@@ -209,6 +209,62 @@ export type GenerateWorkspaceInviteLinkResponse = string;
 
 export type GetTakenWorkspaceUrlsResponse = string[];
 
+export type GetWorkspaceLabelsRequest = {
+	workspaceId: string;
+};
+
+export type GetWorkspaceLabelsResponse = {
+	color: string;
+	description?: string | null;
+	name: string;
+}[];
+
+export type CreateWorkspaceLabelRequest = {
+	label: {
+		color: string;
+		description?: string | null;
+		name: string;
+	};
+	workspaceId: string;
+};
+
+export type CreateWorkspaceLabelResponse = {
+	labels?: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
+	success: boolean;
+};
+
+export type UpdateWorkspaceLabelRequest = {
+	labelName: string;
+	updatedLabel: {
+		color: string;
+		description?: string | null;
+		name: string;
+	};
+	workspaceId: string;
+};
+
+export type UpdateWorkspaceLabelResponse = {
+	labels?: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
+	success: boolean;
+};
+
+export type DeleteWorkspaceLabelRequest = {
+	labelName: string;
+	workspaceId: string;
+};
+
+export type DeleteWorkspaceLabelResponse = {
+	success: boolean;
+};
+
 /**
  * workspace service
  */
@@ -319,5 +375,45 @@ export class WorkspaceService extends RPCContextClient {
 	 */
 	getTakenWorkspaceUrls(ctx: Context): Promise<GetTakenWorkspaceUrlsResponse> {
 		return this.request(ctx, "getTakenWorkspaceUrls");
+	}
+
+	/**
+	 * getWorkspaceLabels method
+	 */
+	getWorkspaceLabels(
+		ctx: Context,
+		req: GetWorkspaceLabelsRequest,
+	): Promise<GetWorkspaceLabelsResponse> {
+		return this.request(ctx, "getWorkspaceLabels", req);
+	}
+
+	/**
+	 * createWorkspaceLabel method
+	 */
+	createWorkspaceLabel(
+		ctx: Context,
+		req: CreateWorkspaceLabelRequest,
+	): Promise<CreateWorkspaceLabelResponse> {
+		return this.request(ctx, "createWorkspaceLabel", req);
+	}
+
+	/**
+	 * updateWorkspaceLabel method
+	 */
+	updateWorkspaceLabel(
+		ctx: Context,
+		req: UpdateWorkspaceLabelRequest,
+	): Promise<UpdateWorkspaceLabelResponse> {
+		return this.request(ctx, "updateWorkspaceLabel", req);
+	}
+
+	/**
+	 * deleteWorkspaceLabel method
+	 */
+	deleteWorkspaceLabel(
+		ctx: Context,
+		req: DeleteWorkspaceLabelRequest,
+	): Promise<DeleteWorkspaceLabelResponse> {
+		return this.request(ctx, "deleteWorkspaceLabel", req);
 	}
 }
