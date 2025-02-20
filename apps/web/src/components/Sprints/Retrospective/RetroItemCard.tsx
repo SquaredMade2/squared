@@ -30,10 +30,10 @@ export const RetroItemCard = ({
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
 	);
-	const author = users?.find((u) => u.identifier === item.authorId);
+	const author = users?.find((u) => u.userId === item.authorId);
 
 	const likedByUsers = item.likes
-		.map((id) => users?.find((u) => u.identifier === id))
+		.map((id) => users?.find((u) => u.userId === id))
 		.map((u) => formatName(u))
 		.join(", ");
 
