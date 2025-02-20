@@ -49,8 +49,6 @@ const ManageMembersRoleButton = ({
 		mutationFn: async (newRole: WorkspaceRole) => {
 			if (!pageId || !loggedInUser) throw new Error("Missing required data");
 			return await client.user.updateUsersRole.$post({
-				userId,
-				workspaceId: pageId,
 				newRole,
 			});
 		},

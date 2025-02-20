@@ -76,7 +76,6 @@ export const LabelModal = () => {
 			if (!workspace) throw new Error("Workspace not found");
 			if (!labelData.name) throw new Error("Label name not found");
 			const res = await client.workspace.updateWorkspaceLabel.$post({
-				workspaceId: workspace.id,
 				labelName: labelData.name,
 				updatedLabel: values,
 			});
@@ -106,7 +105,6 @@ export const LabelModal = () => {
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!workspace) throw new Error("Workspace not found");
 			const res = await client.workspace.createWorkspaceLabel.$post({
-				workspaceId: workspace.id,
 				label: values,
 			});
 			return res.json();

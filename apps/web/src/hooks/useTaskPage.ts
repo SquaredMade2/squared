@@ -44,7 +44,6 @@ export function useTaskPage() {
 			const identifier = parseParams(taskIdentifier);
 			if (!identifier) throw new Error("Task identifier not found");
 			const res = await client.task.getTaskByIdentifier.$get({
-				workspaceId: workspace.externalId,
 				identifier,
 			});
 			const pageTask = await res.json();
