@@ -22,7 +22,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
-import { useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
@@ -58,10 +57,6 @@ export const NewTaskModal = () => {
 	const { createTask, isLoading } = useCreateTask();
 	const { team, setTeams, setTeam } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
-	const currentWorkspaceUrl = useWorkspaceStore(
-		(state) => state.workspace,
-	)?.url;
-
 	const {
 		status,
 		priority,
@@ -122,7 +117,7 @@ export const NewTaskModal = () => {
 					description: (
 						<>
 							<Link
-								href={`/${currentWorkspaceUrl}/task/${newTask.identifier}/${formatUrl(newTask.title)}`}
+								href={`/${organization.slug}/task/${newTask.identifier}/${formatUrl(newTask.title)}`}
 								className="cursor-pointer text-blue-500"
 							>
 								View Task
