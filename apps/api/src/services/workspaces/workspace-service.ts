@@ -262,6 +262,11 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		Promise.all([
 			this.createUserWorkspaceConnections(userId, workspaceId, teams),
+			this.clerkClient.organizations.createOrganizationMembership({
+				organizationId: workspace.externalId,
+				userId: user.externalId,
+				role: "org:member",
+			}),
 			this.updateUserOnboarding(user),
 		]);
 

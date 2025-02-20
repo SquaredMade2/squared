@@ -166,7 +166,7 @@ export const InviteModal = () => {
 							<p>
 								{(!link && "Create Invite Link") ||
 									(link.includes("Failed") && link) ||
-									`/join?link=true&token=${link}`}
+									`${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`}
 							</p>
 							<Button
 								className="h-8"

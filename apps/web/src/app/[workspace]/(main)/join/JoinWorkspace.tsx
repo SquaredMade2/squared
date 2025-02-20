@@ -9,13 +9,11 @@ import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 
 export default function JoinWorkspace() {
-	const { isSignedIn, user } = useUser();
+	const { isLoaded, user } = useUser();
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 
 	const token = searchParams.get("token") || "";
@@ -53,16 +51,12 @@ export default function JoinWorkspace() {
 	});
 
 	const handleJoin = async () => {
-		setIsLoading(true);
-
 		if (token && user) {
 			joinWorkspaceMutation.mutate();
 		}
-
-		setIsLoading(false);
 	};
 
-	if (isLoading || !isSignedIn) {
+	if (joinWorkspaceMutation.isPending || !isLoaded) {
 		return (
 			<div className="flex min-h-screen flex-col items-center justify-center gap-4">
 				<SquaredLoader />
@@ -86,9 +80,9 @@ export default function JoinWorkspace() {
 					<Button
 						onClick={handleJoin}
 						className="w-full"
-						disabled={isLoading || !token}
+						disabled={joinWorkspaceMutation.isPending || !token}
 					>
-						{isLoading ? "Joining..." : "Join Workspace"}
+						{joinWorkspaceMutation.isPending ? "Joining..." : "Join Workspace"}
 					</Button>
 				</CardContent>
 			</Card>
