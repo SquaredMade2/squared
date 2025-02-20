@@ -1,6 +1,5 @@
 import {
 	type DBClient,
-	type RetrospectiveItemType,
 	type Sprint,
 	type Task,
 	type Team,
@@ -185,10 +184,6 @@ export class SprintService implements SprintRpc {
 		content,
 	}: AddRetrospectivePayload): Promise<RetroItemReturn> {
 		this.logger.info("Adding retrospective item", { sprintId, type });
-		const sprintRelationField = this.mapTypeToSprintRelationField(
-			type,
-			sprintId,
-		);
 
 		const [newItem] = await this.db
 			.insert(retrospectiveItemsTable)
@@ -196,7 +191,7 @@ export class SprintService implements SprintRpc {
 				content,
 				type,
 				authorId,
-				...sprintRelationField,
+				sprintId,
 			})
 			.returning({
 				id: retrospectiveItemsTable.id,
@@ -217,23 +212,12 @@ export class SprintService implements SprintRpc {
 	}: UpdateRetrospectiveItemPayload): Promise<RetroItemReturn> {
 		this.logger.info("Updating retrospective item", { retrospectiveItemId });
 
-		const sprintRelationField = type
-			? this.mapTypeToSprintRelationField(type, sprintId)
-			: {};
-
-		const resetFields = {
-			wentWellSprintId: null,
-			toImproveSprintId: null,
-			actionItemsSprintId: null,
-			...sprintRelationField,
-		};
-
 		const [updatedItem] = await this.db
 			.update(retrospectiveItemsTable)
 			.set({
 				type,
 				content,
-				...resetFields,
+				sprintId,
 			})
 			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
 			.returning({
@@ -292,22 +276,16 @@ export class SprintService implements SprintRpc {
 		sprintId,
 	}: { sprintId: string }): Promise<RetrospectiveData> {
 		this.logger.info("Getting retrospective items for sprint", { sprintId });
-		const [wentWell, toImprove, actionItems] = await Promise.all([
-			this.db
-				.select()
-				.from(retrospectiveItemsTable)
-				.where(eq(retrospectiveItemsTable.wentWellSprintId, sprintId)),
-			this.db
-				.select()
-				.from(retrospectiveItemsTable)
-				.where(eq(retrospectiveItemsTable.toImproveSprintId, sprintId)),
-			this.db
-				.select()
-				.from(retrospectiveItemsTable)
-				.where(eq(retrospectiveItemsTable.actionItemsSprintId, sprintId)),
-		]);
+		const items = await this.db
+			.select()
+			.from(retrospectiveItemsTable)
+			.where(eq(retrospectiveItemsTable.sprintId, sprintId));
 
-		return { wentWell, toImprove, actionItems };
+		return {
+			wentWell: items.filter((ri) => ri.type === "wentWell"),
+			toImprove: items.filter((ri) => ri.type === "toImprove"),
+			actionItems: items.filter((ri) => ri.type === "actionItems"),
+		};
 	}
 
 	private sendErrorResponse(status: number, message: string): ErrorResponse {
@@ -316,26 +294,6 @@ export class SprintService implements SprintRpc {
 			message,
 			variant: "destructive",
 		};
-	}
-
-	private mapTypeToSprintRelationField(
-		type: RetrospectiveItemType,
-		sprintId: string,
-	): Record<string, string> {
-		this.logger.info("Mapping retrospective type to sprint relation field", {
-			type,
-			sprintId,
-		});
-		switch (type) {
-			case "wentWell":
-				return { wentWellSprintId: sprintId };
-			case "toImprove":
-				return { toImproveSprintId: sprintId };
-			case "actionItems":
-				return { actionItemsSprintId: sprintId };
-			default:
-				throw new Error(`Unknown retrospective type: ${type}`);
-		}
 	}
 
 	private async completeCurrentSprint(

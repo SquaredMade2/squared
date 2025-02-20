@@ -8,7 +8,7 @@ import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 
 export default function UpcomingSprints() {
-	const { workspace, team, sprints, loading, error } = useSprints();
+	const { organization, team, sprints, loading, error } = useSprints();
 	const { tasks } = useTaskStore((state) => state);
 
 	if (loading) {
@@ -20,7 +20,7 @@ export default function UpcomingSprints() {
 			<SprintError
 				error={parseError(error, "Failed to fetch sprint data")}
 				teamIdentifier={team?.identifier}
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 			/>
 		);
 	}

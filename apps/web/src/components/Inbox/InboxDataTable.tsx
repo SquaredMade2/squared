@@ -132,26 +132,26 @@ export function InboxDataTable({
 
 	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
 	const { mutate: handleMarkAsUnread } = useMutation({
-		mutationKey: ["markAsUnread", selectedNotificationIds],
+		mutationKey: ["notification", "markAsUnread", selectedNotificationIds],
 		mutationFn: async () => {
 			await client.notification.markAsUnread.$post({
 				notificationIds: selectedNotificationIds,
 			});
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleMarkAsRead } = useMutation({
-		mutationKey: ["markAsRead", selectedNotificationIds],
+		mutationKey: ["notification", "markAsRead", selectedNotificationIds],
 		mutationFn: async () => {
 			await client.notification.markAsRead.$post({
 				notificationIds: selectedNotificationIds,
 			});
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
@@ -166,12 +166,12 @@ export function InboxDataTable({
 		},
 		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
-			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleMarkAsRestored } = useMutation({
-		mutationKey: ["markAsRestored", selectedNotificationIds],
+		mutationKey: ["notification", "markAsRestored", selectedNotificationIds],
 		mutationFn: async () => {
 			return await client.notification.restore
 				.$post({
@@ -181,12 +181,16 @@ export function InboxDataTable({
 		},
 		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
-			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleDeleteMany } = useMutation({
-		mutationKey: ["handleDeleteNotifications", selectedNotificationIds],
+		mutationKey: [
+			"notification",
+			"deleteNotifications",
+			selectedNotificationIds,
+		],
 		mutationFn: async () => {
 			return await client.notification.delete
 				.$post({
@@ -195,12 +199,12 @@ export function InboxDataTable({
 				.then((res) => res.json());
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleMoveAllToSaved } = useMutation({
-		mutationKey: ["handleSaveNotifications", selectedNotificationIds],
+		mutationKey: ["notification", "saveNotifications", selectedNotificationIds],
 		mutationFn: async () => {
 			await client.notification.updateUserNotifications.$post({
 				notificationIds: selectedNotificationIds,
