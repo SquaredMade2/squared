@@ -1,5 +1,6 @@
 import { taskService } from "@/lib/services";
-import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useTeamStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { Activity, Copy, Layers } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +19,7 @@ const NavBarTeams = ({
 	currentPage,
 	active,
 }: NavBarTeamProps) => {
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const { teams, setTeam } = useTeamStore((state) => state);
 	const { setTasks } = useTaskStore((state) => state);
 	const { toast } = useToast();
@@ -28,7 +29,7 @@ const NavBarTeams = ({
 	const handleActiveParams = (param: string): void => {
 		if (teamIdentifier) {
 			getTeamOnSelect();
-			router.push(`/${workspace?.url}/team/${teamIdentifier}/${param}`);
+			router.push(`/${organization?.slug}/team/${teamIdentifier}/${param}`);
 		} else {
 			toast({ title: "Team identifier not found", variant: "destructive" });
 		}
@@ -106,7 +107,7 @@ const NavBarTeams = ({
 				</>
 			)}
 			<Link
-				href={`/${workspace?.url}/team/${teamIdentifier}/views`}
+				href={`/${organization?.slug}/team/${teamIdentifier}/views`}
 				className="block"
 			>
 				<Button

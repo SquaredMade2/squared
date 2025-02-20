@@ -1,25 +1,16 @@
 import { client } from "@/lib/client";
-import {
-	useCommentStore,
-	useEventStore,
-	useTaskStore,
-	useUserStore,
-} from "@/store";
+import { useCommentStore, useEventStore, useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
+import { useOrganization } from "@clerk/nextjs";
 import type { TaskEvent } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTeams } from "./useTeams";
-import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
 	const { taskIdentifier } = useParams();
-	const {
-		workspace,
-		loading: workspaceLoading,
-		error: workspaceError,
-	} = useWorkspaces();
+	const { organization, isLoaded } = useOrganization();
 	const { loading: teamLoading, error: teamError } = useTeams();
 	const {
 		tasks,
@@ -35,16 +26,15 @@ export function useTaskPage() {
 
 	const { setComments } = useCommentStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
-	const { users } = useUserStore((state) => state);
 
 	const taskQuery = useQuery({
-		queryKey: ["task", workspace?.id, taskIdentifier],
+		queryKey: ["task", organization?.id, taskIdentifier],
 		queryFn: async () => {
-			if (!workspace) throw new Error("Workspace not found");
+			if (!organization) throw new Error("Workspace not found");
 			const identifier = parseParams(taskIdentifier);
 			if (!identifier) throw new Error("Task identifier not found");
 			const res = await client.task.getTaskByIdentifier.$get({
-				workspaceId: workspace.externalId,
+				workspaceId: organization.id,
 				identifier,
 			});
 			const pageTask = await res.json();
@@ -53,7 +43,7 @@ export function useTaskPage() {
 			}
 			return pageTask;
 		},
-		enabled: !!workspace && !workspaceLoading && !!taskIdentifier,
+		enabled: !!organization && isLoaded && !!taskIdentifier,
 	});
 
 	const subtasksQuery = useQuery({
@@ -114,7 +104,7 @@ export function useTaskPage() {
 	});
 
 	const isLoading =
-		workspaceLoading ||
+		!isLoaded ||
 		teamLoading ||
 		taskQuery.isLoading ||
 		subtasksQuery.isLoading ||
@@ -123,7 +113,6 @@ export function useTaskPage() {
 		eventsQuery.isLoading;
 
 	const error =
-		workspaceError ||
 		teamError ||
 		taskQuery.error ||
 		subtasksQuery.error ||
@@ -132,8 +121,6 @@ export function useTaskPage() {
 		eventsQuery.error;
 
 	return {
-		workspace,
-		users,
 		task:
 			taskQuery.data ||
 			tasks.find((t) => t.identifier === taskIdentifier) ||

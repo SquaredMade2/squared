@@ -5,13 +5,28 @@ import {
 } from "@squared/rpc";
 import { z } from "zod";
 import { labelSchema, workspaceRoleEnum, workspaceSchema } from "../schema";
-import type { WorkspaceParams, WorkspaceRpc } from "./types";
+import type {
+	JoinWorkspaceParams,
+	WorkspaceParams,
+	WorkspaceRpc,
+} from "./types";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 	z.object({
 		url: z.string(),
 		name: z.string(),
 		defaultView: z.string().nullable(),
+	}),
+);
+
+const joinWorkspaceParamsSchema = createSchema<JoinWorkspaceParams>()(
+	z.object({
+		user: z.object({
+			id: z.string(),
+			name: z.string(),
+			email: z.string(),
+		}),
+		workspaceId: z.string(),
 	}),
 );
 
@@ -58,11 +73,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		output: z.array(workspaceSchema),
 	},
 	joinWorkspace: {
-		input: z.object({
-			token: z.string(),
-			userId: z.string(),
-			role: workspaceRoleEnum.optional(),
-		}),
+		input: joinWorkspaceParamsSchema,
 		output: workspaceSchema.nullable(),
 	},
 	removeUserFromWorkspace: {
@@ -75,7 +86,9 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	inviteToWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
-			email: z.union([z.string(), z.array(z.string())]),
+			email: z.array(z.string()),
+			userId: z.string(),
+			slug: z.string(),
 		}),
 		output: z.object({ success: z.boolean() }),
 	},
@@ -109,6 +122,14 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		input: z.object({ workspaceId: z.string(), labelName: z.string() }),
 		output: z.object({ success: z.boolean() }),
 	},
+	updateWorkspaceRole: {
+		input: z.object({
+			workspaceId: z.string(),
+			userId: z.string(),
+			role: workspaceRoleEnum,
+		}),
+		output: z.void(),
+	},
 });
 
 export type WorkspaceRpcSchema = typeof workspaceRpcSchema;
@@ -133,6 +154,7 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 			workspaceService.updateWorkspaceLabel(input),
 		deleteWorkspaceLabel: (input) =>
 			workspaceService.deleteWorkspaceLabel(input),
+		updateWorkspaceRole: (input) => workspaceService.updateWorkspaceRole(input),
 	});
 
 export { WorkspaceService } from "./workspace-service";
