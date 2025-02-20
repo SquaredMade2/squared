@@ -27,7 +27,6 @@ const joinWorkspaceParamsSchema = createSchema<JoinWorkspaceParams>()(
 			email: z.string(),
 		}),
 		workspaceId: z.string(),
-		role: workspaceRoleEnum,
 	}),
 );
 
@@ -123,6 +122,14 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		input: z.object({ workspaceId: z.string(), labelName: z.string() }),
 		output: z.object({ success: z.boolean() }),
 	},
+	updateWorkspaceRole: {
+		input: z.object({
+			workspaceId: z.string(),
+			userId: z.string(),
+			role: workspaceRoleEnum,
+		}),
+		output: z.void(),
+	},
 });
 
 export type WorkspaceRpcSchema = typeof workspaceRpcSchema;
@@ -147,6 +154,7 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 			workspaceService.updateWorkspaceLabel(input),
 		deleteWorkspaceLabel: (input) =>
 			workspaceService.deleteWorkspaceLabel(input),
+		updateWorkspaceRole: (input) => workspaceService.updateWorkspaceRole(input),
 	});
 
 export { WorkspaceService } from "./workspace-service";

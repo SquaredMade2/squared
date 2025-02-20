@@ -19,6 +19,10 @@ declare global {
 			clear: jest.MockedFunction<() => void>;
 		};
 	}
+
+	interface ClerkAuthorization {
+		role: "org:admin" | "org:member" | "org:owner";
+	}
 }
 
 declare module "@tanstack/react-table" {

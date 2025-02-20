@@ -7,7 +7,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
-import type { WorkspaceRole } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -21,7 +20,6 @@ export default function JoinWorkspace() {
 		mutationFn: async () => {
 			if (!organization || !membership?.role) return;
 			await client.workspace.joinWorkspace.$post({
-				role: membership?.role as WorkspaceRole,
 				workspaceId: organization?.id,
 			});
 		},

@@ -48,6 +48,11 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 		: workspaceName;
 };
 
+export const formatName = (user: PublicUserData | undefined): string => {
+	if (!user) return "Unknown User";
+	return `${user.firstName} ${user.lastName}`;
+};
+
 export const getInitials = (name?: string | null): string => {
 	if (!name || typeof name !== "string") return "";
 
@@ -104,11 +109,6 @@ export const formatPriority = (priority: Priority) => {
 		default:
 			return "No priority";
 	}
-};
-
-export const formatName = (user?: PublicUserData) => {
-	if (!user) return "Unknown User";
-	return user.firstName ? `${user.firstName} ${user.lastName}` : "Unknown User";
 };
 
 // TODO: Implement formatting link

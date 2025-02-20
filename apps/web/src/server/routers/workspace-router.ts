@@ -3,8 +3,6 @@ import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
-export const workspaceRoleEnum = z.enum(["owner", "admin", "member"]);
-
 export const workspaceRouter = router({
 	getAllWorkspaces: privateProcedure.query(async ({ c, ctx }) => {
 		const { workspaceService, user } = ctx;
@@ -70,13 +68,12 @@ export const workspaceRouter = router({
 			);
 		}),
 	joinWorkspace: privateProcedure
-		.input(z.object({ workspaceId: z.string(), role: workspaceRoleEnum }))
+		.input(z.object({ workspaceId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { workspaceService, user } = ctx;
-			const { workspaceId, role } = input;
+			const { workspaceId } = input;
 			return c.superjson(
 				await workspaceService.joinWorkspace(TODO, {
-					role,
 					workspaceId,
 					user: {
 						email: user.emailAddresses[0].emailAddress,
@@ -183,5 +180,23 @@ export const workspaceRouter = router({
 					labelName,
 				}),
 			);
+		}),
+	updateUserRole: privateProcedure
+		.input(
+			z.object({
+				workspaceId: z.string(),
+				userId: z.string(),
+				role: z.enum(["org:admin", "org:member", "org:owner"]),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceId, role, userId } = input;
+			await workspaceService.updateWorkspaceRole(TODO, {
+				userId,
+				workspaceId,
+				role,
+			});
+			return c.json({ success: true });
 		}),
 });

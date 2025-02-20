@@ -126,7 +126,6 @@ export type GetUserWorkspacesResponse = {
 }[];
 
 export type JoinWorkspaceRequest = {
-	role: "owner" | "admin" | "member";
 	user: {
 		email: string;
 		id: string;
@@ -229,6 +228,12 @@ export type DeleteWorkspaceLabelRequest = {
 
 export type DeleteWorkspaceLabelResponse = {
 	success: boolean;
+};
+
+export type UpdateWorkspaceRoleRequest = {
+	role: "org:admin" | "org:member" | "org:owner";
+	userId: string;
+	workspaceId: string;
 };
 
 /**
@@ -371,5 +376,15 @@ export class WorkspaceService extends RPCContextClient {
 		req: DeleteWorkspaceLabelRequest,
 	): Promise<DeleteWorkspaceLabelResponse> {
 		return this.request(ctx, "deleteWorkspaceLabel", req);
+	}
+
+	/**
+	 * updateWorkspaceRole method
+	 */
+	updateWorkspaceRole(
+		ctx: Context,
+		req: UpdateWorkspaceRoleRequest,
+	): Promise<void> {
+		return this.request(ctx, "updateWorkspaceRole", req);
 	}
 }

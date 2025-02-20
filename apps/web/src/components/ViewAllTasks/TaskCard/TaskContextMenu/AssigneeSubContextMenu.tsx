@@ -32,7 +32,8 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const { mutate: updateAssignee } = useMutation({
 		mutationKey: ["task", "updateAssignee", taskId],
-		mutationFn: async (userId: string | null) => {
+		mutationFn: async (userId?: string) => {
+			if (!taskId || !userId) throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId,
 				assigneeId: userId,
@@ -43,7 +44,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		},
 	});
 
-	const handleSelectAssignee = (userId: string | null) => {
+	const handleSelectAssignee = (userId?: string) => {
 		updateAssignee(userId);
 	};
 
@@ -66,7 +67,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
 						className="flex justify-between"
-						onClick={() => handleSelectAssignee(null)}
+						onClick={() => handleSelectAssignee()}
 					>
 						<div className="flex">
 							<UserSearch className="mx-1 mr-3 size-5" />
@@ -79,8 +80,8 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						.map((user) => {
 							return (
 								<ContextMenuItem
-									key={user.identifier}
-									onClick={() => handleSelectAssignee(user.identifier)}
+									key={user.userId}
+									onClick={() => handleSelectAssignee(user.userId)}
 									className="flex justify-between"
 								>
 									<div className="flex">
@@ -92,7 +93,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 										</Avatar>
 										{formatName(user)}
 									</div>
-									{task.assigneeId === user.identifier && (
+									{task.assigneeId === user.userId && (
 										<Check className="ml-2 h-4 w-4" />
 									)}
 								</ContextMenuItem>
