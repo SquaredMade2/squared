@@ -7,11 +7,11 @@ export const teamRouter = router({
 	getUserTeams: privateProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
-			const { teamService } = ctx;
+			const { teamService, userId } = ctx;
 			const { workspaceId } = input;
 			return c.superjson(
 				await teamService.getUserTeams(TODO, {
-					userId: ctx.user.id,
+					userId,
 					workspaceId,
 				}),
 			);
@@ -37,14 +37,14 @@ export const teamRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { teamService, user } = ctx;
+			const { teamService, userId } = ctx;
 			const { name, identifier, workspaceId } = input;
 			return c.superjson(
 				await teamService.createTeam(TODO, {
 					name,
 					identifier,
 					workspaceId,
-					userId: user.id,
+					userId,
 				}),
 			);
 		}),

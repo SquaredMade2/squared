@@ -28,10 +28,8 @@ export const userRouter = router({
 			return c.superjson(await userService.getUser(TODO, { userId }));
 		}),
 	getDefaultWorkpace: privateProcedure.query(async ({ c, ctx }) => {
-		const { userService, user } = ctx;
-		return c.json(
-			await userService.getDefaultWorkspace(TODO, { userId: user.id }),
-		);
+		const { userService, userId } = ctx;
+		return c.json(await userService.getDefaultWorkspace(TODO, { userId }));
 	}),
 	onBoardUser: privateProcedure
 		.input(z.object({ userId: z.string() }))
@@ -43,11 +41,11 @@ export const userRouter = router({
 	isUserAuthorized: privateProcedure
 		.input(z.object({ teamIdentifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {
-			const { userService, user } = ctx;
+			const { userService, userId } = ctx;
 			const { teamIdentifier } = input;
 			return c.json(
 				await userService.isUserAuthorized(TODO, {
-					userId: user.id,
+					userId,
 					teamIdentifier,
 				}),
 			);
@@ -55,10 +53,10 @@ export const userRouter = router({
 	getUserWorkspaceRole: privateProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
-			const { userService, user } = ctx;
+			const { userService, userId } = ctx;
 			const { workspaceId } = input;
 			const roleData = await userService.getUserWorkspaceRole(TODO, {
-				userId: user.id,
+				userId,
 				workspaceId,
 			});
 			return c.json(roleData);
@@ -73,12 +71,12 @@ export const userRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { userService, user } = ctx;
-			const { userId, workspaceId, newRole } = input;
+			const { userService, userId } = ctx;
+			const { workspaceId, newRole } = input;
 
 			return c.json(
 				await userService.updateUsersRole(TODO, {
-					callerId: user.id,
+					callerId: userId,
 					userId,
 					workspaceId,
 					newRole,
@@ -106,10 +104,10 @@ export const userRouter = router({
 	setLastViewedTask: privateProcedure
 		.input(z.object({ taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { userService, user } = ctx;
+			const { userService, userId } = ctx;
 			const { taskId } = input;
 
-			await userService.setLastViewedTask(TODO, { userId: user.id, taskId });
+			await userService.setLastViewedTask(TODO, { userId, taskId });
 
 			return c.json({ success: true });
 		}),

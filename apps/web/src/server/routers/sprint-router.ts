@@ -56,13 +56,13 @@ export const sprintRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { sprintService, user } = ctx;
+			const { sprintService, userId } = ctx;
 			const { sprintId, type, content } = input;
 			return c.superjson(
 				await sprintService.addRetrospectiveItem(TODO, {
 					sprintId,
 					type,
-					authorId: user.id,
+					authorId: userId,
 					content,
 				}),
 			);
@@ -74,12 +74,12 @@ export const sprintRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { sprintService, user } = ctx;
+			const { sprintService, userId } = ctx;
 			const { retroItemId } = input;
 			return c.superjson(
 				await sprintService.likeRetrospectiveItem(TODO, {
 					retrospectiveItemId: retroItemId,
-					userId: user.id,
+					userId,
 				}),
 			);
 		}),

@@ -16,13 +16,13 @@ export const commentRouter = router({
 	addComment: privateProcedure
 		.input(z.object({ comment: z.string(), taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { commentService, user } = ctx;
+			const { commentService, userId } = ctx;
 			const { comment, taskId } = input;
 			return c.superjson(
 				await commentService.addComment(TODO, {
 					comment,
 					taskId,
-					authorId: user.id,
+					authorId: userId,
 				}),
 			);
 		}),

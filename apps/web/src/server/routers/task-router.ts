@@ -98,12 +98,12 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, status } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: userId,
 					status,
 				}),
 			);
@@ -116,12 +116,12 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, priority } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: userId,
 					priority,
 				}),
 			);
@@ -134,12 +134,12 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, effortEstimate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: userId,
 					effortEstimate,
 				}),
 			);
@@ -160,7 +160,7 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 
 			const { transformedInput: transformedTitle } = transformingMentionInputs(
 				input.title,
@@ -170,7 +170,7 @@ export const taskRouter = router({
 
 			const newTask = {
 				...input,
-				authorId: user.id,
+				authorId: userId,
 				title: transformedTitle,
 				description: transformedDescription,
 				status: input.status || "backlog",
@@ -196,13 +196,13 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, parentId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					parentId,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
@@ -214,13 +214,13 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, sprintId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					sprintId,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
@@ -233,13 +233,13 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, dueDate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					dueDate,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
@@ -251,13 +251,13 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, assigneeId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					assigneeId,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
@@ -269,13 +269,13 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, labels } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					labels: labels,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
@@ -288,14 +288,14 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, title, description } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					title,
 					description,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),

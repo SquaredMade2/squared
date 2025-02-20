@@ -93,10 +93,10 @@ export const filterRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { filterService, user } = ctx;
+			const { filterService, userId } = ctx;
 			const savedFilter = await filterService.createFilter(TODO, {
 				...input,
-				authorId: user.id,
+				authorId: userId,
 			});
 
 			return c.json(savedFilter);
