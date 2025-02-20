@@ -211,7 +211,7 @@ export class TaskService implements TaskRpc {
 			// Update the task
 			const [updatedTask] = await tx
 				.update(tasksTable)
-				.set(updateData)
+				.set({ ...updateData, updatedAt: new Date() })
 				.where(eq(tasksTable.id, taskData.id))
 				.returning();
 
