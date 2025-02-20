@@ -1,4 +1,4 @@
-import type { Label, Workspace, WorkspaceRole } from "@squared/db";
+import type { Label, Workspace } from "@squared/db";
 
 export type WorkspaceParams = {
 	url: string;
@@ -17,7 +17,6 @@ export type CreateWorkspaceParams = {
 export type JoinWorkspaceParams = {
 	user: { id: string; name: string; email: string };
 	workspaceId: string;
-	role: WorkspaceRole;
 };
 
 export interface WorkspaceRpc {
@@ -60,4 +59,9 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		labelName: string;
 	}) => Promise<{ success: boolean }>;
+	updateWorkspaceRole: (args: {
+		userId: string;
+		workspaceId: string;
+		role: "org:admin" | "org:member" | "org:owner";
+	}) => Promise<void>;
 }
