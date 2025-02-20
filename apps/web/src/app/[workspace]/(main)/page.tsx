@@ -4,7 +4,7 @@ import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import { useUser } from "@clerk/nextjs";
+import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,6 +17,7 @@ export default function Home() {
 	const params = useParams();
 
 	const { user } = useUser();
+	const { setActive } = useOrganizationList();
 	const setWorkspace = useWorkspaceStore((state) => state.setWorkspace);
 	const workspaceUrl = parseParams(params.workspace) ?? "";
 
@@ -40,6 +41,7 @@ export default function Home() {
 				return;
 			}
 			setWorkspace(currentWorkspace);
+			setActive ? setActive({ organization: currentWorkspace.id }) : "";
 
 			const allTeams = await client.team.getUserTeams
 				.$get({
