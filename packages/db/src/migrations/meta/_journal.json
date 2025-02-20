@@ -57,6 +57,13 @@
 			"when": 1740077006060,
 			"tag": "0007_streamline_retrospective_items",
 			"breakpoints": true
+		},
+		{
+			"idx": 8,
+			"version": "7",
+			"when": 1740094835346,
+			"tag": "0008_removed_users",
+			"breakpoints": true
 		}
 	]
 }
