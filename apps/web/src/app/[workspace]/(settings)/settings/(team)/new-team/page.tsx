@@ -65,7 +65,7 @@ export default function CreateTeam() {
 	});
 
 	const { mutate: onSubmit } = useMutation({
-		mutationKey: ["createTeam", organization?.id],
+		mutationKey: ["team", "createTeam", organization?.id],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!organization) {
 				throw new Error("Workspace not found");

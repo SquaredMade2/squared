@@ -81,7 +81,7 @@ const ViewsDetailSidebar = ({
 	const labelCount = getLabelCount();
 
 	const { mutate: handleDeleteSavedFilter, isPending } = useMutation({
-		mutationKey: ["deleteFilter", filter.id],
+		mutationKey: ["filter", "deleteFilter", filter.id],
 		mutationFn: async () => {
 			await client.filter.deleteFilter.$post({ filterId: filter.id });
 		},

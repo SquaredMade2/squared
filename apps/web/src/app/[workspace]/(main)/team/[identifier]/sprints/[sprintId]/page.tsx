@@ -158,7 +158,7 @@ export default function SprintDashboardPage() {
 	};
 
 	const { mutate: handleBulkAssign } = useMutation({
-		mutationKey: ["sprintAssign", sprint?.id],
+		mutationKey: ["sprint", "sprintAssign", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
 			return await client.sprint.addSprintTasks
@@ -182,7 +182,7 @@ export default function SprintDashboardPage() {
 	});
 
 	const { mutate: endSprint } = useMutation({
-		mutationKey: ["sprintEnd", sprint?.id],
+		mutationKey: ["sprint", "sprintEnd", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
 			return await client.sprint.endSprint

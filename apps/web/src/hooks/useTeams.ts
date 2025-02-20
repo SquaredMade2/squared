@@ -15,7 +15,7 @@ export function useTeams() {
 	const teamIdentifier = parseParams(params.identifier);
 
 	const { data: authorized = true, isLoading: authLoading } = useQuery({
-		queryKey: ["teamAuthorization", teamIdentifier],
+		queryKey: ["team", "teamAuthorization", teamIdentifier],
 		queryFn: async () => {
 			if (!organization || !teamIdentifier) return false;
 			const authorized = await client.user.isUserAuthorized
@@ -34,7 +34,7 @@ export function useTeams() {
 		isLoading: teamsLoading,
 		error,
 	} = useQuery({
-		queryKey: ["teams", organization?.id, teamIdentifier],
+		queryKey: ["team", organization?.id, teamIdentifier],
 		queryFn: async () => {
 			if (!organization) return { teams: [], team: null };
 			const res = await client.team.getUserTeams.$get({

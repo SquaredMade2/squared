@@ -393,11 +393,17 @@ export class TaskService implements TaskRpc {
 					.where(eq(tasksTable.id, args.newOrder[index]));
 			}
 
+			const teamId = await tx
+				.select({ teamId: tasksTable.teamId })
+				.from(tasksTable)
+				.where(eq(tasksTable.id, args.parentId))
+				.then((result) => result[0].teamId);
+
 			// Fetch and return the reordered subtasks
 			const reorderedTasks = await tx
 				.select()
 				.from(tasksTable)
-				.where(eq(tasksTable.parentId, args.parentId))
+				.where(eq(tasksTable.teamId, teamId))
 				.orderBy(asc(tasksTable.order));
 
 			return reorderedTasks;
