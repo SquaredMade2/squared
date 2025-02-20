@@ -23,6 +23,14 @@ import {
 	workspaceRoleType,
 } from "./types";
 
+export const deletedUsers = pgTable("DeletedUsers", {
+	id: uuid("id")
+		.primaryKey()
+		.notNull()
+		.references(() => usersTable.id, { onDelete: "cascade" }),
+	deletedAt: timestamp("deleted_at").notNull().defaultNow(),
+});
+
 export const teamsTable = pgTable(
 	"Team",
 	{
@@ -200,6 +208,7 @@ export const usersTable = pgTable(
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		lastViewedTaskId: uuid(),
 		externalId: text().unique().notNull(),
+		deleted: boolean().default(false).notNull(),
 	},
 	(table) => [
 		uniqueIndex("User_email_key").using(
