@@ -156,17 +156,19 @@ const Group = ({
 		})
 		.filter(Boolean);
 
-	const orphanedSubtaskGroups = Array.from(subtaskParentIds)
-		.map((id) => {
-			if (parentIdsForGroup.includes(id)) return null;
-			const parentTask = allTasks.find((t) => t.id === id);
-			const subtasks = tasks.filter((t) => t.parentId === id);
-			return {
-				task: parentTask,
-				render: () => renderSubtasks(parentTask, subtasks),
-			};
-		})
-		.filter(Boolean);
+	const orphanedSubtaskGroups = displayOptions.showSubTasks
+		? Array.from(subtaskParentIds)
+				.map((id) => {
+					if (parentIdsForGroup.includes(id)) return null;
+					const parentTask = allTasks.find((t) => t.id === id);
+					const subtasks = tasks.filter((t) => t.parentId === id);
+					return {
+						task: parentTask,
+						render: () => renderSubtasks(parentTask, subtasks),
+					};
+				})
+				.filter(Boolean)
+		: [];
 
 	const allItems = [...renderableItems, ...orphanedSubtaskGroups];
 	const sortedItems = orderTasks(
