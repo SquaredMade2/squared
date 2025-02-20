@@ -6,7 +6,6 @@ import {
 	useCommentStore,
 	useModalStore,
 	useTaskStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { cn } from "@/utils/cn";
@@ -19,7 +18,8 @@ import {
 	injectMentionConfirm,
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
-import type { User } from "@squared/db";
+import { useOrganization } from "@clerk/nextjs";
+import type { PublicUserData } from "@clerk/types";
 import { useMutation } from "@tanstack/react-query";
 import {
 	type KeyboardEvent,
@@ -70,7 +70,16 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
 	const currentTask = useTaskStore((state) => state.currentTask);
-	const users = useUserStore((state) => state.users);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
@@ -81,7 +90,8 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	// Mention search filter
 	const [mentionsFilter, setMentionsFilter] = useState("");
-	const [currentEnterUser, setCurrentEnterUser] = useState<User | null>(null);
+	const [currentEnterUser, setCurrentEnterUser] =
+		useState<PublicUserData | null>(null);
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
@@ -106,25 +116,25 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				);
 				const mentions = getMentionsFromSlate(editorContent);
 
-				if (currentTask && currentWorkspace) {
+				if (currentTask && currentWorkspace && users) {
 					for (let i = 0; i < mentions.length; i++) {
 						const currentMentionUser = mentions[i];
 
 						const mentionedUser = users.find(
-							(user) => user.name === currentMentionUser,
+							(user) => user.firstName === currentMentionUser,
 						);
 
-						if (!mentionedUser) return;
+						if (!mentionedUser || !mentionedUser.userId) return;
 
 						const mentionEvent: CreateNotificationRequest = {
 							description: "Task Comment Mention",
 							taskId: currentTask.id,
 							type: "MENTIONED",
-							userId: mentionedUser.externalId,
+							userId: mentionedUser.userId,
 							workspaceId: currentWorkspace.id,
 						};
 
-						client.notification.createNotification.$post(mentionEvent);
+						client.notification.createMention.$post(mentionEvent);
 					}
 				}
 

@@ -4,11 +4,11 @@ import {
 	CommandGroup,
 	CommandList,
 } from "@/components/ui/command";
-import { useUserStore } from "@/store/users";
 import { cn } from "@/utils/cn";
 import { truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
-import type { User } from "@squared/db";
+import { useOrganization } from "@clerk/nextjs";
+import type { PublicUserData } from "@clerk/types";
 import { CommandItem } from "cmdk";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -23,9 +23,19 @@ const TextEditorMentions = ({
 	debounceRef,
 }: TextEditorMentionsProps) => {
 	// State
-	const users = useUserStore((state) => state.users);
 
-	const usersRef = useRef<User[]>([]);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
+
+	const usersRef = useRef<PublicUserData[]>([]);
 
 	// Helpers
 
@@ -33,7 +43,7 @@ const TextEditorMentions = ({
 		? cursorPosition
 		: { x: 10, y: 10 };
 
-	const handleMentionClick = (user: User) => {
+	const handleMentionClick = (user: PublicUserData) => {
 		debounceRef.current = true;
 		injectMentionConfirm(editor, user);
 		setToggleMentions(false);
@@ -42,7 +52,7 @@ const TextEditorMentions = ({
 	const handleUsersRef = (
 		e: HTMLDivElement | null,
 		index: number,
-		user: User,
+		user: PublicUserData,
 	) => {
 		if (e) {
 			usersRef.current[index] = user;
@@ -71,39 +81,42 @@ const TextEditorMentions = ({
 			<CommandList>
 				<CommandEmpty>No results found.</CommandEmpty>
 				<CommandGroup heading="Users" className="h-60 overflow-y-scroll pt-0">
-					{users
-						.filter((user) =>
-							user.name
-								.toLowerCase()
-								.includes(mentionsFilter.slice(1).toLowerCase()),
-						)
-						.map((user, index) => {
-							return (
-								<CommandItem
-									key={user.id}
-									className={cn(
-										`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
-									)}
-									ref={(e) => handleUsersRef(e, index, user)}
-									onSelect={() => handleMentionClick(user)}
-								>
-									<label className="w-40 xl:text-sm">
-										{truncateString(user.name, 13)}
-									</label>
-									{index === 0 && (
-										<div className="flex w-32 select-none flex-row items-center justify-start ">
-											<div className="ml-auto flex w-10 flex-row rounded-lg px-2 py-1 text-muted-foreground">
-												<CornerDownLeft
-													size={20}
-													color="hsl(217,5%, 44%)"
-													className="pr-1"
-												/>
+					{users &&
+						users
+							.filter(
+								(user) =>
+									user.firstName &&
+									user.firstName
+										.toLowerCase()
+										.includes(mentionsFilter.slice(1).toLowerCase()),
+							)
+							.map((user, index) => {
+								return (
+									<CommandItem
+										key={user.userId}
+										className={cn(
+											`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
+										)}
+										ref={(e) => handleUsersRef(e, index, user)}
+										onSelect={() => handleMentionClick(user)}
+									>
+										<label className="w-40 xl:text-sm">
+											{truncateString(user.firstName || "Unknown Name", 13)}
+										</label>
+										{index === 0 && (
+											<div className="flex w-32 select-none flex-row items-center justify-start ">
+												<div className="ml-auto flex w-10 flex-row rounded-lg px-2 py-1 text-muted-foreground">
+													<CornerDownLeft
+														size={20}
+														color="hsl(217,5%, 44%)"
+														className="pr-1"
+													/>
+												</div>
 											</div>
-										</div>
-									)}
-								</CommandItem>
-							);
-						})}
+										)}
+									</CommandItem>
+								);
+							})}
 				</CommandGroup>
 			</CommandList>
 		</Command>

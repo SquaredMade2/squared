@@ -1,4 +1,5 @@
-import type { Task, User } from "@squared/db";
+import type { PublicUserData } from "@clerk/types";
+import type { Task } from "@squared/db";
 import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
 import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
@@ -31,13 +32,13 @@ export interface TextEditorMentionsProps {
 	cursorPosition: { x: number; y: number } | null;
 	mentionsFilter: string;
 	editor: Editor;
-	setCurrentEnterUser: Dispatch<SetStateAction<User | null>>;
+	setCurrentEnterUser: Dispatch<SetStateAction<PublicUserData | null>>;
 	setToggleMentions: Dispatch<SetStateAction<boolean>>;
 	debounceRef: MutableRefObject<boolean>;
 }
 
 export interface MentionHoverProps {
-	mentionedUser: User;
+	mentionedUser: PublicUserData;
 }
 
 export type MarkActives = {
@@ -69,7 +70,7 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 	mention?: boolean;
-	mentionConfirm?: User;
+	mentionConfirm?: PublicUserData;
 };
 
 export type MarkTypes = keyof Omit<CustomText, "text">;

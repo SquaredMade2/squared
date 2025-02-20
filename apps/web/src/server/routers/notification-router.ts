@@ -82,7 +82,7 @@ export const notificationRouter = router({
 		);
 	}),
 
-	createNotification: privateProcedure
+	createMention: privateProcedure
 		.input(
 			z.object({
 				description: z.string(),
@@ -93,12 +93,12 @@ export const notificationRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const newNotification: CreateNotificationRequest = {
+			const newMention: CreateNotificationRequest = {
 				...input,
 			};
 			const { eventService } = ctx;
 			return c.superjson(
-				await eventService.createNotification(TODO, newNotification),
+				await eventService.createNotification(TODO, newMention),
 			);
 		}),
 });

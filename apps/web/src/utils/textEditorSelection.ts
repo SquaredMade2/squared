@@ -3,18 +3,11 @@ import type {
 	CustomElement,
 	CustomText,
 } from "@/components/TextEditor";
-import type { User } from "@squared/db";
-import {
-	Editor,
-	type Editor as EditorType,
-	Element,
-	Node,
-	Range,
-	Transforms,
-} from "slate";
+import type { PublicUserData } from "@clerk/types";
+import { Editor, Element, Node, Range, Transforms } from "slate";
 
 // getting the current characters selected
-export const getCharactersInSelection = (editor: EditorType) => {
+export const getCharactersInSelection = (editor: Editor) => {
 	if (editor.selection && !Range.isCollapsed(editor.selection)) {
 		const { anchor, focus } = editor.selection;
 
@@ -30,7 +23,7 @@ export const getCharactersInSelection = (editor: EditorType) => {
 };
 
 // check if the current command leaf has a "/" at the beginning of it
-export const isValidMentionBlock = (editor: EditorType) => {
+export const isValidMentionBlock = (editor: Editor) => {
 	const { selection } = editor;
 
 	if (!selection) return false;
@@ -41,7 +34,7 @@ export const isValidMentionBlock = (editor: EditorType) => {
 	return text.startsWith("@");
 };
 
-export const getMentionFromLeaf = (editor: EditorType) => {
+export const getMentionFromLeaf = (editor: Editor) => {
 	const { selection } = editor;
 
 	const block = Editor.above(editor, {
@@ -57,7 +50,7 @@ export const getMentionFromLeaf = (editor: EditorType) => {
 };
 
 // clear the entire leaf's selected content from the editor
-export const clearCurrentLeafContent = (editor: EditorType) => {
+export const clearCurrentLeafContent = (editor: Editor) => {
 	const { selection } = editor;
 
 	if (!selection) return;
@@ -71,10 +64,7 @@ export const clearCurrentLeafContent = (editor: EditorType) => {
 	Transforms.insertText(editor, "", { at: path });
 };
 
-export const replaceTextOfCurrentNode = (
-	editor: EditorType,
-	newText: string,
-) => {
+export const replaceTextOfCurrentNode = (editor: Editor, newText: string) => {
 	if (!editor.selection) return; // Ensure there's a selection
 	const [, path] = Editor.node(editor, editor.selection);
 	Transforms.select(editor, Editor.range(editor, path));
@@ -83,7 +73,7 @@ export const replaceTextOfCurrentNode = (
 	Transforms.insertText(editor, newText);
 };
 
-export const injectMentionConfirm = (editor: EditorType, user: User) => {
+export const injectMentionConfirm = (editor: Editor, user: PublicUserData) => {
 	if (!editor.selection) return; // Ensure there's a selection
 
 	const [, path] = Editor.node(editor, editor.selection);
@@ -91,7 +81,7 @@ export const injectMentionConfirm = (editor: EditorType, user: User) => {
 
 	// Insert new text
 	Transforms.insertNodes(editor, {
-		text: `@${user.name}`,
+		text: `@${user.firstName || "Unknown name"}`,
 		mentionConfirm: user,
 	});
 };
