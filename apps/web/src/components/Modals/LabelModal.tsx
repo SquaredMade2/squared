@@ -88,7 +88,7 @@ export const LabelModal = () => {
 				description: `Label "${variables.name}" has been updated`,
 			});
 			queryClient.invalidateQueries({
-				queryKey: ["workspaceLabels", workspace?.id],
+				queryKey: ["workspace", "workspaceLabels", workspace?.id],
 			});
 			handleResetForm();
 		},
@@ -117,7 +117,7 @@ export const LabelModal = () => {
 				description: `Label "${variables.name}" has been created`,
 			});
 			queryClient.invalidateQueries({
-				queryKey: ["workspaceLabels", workspace?.id],
+				queryKey: ["workspace", "workspaceLabels", workspace?.id],
 			});
 			handleResetForm();
 		},

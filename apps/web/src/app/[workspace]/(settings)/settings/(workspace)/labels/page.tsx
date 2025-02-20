@@ -12,7 +12,7 @@ export default function WorkspaceLabelsPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 
 	const { data: workspaceLabels = [], refetch } = useQuery({
-		queryKey: ["workspaceLabels", workspace?.id],
+		queryKey: ["workspace", "workspaceLabels", workspace?.id],
 		queryFn: async () => {
 			if (!workspace) return [];
 			const labels = await client.workspace.getWorkspaceLabels

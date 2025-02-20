@@ -30,7 +30,7 @@ const RemoveMemberButton = ({
 	const { toast } = useToast();
 
 	const { mutate: handleClick } = useMutation({
-		mutationKey: ["removeMember"],
+		mutationKey: ["workspace", "removeMember", pageId],
 		mutationFn: async () => {
 			if (!pageId) throw new Error("No pageId provided");
 			if (page === "workspace") {
