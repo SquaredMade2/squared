@@ -24,10 +24,10 @@ const labelSchema = z.object({
 
 export const taskRouter = router({
 	getTaskByIdentifier: privateProcedure
-		.input(z.object({ identifier: z.string(), workspaceId: z.string() }))
+		.input(z.object({ identifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { identifier, workspaceId } = input;
+			const { taskService, workspaceId } = ctx;
+			const { identifier } = input;
 			return c.superjson(
 				await taskService.getTaskByIdentifier(TODO, {
 					identifier,

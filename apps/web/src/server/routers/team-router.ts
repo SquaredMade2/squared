@@ -4,23 +4,20 @@ import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
 export const teamRouter = router({
-	getUserTeams: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { teamService, userId } = ctx;
-			const { workspaceId } = input;
-			return c.superjson(
-				await teamService.getUserTeams(TODO, {
-					userId,
-					workspaceId,
-				}),
-			);
-		}),
+	getUserTeams: privateProcedure.query(async ({ c, ctx }) => {
+		const { teamService, userId, workspaceId } = ctx;
+		return c.superjson(
+			await teamService.getUserTeams(TODO, {
+				userId,
+				workspaceId,
+			}),
+		);
+	}),
 	getTeamByIdentifier: privateProcedure
-		.input(z.object({ identifier: z.string(), workspaceId: z.string() }))
+		.input(z.object({ identifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {
-			const { teamService } = ctx;
-			const { identifier, workspaceId } = input;
+			const { teamService, workspaceId } = ctx;
+			const { identifier } = input;
 			return c.superjson(
 				await teamService.getTeamByIdentifier(TODO, {
 					identifier,
@@ -33,12 +30,11 @@ export const teamRouter = router({
 			z.object({
 				name: z.string(),
 				identifier: z.string(),
-				workspaceId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { teamService, userId } = ctx;
-			const { name, identifier, workspaceId } = input;
+			const { teamService, userId, workspaceId } = ctx;
+			const { name, identifier } = input;
 			return c.superjson(
 				await teamService.createTeam(TODO, {
 					name,

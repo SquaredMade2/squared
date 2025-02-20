@@ -4,15 +4,12 @@ import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
 export const userRouter = router({
-	getAllUsers: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { workspaceId } = input;
-			return c.superjson(
-				await userService.getWorkspaceUsers(TODO, { workspaceId }),
-			);
-		}),
+	getAllUsers: privateProcedure.query(async ({ c, ctx }) => {
+		const { userService, workspaceId } = ctx;
+		return c.superjson(
+			await userService.getWorkspaceUsers(TODO, { workspaceId }),
+		);
+	}),
 	getTeamUsers: privateProcedure
 		.input(z.object({ teamId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
@@ -20,24 +17,18 @@ export const userRouter = router({
 			const { teamId } = input;
 			return c.superjson(await userService.getTeamUsers(TODO, { teamId }));
 		}),
-	getUser: privateProcedure
-		.input(z.object({ userId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { userId } = input;
-			return c.superjson(await userService.getUser(TODO, { userId }));
-		}),
+	getUser: privateProcedure.query(async ({ c, ctx }) => {
+		const { userService, userId } = ctx;
+		return c.superjson(await userService.getUser(TODO, { userId }));
+	}),
 	getDefaultWorkpace: privateProcedure.query(async ({ c, ctx }) => {
 		const { userService, userId } = ctx;
 		return c.json(await userService.getDefaultWorkspace(TODO, { userId }));
 	}),
-	onBoardUser: privateProcedure
-		.input(z.object({ userId: z.string() }))
-		.mutation(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { userId } = input;
-			return c.superjson(await userService.onBoardUser(TODO, { userId }));
-		}),
+	onBoardUser: privateProcedure.mutation(async ({ c, ctx }) => {
+		const { userService, userId } = ctx;
+		return c.superjson(await userService.onBoardUser(TODO, { userId }));
+	}),
 	isUserAuthorized: privateProcedure
 		.input(z.object({ teamIdentifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {
@@ -50,29 +41,24 @@ export const userRouter = router({
 				}),
 			);
 		}),
-	getUserWorkspaceRole: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { userService, userId } = ctx;
-			const { workspaceId } = input;
-			const roleData = await userService.getUserWorkspaceRole(TODO, {
-				userId,
-				workspaceId,
-			});
-			return c.json(roleData);
-		}),
+	getUserWorkspaceRole: privateProcedure.query(async ({ c, ctx }) => {
+		const { userService, userId, workspaceId } = ctx;
+		const roleData = await userService.getUserWorkspaceRole(TODO, {
+			userId,
+			workspaceId,
+		});
+		return c.json(roleData);
+	}),
 
 	updateUsersRole: privateProcedure
 		.input(
 			z.object({
-				userId: z.string(),
-				workspaceId: z.string(),
 				newRole: z.enum(["owner", "admin", "member"]),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { userService, userId } = ctx;
-			const { workspaceId, newRole } = input;
+			const { userService, userId, workspaceId } = ctx;
+			const { newRole } = input;
 
 			return c.json(
 				await userService.updateUsersRole(TODO, {
@@ -83,24 +69,18 @@ export const userRouter = router({
 				}),
 			);
 		}),
-	getWorkspaceUsersWithRoles: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { workspaceId } = input;
-			return c.superjson(
-				await userService.getWorkspaceUsersWithRoles(TODO, {
-					workspaceId,
-				}),
-			);
-		}),
-	getWorkspaceAvatars: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { workspaceId } = input;
-			return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
-		}),
+	getWorkspaceUsersWithRoles: privateProcedure.query(async ({ c, ctx }) => {
+		const { userService, workspaceId } = ctx;
+		return c.superjson(
+			await userService.getWorkspaceUsersWithRoles(TODO, {
+				workspaceId,
+			}),
+		);
+	}),
+	getWorkspaceAvatars: privateProcedure.query(async ({ c, ctx }) => {
+		const { userService, workspaceId } = ctx;
+		return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
+	}),
 	setLastViewedTask: privateProcedure
 		.input(z.object({ taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {

@@ -35,21 +35,17 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
-	getWorkspaceLabels: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { workspaceService } = ctx;
-			const { workspaceId } = input;
-			return c.superjson(
-				await workspaceService.getWorkspaceLabels(TODO, {
-					workspaceId: workspaceId,
-				}),
-			);
-		}),
+	getWorkspaceLabels: privateProcedure.query(async ({ c, ctx }) => {
+		const { workspaceService, workspaceId } = ctx;
+		return c.superjson(
+			await workspaceService.getWorkspaceLabels(TODO, {
+				workspaceId,
+			}),
+		);
+	}),
 	createWorkspaceLabel: privateProcedure
 		.input(
 			z.object({
-				workspaceId: z.string(),
 				label: z.object({
 					name: z.string(),
 					description: z.string().nullable().optional(),
@@ -58,8 +54,8 @@ export const workspaceRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceId, label } = input;
-			const { workspaceService } = ctx;
+			const { label } = input;
+			const { workspaceId, workspaceService } = ctx;
 			return c.superjson(
 				await workspaceService.createWorkspaceLabel(TODO, {
 					workspaceId,
@@ -70,7 +66,6 @@ export const workspaceRouter = router({
 	updateWorkspaceLabel: privateProcedure
 		.input(
 			z.object({
-				workspaceId: z.string(),
 				labelName: z.string(),
 				updatedLabel: z.object({
 					name: z.string(),
@@ -80,8 +75,8 @@ export const workspaceRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceId, updatedLabel, labelName } = input;
-			const { workspaceService } = ctx;
+			const { updatedLabel, labelName } = input;
+			const { workspaceId, workspaceService } = ctx;
 			return c.superjson(
 				await workspaceService.updateWorkspaceLabel(TODO, {
 					workspaceId,
@@ -91,10 +86,10 @@ export const workspaceRouter = router({
 			);
 		}),
 	deleteWorkspaceLabel: privateProcedure
-		.input(z.object({ workspaceId: z.string(), labelName: z.string() }))
+		.input(z.object({ labelName: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceId, labelName } = input;
-			const { workspaceService } = ctx;
+			const { labelName } = input;
+			const { workspaceId, workspaceService } = ctx;
 			return c.superjson(
 				await workspaceService.deleteWorkspaceLabel(TODO, {
 					workspaceId,
