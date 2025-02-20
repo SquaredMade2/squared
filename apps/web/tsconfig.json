@@ -8,7 +8,8 @@
 		},
 		"moduleResolution": "bundler",
 		"module": "esnext",
-		"types": ["jest", "jest-extended"]
+		"types": ["jest"],
+		"typeRoots": ["./node_modules/@types", "./src/types"]
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 	"exclude": [".next"]

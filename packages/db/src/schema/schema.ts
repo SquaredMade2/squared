@@ -20,7 +20,6 @@ import {
 	savedFilterType,
 	sprintStatusType,
 	statusType,
-	workspaceRoleType,
 } from "./types";
 
 export const deletedUsers = pgTable("DeletedUsers", {
@@ -138,7 +137,10 @@ export const notificationsTable = pgTable(
 		saved: boolean().default(false).notNull(),
 		description: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		updatedAt: timestamp({ precision: 3 })
+			.defaultNow()
+			.$onUpdateFn(() => new Date())
+			.notNull(),
 		workspaceId: text().notNull(),
 		dismissed: boolean().default(false).notNull(),
 		type: notificationType().notNull(),
@@ -265,7 +267,10 @@ export const tasksTable = pgTable(
 		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
 		workspaceId: text().notNull(),
-		updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		updatedAt: timestamp({ precision: 3 })
+			.defaultNow()
+			.$onUpdateFn(() => new Date())
+			.notNull(),
 		deleted: boolean().default(false).notNull(),
 		parentId: uuid(),
 		sprintId: uuid(),
@@ -496,9 +501,7 @@ export const retrospectiveItemsTable = pgTable(
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		content: text().notNull(),
-		wentWellSprintId: uuid(),
-		toImproveSprintId: uuid(),
-		actionItemsSprintId: uuid(),
+		sprintId: uuid(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		updatedAt: timestamp({ precision: 3 })
 			.defaultNow()
@@ -510,23 +513,9 @@ export const retrospectiveItemsTable = pgTable(
 	},
 	(table) => [
 		foreignKey({
-			columns: [table.wentWellSprintId],
+			columns: [table.sprintId],
 			foreignColumns: [sprintsTable.id],
-			name: "RetrospectiveItem_wentWellSprintId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.toImproveSprintId],
-			foreignColumns: [sprintsTable.id],
-			name: "RetrospectiveItem_toImproveSprintId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.actionItemsSprintId],
-			foreignColumns: [sprintsTable.id],
-			name: "RetrospectiveItem_actionItemsSprintId_fkey",
+			name: "RetrospectiveItem_sprintId_fkey",
 		})
 			.onUpdate("cascade")
 			.onDelete("set null"),
@@ -571,7 +560,6 @@ export const userWorkspacesTable = pgTable(
 	{
 		workspaceId: text().notNull(),
 		userId: text().notNull(),
-		role: workspaceRoleType().notNull(),
 	},
 	(table) => [
 		foreignKey({

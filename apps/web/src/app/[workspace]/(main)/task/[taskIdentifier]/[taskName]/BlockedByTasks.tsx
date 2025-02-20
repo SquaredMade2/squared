@@ -9,8 +9,9 @@ import {
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
 import type { Task, User } from "@squared/db";
 import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
@@ -68,13 +69,11 @@ interface SubtaskListProps {
 }
 
 const SubtaskList = ({ task, user }: SubtaskListProps) => {
-	const currentWorkspaceUrl = useWorkspaceStore(
-		(state) => state.workspace,
-	)?.url;
+	const { organization } = useOrganization();
 	return (
 		<Link
 			className="group/main grid w-full grid-cols-24 items-center border-border border-t border-solid bg-card py-2 hover:bg-accent"
-			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${organization?.slug}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<div className="col-span-1 min-h-9" />
 			<div className="col-span-23 grid grid-cols-10 pr-6 pl-2 lg:pl-0">

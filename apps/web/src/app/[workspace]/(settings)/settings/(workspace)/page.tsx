@@ -35,10 +35,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { workspaceService } from "@/lib/services";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,15 +61,12 @@ const formSchema = z.object({
 });
 
 export default function WorkspaceSettings() {
-	const { deleteWorkspace, updateWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
-	const { workspace, workspaces, loading: workspaceLoading } = useWorkspaces();
-	const { user } = useUserStore((state) => state);
-	const [isDeleting, setIsDeleting] = useState(false);
+	const { workspace } = useWorkspaces();
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
+	const { organization } = useOrganization();
+	const { userMemberships } = useOrganizationList();
 
 	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
 	const defaultSelect =
@@ -79,7 +77,7 @@ export default function WorkspaceSettings() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: workspace?.name,
+			name: organization?.name,
 			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
 	});
@@ -123,44 +121,67 @@ export default function WorkspaceSettings() {
 		return () => subscription.unsubscribe();
 	}, [watch, workspace]);
 
-	if (!workspace || !workspaces) return null;
+	const { mutate: updateWorkspace, isPending: updatingWorkspace } = useMutation(
+		{
+			mutationKey: ["workspace", "updateWorkspace", organization?.id],
+			mutationFn: async (values: z.infer<typeof formSchema>) => {
+				let defaultView: string | null = null;
+				if (!organization) throw new Error("Workspace not found");
+				if (values.viewPage) {
+					defaultView = `${values.viewPage !== "sprint" ? values.viewPage : "sprints/current"}`;
+				}
+				const [updatedWorkspace] = await Promise.all([
+					client.workspace.updateWorkspace
+						.$post({
+							workspaceId: organization.id,
+							workspace: { name: values.name, url: values.url, defaultView },
+						})
+						.then((res) => res.json()),
+					organization.update({ name: values.name, slug: values.url }),
+				]);
+				return updatedWorkspace;
+			},
+			onSuccess: (updatedWorkspace) => {
+				updateWorkspace(updatedWorkspace);
+				toast({ title: "Workspace updated successfully" });
+				setIsFormChanged(false);
+			},
+			onError: (error) => {
+				toast({
+					title: "Error updating workspace",
+					description: parseError(error),
+					variant: "destructive",
+				});
+			},
+		},
+	);
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		let defaultView: string | null = null;
-		if (values.viewPage) {
-			defaultView = `${values.viewPage !== "sprint" ? values.viewPage : "sprints/current"}`;
-		}
-		try {
-			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
-				workspaceId: workspace.externalId,
-				workspace: { name: values.name, url: values.url, defaultView },
+	const { mutate: deleteWorkspace, isPaused: isDeleting } = useMutation({
+		mutationKey: ["workspace", "deleteWorkspace", organization?.id],
+		mutationFn: async () => {
+			if (!organization) throw new Error("Workspace not found");
+			await client.workspace.deleteWorkspace.$post({
+				workspaceId: organization.id,
 			});
-			updateWorkspace(updatedWorkspace);
-
-			toast({ title: "Workspace updated successfully" });
-			setIsFormChanged(false);
-		} catch (error) {
-			console.error("Error updating workspace:", error);
+		},
+		onSuccess: () => {
+			toast({ title: "Workspace deleted successfully" });
+			if (userMemberships.data?.[0].organization.slug) {
+				router.replace(`/${userMemberships.data?.[0].organization.slug}`);
+			} else {
+				router.replace("/create");
+			}
+		},
+		onError: (error) => {
 			toast({
-				title: "Internal server error",
+				title: "Error deleting workspace",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
 
-	const handleDelete = async () => {
-		setIsDeleting(true);
-		deleteWorkspace(workspace.externalId);
-		if (user) {
-			if (workspaces.length > 0) {
-				router.replace(`/${workspaces[0].id}`);
-			} else {
-				router.replace("/join");
-			}
-		}
-	};
-
-	if (workspaceLoading)
+	if (updatingWorkspace)
 		return (
 			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
 				<h1 className="mb-2 font-bold text-3xl">Team Settings</h1>
@@ -171,6 +192,8 @@ export default function WorkspaceSettings() {
 			</div>
 		);
 
+	if (!organization) return null;
+
 	return (
 		<div className="container mx-auto w-full py-10 md:w-3/4 ">
 			<h1 className="mb-2 font-bold text-3xl">Workspace</h1>
@@ -180,21 +203,24 @@ export default function WorkspaceSettings() {
 
 			<div className="mb-6 flex items-center space-x-4">
 				<Avatar className="size-28">
-					<AvatarImage src={workspace.avatarUrl ?? ""} alt="Workspace Logo" />
+					<AvatarImage src={organization.imageUrl ?? ""} alt="Workspace Logo" />
 					<AvatarFallback className="text-5xl">
-						{workspace.name[0]}
+						{organization.name[0]}
 					</AvatarFallback>
 				</Avatar>
 				<div>
-					<h2 className="font-semibold text-xl">{workspace.name}</h2>
-					<p className="text-muted-foreground">{workspace.url}</p>
+					<h2 className="font-semibold text-xl">{organization.name}</h2>
+					<p className="text-muted-foreground">{organization.slug}</p>
 				</div>
 			</div>
 
 			<Separator className="my-6" />
 
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<form
+					onSubmit={form.handleSubmit((values) => updateWorkspace(values))}
+					className="space-y-8"
+				>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
@@ -311,7 +337,7 @@ export default function WorkspaceSettings() {
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
 							<AlertDialogAction
 								className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-								onClick={handleDelete}
+								onClick={() => deleteWorkspace()}
 							>
 								{isDeleting ? "Deleting..." : "Yes, delete workspace"}
 							</AlertDialogAction>
