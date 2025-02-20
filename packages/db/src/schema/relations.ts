@@ -96,14 +96,8 @@ export const sprintRelations = relations(sprintsTable, ({ one, many }) => ({
 		references: [teamsTable.id],
 	}),
 	tasks: many(tasksTable),
-	retrospectiveItems_wentWellSprintId: many(retrospectiveItemsTable, {
-		relationName: "retrospectiveItem_wentWellSprintId_sprint_id",
-	}),
-	retrospectiveItems_toImproveSprintId: many(retrospectiveItemsTable, {
-		relationName: "retrospectiveItem_toImproveSprintId_sprint_id",
-	}),
-	retrospectiveItems_actionItemsSprintId: many(retrospectiveItemsTable, {
-		relationName: "retrospectiveItem_actionItemsSprintId_sprint_id",
+	retrospectiveItems: many(retrospectiveItemsTable, {
+		relationName: "retrospectiveItem_sprint_id",
 	}),
 }));
 
@@ -201,20 +195,10 @@ export const savedFilterRelations = relations(savedFiltersTable, ({ one }) => ({
 export const retrospectiveItemRelations = relations(
 	retrospectiveItemsTable,
 	({ one }) => ({
-		sprint_wentWellSprintId: one(sprintsTable, {
-			fields: [retrospectiveItemsTable.wentWellSprintId],
+		sprint: one(sprintsTable, {
+			fields: [retrospectiveItemsTable.sprintId],
 			references: [sprintsTable.id],
-			relationName: "retrospectiveItem_wentWellSprintId_sprint_id",
-		}),
-		sprint_toImproveSprintId: one(sprintsTable, {
-			fields: [retrospectiveItemsTable.toImproveSprintId],
-			references: [sprintsTable.id],
-			relationName: "retrospectiveItem_toImproveSprintId_sprint_id",
-		}),
-		sprint_actionItemsSprintId: one(sprintsTable, {
-			fields: [retrospectiveItemsTable.actionItemsSprintId],
-			references: [sprintsTable.id],
-			relationName: "retrospectiveItem_actionItemsSprintId_sprint_id",
+			relationName: "retrospectiveItem_sprint_id",
 		}),
 		user: one(usersTable, {
 			fields: [retrospectiveItemsTable.authorId],

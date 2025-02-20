@@ -1,4 +1,5 @@
 "use client";
+
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";

@@ -1,9 +1,9 @@
 "use client";
 
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useTeamStore, useViewStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ export const DeleteTaskAlertDialog = ({
 }) => {
 	const { deleteTask } = useTaskStore((state) => state);
 	const { lastVisitedPage } = useViewStore((state) => state);
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const { team } = useTeamStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
@@ -50,7 +50,7 @@ export const DeleteTaskAlertDialog = ({
 			deleteTask(task.id);
 			if (redirectTask) {
 				router.push(
-					`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
+					`${lastVisitedPage === "inbox" ? "/inbox" : `/${organization?.slug}/team/${team?.identifier}/${lastVisitedPage}`}`,
 				);
 			}
 		} catch (error) {

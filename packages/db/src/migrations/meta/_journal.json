@@ -43,6 +43,27 @@
 			"when": 1739851077634,
 			"tag": "0005_add_duplicated",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1740044420327,
+			"tag": "0006_remove_roles",
+			"breakpoints": true
+		},
+		{
+			"idx": 7,
+			"version": "7",
+			"when": 1740077006060,
+			"tag": "0007_streamline_retrospective_items",
+			"breakpoints": true
+		},
+		{
+			"idx": 8,
+			"version": "7",
+			"when": 1740079488948,
+			"tag": "0008_github_integration",
+			"breakpoints": true
 		}
 	]
 }

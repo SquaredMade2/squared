@@ -1,12 +1,6 @@
 import { createRpcHandler, createServiceSchema } from "@squared/rpc";
 import z from "zod";
-import {
-	teamSchema,
-	userSchema,
-	userWithRoleSchema,
-	workspaceRoleEnum,
-	workspaceSchema,
-} from "../schema";
+import { teamSchema, userSchema, workspaceSchema } from "../schema";
 import type { UserRpc } from "./types";
 import type { UserService } from "./user-service";
 
@@ -82,35 +76,6 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: userSchema,
 	},
-	getUserWorkspaceRole: {
-		input: z.object({
-			userId: z.string(),
-			workspaceId: z.string(),
-		}),
-		output: z.object({
-			role: workspaceRoleEnum,
-		}),
-	},
-
-	getWorkspaceUsersWithRoles: {
-		input: z.object({
-			workspaceId: z.string(),
-		}),
-		output: z.array(userWithRoleSchema),
-	},
-	updateUsersRole: {
-		input: z.object({
-			callerId: z.string(),
-			userId: z.string(),
-			workspaceId: z.string(),
-			newRole: workspaceRoleEnum,
-		}),
-		output: z.object({
-			userId: z.string(),
-			workspaceId: z.string(),
-			role: workspaceRoleEnum,
-		}),
-	},
 	getDefaultWorkspace: {
 		input: z.object({
 			userId: z.string(),
@@ -141,10 +106,6 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getUserAvatars: (input) => userService.getUserAvatars(input),
 		getUserTeams: (input) => userService.getUserTeams(input),
 		setLastViewedTask: (input) => userService.setLastViewedTask(input),
-		getUserWorkspaceRole: (input) => userService.getUserWorkspaceRole(input),
-		getWorkspaceUsersWithRoles: (input) =>
-			userService.getWorkspaceUsersWithRoles(input),
-		updateUsersRole: (input) => userService.updateUsersRole(input),
 		getDefaultWorkspace: (input) => userService.getDefaultWorkspace(input),
 		isUserAuthorized: (input) => userService.isUserAuthorized(input),
 	});

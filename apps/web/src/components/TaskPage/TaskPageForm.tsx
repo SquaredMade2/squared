@@ -1,9 +1,10 @@
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
+import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { useOrganization } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
@@ -13,7 +14,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 export const TaskPageForm = () => {
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const {
 		updateTask,
 		currentTask: task,
@@ -116,7 +117,7 @@ export const TaskPageForm = () => {
 						<Button variant="ghost" className="gap-1 px-1 py-0">
 							<StatusIcon status={parentTask.status} />
 							<Link
-								href={`/${workspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
+								href={`/${organization?.slug}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
 							>
 								{parentTask.identifier} -

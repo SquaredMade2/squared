@@ -26,9 +26,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
 import type { Effort } from "@squared/db";
@@ -94,7 +94,7 @@ export default function TeamsSetting() {
 		useState<Record<string, number | string | number[]>>();
 	const { toast } = useToast();
 	const router = useRouter();
-	const { workspace, loading: workspaceLoading } = useWorkspaces();
+	const { organization, isLoaded } = useOrganization();
 	const { team, teams, loading: teamLoading } = useTeams();
 
 	const { deleteTeam, updateTeam, setTeam } = useTeamStore((state) => state);
@@ -138,7 +138,7 @@ export default function TeamsSetting() {
 	}, [form, team]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (team && workspace) {
+		if (team && organization) {
 			try {
 				const updatedTeam = await teamService.updateTeam(TODO, {
 					id: team.id,
@@ -151,7 +151,7 @@ export default function TeamsSetting() {
 					setTeam(
 						await teamService.getTeamByIdentifier(TODO, {
 							identifier: values.identifier,
-							workspaceId: workspace.externalId,
+							workspaceId: organization.id,
 						}),
 					);
 					router.refresh();
@@ -176,7 +176,7 @@ export default function TeamsSetting() {
 		} else {
 			await teamService.deleteTeam(TODO, { teamId: team.id });
 			team && deleteTeam(team.id);
-			router.push(`/${workspace?.url}`);
+			router.push(`/${organization?.slug}`);
 			toast({ title: "Team deleted" });
 		}
 		setIsDeleting(false);
@@ -196,7 +196,7 @@ export default function TeamsSetting() {
 		}
 	};
 
-	if (teamLoading || workspaceLoading)
+	if (teamLoading || !isLoaded)
 		return (
 			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
 				<h1 className="mb-2 font-bold text-3xl">Team Settings</h1>
