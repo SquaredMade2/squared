@@ -13,7 +13,7 @@ export function useWorkspaces() {
 		isPending: loading,
 		error,
 	} = useQuery({
-		queryKey: ["workspaces", organization?.slug],
+		queryKey: ["workspace", "getAllWorkspaces", organization?.slug],
 		queryFn: async () => {
 			const res = await client.workspace.getAllWorkspaces.$get();
 			const awaitedRes = await res.json();

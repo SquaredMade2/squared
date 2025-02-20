@@ -45,7 +45,7 @@ export const useCreateTask = () => {
 					tasksCreated: workspace.tasksCreated + 1,
 				});
 			}
-			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+			queryClient.invalidateQueries({ queryKey: ["task"] });
 		},
 	});
 

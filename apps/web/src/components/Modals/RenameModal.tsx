@@ -1,10 +1,10 @@
 "use client";
 
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useModalStore, useTaskStore } from "@/store";
-import type { FormSubmitEvent, InputChangeEvent } from "@/types";
+import type { InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -20,7 +20,6 @@ import { useToast } from "../ui/use-toast";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
-	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 	const {
 		showRename,
 		setShowRename,
@@ -34,32 +33,32 @@ export const RenameModal = () => {
 		setInputValue(e.target.value);
 	};
 
-	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
-		e.preventDefault();
-		if (!user) return;
-		setHasSubmitted(true);
-		if (task && inputValue.length > 2) {
-			if (inputValue !== task.title) {
-				try {
-					updateTask(
-						await taskService.updateTask(TODO, {
-							id: task.id,
-							updaterId: user.id,
-							title: inputValue.trim(),
-						}),
-					);
-					toast({ title: "Task updated successfully" });
-				} catch (error) {
-					toast({
-						title: "Error Updating Task",
-						description: error instanceof Error && error.message,
-					});
-				}
-				setShowRename(false);
-				setHasSubmitted(false);
+	const { mutate: handleSubmit, isPending } = useMutation({
+		mutationKey: ["task", "updateMetadata", task?.id],
+		mutationFn: async () => {
+			if (task && inputValue.length > 2 && user && inputValue !== task.title) {
+				const updatedTask = await client.task.updateMetadata
+					.$post({
+						taskId: task.id,
+						title: inputValue.trim(),
+					})
+					.then((res) => res.json());
+				updateTask(updatedTask);
+				toast({ title: "Task updated successfully" });
 			}
-		}
-	};
+		},
+		onSuccess: () => {
+			toast({ title: "Task updated successfully" });
+			setShowRename(false);
+		},
+		onError: (error) => {
+			toast({
+				title: "Error Updating Task",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+	});
 
 	useEffect(() => {
 		if (task) {
@@ -70,7 +69,7 @@ export const RenameModal = () => {
 	return (
 		<Dialog open={showRename} onOpenChange={setShowRename}>
 			<DialogContent>
-				<form onSubmit={handleSubmit}>
+				<form onSubmit={() => handleSubmit()}>
 					<div className="flex flex-col gap-4 px-5">
 						<DialogHeader>
 							<DialogTitle>Title</DialogTitle>
@@ -84,7 +83,7 @@ export const RenameModal = () => {
 							placeholder="Rename..."
 							onChange={handleChange}
 						/>
-						{hasSubmitted && inputValue.length < 2 && (
+						{inputValue.length < 2 && (
 							<span
 								className={`text-destructive ${inputValue.length > 2 && "opacity-0"}`}
 							>
@@ -93,7 +92,7 @@ export const RenameModal = () => {
 						)}
 						<div className="w-full border border-border" />
 						<DialogFooter>
-							<Button>
+							<Button disabled={isPending}>
 								<span className="mr-2.5">
 									<Pencil className="size-4" />
 								</span>

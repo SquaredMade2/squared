@@ -305,19 +305,15 @@ export const taskRouter = router({
 			z.object({
 				parentId: z.string(),
 				newOrder: z.string().array(),
-				teamId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
-			const { parentId, newOrder, teamId } = input;
-			await taskService.reorderSubtasks(TODO, {
-				parentId,
-				newOrder,
-			});
+			const { parentId, newOrder } = input;
 			return c.superjson(
-				await taskService.getTeamTasks(TODO, {
-					teamId,
+				await taskService.reorderSubtasks(TODO, {
+					parentId,
+					newOrder,
 				}),
 			);
 		}),
@@ -329,5 +325,12 @@ export const taskRouter = router({
 			return c.superjson(
 				await userService.setLastViewedTask(TODO, { userId: user.id, taskId }),
 			);
+		}),
+	deleteTask: privateProcedure
+		.input(z.object({ taskId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId } = input;
+			return c.superjson(await taskService.deleteTask(TODO, { taskId }));
 		}),
 });

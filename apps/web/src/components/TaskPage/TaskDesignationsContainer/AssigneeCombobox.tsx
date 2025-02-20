@@ -66,7 +66,7 @@ const AssigneeCombobox = () => {
 			const updatedEvents = await eventRes.json();
 			setEvents(updatedEvents as TaskEvent[]);
 			queryClient.invalidateQueries({
-				queryKey: ["taskEvents", currentTask?.id],
+				queryKey: ["event", currentTask?.id],
 			});
 			toast({
 				title: "Success",

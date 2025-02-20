@@ -21,7 +21,7 @@ const SprintCombobox = () => {
 	const sprintName = assignedSprintId?.name ?? "";
 
 	const { data: sprints = [] } = useQuery({
-		queryKey: ["sprints", team?.id],
+		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (team) {
 				const res = await client.sprint.getSprints
@@ -38,7 +38,7 @@ const SprintCombobox = () => {
 	});
 
 	const { mutate: updateSprint } = useMutation({
-		mutationKey: ["updateTaskSprint", taskId],
+		mutationKey: ["task", "updateSprint", taskId],
 		mutationFn: async (sprintId: string | null) => {
 			const res = await client.task.updateSprint.$post({
 				taskId,

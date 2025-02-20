@@ -21,7 +21,7 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updatePriority } = useMutation({
-		mutationKey: ["updateTaskPriority", task.id],
+		mutationKey: ["task", "updatePriority", task.id],
 		mutationFn: async (priority: Priority) => {
 			const res = await client.task.updatePriority.$post({
 				taskId: task.id,

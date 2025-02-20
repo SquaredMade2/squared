@@ -54,7 +54,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	// Functions
 	const { mutate: addCommentToTask } = useMutation({
-		mutationKey: ["addComment", task?.id],
+		mutationKey: ["comment", "addComment", task?.id],
 		mutationFn: async () => {
 			if (task) {
 				if (checkIfSlateEmpty(editor)) {
