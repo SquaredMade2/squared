@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { TODO } from "@squared/context";
@@ -71,6 +72,7 @@ export default function SprintDashboard() {
 			ideal: number;
 		}[]
 	>([]);
+	useWorkspaces();
 
 	useEffect(() => {
 		setTargetSprint(sprint?.id);

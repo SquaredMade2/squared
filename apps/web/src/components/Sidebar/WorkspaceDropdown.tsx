@@ -12,7 +12,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { ChevronDown, PlusCircle, Settings } from "lucide-react";
+import { ChevronDown, Plus, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -40,6 +40,7 @@ export function WorkspaceDropdown() {
 	};
 
 	useEffect(() => {
+		userMemberships.revalidate?.();
 		if (!organization && userMemberships.data?.length) {
 			setActive?.({ organization: userMemberships.data[0].organization });
 			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
@@ -101,7 +102,7 @@ export function WorkspaceDropdown() {
 					}}
 					className="hover:cursor-pointer"
 				>
-					<PlusCircle />
+					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
 				<DropdownMenuItem
