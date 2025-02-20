@@ -11,8 +11,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useWorkspaceStore } from "@/store";
-import { useUser } from "@clerk/nextjs";
+import { useOrganization, useUser } from "@clerk/nextjs";
 import { LogOut, Settings } from "@squared/icons";
 import Link from "next/link";
 
@@ -23,7 +22,7 @@ interface UserProfileProps {
 export function UserProfile({ onLogout }: UserProfileProps) {
 	const { state } = useSidebar();
 	const { user } = useUser();
-	const { workspace } = useWorkspaceStore((state) => state);
+	const { organization } = useOrganization();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -56,7 +55,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
-					<Link href={`/${workspace?.url}/settings/profile`}>
+					<Link href={`/${organization?.slug}/settings/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>
 					</Link>

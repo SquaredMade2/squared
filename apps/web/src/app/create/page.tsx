@@ -1,15 +1,16 @@
 "use client";
 
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useWorkspaceStore } from "@/store";
-import { useClerk, useUser } from "@clerk/nextjs";
-import { ChevronLeft } from "@squared/icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { parseError } from "@/utils/parseError";
+import { useUser } from "@clerk/nextjs";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,55 +18,37 @@ import { useEffect, useState } from "react";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
-	const { createWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
-	const { signOut } = useClerk();
-	const queryClient = useQueryClient();
 
 	// List of restricted routes (initial set)
 	const restrictedRoutes = [
 		"verify",
 		"inbox",
-		"join",
+		"create",
 		"sign-in",
 		"password",
 		"sign-up",
 		"welcome",
 		"undefined",
 	];
-	const { isLoaded, isSignedIn, user: clerkUser } = useUser();
-
-	const { data: user, isLoading: isUserLoading } = useQuery({
-		queryKey: ["user", clerkUser?.id],
-		queryFn: () => {
-			if (!clerkUser?.id) return;
-			const res = client.user.getUser
-				.$get({ userId: clerkUser?.id })
-				.then((res) => res.json());
-			return res;
-		},
-		enabled: !!clerkUser?.id,
-	});
+	const { isLoaded, user } = useUser();
 
 	const { data: workspaceUrls = [], isLoading: isWorkspacesLoading } = useQuery(
 		{
-			queryKey: ["workspaces", clerkUser?.id],
+			queryKey: ["workspaces", user?.id],
 			queryFn: async () => {
-				if (!clerkUser?.id) return;
 				const res = await client.workspace.getTakenUrls
 					.$get()
 					.then((res) => res.json());
 				return res;
 			},
-			enabled: !!clerkUser?.id,
 		},
 	);
 
 	const { data: defaultWorkspace } = useQuery({
 		queryKey: ["defaultWorkspace"],
 		queryFn: async () => {
-			if (!clerkUser?.id) return;
 			return await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
@@ -74,53 +57,26 @@ const Join = () => {
 
 	const createWorkspaceMutation = useMutation({
 		mutationFn: async (newWorkspace: { name: string; url: string }) => {
-			if (!clerkUser?.id) return;
 			return await client.workspace.createWorkspace
 				.$post(newWorkspace)
 				.then((res) => res.json());
 		},
 		onSuccess: (data) => {
 			if (!data) return;
-			createWorkspace(data);
 			toast({ title: "Workspace created successfully" });
 			if (data) {
-				if (user?.onBoarding) {
-					onBoardUserMutation.mutate();
-				}
 				router.refresh();
 				router.push(`/${data.url}`);
 			}
 		},
 		onError: (error) => {
-			console.error(error);
-			toast({ title: "Failed to create workspace", variant: "destructive" });
+			toast({
+				title: "Failed to create workspace",
+				description: parseError(error),
+				variant: "destructive",
+			});
 		},
 	});
-
-	const onBoardUserMutation = useMutation({
-		mutationFn: async () => {
-			if (!clerkUser?.id) return;
-			return await client.user.onBoardUser
-				.$post({ userId: clerkUser?.id })
-				.then((res) => res.json());
-		},
-		onSuccess: (data) => {
-			if (!data) return;
-			queryClient.invalidateQueries({ queryKey: ["user", clerkUser?.id] });
-		},
-		onError: (error) => {
-			console.error(error);
-			toast({ title: "Failed to onboard user", variant: "destructive" });
-		},
-	});
-
-	useEffect(() => {
-		if (!isLoaded || !isSignedIn) return;
-
-		if (!user && !isUserLoading) {
-			signOut();
-		}
-	}, [isLoaded, isSignedIn, user, isUserLoading]);
 
 	useEffect(() => {
 		const formattedUrlInput = inputValue
@@ -142,7 +98,6 @@ const Join = () => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!user || !clerkUser) return;
 
 		if (inputValue.length === 0) {
 			toast({
@@ -184,17 +139,28 @@ const Join = () => {
 		createWorkspaceMutation.mutate(newWorkspaceInput);
 	};
 
-	if (isUserLoading || isWorkspacesLoading) {
-		return <div>Loading...</div>;
+	if (isWorkspacesLoading || !isLoaded) {
+		return (
+			<div className="h-screen w-full">
+				<div className="flex h-full items-center justify-center">
+					<div className="flex flex-col items-center gap-4">
+						<div className="font-bold text-3xl">Loading Workspace</div>
+						<SquaredLoader />
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
 		<div className="h-screen w-screen">
-			{!user?.onBoarding && workspaceUrls?.length > 0 && (
+			{workspaceUrls?.length > 0 && (
 				<div className="absolute top-0 flex w-screen justify-between p-10">
 					<div className="flex flex-col text-sm">
 						<span className="text-muted-foreground text-xs">Logged in as:</span>
-						<span className="text-foreground">{user?.email}</span>
+						<span className="text-foreground">
+							{user?.emailAddresses[0].emailAddress}
+						</span>
 					</div>
 					<div className="flex items-center space-x-1 text-foreground">
 						<ChevronLeft className="size-5 text-[#858699]" />

@@ -4,8 +4,9 @@ import {
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useWorkspaceStore } from "@/store";
+import { useModalStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,
@@ -24,7 +25,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
 		useModalStore((state) => state);
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const { toast } = useToast();
 
 	const title = task !== undefined ? task.title : "";
@@ -41,7 +42,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	};
 	const copyTaskUrl = async () => {
 		await navigator.clipboard.writeText(
-			`${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/task/${task.identifier}/${formatUrl(task.title)}`,
+			`${process.env.NEXT_PUBLIC_URL}/${organization?.slug}/task/${task.identifier}/${formatUrl(task.title)}`,
 		);
 		toast({
 			title: "Task link copied to clipboard",
@@ -102,7 +103,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 				<ContextMenuItem>
 					<Link
-						href={`/${workspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
+						href={`/${organization?.slug}/task/${identifier}/${formatUrl(task.title)}`}
 						target="_blank"
 					>
 						Open in New Tab

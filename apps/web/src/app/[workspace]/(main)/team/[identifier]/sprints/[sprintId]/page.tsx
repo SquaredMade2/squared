@@ -58,9 +58,8 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const router = useRouter();
-	const { sprints, team, workspace, loading, error, sprintTasks } = useSprints(
-		parseParams(sprintId),
-	);
+	const { sprints, team, organization, loading, error, sprintTasks } =
+		useSprints(parseParams(sprintId));
 	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -201,7 +200,7 @@ export default function SprintDashboardPage() {
 		},
 		onSuccess: () => {
 			toast({ title: "Sprint ended successfully" });
-			router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
+			router.push(`/${organization?.slug}/team/${team?.identifier}/all`);
 		},
 	});
 
@@ -228,7 +227,7 @@ export default function SprintDashboardPage() {
 		return (
 			<SprintError
 				error={parseError(error, "Failed to fetch sprint data")}
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
 			/>
 		);
@@ -236,7 +235,7 @@ export default function SprintDashboardPage() {
 	if (!sprint) {
 		return (
 			<SprintNotFound
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
 			/>
 		);
@@ -398,7 +397,7 @@ export default function SprintDashboardPage() {
 					End Sprint
 				</Button>
 				<Link
-					href={`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
+					href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
 					className="flex-1"
 					passHref
 				>
@@ -488,7 +487,7 @@ export default function SprintDashboardPage() {
 				onClose={() => setShowNextSprint(false)}
 				team={team || null}
 				initialSprintName={newSprintName}
-				redirectUrl={`/${workspace?.url}/team/${team?.identifier}/sprints`}
+				redirectUrl={`/${organization?.slug}/team/${team?.identifier}/sprints`}
 			/>
 		</div>
 	);

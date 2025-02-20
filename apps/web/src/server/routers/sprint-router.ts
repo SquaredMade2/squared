@@ -106,7 +106,9 @@ export const sprintRouter = router({
 		.input(
 			z.object({
 				teamId: z.string(),
-				sprintData: z.object({ name: z.string(), description: z.string() }),
+				sprintData: z
+					.object({ name: z.string(), description: z.string() })
+					.optional(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {

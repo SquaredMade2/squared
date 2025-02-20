@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useWorkspaceStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import { ArrowLeft } from "@squared/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -16,15 +16,15 @@ type ArchivePaths = (typeof tabs)[number]["id"];
 export default function ArchiveNavbar() {
 	const router = useRouter();
 	const pathname = usePathname();
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 
 	const activeTab = pathname.split("/").pop() as ArchivePaths;
 
 	const navigate = useCallback(
 		(path: ArchivePaths) => {
-			router.push(`/${workspace?.url}/archive/${path}`);
+			router.push(`/${organization?.slug}/archive/${path}`);
 		},
-		[router, workspace?.url],
+		[router, organization?.slug],
 	);
 
 	return (

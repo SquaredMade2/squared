@@ -6,11 +6,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { teamService, workspaceService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { TODO } from "@squared/context";
 import { Ellipsis } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import type { MemberWithRole } from "./data-table";
 
 const RemoveMemberButton = ({
@@ -29,43 +29,33 @@ const RemoveMemberButton = ({
 	const currentUser = useUserStore((state) => state.user);
 	const { toast } = useToast();
 
-	const handleClick = async () => {
-		if (!pageId) return;
-
-		if (page === "workspace") {
-			try {
-				await workspaceService.removeUserFromWorkspace(TODO, {
-					userId,
+	const { mutate: handleClick } = useMutation({
+		mutationKey: ["removeMember"],
+		mutationFn: async () => {
+			if (!pageId) throw new Error("No pageId provided");
+			if (page === "workspace") {
+				await client.workspace.removeUser.$post({
 					workspaceId: pageId,
 				});
-				toast({ title: "Member removed" });
-				membersWithRoles && refetch();
-			} catch (error) {
-				console.error(error);
-				toast({
-					title: "Member could not be removed",
-					description: parseError(error, "unknown error"),
-					variant: "destructive",
-				});
+				return "Workspace member removed";
 			}
-		} else {
-			try {
-				await teamService.removeUserFromTeam(TODO, {
-					userId,
-					teamId: pageId,
-				});
-				toast({ title: "Member removed" });
-				membersWithRoles && refetch();
-			} catch (error) {
-				console.error(error);
-				toast({
-					title: "Member could not be removed",
-					description: parseError(error, "unknown error"),
-					variant: "destructive",
-				});
-			}
-		}
-	};
+			await client.team.removeUser.$post({
+				teamId: pageId,
+			});
+			return "Team member removed";
+		},
+		onSuccess: (data) => {
+			toast({ title: data });
+			membersWithRoles && refetch();
+		},
+		onError: (error) => {
+			toast({
+				title: "Member could not be removed",
+				description: parseError(error),
+				variant: "destructive",
+			});
+		},
+	});
 
 	return (
 		<DropdownMenu>
@@ -80,7 +70,7 @@ const RemoveMemberButton = ({
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuItem>
-					<Button variant="ghost" onClick={handleClick}>
+					<Button variant="ghost" onClick={() => handleClick()}>
 						Remove from {page === "workspace" ? "Workspace" : "Team"}
 					</Button>
 				</DropdownMenuItem>

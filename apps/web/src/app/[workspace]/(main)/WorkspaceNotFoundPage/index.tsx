@@ -1,7 +1,8 @@
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore } from "@/store";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
-import type { Workspace } from "@squared/db";
+import { useOrganization } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
 import { FileSearch } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +12,10 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
 	const user = useUserStore((state) => state.user);
-	const workspaces = useWorkspaceStore((state) => state.workspaces);
+	const { memberships } = useOrganization({ memberships: true });
+	const organizations = memberships?.data?.map(
+		(membership) => membership.organization,
+	);
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {
 			setMenuOpen(false);
@@ -49,27 +53,27 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						<div className="px-3.5 py-3">
 							<p className="mb-3 text-muted-foreground text-sm">{user.email}</p>
 							<ul>
-								{workspaces.map((workspace: Workspace, index: number) => (
-									<Link
-										legacyBehavior
-										href={`workspace/${workspace.url}`}
-										className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
-										key={workspace.externalId}
-									>
-										<div>
-											<div className="flex">
-												<WorkspaceInitials
-													workspaceName={workspace.name ?? ""}
-													backgroundColor={index}
-													location="workspaceList"
-												/>
-												<li>
-													{handleWorkspaceNameOverflow(workspace.name ?? "")}
-												</li>
+								{organizations?.map(
+									(org: OrganizationResource, index: number) => (
+										<Link
+											legacyBehavior
+											href={`workspace/${org.slug}`}
+											className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
+											key={org.id}
+										>
+											<div>
+												<div className="flex">
+													<WorkspaceInitials
+														workspaceName={org.name ?? ""}
+														backgroundColor={index}
+														location="workspaceList"
+													/>
+													<li>{handleWorkspaceNameOverflow(org.name ?? "")}</li>
+												</div>
 											</div>
-										</div>
-									</Link>
-								))}
+										</Link>
+									),
+								)}
 							</ul>
 						</div>
 						<span className="block w-full border-border border-t pb-1" />

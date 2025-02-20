@@ -48,4 +48,13 @@ export const teamRouter = router({
 				}),
 			);
 		}),
+	removeUser: privateProcedure
+		.input(z.object({ teamId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { teamService, user } = ctx;
+			const { teamId } = input;
+			return c.superjson(
+				await teamService.removeUserFromTeam(TODO, { teamId, userId: user.id }),
+			);
+		}),
 });

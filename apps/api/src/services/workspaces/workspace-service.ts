@@ -4,10 +4,7 @@ import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
 	type Label,
-	type Team,
-	type User,
 	type Workspace,
-	type WorkspaceRole,
 	and,
 	eq,
 	inArray,
@@ -108,7 +105,6 @@ export class WorkspaceService implements WorkspaceRpc {
 				tx.insert(userWorkspacesTable).values({
 					userId: userId,
 					workspaceId: newWorkspace.externalId,
-					role: "owner",
 				}),
 
 				tx
@@ -196,29 +192,64 @@ export class WorkspaceService implements WorkspaceRpc {
 		return workspaces.map((workspace) => workspace.Workspace);
 	}
 
-	async joinWorkspace({
-		token,
+	async updateWorkspaceRole({
 		userId,
-	}: { token: string; userId: string }): Promise<Workspace | null> {
-		this.logger.info(`User ${userId} attempting to join workspace with token`);
+		workspaceId,
+		role,
+	}: {
+		userId: string;
+		workspaceId: string;
+		role: "org:admin" | "org:member" | "org:owner";
+	}) {
+		this.logger.info(
+			"Updating workspace role with\n\tuserId:     %s\n\tworkspaceId: %s\n\trole:       %s",
+			userId,
+			workspaceId,
+			role,
+		);
 
-		const workspaceId = this.verifyToken(token);
-		if (!workspaceId) {
-			this.throwError("Invalid token");
-		}
+		await this.clerkClient.organizations.updateOrganizationMembership({
+			organizationId: workspaceId,
+			userId,
+			role,
+		});
+	}
 
-		const { userWorkspace, workspace, user, teams } =
-			await this.fetchWorkspaceData(workspaceId, userId);
+	async joinWorkspace({
+		user: { id, name, email },
+		workspaceId,
+	}: {
+		user: { id: string; name: string; email: string };
+		workspaceId: string;
+	}): Promise<Workspace | null> {
+		this.logger.info(
+			`User ${name} attempting to join workspace ${workspaceId}`,
+		);
+		const [workspace] = await this.db.transaction(async (tx) => {
+			const [user] = await tx
+				.insert(usersTable)
+				.values({
+					externalId: id,
+					name,
+					email,
+				})
+				.onConflictDoNothing({ target: [usersTable.externalId] })
+				.returning();
 
-		if (!user) this.throwError("User not found.");
-		if (userWorkspace) return workspace;
+			await tx
+				.insert(userWorkspacesTable)
+				.values({
+					userId: user.externalId,
+					workspaceId,
+				})
+				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
+				.returning();
 
-		this.validateJoinWorkspaceData(workspace, teams, user);
-
-		Promise.all([
-			this.createUserWorkspaceConnections(userId, workspaceId, teams),
-			this.updateUserOnboarding(user),
-		]);
+			return await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId));
+		});
 
 		return workspace;
 	}
@@ -281,14 +312,32 @@ export class WorkspaceService implements WorkspaceRpc {
 	async inviteToWorkspace({
 		workspaceId,
 		email,
+		userId,
+		slug,
 	}: {
 		workspaceId: string;
-		email: string | string[];
+		email: string[];
+		userId: string;
+		slug: string;
 	}): Promise<{ success: boolean }> {
 		this.logger.info("Inviting user to workspace", {
 			email,
 			workspaceId,
 		});
+		const emails = Array.isArray(email) ? email : [email];
+		const inviteUser =
+			this.clerkClient.organizations.createOrganizationInvitation;
+		await Promise.all(
+			emails.map((e) =>
+				inviteUser({
+					organizationId: workspaceId,
+					emailAddress: e,
+					inviterUserId: userId,
+					role: "member",
+					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/join`,
+				}),
+			),
+		);
 
 		return await this.db.transaction(async (tx) => {
 			// Check if the workspace exists
@@ -410,7 +459,11 @@ export class WorkspaceService implements WorkspaceRpc {
 		workspaceId,
 		labelName,
 		updatedLabel,
-	}: { workspaceId: string; labelName: string; updatedLabel: Label }): Promise<{
+	}: {
+		workspaceId: string;
+		labelName: string;
+		updatedLabel: Label;
+	}): Promise<{
 		success: boolean;
 		labels: Label[];
 	}> {
@@ -491,105 +544,8 @@ export class WorkspaceService implements WorkspaceRpc {
 		});
 	}
 
-	private verifyToken(token: string): string | null {
-		try {
-			const decoded = jwt.verify(token, this.JWT_SECRET) as {
-				workspaceId: string;
-			};
-			return decoded.workspaceId;
-		} catch (error) {
-			this.logger.error("Token verification failed", error);
-			return null;
-		}
-	}
 	private throwError(message: string): never {
 		this.logger.error(message);
 		throw new Error(message);
-	}
-	private async fetchWorkspaceData(workspaceId: string, userId: string) {
-		return await this.db.transaction(async (tx) => {
-			const [userWorkspace, workspace, user, teams] = await Promise.all([
-				// Query 1: Find user workspace
-				tx
-					.select()
-					.from(userWorkspacesTable)
-					.where(
-						and(
-							eq(userWorkspacesTable.userId, userId),
-							eq(userWorkspacesTable.workspaceId, workspaceId),
-						),
-					)
-					.limit(1)
-					.then((results) => results[0]),
-
-				// Query 2: Find workspace
-				tx
-					.select()
-					.from(workspacesTable)
-					.where(eq(workspacesTable.externalId, workspaceId))
-					.then((results) => results[0]),
-
-				// Query 3: Find user
-				tx
-					.select()
-					.from(usersTable)
-					.where(eq(usersTable.externalId, userId))
-					.limit(1)
-					.then((results) => results[0]),
-
-				// Query 4: Find teams
-				tx
-					.select()
-					.from(teamsTable)
-					.where(eq(teamsTable.workspaceId, workspaceId)),
-			]);
-			return { userWorkspace, workspace, user, teams };
-		});
-	}
-	private validateJoinWorkspaceData(
-		workspace: Workspace | null,
-		teams: Team[],
-		user: User | null,
-	) {
-		if (!workspace) this.throwError("Workspace not found.");
-		if (teams.length === 0)
-			this.throwError("No teams found in this workspace.");
-		if (!user) this.throwError("User not found.");
-	}
-	private async createUserWorkspaceConnections(
-		userId: string,
-		workspaceId: string,
-		teams: { id: string }[],
-		role: WorkspaceRole = "member",
-	) {
-		await this.db.transaction(async (tx) => {
-			await Promise.all([
-				// Create user-workspace connection
-				tx
-					.insert(userWorkspacesTable)
-					.values({
-						userId,
-						workspaceId,
-						role,
-					}),
-
-				// Create user-team connections
-				tx
-					.insert(userTeamsTable)
-					.values(teams.map((team) => ({ userId, teamId: team.id }))),
-			]);
-		});
-	}
-
-	private async updateUserOnboarding(user: {
-		id: string;
-		onBoarding: boolean;
-	}) {
-		if (user.onBoarding) {
-			await this.db
-				.update(usersTable)
-				.set({ onBoarding: false })
-				.where(eq(usersTable.externalId, user.id));
-		}
 	}
 }
