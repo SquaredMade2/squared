@@ -6,6 +6,7 @@ interface Maximize2Props {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const Maximize2: FC<Maximize2Props> = ({

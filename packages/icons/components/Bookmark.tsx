@@ -6,6 +6,7 @@ interface BookmarkProps {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const Bookmark: FC<BookmarkProps> = ({

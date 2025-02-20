@@ -6,6 +6,7 @@ interface ItalicProps {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const Italic: FC<ItalicProps> = ({
