@@ -185,14 +185,15 @@ export const workspaceRouter = router({
 		.input(
 			z.object({
 				workspaceId: z.string(),
+				userId: z.string(),
 				role: z.enum(["org:admin", "org:member", "org:owner"]),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, user } = ctx;
-			const { workspaceId, role } = input;
+			const { workspaceService } = ctx;
+			const { workspaceId, role, userId } = input;
 			await workspaceService.updateWorkspaceRole(TODO, {
-				userId: user.id,
+				userId,
 				workspaceId,
 				role,
 			});

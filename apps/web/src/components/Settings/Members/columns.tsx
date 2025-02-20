@@ -36,7 +36,10 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "manage-role",
 		cell: ({ row, column }) => {
-			const userId: string = row.original.identifier;
+			const userId = row.original.userId;
+			const role = row.original.role;
+			if (!userId) return null;
+			if (role === "org:member") return null;
 			const { pageId, membersWithRoles } = column.columnDef.meta || {};
 
 			return (
