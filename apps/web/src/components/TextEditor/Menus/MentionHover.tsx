@@ -39,7 +39,7 @@ const MentionHover = ({ mentionedUser }: MentionHoverProps) => {
 		<HoverCard>
 			<HoverCardTrigger className="rounded bg-muted-foreground">
 				<p style={{ marginBottom: 0 }}>
-					{mentionedUser.firstName || "Unknown name."}
+					@{mentionedUser.firstName || "Unknown name."}
 				</p>
 			</HoverCardTrigger>
 			<HoverCardContent className="absolute bottom-8 min-h-20">

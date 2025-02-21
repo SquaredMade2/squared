@@ -1,6 +1,6 @@
-import { useUserStore } from "@/store";
 import type { UserAvatar } from "@/store/users";
 import { getInitials } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
 import type { Comment } from "@squared/db";
 import { formatDate } from "date-fns/format";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -27,7 +27,16 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	>(<p>Loading...</p>);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
-	const users = useUserStore((state) => state.users);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
 
 	// Functions
 
@@ -85,18 +94,22 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 	const hasUserAvatarData = (user: UserAvatar | unknown) => {
 		return (
-			user && typeof user === "object" && "avatarUrl" in user && "name" in user
+			user &&
+			typeof user === "object" &&
+			"imageUrl" in user &&
+			"firstName" in user
 		);
 	};
 
 	useEffect(() => {
 		const handleGetUser = async () => {
 			try {
-				const user = users.find((u) => u.externalId === comment.authorId);
+				if (!users) return;
+				const user = users.find((u) => u.userId === comment.authorId);
 				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
 				if (hasUserAvatarData(user) && user !== null) {
-					setAuthorName(user?.name ?? "");
-					setAvatarUrl(user?.avatarUrl ?? "");
+					setAuthorName(user?.firstName ?? "");
+					setAvatarUrl(user?.imageUrl ?? "");
 				} else {
 					toast({
 						title: "Error getting author",
