@@ -9,7 +9,7 @@ import {
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
@@ -19,9 +19,9 @@ import {
 	type DropResult,
 	Droppable,
 } from "@hello-pangea/dnd";
-import { TODO } from "@squared/context";
 import type { Task, User } from "@squared/db";
 import { ChevronDown, ChevronRight, UserSearch } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -30,22 +30,27 @@ const Subtasks = () => {
 	const { setSubtasks, subtasks } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
 
-	const onDragEnd = async (result: DropResult) => {
-		if (!result.destination) return;
+	const { mutate: onDragEnd } = useMutation({
+		mutationKey: ["task", "reorderSubtasks"],
+		mutationFn: async (result: DropResult) => {
+			if (!result.destination) return;
 
-		const items = Array.from(subtasks);
-		const [reorderedItem] = items.splice(result.source.index, 1);
-		items.splice(result.destination.index, 0, reorderedItem);
+			const items = Array.from(subtasks);
+			const [reorderedItem] = items.splice(result.source.index, 1);
+			items.splice(result.destination.index, 0, reorderedItem);
 
-		const updatedSubtasks = await taskService.reorderSubtasks(TODO, {
-			parentId: subtasks[0].parentId ?? "",
-			newOrder: items.map((item) => item.id),
-		});
+			const updatedSubtasks = await client.task.updateSubtaskOrder
+				.$post({
+					parentId: subtasks[0].parentId ?? "",
+					newOrder: items.map((item) => item.id),
+				})
+				.then((res) => res.json());
 
-		setSubtasks(updatedSubtasks);
+			setSubtasks(updatedSubtasks);
 
-		return updatedSubtasks;
-	};
+			return updatedSubtasks;
+		},
+	});
 
 	return (
 		<Collapsible
@@ -66,7 +71,7 @@ const Subtasks = () => {
 				</div>
 			</CollapsibleTrigger>
 			<CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out">
-				<DragDropContext onDragEnd={onDragEnd}>
+				<DragDropContext onDragEnd={(result) => onDragEnd(result)}>
 					<Droppable droppableId="subtasks">
 						{(provided) => (
 							<ul

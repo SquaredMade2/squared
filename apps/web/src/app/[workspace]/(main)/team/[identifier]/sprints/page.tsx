@@ -32,12 +32,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
-import { taskService } from "@/lib/services";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
-import { TODO } from "@squared/context";
 import type { Priority, Sprint, Task } from "@squared/db";
 import { CircleAlert } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -71,6 +73,9 @@ export default function SprintDashboard() {
 			ideal: number;
 		}[]
 	>([]);
+	useWorkspaces();
+
+	const { toast } = useToast();
 
 	useEffect(() => {
 		setTargetSprint(sprint?.id);
@@ -185,20 +190,33 @@ export default function SprintDashboard() {
 		return tasks.filter((task) => task.sprintId === sprint.id).length;
 	}, [sprint, tasks]);
 
-	const handleBulkAssign = async () => {
-		if (!targetSprint) return;
-
-		await taskService.addSprintTasks(TODO, {
-			sprintId: targetSprint,
-			taskIds: selectedTasks.map((t) => t.id),
-		});
-
-		setSelectedTasks([]);
-		currentTeam &&
+	const { mutate: handleBulkAssign } = useMutation({
+		mutationKey: ["task", "addSprintTasks", targetSprint],
+		mutationFn: async () => {
+			if (!targetSprint) throw new Error("Sprint not found");
+			if (!currentTeam) throw new Error("Team not found");
+			await client.sprint.addSprintTasks.$post({
+				sprintId: targetSprint,
+				taskIds: selectedTasks.map((t) => t.id),
+			});
+		},
+		onSuccess: async () => {
+			setSelectedTasks([]);
+			if (!currentTeam) return;
 			setTasks(
-				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+				await client.task.getAllTasks
+					.$get({ teamId: currentTeam.id })
+					.then((res) => res.json()),
 			);
-	};
+		},
+		onError: (error) => {
+			toast({
+				title: "Error Assigning Tasks",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+	});
 
 	const prepareAutoAssign = () => {
 		if (!sprint) return;
@@ -238,18 +256,33 @@ export default function SprintDashboard() {
 		setIsAutoAssignConfirmOpen(true);
 	};
 
-	const handleAutoAssign = async () => {
-		if (!sprint) return;
-		await taskService.addSprintTasks(TODO, {
-			sprintId: sprint.id,
-			taskIds: tasksToAutoAssign.map((t) => t.id),
-		});
-		setIsAutoAssignConfirmOpen(false);
-		currentTeam &&
+	const { mutate: handleAutoAssign } = useMutation({
+		mutationKey: ["task", "addSprintTasks", targetSprint],
+		mutationFn: async () => {
+			if (!targetSprint) throw new Error("Sprint not found");
+			if (!currentTeam) throw new Error("Team not found");
+			await client.sprint.addSprintTasks.$post({
+				sprintId: targetSprint,
+				taskIds: tasksToAutoAssign.map((t) => t.id),
+			});
+		},
+		onSuccess: async () => {
+			setIsAutoAssignConfirmOpen(false);
+			if (!currentTeam) return;
 			setTasks(
-				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+				await client.task.getAllTasks
+					.$get({ teamId: currentTeam.id })
+					.then((res) => res.json()),
 			);
-	};
+		},
+		onError: (error) => {
+			toast({
+				title: "Error Auto-Assigning Tasks",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+	});
 
 	return (
 		<ScrollArea className="container mx-auto h-[100vh] w-full overflow-y-auto p-4">
@@ -351,7 +384,7 @@ export default function SprintDashboard() {
 					<div className="space-x-2">
 						<AssignTasksDialog
 							activeSprint={sprint || null}
-							handleBulkAssign={handleBulkAssign}
+							handleBulkAssign={() => handleBulkAssign()}
 							selectedTasks={selectedTasks}
 							setSelectedTasks={setSelectedTasks}
 							setTargetSprint={setTargetSprint}
@@ -427,7 +460,9 @@ export default function SprintDashboard() {
 							>
 								Cancel
 							</Button>
-							<Button onClick={handleAutoAssign}>Confirm Auto-Assign</Button>
+							<Button onClick={() => handleAutoAssign()}>
+								Confirm Auto-Assign
+							</Button>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>

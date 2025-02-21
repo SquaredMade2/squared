@@ -26,7 +26,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	);
 
 	const { mutate: updateLabels } = useMutation({
-		mutationKey: ["updateTaskLabels", task.id],
+		mutationKey: ["task", "updateLabels", task.id],
 		mutationFn: async (updatedLabels: Label[]) => {
 			const res = await client.task.updateLabels.$post({
 				taskId: task.id,

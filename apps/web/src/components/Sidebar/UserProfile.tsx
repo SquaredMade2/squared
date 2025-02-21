@@ -28,11 +28,11 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="ghost"
-					size={state === "collapsed" ? "icon" : "default"}
+					size={state === "collapsed" ? "icon" : "sm"}
 					className={`relative ${
 						state === "collapsed"
 							? "mx-1 justify-center px-3"
-							: "w-full justify-start"
+							: "w-full justify-start gap-2"
 					}`}
 				>
 					<Avatar className="size-5">

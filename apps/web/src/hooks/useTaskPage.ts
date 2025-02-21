@@ -47,7 +47,7 @@ export function useTaskPage() {
 	});
 
 	const subtasksQuery = useQuery({
-		queryKey: ["subtasks", taskQuery.data?.id],
+		queryKey: ["task", "subtasks", taskQuery.data?.id],
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.task.getSubtasks.$get({
@@ -61,7 +61,7 @@ export function useTaskPage() {
 	});
 
 	const blockedByQuery = useQuery({
-		queryKey: ["blockedBy", taskQuery.data?.id],
+		queryKey: ["task", "blockedBy", taskQuery.data?.id],
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.task.getTaskBlockedByAndBlocking.$get({
@@ -76,7 +76,7 @@ export function useTaskPage() {
 	});
 
 	const commentsQuery = useQuery({
-		queryKey: ["comments", taskQuery.data?.id],
+		queryKey: ["comment", taskQuery.data?.id],
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.comment.getComments.$get({
@@ -90,7 +90,7 @@ export function useTaskPage() {
 	});
 
 	const eventsQuery = useQuery({
-		queryKey: ["events", taskQuery.data?.id],
+		queryKey: ["event", "getEvents", taskQuery.data?.id],
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.event.getEvents.$get({

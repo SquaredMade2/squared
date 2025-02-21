@@ -1,7 +1,5 @@
-import { taskService } from "@/lib/services";
-import { useTaskStore, useTeamStore } from "@/store";
+import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
 import { Activity, Copy, Layers3 } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +19,6 @@ const NavBarTeams = ({
 }: NavBarTeamProps) => {
 	const { organization } = useOrganization();
 	const { teams, setTeam } = useTeamStore((state) => state);
-	const { setTasks } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const router = useRouter();
@@ -39,7 +36,6 @@ const NavBarTeams = ({
 		const team = teams.find((team) => team.identifier === teamIdentifier);
 		if (team) {
 			setTeam(team);
-			setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
 		}
 	};
 

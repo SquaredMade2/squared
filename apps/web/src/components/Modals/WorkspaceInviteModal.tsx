@@ -29,7 +29,7 @@ export const WorkspaceInviteModal = () => {
 	const { toast } = useToast();
 
 	const { mutate: handleInvite, isPending } = useMutation({
-		mutationKey: ["workspaceInvite", organization?.id],
+		mutationKey: ["workspace", "workspaceInvite", organization?.id],
 		mutationFn: async () => {
 			if (!organization?.slug) return;
 			const emailAddresses = inviteEmails

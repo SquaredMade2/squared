@@ -129,7 +129,7 @@ export const NewTaskModal = () => {
 	};
 
 	useQuery({
-		queryKey: ["teams", organization?.id],
+		queryKey: ["team", "getUserTeams", organization?.id],
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams

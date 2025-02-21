@@ -63,7 +63,7 @@ export const columns: ColumnDef<
 			);
 
 			const { mutate: handleMarkAsUnread } = useMutation({
-				mutationKey: ["markAsUnread", row.original.id],
+				mutationKey: ["notification", "markAsUnread", row.original.id],
 				mutationFn: async () => {
 					await client.notification.markAsUnread.$post({
 						notificationIds: [row.original.id],
@@ -132,7 +132,7 @@ export const columns: ColumnDef<
 			const { setNotifications } = useEventStore((state) => state);
 
 			const { mutate: handleMarkAsDismissed } = useMutation({
-				mutationKey: ["markAsDismissed", row.original.id],
+				mutationKey: ["notification", "markAsDismissed", row.original.id],
 				mutationFn: async () => {
 					return await client.notification.dismiss
 						.$post({

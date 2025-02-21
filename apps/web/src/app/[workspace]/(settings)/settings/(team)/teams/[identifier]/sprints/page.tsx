@@ -66,7 +66,7 @@ export default function SprintSettings() {
 		data: { pending, active } = { pending: 0, active: null },
 		refetch: refetchSprints,
 	} = useQuery({
-		queryKey: ["sprints", team?.id],
+		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (!team) return { pending: 0, active: null };
 			const sprints = await client.sprint.getSprints
@@ -81,7 +81,7 @@ export default function SprintSettings() {
 	});
 
 	const { mutate: handleUpdateTeam } = useMutation({
-		mutationKey: ["team", "updateTeam"],
+		mutationKey: ["team", "updateTeam", team?.id],
 		mutationFn: async (
 			data: Partial<
 				Pick<

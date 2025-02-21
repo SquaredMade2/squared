@@ -49,7 +49,7 @@ function SidebarContent() {
 	const { organization } = useOrganization();
 
 	const { data: notifications = [] } = useQuery({
-		queryKey: ["notifications", user?.id],
+		queryKey: ["notification", user?.id],
 		queryFn: async () => {
 			const notifications = await client.event.getNotifications
 				.$get()
@@ -59,7 +59,7 @@ function SidebarContent() {
 	});
 
 	const { data: teams = [] } = useQuery({
-		queryKey: ["teams", user?.id, organization?.id],
+		queryKey: ["team", user?.id, organization?.id],
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams

@@ -21,7 +21,7 @@ const ParentTaskCombobox = () => {
 	const taskId = currentTask?.id ?? "";
 
 	const { data: parentTask } = useQuery({
-		queryKey: ["parentTask", currentTask?.parentId],
+		queryKey: ["task", "parentTask", currentTask?.parentId],
 		queryFn: async () => {
 			if (!currentTask?.parentId) return null;
 			return tasks.find((t) => t.id === currentTask?.parentId);
@@ -30,7 +30,7 @@ const ParentTaskCombobox = () => {
 	});
 
 	const { mutate: updateTaskMutation } = useMutation({
-		mutationKey: ["updateTaskParentId", currentTask?.parentId],
+		mutationKey: ["task", "updateParent", currentTask?.parentId],
 		mutationFn: async (parentId: string | null) => {
 			const res = await client.task.updateParent.$post({
 				taskId,

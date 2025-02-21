@@ -18,7 +18,7 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updateDueDate } = useMutation({
-		mutationKey: ["updateTaskDueDate", task.id],
+		mutationKey: ["task", "updateDueDate", task.id],
 		mutationFn: async (date?: Date) => {
 			const res = await client.task.updateDueDate.$post({
 				taskId: task.id,

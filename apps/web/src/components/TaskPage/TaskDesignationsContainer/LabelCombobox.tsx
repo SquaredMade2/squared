@@ -41,7 +41,7 @@ const LabelCombobox = () => {
 	);
 
 	const { mutate: updateLabels } = useMutation({
-		mutationKey: ["updateTaskLabels", taskId],
+		mutationKey: ["task", "updateLabels", taskId],
 		mutationFn: async (newLabels: Label[]) => {
 			const res = await client.task.updateLabels.$post({
 				taskId,

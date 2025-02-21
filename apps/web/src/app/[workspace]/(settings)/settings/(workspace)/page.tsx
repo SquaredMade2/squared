@@ -1,5 +1,6 @@
 "use client";
 
+import ImageUpload from "@/components/ImageUpload";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
@@ -12,7 +13,6 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -94,6 +94,25 @@ export default function WorkspaceSettings() {
 		}
 	};
 
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file && organization) {
+			try {
+				await organization.setLogo({ file });
+				toast({
+					title: "Success",
+					description: "Profile picture updated successfully.",
+				});
+			} catch {
+				toast({
+					variant: "destructive",
+					title: "Error",
+					description: "Failed to update profile picture. Please try again.",
+				});
+			}
+		}
+	};
+
 	useEffect(() => {
 		if (!workspace) return;
 
@@ -123,7 +142,7 @@ export default function WorkspaceSettings() {
 
 	const { mutate: updateWorkspace, isPending: updatingWorkspace } = useMutation(
 		{
-			mutationKey: ["updateWorkspace", organization?.id],
+			mutationKey: ["workspace", "updateWorkspace", organization?.id],
 			mutationFn: async (values: z.infer<typeof formSchema>) => {
 				let defaultView: string | null = null;
 				if (!organization) throw new Error("Workspace not found");
@@ -157,7 +176,7 @@ export default function WorkspaceSettings() {
 	);
 
 	const { mutate: deleteWorkspace, isPaused: isDeleting } = useMutation({
-		mutationKey: ["deleteWorkspace", organization?.id],
+		mutationKey: ["workspace", "deleteWorkspace", organization?.id],
 		mutationFn: async () => {
 			if (!organization) throw new Error("Workspace not found");
 			await client.workspace.deleteWorkspace.$post({
@@ -184,8 +203,8 @@ export default function WorkspaceSettings() {
 	if (updatingWorkspace)
 		return (
 			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
-				<h1 className="mb-2 font-bold text-3xl">Team Settings</h1>
-				<p className="mb-6 text-muted-foreground">Manage team settings</p>
+				<h1 className="mb-2 font-bold text-3xl">Workspace Settings</h1>
+				<p className="mb-6 text-muted-foreground">Manage workspace settings</p>
 				<div className="flex h-64 w-full items-center justify-center">
 					<SquaredLoader />
 				</div>
@@ -202,12 +221,12 @@ export default function WorkspaceSettings() {
 			</p>
 
 			<div className="mb-6 flex items-center space-x-4">
-				<Avatar className="size-28">
-					<AvatarImage src={organization.imageUrl ?? ""} alt="Workspace Logo" />
-					<AvatarFallback className="text-5xl">
-						{organization.name[0]}
-					</AvatarFallback>
-				</Avatar>
+				<ImageUpload
+					alt="Workspace Logo"
+					fallbackText={organization.name[0]}
+					handleImageUpload={handleImageUpload}
+					imageUrl={organization.imageUrl}
+				/>
 				<div>
 					<h2 className="font-semibold text-xl">{organization.name}</h2>
 					<p className="text-muted-foreground">{organization.slug}</p>
