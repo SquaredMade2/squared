@@ -1,7 +1,7 @@
 "use client";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { useUsers } from "@/hooks/useUsers";
 import { useViewStore, useWorkspaceStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
 import type { DraggableProvided } from "@hello-pangea/dnd";
 import { Draggable } from "@hello-pangea/dnd";
 import type { Task } from "@squared/db";
@@ -19,15 +19,7 @@ const TaskCard = ({
 }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const { users } = useUsers();
 	const assignee = users?.find((user) => user.userId === task.assigneeId);
 
 	const taskLabels =
