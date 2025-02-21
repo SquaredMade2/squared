@@ -1,13 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
-import {
-	useCommentStore,
-	useModalStore,
-	useTaskStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useCommentStore, useModalStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
@@ -80,7 +76,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
 	);
-	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
+	const { workspace } = useTaskDashboard();
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -116,7 +112,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				);
 				const mentions = getMentionsFromSlate(editorContent);
 
-				if (currentTask && currentWorkspace && users) {
+				if (currentTask && workspace && users) {
 					for (let i = 0; i < mentions.length; i++) {
 						const currentMentionUser = mentions[i];
 
@@ -131,11 +127,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 							taskId: currentTask.id,
 							type: "MENTIONED",
 							userId: mentionedUser.userId,
-							workspaceId: currentWorkspace.id,
+							workspaceId: workspace.id,
 						};
-
 						client.notification.createMention.$post(mentionEvent);
 					}
+				} else {
+					toast({
+						title: "Workspace, Task, or User not found.",
+						variant: "destructive",
+					});
 				}
 
 				setEditorContent([]);
