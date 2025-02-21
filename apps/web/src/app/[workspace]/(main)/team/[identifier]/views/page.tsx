@@ -19,7 +19,7 @@ export default function ViewsPage() {
 	const { team, loading: teamLoading } = useTeams();
 
 	const { data: savedFilters = [], isLoading } = useQuery({
-		queryKey: ["filters", team?.id],
+		queryKey: ["filter", team?.id],
 		queryFn: async () => {
 			if (!team) return;
 			const filters = await client.filter.getFilters

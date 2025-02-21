@@ -1,11 +1,10 @@
 "use client";
 
-import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
+import { useTaskStore, useTeamStore, useViewStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import type { Task } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import {
@@ -34,15 +33,19 @@ export const DeleteTaskAlertDialog = ({
 }) => {
 	const { deleteTask } = useTaskStore((state) => state);
 	const { lastVisitedPage } = useViewStore((state) => state);
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const { team } = useTeamStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 
-	const handleDelete = async () => {
-		try {
-			await taskService.deleteTask(TODO, { taskId: task.id });
-
+	const { mutate: handleDelete } = useMutation({
+		mutationKey: ["task", "deleteTask", task.id],
+		mutationFn: async () => {
+			await client.task.deleteTask.$post({
+				taskId: task.id,
+			});
+		},
+		onSuccess: () => {
 			toast({
 				title: "Task Deleted",
 				description: `${task.title} has been successfully deleted.`,
@@ -50,17 +53,18 @@ export const DeleteTaskAlertDialog = ({
 			deleteTask(task.id);
 			if (redirectTask) {
 				router.push(
-					`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
+					`${lastVisitedPage === "inbox" ? "/inbox" : `/${organization?.slug}/team/${team?.identifier}/${lastVisitedPage}`}`,
 				);
 			}
-		} catch (error) {
+		},
+		onError: (error) => {
 			toast({
 				title: "Error deleting task",
-				description: parseError(error),
+				description: error.message,
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
 
 	return (
 		<AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
@@ -75,7 +79,7 @@ export const DeleteTaskAlertDialog = ({
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						className={buttonVariants({ variant: "destructive" })}
-						onClick={handleDelete}
+						onClick={() => handleDelete()}
 					>
 						Delete Task
 					</AlertDialogAction>

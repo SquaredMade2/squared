@@ -34,7 +34,7 @@ export default function InboxPage() {
 	const pathname = usePathname();
 
 	useQuery({
-		queryKey: ["notifications"],
+		queryKey: ["notification"],
 		queryFn: async () => {
 			if (!organization) throw new Error("No workspace found");
 			const [avatars, notifications] = await Promise.all([
