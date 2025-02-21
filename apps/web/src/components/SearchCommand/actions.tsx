@@ -405,7 +405,7 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Create or join a workspace",
 					function: () => {
-						this.router.push("/join");
+						this.router.push("/create");
 					},
 					shortcut: [],
 				},
