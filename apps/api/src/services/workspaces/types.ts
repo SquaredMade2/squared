@@ -14,6 +14,13 @@ export type CreateWorkspaceParams = {
 	};
 };
 
+export type JoinWorkspaceParams = {
+	token: string | undefined;
+	isLink: boolean;
+	user: { id: string; name: string; email: string };
+	workspace: { id: string; name: string | undefined };
+};
+
 export interface WorkspaceRpc {
 	createWorkspace: (args: CreateWorkspaceParams) => Promise<Workspace>;
 	getWorkspace: (args: {

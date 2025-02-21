@@ -6,15 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useUser } from "@clerk/nextjs";
+import { useOrganization } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function JoinWorkspace() {
-	const { isLoaded, user } = useUser();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
+	const { organization, membership, isLoaded } = useOrganization();
 
 	const token = searchParams.get("token") || "";
 	const isLink = searchParams.has("link");
@@ -23,44 +23,52 @@ export default function JoinWorkspace() {
 	const workspaceName = currentURL.match(/^(?:[^\/]*\/){3}([^\/]+)/);
 
 	const joinWorkspaceMutation = useMutation({
+		mutationKey: ["workspace", "joinWorkspace", organization?.id],
 		mutationFn: async () => {
+			if (!organization || !membership?.role) return;
 			const workspace = await client.workspace.joinWorkspace
 				.$post({
 					token,
 					isLink,
-					userId: user?.id || "",
-					workspaceName: workspaceName ? workspaceName[1] : undefined,
+					workspace: {
+						id: organization?.id,
+						name: workspaceName ? workspaceName[1] : undefined,
+					},
 				})
 				.then((res) => res.json());
 
 			return workspace;
 		},
-		onSuccess: (workspace) => {
+		onSuccess: () => {
 			toast({ title: "Workspace joined successfully" });
-			if (workspace?.url) {
-				router.push(`/${workspace.url}`);
-			}
+			router.push(`/${organization?.slug}`);
 		},
 		onError: (error) => {
 			toast({
 				title: "Failed to join workspace",
 				variant: "destructive",
-				description: parseError(error, "An unknown error occurred"),
+				description: parseError(error),
 			});
 		},
 	});
 
 	const handleJoin = async () => {
-		if (token && user) {
+		if (token && isLoaded) {
 			joinWorkspaceMutation.mutate();
 		}
 	};
 
 	if (joinWorkspaceMutation.isPending || !isLoaded) {
 		return (
-			<div className="flex min-h-screen flex-col items-center justify-center gap-4">
-				<SquaredLoader />
-				<p className="text-lg">Loading...</p>
+			<div className="h-screen w-full">
+				<div className="flex h-full items-center justify-center">
+					<div className="flex flex-col items-center gap-4">
+						<div className="font-bold text-3xl">
+							Loading Workspace Invite...
+						</div>
+						<SquaredLoader />
+					</div>
+				</div>
 			</div>
 		);
 	}

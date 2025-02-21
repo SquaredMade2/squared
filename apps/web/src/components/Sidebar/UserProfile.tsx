@@ -11,9 +11,8 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useModalStore, useWorkspaceStore } from "@/store";
-import { useUser } from "@clerk/nextjs";
-import { LogOut, Settings, UserRoundPlus } from "lucide-react";
+import { useOrganization, useUser } from "@clerk/nextjs";
+import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 
 interface UserProfileProps {
@@ -23,23 +22,17 @@ interface UserProfileProps {
 export function UserProfile({ onLogout }: UserProfileProps) {
 	const { state } = useSidebar();
 	const { user } = useUser();
-	const { workspace } = useWorkspaceStore((state) => state);
-	const { setShowInvite } = useModalStore((state) => state);
-
-	const isUserWorkspaceAdmin = workspace?.admins.filter(
-		(admin) => admin === user?.id,
-	);
-
+	const { organization } = useOrganization();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="ghost"
-					size={state === "collapsed" ? "icon" : "default"}
+					size={state === "collapsed" ? "icon" : "sm"}
 					className={`relative ${
 						state === "collapsed"
 							? "mx-1 justify-center px-3"
-							: "w-full justify-start"
+							: "w-full justify-start gap-2"
 					}`}
 				>
 					<Avatar className="size-5">
@@ -61,26 +54,13 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 			<DropdownMenuContent align="end" className="w-56">
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem asChild className="cursor-pointer">
-					<Link href={`/${workspace?.url}/settings/profile`}>
+				<DropdownMenuItem asChild>
+					<Link href={`/${organization?.slug}/settings/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>
 					</Link>
 				</DropdownMenuItem>
-				{/* This should only show for workspace owners and admins */}
-				{isUserWorkspaceAdmin && (
-					<DropdownMenuItem asChild>
-						<Button
-							onClick={() => setShowInvite(true)}
-							variant="ghost"
-							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-none: focus-visible:ring-offset-0"
-						>
-							<UserRoundPlus className="mr-2 h-4 w-4" />
-							<span>Invite People</span>
-						</Button>
-					</DropdownMenuItem>
-				)}
-				<DropdownMenuItem onClick={onLogout} className="cursor-pointer">
+				<DropdownMenuItem onClick={onLogout}>
 					<LogOut className="mr-2 h-4 w-4" />
 					<span>Log out</span>
 				</DropdownMenuItem>

@@ -10,7 +10,6 @@ import type {
 	UserWorkspace,
 	Workspace,
 	WorkspaceInviteLink,
-	WorkspaceRole,
 } from "@squared/db";
 import { createEnumSchema, createSchema } from "@squared/rpc";
 import z from "zod";
@@ -35,6 +34,12 @@ export const statusEnum = createEnumSchema<Task["status"]>()(
 		"duplicated",
 	]),
 );
+
+export const workspaceRoleEnum = z.enum([
+	"org:admin",
+	"org:member",
+	"org:owner",
+]);
 
 export const labelSchema = createSchema<Label>()(
 	z.object({
@@ -129,15 +134,10 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
-export const workspaceRoleEnum = createEnumSchema<WorkspaceRole>()(
-	z.enum(["owner", "admin", "member"]),
-);
-
 export const userWorkspaceSchema = createSchema<UserWorkspace>()(
 	z.object({
 		userId: z.string(),
 		workspaceId: z.string(),
-		role: workspaceRoleEnum,
 	}),
 );
 
@@ -166,12 +166,6 @@ export const userSchema = createSchema<User>()(
 		subscribedTasks: z.array(z.string()),
 		githubUsername: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
-	}),
-);
-
-export const userWithRoleSchema = userSchema.merge(
-	z.object({
-		role: workspaceRoleEnum,
 	}),
 );
 
