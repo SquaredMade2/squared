@@ -34,6 +34,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import type { Priority, Sprint, Task } from "@squared/db";
@@ -72,6 +73,7 @@ export default function SprintDashboard() {
 			ideal: number;
 		}[]
 	>([]);
+	useWorkspaces();
 
 	const { toast } = useToast();
 
