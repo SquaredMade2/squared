@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -12,7 +12,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { ChevronDown, PlusCircle, Settings } from "lucide-react";
+import { ChevronDown, Plus, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -40,6 +40,7 @@ export function WorkspaceDropdown() {
 	};
 
 	useEffect(() => {
+		userMemberships.revalidate?.();
 		if (!organization && userMemberships.data?.length) {
 			setActive?.({ organization: userMemberships.data[0].organization });
 			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
@@ -54,6 +55,7 @@ export function WorkspaceDropdown() {
 					className={`w-full items-center gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" ? "justify-center border-none px-0" : "justify-start"}`}
 				>
 					<Avatar className="h-8 w-8 shrink-0">
+						<AvatarImage src={organization?.imageUrl} />
 						<AvatarFallback>
 							{getInitials(organization?.name || "WS")}
 						</AvatarFallback>
@@ -77,19 +79,20 @@ export function WorkspaceDropdown() {
 			<DropdownMenuContent
 				className={`bg-card ${state === "collapsed" ? "w-16" : "w-64"}`}
 			>
-				{userMemberships.data?.map(({ organization }) => (
+				{userMemberships.data?.map(({ organization: org }) => (
 					<DropdownMenuItem
-						key={organization.id}
+						key={org.id}
 						onSelect={() => {
-							setActive?.({ organization });
-							updatePathWithWorkspace(organization.slug);
+							setActive?.({ organization: org });
+							updatePathWithWorkspace(org.slug);
 						}}
 						className="hover:cursor-pointer"
 					>
 						<Avatar className="mr-2 h-6 w-6">
-							<AvatarFallback>{getInitials(organization.name)}</AvatarFallback>
+							<AvatarImage src={org.imageUrl} />
+							<AvatarFallback>{getInitials(org.name)}</AvatarFallback>
 						</Avatar>
-						<span className="truncate">{organization.name}</span>
+						<span className="truncate">{org.name}</span>
 					</DropdownMenuItem>
 				))}
 				<DropdownMenuSeparator />
@@ -99,7 +102,7 @@ export function WorkspaceDropdown() {
 					}}
 					className="hover:cursor-pointer"
 				>
-					<PlusCircle />
+					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
 				<DropdownMenuItem
