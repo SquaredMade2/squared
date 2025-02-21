@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { getInitials, truncateString } from "@/utils/formatting";
+import { formatName, getInitials, truncateString } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
@@ -22,7 +22,9 @@ const MentionHover = ({ mentionedUser }: MentionHoverProps) => {
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
 	);
-	const [currentUser, setCurrentUser] = useState<PublicUserData | null>(null);
+	const [currentUser, setCurrentUser] = useState<PublicUserData | undefined>(
+		undefined,
+	);
 
 	useEffect(() => {
 		const handleCurrentUser = () => {
@@ -46,15 +48,13 @@ const MentionHover = ({ mentionedUser }: MentionHoverProps) => {
 				<Card className="flex min-h-20 flex-row items-center justify-center px-1 py-0">
 					<CardContent className="flex flex-row items-center px-1 py-0">
 						<Avatar className="mx-2 flex size-6 flex-shrink-0 items-center">
-							<AvatarImage src={currentUser?.imageUrl || undefined} />
+							<AvatarImage src={currentUser?.imageUrl} />
 							<AvatarFallback className="text-xxs">
-								{getInitials(currentUser?.firstName || "User")}
+								{getInitials(formatName(currentUser))}
 							</AvatarFallback>
 						</Avatar>
 						<div className="flex flex-col whitespace-nowrap">
-							<header>
-								{truncateString(currentUser?.firstName || "Unknown name.", 25)}
-							</header>
+							<header>{truncateString(formatName(currentUser), 25)}</header>
 						</div>
 					</CardContent>
 				</Card>

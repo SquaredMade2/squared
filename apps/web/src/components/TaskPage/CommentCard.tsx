@@ -1,5 +1,5 @@
 import type { UserAvatar } from "@/store/users";
-import { getInitials } from "@/utils/formatting";
+import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Comment } from "@squared/db";
 import { formatDate } from "date-fns/format";
@@ -108,7 +108,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				const user = users.find((u) => u.userId === comment.authorId);
 				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
 				if (hasUserAvatarData(user) && user !== null) {
-					setAuthorName(user?.firstName ?? "");
+					setAuthorName(formatName(user));
 					setAvatarUrl(user?.imageUrl ?? "");
 				} else {
 					toast({

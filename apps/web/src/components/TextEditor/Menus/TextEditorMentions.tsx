@@ -5,10 +5,11 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/utils/cn";
-import { truncateString } from "@/utils/formatting";
+import { formatName, getInitials, truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { CommandItem } from "cmdk";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -81,42 +82,50 @@ const TextEditorMentions = ({
 			<CommandList>
 				<CommandEmpty>No results found.</CommandEmpty>
 				<CommandGroup heading="Users" className="h-60 overflow-y-scroll pt-0">
-					{users &&
-						users
-							.filter(
-								(user) =>
-									user.firstName &&
-									user.firstName
-										.toLowerCase()
-										.includes(mentionsFilter.slice(1).toLowerCase()),
-							)
-							.map((user, index) => {
-								return (
-									<CommandItem
-										key={user.userId}
-										className={cn(
-											`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
-										)}
-										ref={(e) => handleUsersRef(e, index, user)}
-										onSelect={() => handleMentionClick(user)}
-									>
-										<label className="w-40 xl:text-sm">
-											{truncateString(user.firstName || "Unknown Name", 13)}
-										</label>
-										{index === 0 && (
-											<div className="flex w-32 select-none flex-row items-center justify-start ">
-												<div className="ml-auto flex w-10 flex-row rounded-lg px-2 py-1 text-muted-foreground">
-													<CornerDownLeft
-														size={20}
-														color="hsl(217,5%, 44%)"
-														className="pr-1"
-													/>
-												</div>
+					{users
+						?.filter(
+							(user) =>
+								user.firstName &&
+								user.firstName
+									.toLowerCase()
+									.includes(mentionsFilter.slice(1).toLowerCase()),
+						)
+						.map((user, index) => {
+							return (
+								<CommandItem
+									key={user.userId}
+									className={cn(
+										`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
+									)}
+									ref={(e) => handleUsersRef(e, index, user)}
+									onSelect={() => handleMentionClick(user)}
+								>
+									<Avatar className="mx-2 flex size-6 flex-shrink-0 items-center">
+										<AvatarImage
+											src={user.imageUrl}
+											className="rounded rounded-full"
+										/>
+										<AvatarFallback className="rounded rounded-full text-xxs">
+											{getInitials(formatName(user))}
+										</AvatarFallback>
+									</Avatar>
+									<label className="w-40 xl:text-sm">
+										{truncateString(user.firstName || "Unknown Name", 13)}
+									</label>
+									{index === 0 && (
+										<div className="flex w-32 select-none flex-row items-center justify-start ">
+											<div className="ml-auto flex w-10 flex-row rounded-lg px-2 py-1 text-muted-foreground">
+												<CornerDownLeft
+													size={20}
+													color="hsl(217,5%, 44%)"
+													className="pr-1"
+												/>
 											</div>
-										)}
-									</CommandItem>
-								);
-							})}
+										</div>
+									)}
+								</CommandItem>
+							);
+						})}
 				</CommandGroup>
 			</CommandList>
 		</Command>
