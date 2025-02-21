@@ -26,9 +26,9 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { eventService, userService } from "@/lib/services";
-import { useEventStore, useUserStore } from "@/store";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
+import { useEventStore } from "@/store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
 	BellOff,
 	Check,
@@ -57,7 +57,6 @@ export function InboxDataTable({
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
-	const { user } = useUserStore((state) => state);
 	const { notifications, setNotifications } = useEventStore((state) => state);
 	const table = useReactTable({
 		data,
@@ -96,6 +95,7 @@ export function InboxDataTable({
 	const allUnread = mySelectedNotification.every(
 		(notification) => notification.read === false,
 	);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		if (showUnreadOnly) {
@@ -131,82 +131,89 @@ export function InboxDataTable({
 	};
 
 	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
-
-	const handleMarkAsUnread = async () => {
-		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await eventService.toggleNotification(TODO, {
-			notificationIds: selectedRows.map((row) => row.original.id),
-			read: true,
-		});
-		updateRowSelection();
-	};
-
-	const handleMarkAsRead = async () => {
-		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await eventService.toggleNotification(TODO, {
-			notificationIds: selectedRows.map((row) => row.original.id),
-			read: false,
-		});
-		updateRowSelection();
-	};
-
-	const handleMarkAsDismissed = async () => {
-		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await eventService.toggleNotification(TODO, {
-			notificationIds: selectedRows.map((row) => row.original.id),
-			dismissed: true,
-		});
-		if (user) {
-			const updatedNotifications = await eventService.getNotifications(TODO, {
-				userId: user.externalId,
+	const { mutate: handleMarkAsUnread } = useMutation({
+		mutationKey: ["notification", "markAsUnread", selectedNotificationIds],
+		mutationFn: async () => {
+			await client.notification.markAsUnread.$post({
+				notificationIds: selectedNotificationIds,
 			});
-			setNotifications(updatedNotifications);
-		}
-		updateRowSelection();
-	};
-
-	const handleMarkAsRestored = async () => {
-		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await eventService.toggleNotification(TODO, {
-			notificationIds: selectedRows.map((row) => row.original.id),
-			dismissed: false,
-		});
-		updateRowSelection();
-		if (user) {
-			const updatedNotifications = await eventService.getNotifications(TODO, {
-				userId: user.externalId,
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
+			updateRowSelection();
+		},
+	});
+	const { mutate: handleMarkAsRead } = useMutation({
+		mutationKey: ["notification", "markAsRead", selectedNotificationIds],
+		mutationFn: async () => {
+			await client.notification.markAsRead.$post({
+				notificationIds: selectedNotificationIds,
 			});
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
+			updateRowSelection();
+		},
+	});
+	const { mutate: handleMarkAsDismissed } = useMutation({
+		mutationKey: ["markAsDismissed", selectedNotificationIds],
+		mutationFn: async () => {
+			return await client.notification.dismiss
+				.$post({
+					notificationIds: selectedNotificationIds,
+				})
+				.then((res) => res.json());
+		},
+		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
-		}
-	};
-
-	const handleDeleteMany = async () => {
-		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await eventService.deleteNotification(TODO, {
-			notificationIds: selectedRows.map((row) => row.original.id),
-		});
-		updateRowSelection();
-	};
-
-	const handleMoveAllToSaved = async () => {
-		const currentUser = user;
-		if (!currentUser) {
-			return;
-		}
-		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		const selectedNotificationIds = selectedRows.map((row) => row.original.id);
-		const newSavedNotificationIds = [
-			...new Set([
-				...currentUser.savedNotificationIds,
-				...selectedNotificationIds,
-			]),
-		];
-		await userService.updateUserNotifications(TODO, {
-			userId: user.externalId,
-			notificationIds: newSavedNotificationIds,
-		});
-		updateRowSelection();
-	};
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
+			updateRowSelection();
+		},
+	});
+	const { mutate: handleMarkAsRestored } = useMutation({
+		mutationKey: ["notification", "markAsRestored", selectedNotificationIds],
+		mutationFn: async () => {
+			return await client.notification.restore
+				.$post({
+					notificationIds: selectedNotificationIds,
+				})
+				.then((res) => res.json());
+		},
+		onSuccess: (updatedNotifications) => {
+			setNotifications(updatedNotifications);
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
+			updateRowSelection();
+		},
+	});
+	const { mutate: handleDeleteMany } = useMutation({
+		mutationKey: [
+			"notification",
+			"deleteNotifications",
+			selectedNotificationIds,
+		],
+		mutationFn: async () => {
+			return await client.notification.delete
+				.$post({
+					notificationIds: selectedNotificationIds,
+				})
+				.then((res) => res.json());
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["notification"] });
+			updateRowSelection();
+		},
+	});
+	const { mutate: handleMoveAllToSaved } = useMutation({
+		mutationKey: ["notification", "saveNotifications", selectedNotificationIds],
+		mutationFn: async () => {
+			await client.notification.updateUserNotifications.$post({
+				notificationIds: selectedNotificationIds,
+			});
+		},
+		onSuccess: () => {
+			updateRowSelection();
+		},
+	});
 
 	return (
 		<div className="w-full md:container">
@@ -259,7 +266,7 @@ export function InboxDataTable({
 											{filterType !== "DONE" ? (
 												<>
 													<Button
-														onClick={handleMarkAsDismissed}
+														onClick={() => handleMarkAsDismissed()}
 														variant="outline"
 														size="sm"
 														className="gap-2 bg-secondary"
@@ -269,7 +276,7 @@ export function InboxDataTable({
 													</Button>
 													{!isAllSelected && (
 														<Button
-															onClick={handleMarkAsUnread}
+															onClick={() => handleMarkAsUnread()}
 															variant="outline"
 															size="sm"
 															className="gap-2 bg-secondary"
@@ -287,17 +294,17 @@ export function InboxDataTable({
 																variant="outline"
 																className="gap-2 bg-secondary"
 																size="sm"
-																onClick={handleMoveAllToSaved}
+																onClick={() => handleMoveAllToSaved()}
 															>
 																<span>Move all to Saved</span>
 															</Button>
 														)}
 													{allRead || allUnread ? (
 														<Button
-															onClick={
+															onClick={() =>
 																allUnread
-																	? handleMarkAsRead
-																	: handleMarkAsUnread
+																	? handleMarkAsRead()
+																	: handleMarkAsUnread()
 															}
 															className="bg-secondary"
 															size="sm"
@@ -320,7 +327,7 @@ export function InboxDataTable({
 																<div className="flex flex-col">
 																	<Button
 																		variant="ghost"
-																		onClick={handleMarkAsRead}
+																		onClick={() => handleMarkAsRead()}
 																		className="justify-start gap-3"
 																	>
 																		<Circle className="size-4" />
@@ -328,7 +335,7 @@ export function InboxDataTable({
 																	</Button>
 																	<Button
 																		variant="ghost"
-																		onClick={handleMarkAsUnread}
+																		onClick={() => handleMarkAsUnread()}
 																		className="justify-start gap-3"
 																	>
 																		<Circle className="size-4 fill-foreground" />
@@ -355,7 +362,7 @@ export function InboxDataTable({
 											) : (
 												<>
 													<Button
-														onClick={handleMarkAsRestored}
+														onClick={() => handleMarkAsRestored()}
 														variant="outline"
 														size="sm"
 														className="gap-2 bg-secondary"
@@ -366,7 +373,7 @@ export function InboxDataTable({
 														</span>
 													</Button>
 													<Button
-														onClick={handleDeleteMany}
+														onClick={() => handleDeleteMany()}
 														variant="outline"
 														size="sm"
 														className="gap-2 bg-secondary"

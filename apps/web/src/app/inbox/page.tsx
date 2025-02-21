@@ -7,16 +7,11 @@ import {
 } from "@/components/Inbox";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { eventService, userService } from "@/lib/services";
-import {
-	useEventStore,
-	useUserStore,
-	useViewStore,
-	useWorkspaceStore,
-} from "@/store";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
+import { useEventStore, useUserStore, useViewStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import type { NotificationType } from "@squared/db";
+import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -29,28 +24,33 @@ export type NotificationFilter =
 
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
-	const { workspaces, workspace } = useWorkspaceStore((state) => state);
+	const { organization } = useOrganization();
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
-	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 	const { setUserAvatars, user } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
-	const { user: clerkUser } = useUser();
 	const pathname = usePathname();
 
-	useEffect(() => {
-		const fetchNotifications = async () => {
-			if (clerkUser) {
-				const notifications = await eventService.getNotifications(TODO, {
-					userId: clerkUser.id,
-				});
-				setNotifications(notifications);
-			}
-		};
-		fetchNotifications();
-	}, [clerkUser, setNotifications]);
+	useQuery({
+		queryKey: ["notification"],
+		queryFn: async () => {
+			if (!organization) throw new Error("No workspace found");
+			const [avatars, notifications] = await Promise.all([
+				client.user.getWorkspaceAvatars
+					.$get({
+						workspaceId: organization.id,
+					})
+					.then((res) => res.json()),
+				client.notification.getNotifications.$get({}).then((res) => res.json()),
+			]);
+			setNotifications(notifications);
+			setUserAvatars(avatars);
+			return notifications;
+		},
+		enabled: !!organization,
+	});
 
 	useEffect(() => {
 		switch (filterType) {
@@ -92,25 +92,14 @@ export default function InboxPage() {
 			case "WORKSPACE":
 				setFilteredNotifications(
 					notifications.filter(
-						(n) => n.workspaceId === workspace?.id && !n.dismissed,
+						(n) => n.workspaceId === organization?.id && !n.dismissed,
 					),
 				);
 				break;
 			default:
 				setFilteredNotifications(notifications);
 		}
-	}, [filterType, notifications, workspace, user]);
-
-	useEffect(() => {
-		const fetchAvatars = async () => {
-			if (workspace) {
-				setUserAvatars(
-					await userService.getUserAvatars(TODO, { workspaceId: workspace.id }),
-				);
-			}
-		};
-		fetchAvatars();
-	}, [user, workspace]);
+	}, [filterType, notifications, organization, user]);
 
 	useEffect(() => {
 		if (pathname === "/inbox") {
@@ -133,10 +122,7 @@ export default function InboxPage() {
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
 								filterType={filterType}
-								setWorkspace={setWorkspaceName}
 								readNotifications={notifications.filter((n) => !n.read)}
-								workspaces={workspaces}
-								workspace={workspaceName}
 								filterRead={filterRead}
 								setFilterRead={setFilterRead}
 							/>
@@ -153,12 +139,9 @@ export default function InboxPage() {
 						<InboxSidebar
 							setFilterType={setFilterType}
 							filterType={filterType}
-							setWorkspace={setWorkspaceName}
 							readNotifications={notifications.filter(
 								(n) => !n.read || !n.dismissed,
 							)}
-							workspaces={workspaces}
-							workspace={workspaceName}
 						/>
 					</div>
 				</div>

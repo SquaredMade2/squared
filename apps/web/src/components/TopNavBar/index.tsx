@@ -5,6 +5,8 @@ import FilterDropDown from "@/components/FilterDropdowns";
 import { SaveFilterForm } from "@/components/FilterDropdowns/SaveFilterForm";
 import { Button } from "@/components/ui/button";
 import { useFilterStore } from "@/store";
+import { useDebounce } from "@/utils/useDebounce";
+import { Input } from "../ui/input";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,10 +14,21 @@ import { useEffect, useState } from "react";
 const TopNavBar = ({
 	pageTitle,
 }: { pageTitle?: string; sprintId?: string }) => {
-	const { currentFilters, clearFilter, showSaveForm, setShowSaveForm } =
-		useFilterStore((state) => state);
+	const {
+		currentFilters,
+		clearFilter,
+		showSaveForm,
+		setShowSaveForm,
+		setSearchFilter,
+	} = useFilterStore((state) => state);
 	const pathname = usePathname();
 	const [createNewFilter, setCreateNewFilter] = useState(false);
+	const [search, setSearch] = useState("");
+	const debouncedSearch = useDebounce(search, 500);
+
+	useEffect(() => {
+		setSearchFilter(debouncedSearch);
+	}, [debouncedSearch, setSearchFilter]);
 
 	useEffect(() => {
 		if (currentFilters.length === 0) {
@@ -31,6 +44,10 @@ const TopNavBar = ({
 			<div className="flex w-full justify-between">
 				<div className="mb-4 flex gap-3">
 					<FilterDropDown />
+					<Input
+						placeholder="Search Tasks"
+						onChange={(e) => setSearch(e.target.value)}
+					/>
 				</div>
 				<div className="flex gap-2">
 					<TopNavBarDisplay />

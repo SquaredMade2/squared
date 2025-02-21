@@ -1,10 +1,8 @@
 import {
 	type DBClient,
 	type User,
-	type WorkspaceLabel,
 	and,
 	eq,
-	labelsTable,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -14,32 +12,6 @@ import {
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
-async function getWorkspaceWithLabels(
-	db: DBClient,
-	workspaceId: string,
-): Promise<WorkspaceLabel | null> {
-	const results = await db
-		.select()
-		.from(workspacesTable)
-		.leftJoin(labelsTable, eq(workspacesTable.id, labelsTable.workspaceId))
-		.where(eq(workspacesTable.id, workspaceId));
-
-	const workspaceWithLabels = results.reduce(
-		(acc, row) => {
-			if (!acc.workspace) {
-				acc.workspace = { ...row.Workspace, labels: [] };
-			}
-			if (row.Label) {
-				acc.workspace.labels.push(row.Label);
-			}
-			return acc;
-		},
-		{ workspace: null as WorkspaceLabel | null },
-	).workspace;
-
-	return workspaceWithLabels;
-}
 
 type APIResponse<Type> = {
 	data: Type | null;
@@ -77,7 +49,10 @@ export const joinWorkspace = async (
 						eq(userWorkspacesTable.workspaceId, decoded.workspaceId),
 					),
 				),
-			getWorkspaceWithLabels(db, decoded.workspaceId),
+			db
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, decoded.workspaceId)),
 			db.select().from(usersTable).where(eq(usersTable.externalId, userId)),
 			db
 				.select()
@@ -125,7 +100,6 @@ export const joinWorkspace = async (
 			db.insert(userWorkspacesTable).values({
 				userId,
 				workspaceId: decoded.workspaceId,
-				role: "member",
 			}),
 			db.insert(userTeamsTable).values(
 				teams.map((team) => ({

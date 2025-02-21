@@ -12,7 +12,6 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
 import AddTeamButton from "@/components/Buttons/AddTeamButton";
-import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
 import {
 	Accordion,
 	AccordionContent,
@@ -32,19 +31,19 @@ import {
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useTeamStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import type { Team } from "@squared/db";
 
 function SettingsNavbarContent() {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { teams } = useTeams();
-	const { workspace } = useWorkspaces();
+	const { organization } = useOrganization();
 	const { setTeam } = useTeamStore((state) => state);
 
 	const navigateTo = (targetRoute: string) => {
-		router.replace(`/${workspace?.url}/settings/${targetRoute}`);
+		router.replace(`/${organization?.slug}/settings/${targetRoute}`);
 	};
 	const handleTeamClick = (team: Team, path?: string) => {
 		setTeam(team);
@@ -54,12 +53,13 @@ function SettingsNavbarContent() {
 	return (
 		<>
 			<SidebarHeader className="border-b p-4">
-				<WorkspaceDropdown />
 				<Button
 					variant="ghost"
 					onClick={() =>
 						teams[0] &&
-						router.push(`/${workspace?.url}/team/${teams[0].identifier}/all`)
+						router.push(
+							`/${organization?.slug}/team/${teams[0].identifier}/all`,
+						)
 					}
 					size="sm"
 					className="gap-2 py-px text-muted-foreground text-sm"
@@ -98,6 +98,13 @@ function SettingsNavbarContent() {
 										onClick={() => navigateTo("integrations")}
 									>
 										Integrations
+									</Button>
+									<Button
+										variant="ghost"
+										className="w-full justify-start"
+										onClick={() => navigateTo("labels")}
+									>
+										Labels
 									</Button>
 								</div>
 							</div>
@@ -167,7 +174,7 @@ function SettingsNavbarContent() {
 									))}
 								</Accordion>
 								<div className="ml-6">
-									<AddTeamButton workspaceUrl={workspace?.url ?? ""} />
+									<AddTeamButton workspaceUrl={organization?.slug ?? ""} />
 								</div>
 							</div>
 						</div>

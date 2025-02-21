@@ -12,7 +12,7 @@ interface RetroColumnProps {
 	type: RetrospectiveItemType;
 	items: RetroItem[];
 	onAddItem: (type: RetrospectiveItemType, content: string) => void;
-	onLikeItem: (itemId: string, userId: string) => void;
+	onLikeItem: (itemId: string) => void;
 }
 
 export const RetroColumn = ({
@@ -54,5 +54,3 @@ export const RetroColumn = ({
 		</Card>
 	);
 };
-
-export default RetroColumn;

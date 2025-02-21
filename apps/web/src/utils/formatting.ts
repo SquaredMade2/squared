@@ -1,9 +1,9 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
+import type { PublicUserData } from "@clerk/types";
 import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
-import * as z from "zod";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -46,6 +46,11 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 	return typeof workspaceName === "string" && workspaceName.length > 20
 		? `${workspaceName.slice(0, 20)}...`
 		: workspaceName;
+};
+
+export const formatName = (user: PublicUserData | undefined): string => {
+	if (!user) return "Unknown User";
+	return `${user.firstName} ${user.lastName}`;
 };
 
 export const getInitials = (name?: string | null): string => {
@@ -141,27 +146,6 @@ export const formatPriority = (priority: Priority) => {
 // }
 // return links;
 // };
-export const passwordSchema = z
-	.string()
-	.min(8, "Password must be at least 8 characters")
-	.max(30, "Password must not exceed 30 characters")
-	.refine((value) => !/\s/.test(value), "Password must not contain spaces")
-	.refine(
-		(value) => /[a-z]/.test(value),
-		"Password must contain at least one lowercase letter",
-	)
-	.refine(
-		(value) => /[A-Z]/.test(value),
-		"Password must contain at least one capital letter",
-	)
-	.refine(
-		(value) => /[0-9]/.test(value),
-		"Password must contain at least one number",
-	)
-	.refine(
-		(value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value),
-		"Password must contain at least one special character",
-	);
 
 export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 	const arrOfFormattedLines = slateArr.map((line) => {
@@ -258,7 +242,7 @@ export const formatFilterName = async (
 			};
 		case "labels": {
 			const filteredLabels = labels.filter(
-				(l) => Array.isArray(filter.value) && filter.value.includes(l.id),
+				(l) => Array.isArray(filter.value) && filter.value.includes(l.name),
 			);
 			return {
 				name:

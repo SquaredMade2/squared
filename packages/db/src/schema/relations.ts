@@ -5,7 +5,6 @@ import {
 	commentsTable,
 	commitsTable,
 	githubRepoInfoTable,
-	labelsTable,
 	notificationsTable,
 	projectsTable,
 	retrospectiveItemsTable,
@@ -14,7 +13,6 @@ import {
 	taskEventsTable,
 	tasksTable,
 	teamsTable,
-	universalTokenLinksTable,
 	userTeamsTable,
 	userWorkspacesTable,
 	usersTable,
@@ -25,7 +23,7 @@ import {
 export const teamRelations = relations(teamsTable, ({ one, many }) => ({
 	workspace: one(workspacesTable, {
 		fields: [teamsTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	sprints: many(sprintsTable),
 	tasks: many(tasksTable),
@@ -39,8 +37,6 @@ export const workspaceRelations = relations(workspacesTable, ({ many }) => ({
 	notifications: many(notificationsTable),
 	users: many(usersTable),
 	tasks: many(tasksTable),
-	labels: many(labelsTable),
-	universalTokenLinks: many(universalTokenLinksTable),
 	workspaceRepositories: many(workspaceRepositoriesTable),
 	projects: many(projectsTable),
 	savedFilters: many(savedFiltersTable),
@@ -80,7 +76,7 @@ export const taskRelations = relations(tasksTable, ({ one, many }) => ({
 	}),
 	workspace: one(workspacesTable, {
 		fields: [tasksTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	sprint: one(sprintsTable, {
 		fields: [tasksTable.sprintId],
@@ -120,14 +116,8 @@ export const sprintRelations = relations(sprintsTable, ({ one, many }) => ({
 		references: [teamsTable.id],
 	}),
 	tasks: many(tasksTable),
-	retrospectiveItems_wentWellSprintId: many(retrospectiveItemsTable, {
-		relationName: "retrospectiveItem_wentWellSprintId_sprint_id",
-	}),
-	retrospectiveItems_toImproveSprintId: many(retrospectiveItemsTable, {
-		relationName: "retrospectiveItem_toImproveSprintId_sprint_id",
-	}),
-	retrospectiveItems_actionItemsSprintId: many(retrospectiveItemsTable, {
-		relationName: "retrospectiveItem_actionItemsSprintId_sprint_id",
+	retrospectiveItems: many(retrospectiveItemsTable, {
+		relationName: "retrospectiveItem_sprint_id",
 	}),
 }));
 
@@ -140,7 +130,7 @@ export const notificationRelations = relations(
 		}),
 		workspace: one(workspacesTable, {
 			fields: [notificationsTable.workspaceId],
-			references: [workspacesTable.id],
+			references: [workspacesTable.externalId],
 		}),
 		user: one(usersTable, {
 			fields: [notificationsTable.userId],
@@ -153,7 +143,7 @@ export const userRelations = relations(usersTable, ({ one, many }) => ({
 	notifications: many(notificationsTable),
 	workspace: one(workspacesTable, {
 		fields: [usersTable.defaultWorkspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	task: one(tasksTable, {
 		fields: [usersTable.lastViewedTaskId],
@@ -185,29 +175,12 @@ export const commentRelations = relations(commentsTable, ({ one }) => ({
 	}),
 }));
 
-export const labelRelations = relations(labelsTable, ({ one }) => ({
-	workspace: one(workspacesTable, {
-		fields: [labelsTable.workspaceId],
-		references: [workspacesTable.id],
-	}),
-}));
-
-export const universalTokenLinkRelations = relations(
-	universalTokenLinksTable,
-	({ one }) => ({
-		workspace: one(workspacesTable, {
-			fields: [universalTokenLinksTable.workspaceId],
-			references: [workspacesTable.id],
-		}),
-	}),
-);
-
 export const workspaceRepositoriesRelations = relations(
 	workspaceRepositoriesTable,
 	({ one }) => ({
 		workspace: one(workspacesTable, {
 			fields: [workspaceRepositoriesTable.workspaceId],
-			references: [workspacesTable.id],
+			references: [workspacesTable.externalId],
 		}),
 		githubRepoInfo: one(githubRepoInfoTable, {
 			fields: [workspaceRepositoriesTable.repoId],
@@ -223,7 +196,7 @@ export const projectRelations = relations(projectsTable, ({ one }) => ({
 	}),
 	workspace: one(workspacesTable, {
 		fields: [projectsTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 }));
 
@@ -252,7 +225,7 @@ export const taskEventRelations = relations(taskEventsTable, ({ one }) => ({
 export const savedFilterRelations = relations(savedFiltersTable, ({ one }) => ({
 	workspace: one(workspacesTable, {
 		fields: [savedFiltersTable.workspaceId],
-		references: [workspacesTable.id],
+		references: [workspacesTable.externalId],
 	}),
 	team: one(teamsTable, {
 		fields: [savedFiltersTable.teamId],
@@ -267,20 +240,10 @@ export const savedFilterRelations = relations(savedFiltersTable, ({ one }) => ({
 export const retrospectiveItemRelations = relations(
 	retrospectiveItemsTable,
 	({ one }) => ({
-		sprint_wentWellSprintId: one(sprintsTable, {
-			fields: [retrospectiveItemsTable.wentWellSprintId],
+		sprint: one(sprintsTable, {
+			fields: [retrospectiveItemsTable.sprintId],
 			references: [sprintsTable.id],
-			relationName: "retrospectiveItem_wentWellSprintId_sprint_id",
-		}),
-		sprint_toImproveSprintId: one(sprintsTable, {
-			fields: [retrospectiveItemsTable.toImproveSprintId],
-			references: [sprintsTable.id],
-			relationName: "retrospectiveItem_toImproveSprintId_sprint_id",
-		}),
-		sprint_actionItemsSprintId: one(sprintsTable, {
-			fields: [retrospectiveItemsTable.actionItemsSprintId],
-			references: [sprintsTable.id],
-			relationName: "retrospectiveItem_actionItemsSprintId_sprint_id",
+			relationName: "retrospectiveItem_sprint_id",
 		}),
 		user: one(usersTable, {
 			fields: [retrospectiveItemsTable.authorId],
@@ -310,7 +273,7 @@ export const userWorkspaceRelations = relations(
 	({ one }) => ({
 		workspace: one(workspacesTable, {
 			fields: [userWorkspacesTable.workspaceId],
-			references: [workspacesTable.id],
+			references: [workspacesTable.externalId],
 		}),
 		user: one(usersTable, {
 			fields: [userWorkspacesTable.userId],

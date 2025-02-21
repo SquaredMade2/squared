@@ -9,28 +9,31 @@ import {
 } from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
-import { getInitials } from "@/utils/formatting";
-import type { User } from "@squared/db";
+import { useTaskStore } from "@/store";
+import { formatName, getInitials } from "@/utils/formatting";
+import { useOrganization, useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { Check, UserSearch } from "lucide-react";
-import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users } = useUserStore((state) => state);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
+	const { user } = useUser();
 	const { updateTask } = useTaskStore((state) => state);
-	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
-	useEffect(() => {
-		const foundUser = users.find((user) => user.externalId === task.assigneeId);
-		setCurrentUser(foundUser ?? null);
-	}, [users, task.assigneeId]);
-
 	const { mutate: updateAssignee } = useMutation({
-		mutationKey: ["updateTaskAssignee", taskId],
-		mutationFn: async (userId: string | null) => {
+		mutationKey: ["task", "updateAssignee", taskId],
+		mutationFn: async (userId?: string) => {
+			if (!taskId || !userId) throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId,
 				assigneeId: userId,
@@ -41,7 +44,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		},
 	});
 
-	const handleSelectAssignee = (userId: string | null) => {
+	const handleSelectAssignee = (userId?: string) => {
 		updateAssignee(userId);
 	};
 
@@ -49,12 +52,12 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					{!task.assigneeId || !currentUser ? (
+					{!task.assigneeId ? (
 						<UserSearch className="size-5 text-[#9597AD]" />
 					) : (
 						<Avatar className="mr-2 flex size-4 text-xxs">
-							<AvatarImage src={currentUser.avatarUrl ?? ""} />
-							<AvatarFallback>{getInitials(currentUser.name)}</AvatarFallback>
+							<AvatarImage src={user?.imageUrl ?? ""} />
+							<AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
 						</Avatar>
 					)}
 				</div>
@@ -64,7 +67,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
 						className="flex justify-between"
-						onClick={() => handleSelectAssignee(null)}
+						onClick={() => handleSelectAssignee()}
 					>
 						<div className="flex">
 							<UserSearch className="mx-1 mr-3 size-5" />
@@ -73,22 +76,24 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						{!task.assigneeId && <Check className="h-4 w-4" />}
 					</ContextMenuItem>
 					{users
-						.sort((a, b) => a.name.localeCompare(b.name))
+						?.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 						.map((user) => {
 							return (
 								<ContextMenuItem
-									key={user.externalId}
-									onClick={() => handleSelectAssignee(user.externalId)}
+									key={user.userId}
+									onClick={() => handleSelectAssignee(user.userId)}
 									className="flex justify-between"
 								>
 									<div className="flex">
 										<Avatar className="mr-2 flex size-6 text-xxs">
-											<AvatarImage src={user.avatarUrl ?? ""} />
-											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+											<AvatarImage src={user.imageUrl ?? ""} />
+											<AvatarFallback>
+												{getInitials(formatName(user))}
+											</AvatarFallback>
 										</Avatar>
-										{user.name}
+										{formatName(user)}
 									</div>
-									{task.assigneeId === user.externalId && (
+									{task.assigneeId === user.userId && (
 										<Check className="ml-2 h-4 w-4" />
 									)}
 								</ContextMenuItem>

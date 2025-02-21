@@ -1,10 +1,10 @@
-import "tslib";
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
-import type { ErrorRequestHandler, RequestHandler } from "express";
-import { z } from "zod";
-
 import type { Logger } from "@squared/logger";
+import superjson from "@squared/superjson";
+import type { ErrorRequestHandler, RequestHandler } from "express";
+import "tslib";
+import { z } from "zod";
 import {
 	type Method,
 	type MethodDetails,
@@ -15,7 +15,6 @@ import {
 	ValidationError,
 	requestContexts,
 } from "./rpc-types";
-
 export * from "./rpc-types";
 
 export class RpcError extends Error {
@@ -121,8 +120,10 @@ export function createRequestHandler(
 					res.on("finish", () => abortable?.abort());
 
 					requestContexts.set(req, ctx);
-					const result = await methodFn(req.body);
-					res.json(result);
+					const result = await methodFn(
+						superjson.parse(JSON.stringify(req.body)),
+					);
+					res.json(superjson.stringify(result));
 
 					// biome-ignore lint/suspicious/noExplicitAny: Error has to be any
 				} catch (err: any) {
@@ -195,10 +196,16 @@ function first(s: string | string[] | undefined) {
 	return Array.isArray(s) ? s[0] : s;
 }
 
-type SchemaFor<T> = z.ZodType<T, z.ZodTypeDef, T>;
-
 export function createSchema<T>() {
-	return <S extends SchemaFor<T>>(schema: S) => schema;
+	return <
+		S extends z.ZodType<T> & z.ZodObject<{ [K in keyof T]: z.ZodTypeAny }>,
+	>(
+		schema: S,
+	): S => schema;
+}
+
+export function createEnumSchema<T extends string>() {
+	return <S extends z.ZodEnum<[T, ...T[]]>>(schema: S): S => schema;
 }
 
 export function createServiceSchema<T>() {
@@ -333,6 +340,9 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 	}
 	if (schema instanceof z.ZodNull) {
 		return { type: "null" };
+	}
+	if (schema instanceof z.ZodUndefined) {
+		return { type: "undefined" };
 	}
 	return { type: "unknown" };
 }

@@ -1,21 +1,20 @@
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { eventService } from "@/lib/services";
-import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
+import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import { TODO } from "@squared/context";
-import type { TaskEvent } from "@squared/db";
+import { useOrganization } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 export const TaskPageForm = () => {
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const {
 		updateTask,
 		currentTask: task,
@@ -47,12 +46,13 @@ export const TaskPageForm = () => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
 
-			const updatedEvents = await eventService.getTaskEvents(TODO, {
-				taskId: updatedTask.id,
-			});
-			// TODO: Will remove type coercion once commits are implemented
-			setEvents(updatedEvents as TaskEvent[]);
-			queryClient.invalidateQueries({ queryKey: ["taskEvents", task?.id] });
+			const updatedEvents = await client.event.getEvents
+				.$get({
+					taskId: updatedTask.id,
+				})
+				.then((res) => res.json());
+			setEvents(updatedEvents);
+			queryClient.invalidateQueries({ queryKey: ["event", task?.id] });
 			toast({ title: "Task updated successfully" });
 		},
 		onError: (error) => {
@@ -117,7 +117,7 @@ export const TaskPageForm = () => {
 						<Button variant="ghost" className="gap-1 px-1 py-0">
 							<StatusIcon status={parentTask.status} />
 							<Link
-								href={`/${workspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
+								href={`/${organization?.slug}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
 							>
 								{parentTask.identifier} -
@@ -129,8 +129,8 @@ export const TaskPageForm = () => {
 					</div>
 				)}
 			</div>
-			<Input
-				className="mt-2 mb-2 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
+			<Textarea
+				className="mt-2 mb-2 min-h-40 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
 				placeholder={"Add description..."}
 				onChange={handleDescriptionChange}
 				value={updatedDescription ?? ""}

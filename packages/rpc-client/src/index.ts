@@ -1,4 +1,5 @@
 import * as context from "@squared/context";
+import superjson from "@squared/superjson";
 
 export interface RequestOptions {
 	timeout?: number;
@@ -17,8 +18,9 @@ class BaseClient {
 		ctx: context.Context,
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
-		params: Record<string, any>,
-	) {
+		params?: Record<string, any>,
+		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
+	): Promise<any> {
 		const url = `${this.baseURL}/${this.serviceName}/${methodName}`;
 
 		const headers: Record<string, string> = {
@@ -48,7 +50,7 @@ class BaseClient {
 			const response = await fetch(url, {
 				method: "POST",
 				headers,
-				body: JSON.stringify(params),
+				body: superjson.stringify(params),
 				signal: contextWithSignal.signal,
 			});
 
@@ -57,8 +59,9 @@ class BaseClient {
 				mapError(this.serviceName, methodName, errorData, response.status);
 			}
 
-			return await response.json();
+			return superjson.parse(await response.json());
 		} catch (error) {
+			console.error("Error occurred during RPC request: ", error);
 			if (error instanceof Error) {
 				throw error;
 			}
@@ -131,7 +134,7 @@ export class RPCContextClient extends BaseClient {
 		ctx: context.Context,
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
-		params: Record<string, any>,
+		params?: Record<string, any>,
 	) {
 		return super.doRequest(ctx, methodName, params);
 	}

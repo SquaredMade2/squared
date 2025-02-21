@@ -18,18 +18,15 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
-import { useClerk, useUser } from "@clerk/nextjs";
-import type { Workspace } from "@squared/db";
+import { useModalStore, useTeamStore } from "@/store";
+import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import {
 	ClipboardList,
-	Home,
 	Inbox,
 	type LucideIcon,
 	Moon,
 	Search,
-	Settings,
 	Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -40,7 +37,7 @@ import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
-function SidebarContent({ workspace }: { workspace: Workspace | null }) {
+function SidebarContent() {
 	const { setTeams, team } = useTeamStore((state) => state);
 	const { user } = useUser();
 	const { setShowCommand } = useModalStore((state) => state);
@@ -49,9 +46,10 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const { state } = useSidebar();
 	const { signOut } = useClerk();
+	const { organization } = useOrganization();
 
 	const { data: notifications = [] } = useQuery({
-		queryKey: ["notifications", user?.id],
+		queryKey: ["notification", user?.id],
 		queryFn: async () => {
 			const notifications = await client.event.getNotifications
 				.$get()
@@ -61,18 +59,18 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	});
 
 	const { data: teams = [] } = useQuery({
-		queryKey: ["teams", user?.id, workspace?.id],
+		queryKey: ["team", user?.id, organization?.id],
 		queryFn: async () => {
-			if (!workspace) return [];
+			if (!organization) return [];
 			const teams = await client.team.getUserTeams
 				.$get({
-					workspaceId: workspace?.id,
+					workspaceId: organization?.id,
 				})
 				.then((res) => res.json());
 			setTeams(teams);
 			return teams;
 		},
-		enabled: !!workspace,
+		enabled: !!organization,
 	});
 
 	const handleLogout = async (): Promise<void> => {
@@ -90,27 +88,38 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 		router.push(`/${childRoute}`);
 	};
 
-	const toHome = () => {
-		router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
-	};
-
 	return (
 		<>
-			<SidebarHeader className="space-y-2 px-2">
-				<WorkspaceDropdown />
+			<SidebarHeader
+				className={`space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
+			>
+				<div className="flex items-center justify-between gap-2">
+					<WorkspaceDropdown />
+					{state === "expanded" && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="search"
+									onClick={() => setShowCommand(true)}
+								>
+									<Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent side="right">Search</TooltipContent>
+						</Tooltip>
+					)}
+				</div>
 				<NewTaskButton />
 				<div className="flex flex-col space-y-2">
-					<IconButton icon={Home} label="Home" onClick={toHome} />
-					<IconButton
-						icon={Search}
-						label="Search"
-						onClick={() => setShowCommand(true)}
-					/>
-					<IconButton
-						icon={Settings}
-						label="Settings"
-						onClick={() => navigateTo(`${workspace?.url}/settings`)}
-					/>
+					{state === "collapsed" && (
+						<IconButton
+							icon={Search}
+							label="Search"
+							onClick={() => setShowCommand(true)}
+						/>
+					)}
 					<IconButton
 						icon={Inbox}
 						label="Inbox"
@@ -120,20 +129,24 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					<IconButton
 						icon={ClipboardList}
 						label="My Tasks"
-						onClick={() => navigateTo(`${workspace?.url}/my-tasks/assigned`)}
+						onClick={() =>
+							navigateTo(`${organization?.slug}/my-tasks/assigned`)
+						}
 					/>
 				</div>
 			</SidebarHeader>
-			{state === "expanded" && (
+			{state === "expanded" && organization?.slug && (
 				<SidebarContainer className="px-2">
 					<TeamAccordion
 						teams={teams}
 						currentTeam={team}
-						workspaceUrl={workspace?.url}
+						workspaceUrl={organization.slug}
 					/>
 				</SidebarContainer>
 			)}
-			<SidebarFooter className="mt-auto space-y-2 px-2">
+			<SidebarFooter
+				className={`mt-auto space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
+			>
 				<IconButton
 					icon={theme === "dark" ? Moon : Sun}
 					label={
@@ -148,8 +161,6 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 }
 
 export function SidebarNav() {
-	const { workspace } = useWorkspaceStore((state) => state);
-
 	return (
 		<TooltipProvider delayDuration={0}>
 			<SidebarProvider className={"relative"}>
@@ -157,7 +168,7 @@ export function SidebarNav() {
 					collapsible="icon"
 					className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 				>
-					<SidebarContent workspace={workspace} />
+					<SidebarContent />
 				</Sidebar>
 				<ToggleSidebarButton />
 			</SidebarProvider>
@@ -206,11 +217,11 @@ function IconButton({
 			<TooltipTrigger asChild>
 				<Button
 					variant="ghost"
-					size="sm"
+					size={state === "expanded" ? "sm" : "icon"}
 					aria-label={label}
 					onClick={onClick}
-					className={`relative w-full justify-start ${
-						state === "collapsed" ? "px-3" : ""
+					className={`relative justify-start ${
+						state === "collapsed" ? "mx-1 px-3" : "w-full"
 					}`}
 				>
 					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />

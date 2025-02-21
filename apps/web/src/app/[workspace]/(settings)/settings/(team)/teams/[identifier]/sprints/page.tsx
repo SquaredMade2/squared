@@ -2,10 +2,8 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import { sprintService, taskService, teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
-import { TODO } from "@squared/context";
-import type { Sprint, Team } from "@squared/db";
+import type { Team } from "@squared/db";
 import { addDays, format, startOfWeek } from "date-fns";
 import {
 	CalendarIcon,
@@ -15,7 +13,7 @@ import {
 	X,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
@@ -47,7 +45,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { client } from "@/lib/client";
 import { cn } from "@/utils/cn";
+import { parseError } from "@/utils/parseError";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
@@ -59,87 +60,92 @@ export default function SprintSettings() {
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		team?.sprintStartDate || null,
 	);
-	const [pendingSprints, setPendingSprints] = useState(0);
-	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 	const { toast } = useToast();
 
-	useEffect(() => {
-		if (team) {
-			sprintService.getSprints(TODO, { teamId: team.id }).then((sprints) => {
-				const pending = sprints.filter((s) => s.status === "PLANNED").length;
-				setPendingSprints(pending);
-				const active = sprints.find((s) => s.status === "ACTIVE");
-				setActiveSprint(active || null);
-			});
-		}
-	}, [team, sprintService]);
+	const {
+		data: { pending, active } = { pending: 0, active: null },
+		refetch: refetchSprints,
+	} = useQuery({
+		queryKey: ["sprint", team?.id],
+		queryFn: async () => {
+			if (!team) return { pending: 0, active: null };
+			const sprints = await client.sprint.getSprints
+				.$get({ teamId: team.id })
+				.then((res) => res.json());
 
-	const handleUpdateTeam = async (
-		data: Partial<
-			Pick<
-				Team,
-				| "sprintsEnabled"
-				| "sprintDuration"
-				| "cooldownDuration"
-				| "sprintStartDate"
-			>
-		>,
-	) => {
-		try {
+			return {
+				pending: sprints.filter((s) => s.status === "PLANNED").length,
+				active: sprints.find((s) => s.status === "ACTIVE"),
+			};
+		},
+	});
+
+	const { mutate: handleUpdateTeam } = useMutation({
+		mutationKey: ["team", "updateTeam", team?.id],
+		mutationFn: async (
+			data: Partial<
+				Pick<
+					Team,
+					| "sprintsEnabled"
+					| "sprintDuration"
+					| "cooldownDuration"
+					| "sprintStartDate"
+				>
+			>,
+		) => {
 			if (!team) throw new Error("No team found");
-			const updatedTeam = await teamService.updateTeamSprints(TODO, {
-				id: team.id,
-				...data,
-			});
+			const updatedTeam = await client.sprint.updateTeamSprints
+				.$post({ teamId: team.id, data })
+				.then((res) => res.json());
+			if (updatedTeam.sprintsEnabled) {
+				await client.sprint.initializeSprints
+					.$post({
+						teamId: updatedTeam.id,
+					})
+					.then((res) => res.json());
+			}
+			return updatedTeam;
+		},
+		onSuccess: async (updatedTeam) => {
+			if (!updatedTeam) return;
 			setTeam(updatedTeam);
 			updateTeam(updatedTeam);
 			setSprintEnabled(updatedTeam.sprintsEnabled);
-			if (updatedTeam.sprintsEnabled) {
-				const newSprintCount = await sprintService.initializeSprints(TODO, {
-					teamId: team.id,
-				});
-				setPendingSprints(newSprintCount);
-			}
-			if (!updatedTeam) return;
-			toast({ title: "Team updated successfully" });
-		} catch (error) {
-			error instanceof Error
-				? toast({
-						title: `Error updating team sprints: ${error.message}`,
-						variant: "destructive",
-					})
-				: toast({
-						title: "Error updating team sprints",
-						variant: "destructive",
-					});
-		}
-	};
-
-	const handleAddTasksToSprint = async () => {
-		if (!team || !activeSprint) return;
-
-		try {
-			const response = await taskService.addActiveSprintTasks(TODO, {
-				sprintId: activeSprint.id,
-			});
-
-			if (response) {
-				toast({
-					title: "Active tasks added to sprint",
-					description:
-						"The tasks have been successfully added to the current sprint.",
-					variant: "default",
-				});
-			}
-		} catch (error) {
+			refetchSprints();
+		},
+		onError: (error) => {
 			toast({
-				title: "Error adding active tasks to sprint",
-				description:
-					error instanceof Error ? error.message : "An unknown error occurred",
+				title: "Error updating team sprints",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
+
+	const { mutate: handleAddTasksToSprint } = useMutation({
+		mutationKey: ["sprint", "addActiveSprintTasks"],
+		mutationFn: async () => {
+			if (!active) throw new Error("No active sprint found");
+			return await client.sprint.addActiveTasks
+				.$post({ sprintId: active.id })
+				.then((res) => res.json());
+		},
+		onSuccess: async () => {
+			toast({
+				title: "Active tasks added to sprint",
+				description:
+					"The tasks have been successfully added to the current sprint.",
+				variant: "default",
+			});
+		},
+		onError: (error) => {
+			toast({
+				title: "Error adding active tasks to sprint",
+				description: parseError(error),
+				variant: "destructive",
+			});
+		},
+	});
 
 	if (teamLoading)
 		return (
@@ -311,7 +317,7 @@ export default function SprintSettings() {
 								</Popover>
 							</div>
 							<p className="text-muted-foreground text-sm">
-								Current pending sprints: {pendingSprints}
+								Current pending sprints: {pending}
 							</p>
 						</CardContent>
 					</Card>
@@ -344,7 +350,9 @@ export default function SprintSettings() {
 										</AlertDialogHeader>
 										<AlertDialogFooter>
 											<AlertDialogCancel>Cancel</AlertDialogCancel>
-											<AlertDialogAction onClick={handleAddTasksToSprint}>
+											<AlertDialogAction
+												onClick={() => handleAddTasksToSprint()}
+											>
 												Continue
 											</AlertDialogAction>
 										</AlertDialogFooter>

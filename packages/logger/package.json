@@ -15,9 +15,9 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"check-types": "tsc --noEmit",
-		"clean": "rimraf dist",
+		"clean": "rimraf dist && rimraf node_modules",
 		"lint": "biome lint --error-on-warnings ./src",
-		"postinstall": "tsup src/index.ts --format cjs,esm --dts"
+		"prepare": "tsup src/index.ts --format cjs,esm --dts"
 	},
 	"devDependencies": {
 		"@squared/typescript-config": "workspace:*",

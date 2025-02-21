@@ -26,11 +26,10 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { teamService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
 import type { Effort } from "@squared/db";
 import {
 	DropdownMenu,
@@ -39,6 +38,7 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -94,8 +94,8 @@ export default function TeamsSetting() {
 		useState<Record<string, number | string | number[]>>();
 	const { toast } = useToast();
 	const router = useRouter();
-	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { team, teams, loading: teamLoading } = useTeams();
+	const { organization, isLoaded } = useOrganization();
+	const { team, loading: teamLoading } = useTeams();
 
 	const { deleteTeam, updateTeam, setTeam } = useTeamStore((state) => state);
 
@@ -113,7 +113,6 @@ export default function TeamsSetting() {
 		}
 	}, []);
 
-	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 
 	if (!team || !team.name) return null;
@@ -137,50 +136,67 @@ export default function TeamsSetting() {
 		return () => subscription.unsubscribe();
 	}, [form, team]);
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (team && workspace) {
-			try {
-				const updatedTeam = await teamService.updateTeam(TODO, {
-					id: team.id,
+	const { mutate: onSubmit } = useMutation({
+		mutationKey: ["team", "update", team.id],
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			if (!team || !organization)
+				throw new Error("Team or workspace not found");
+			return await client.team.updateTeam
+				.$post({
+					teamId: team.id,
 					name: values.name,
 					identifier: values.identifier,
 					effort: selectedEffort?.dbValue as Effort,
-				});
-				updateTeam(updatedTeam);
-				if (updatedTeam) {
-					setTeam(
-						await teamService.getTeamByIdentifier(TODO, {
-							identifier: values.identifier,
-							workspaceId: workspace.id,
-						}),
-					);
-					router.refresh();
-					toast({ title: "Team updated successfully" });
-				}
-			} catch {
-				toast({
-					title: "Failed to update team",
-					variant: "destructive",
-				});
+				})
+				.then((res) => res.json());
+		},
+		onSuccess: async (updatedTeam) => {
+			updateTeam(updatedTeam);
+			if (updatedTeam) {
+				setTeam(
+					await client.team.getTeamByIdentifier
+						.$get({
+							identifier: updatedTeam.identifier,
+							workspaceId: updatedTeam.workspaceId,
+						})
+						.then((res) => res.json()),
+				);
+				router.refresh();
+				toast({ title: "Team updated successfully" });
 			}
-		}
-	};
-
-	const handleDelete = async () => {
-		setIsDeleting(true);
-		if (teams.length === 1) {
+		},
+		onError: (error) => {
 			toast({
-				title: "This is your only team; it cannot be deleted.",
+				title: "Failed to update team",
+				description: error.message,
 				variant: "destructive",
 			});
-		} else {
-			await teamService.deleteTeam(TODO, { teamId: team.id });
-			team && deleteTeam(team.id);
-			router.push(`/${workspace?.url}`);
+		},
+	});
+
+	const { mutate: handleDelete, isPending: isDeleting } = useMutation({
+		mutationKey: ["team", "delete", team.id],
+		mutationFn: async () => {
+			if (!team) throw new Error("Team not found");
+			return await client.team.deleteTeam
+				.$post({
+					teamId: team.id,
+				})
+				.then((res) => res.json());
+		},
+		onSuccess: () => {
+			deleteTeam(team.id);
+			router.push(`/${organization?.slug}`);
 			toast({ title: "Team deleted" });
-		}
-		setIsDeleting(false);
-	};
+		},
+		onError: (error) => {
+			toast({
+				title: "Failed to delete team",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+	});
 
 	const handleEffortSelection = (value: string) => {
 		if (value !== selectedEffort?.name) {
@@ -196,7 +212,7 @@ export default function TeamsSetting() {
 		}
 	};
 
-	if (teamLoading || workspaceLoading)
+	if (teamLoading || !isLoaded)
 		return (
 			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
 				<h1 className="mb-2 font-bold text-3xl">Team Settings</h1>
@@ -215,7 +231,10 @@ export default function TeamsSetting() {
 			<Separator className="my-6" />
 
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<form
+					onSubmit={form.handleSubmit((values) => onSubmit(values))}
+					className="space-y-8"
+				>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
@@ -323,7 +342,7 @@ export default function TeamsSetting() {
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
 							<AlertDialogAction
 								className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-								onClick={handleDelete}
+								onClick={() => handleDelete()}
 							>
 								{isDeleting ? "Deleting..." : "Yes, delete team"}
 							</AlertDialogAction>

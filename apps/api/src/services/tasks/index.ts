@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
-import { taskSchema } from "../schema";
+import { labelSchema, statusEnum, taskSchema } from "../schema";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
 const createTaskParams = createSchema<CreateTaskParams>()(
@@ -15,21 +15,11 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		dueDate: z.date().optional().nullable(),
 		effortEstimate: z.number().min(1).max(5).optional().nullable(),
 		teamId: z.string(),
-		status: z
-			.enum([
-				"backlog",
-				"todo",
-				"inProgress",
-				"inReview",
-				"done",
-				"canceled",
-				"archived",
-			])
-			.optional(),
+		status: statusEnum.optional(),
 		priority: z
 			.enum(["noPriority", "urgent", "high", "medium", "low"])
 			.optional(),
-		labels: z.array(z.string()).optional(),
+		labels: z.array(labelSchema).optional(),
 		parentId: z.string().nullable().optional(),
 		sprintId: z.string().nullable().optional(),
 	}),
@@ -41,24 +31,14 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		updaterId: z.string(),
 		title: z.string().optional(),
 		description: z.string().optional(),
-		dueDate: z.date().optional(),
+		dueDate: z.date().nullable().optional(),
 		effortEstimate: z.number().min(1).max(5).optional(),
-		status: z
-			.enum([
-				"backlog",
-				"todo",
-				"inProgress",
-				"inReview",
-				"done",
-				"canceled",
-				"archived",
-			])
-			.optional(),
+		status: statusEnum.optional(),
 		priority: z
 			.enum(["noPriority", "urgent", "high", "medium", "low"])
 			.optional(),
 		assigneeId: z.string().nullable().optional(),
-		labels: z.array(z.string()).optional(),
+		labels: z.array(labelSchema).optional(),
 		parentId: z.string().nullable().optional(),
 		sprintId: z.string().nullable().optional(),
 	}),
@@ -109,7 +89,7 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 			sprintId: z.string(),
 			taskIds: z.array(z.string()),
 		}),
-		output: z.number(),
+		output: z.array(taskSchema),
 	},
 	reorderSubtasks: {
 		input: z.object({

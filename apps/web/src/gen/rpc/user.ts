@@ -14,7 +14,6 @@ export type OnBoardUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -37,7 +36,6 @@ export type UpdateUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -59,7 +57,6 @@ export type UpdateUserAvatarResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -81,7 +78,6 @@ export type UpdateUserNotificationsResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -102,7 +98,6 @@ export type GetUserResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -123,7 +118,6 @@ export type GetWorkspaceUsersResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -144,7 +138,6 @@ export type GetTeamUsersResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
@@ -199,57 +192,12 @@ export type SetLastViewedTaskResponse = {
 	externalId: string;
 	githubUsername: string | null;
 	id: string;
-	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-};
-
-export type GetUserWorkspaceRoleRequest = {
-	userId: string;
-	workspaceId: string;
-};
-
-export type GetUserWorkspaceRoleResponse = {
-	role: "owner" | "admin" | "member";
-};
-
-export type GetWorkspaceUsersWithRolesRequest = {
-	workspaceId: string;
-};
-
-export type GetWorkspaceUsersWithRolesResponse = {
-	avatarUrl: string | null;
-	createdAt: Date;
-	defaultWorkspaceId: string | null;
-	email: string;
-	externalId: string;
-	githubUsername: string | null;
-	id: string;
-	lastLogin: Date;
-	lastViewedTaskId: string | null;
-	name: string;
-	onBoarding: boolean;
-	role: "owner" | "admin" | "member";
-	savedNotificationIds: string[];
-	subscribedTasks: string[];
-	username: string | null;
-}[];
-
-export type UpdateUsersRoleRequest = {
-	callerId: string;
-	newRole: "owner" | "admin" | "member";
-	userId: string;
-	workspaceId: string;
-};
-
-export type UpdateUsersRoleResponse = {
-	role: "owner" | "admin" | "member";
-	userId: string;
-	workspaceId: string;
 };
 
 export type GetDefaultWorkspaceRequest = {
@@ -260,11 +208,17 @@ export type GetDefaultWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	createdAt: Date;
 	defaultView: string | null;
+	externalId: string;
 	id: string;
+	labels: {
+		color: string;
+		description?: string | null;
+		name: string;
+	}[];
 	name: string;
 	tasksCreated: number;
-	universalTokenLinkId: string | null;
 	url: string;
 } | null;
 
@@ -388,36 +342,6 @@ export class UserService extends RPCContextClient {
 		req: SetLastViewedTaskRequest,
 	): Promise<SetLastViewedTaskResponse> {
 		return this.request(ctx, "setLastViewedTask", req);
-	}
-
-	/**
-	 * getUserWorkspaceRole method
-	 */
-	getUserWorkspaceRole(
-		ctx: Context,
-		req: GetUserWorkspaceRoleRequest,
-	): Promise<GetUserWorkspaceRoleResponse> {
-		return this.request(ctx, "getUserWorkspaceRole", req);
-	}
-
-	/**
-	 * getWorkspaceUsersWithRoles method
-	 */
-	getWorkspaceUsersWithRoles(
-		ctx: Context,
-		req: GetWorkspaceUsersWithRolesRequest,
-	): Promise<GetWorkspaceUsersWithRolesResponse> {
-		return this.request(ctx, "getWorkspaceUsersWithRoles", req);
-	}
-
-	/**
-	 * updateUsersRole method
-	 */
-	updateUsersRole(
-		ctx: Context,
-		req: UpdateUsersRoleRequest,
-	): Promise<UpdateUsersRoleResponse> {
-		return this.request(ctx, "updateUsersRole", req);
 	}
 
 	/**

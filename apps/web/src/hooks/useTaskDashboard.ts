@@ -35,7 +35,7 @@ export function useTaskDashboard() {
 		isLoading,
 		error: tasksError,
 	} = useQuery<Task[], Error>({
-		queryKey: ["tasks", team?.id],
+		queryKey: ["task", "getAllTasks", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllTasks.$get({
@@ -49,7 +49,7 @@ export function useTaskDashboard() {
 	});
 
 	const allBlockedTaskIdsQuery = useQuery({
-		queryKey: ["allBlockedTasksIds", team?.id],
+		queryKey: ["task", "allBlockedTasksIds", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllBlockedTaskIds.$get({
@@ -76,7 +76,7 @@ export function useTaskDashboard() {
 			return updatedTask;
 		},
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ["tasks", team?.id] });
+			await queryClient.invalidateQueries({ queryKey: ["task", team?.id] });
 		},
 	});
 
@@ -85,17 +85,36 @@ export function useTaskDashboard() {
 		source,
 		draggableId,
 	}) => {
-		if (!destination || destination.droppableId === source.droppableId) return;
+		if (!destination) return;
 
 		const draggedTask = tasks.find((task) => task.id === draggableId);
 		if (!draggedTask) return;
-
+		/// If the dragged task is in the same column and its a subtask, reorder the subtask
+		if (
+			destination.droppableId === source.droppableId &&
+			draggedTask.parentId &&
+			team
+		) {
+			const items = tasks.filter(
+				(task) => task.parentId === draggedTask.parentId,
+			);
+			const [reorderedItem] = items.splice(source.index, 1);
+			items.splice(destination.index, 0, reorderedItem);
+			const teamTasks = await client.task.updateSubtaskOrder
+				.$post({
+					parentId: draggedTask.parentId,
+					newOrder: items.map((item) => item.id),
+				})
+				.then((res) => res.json());
+			setTasks(teamTasks);
+			return;
+		}
 		updateTaskMutation.mutate({
 			taskId: draggedTask.id,
 			status: destination.droppableId as Status,
 		});
 		await queryClient.invalidateQueries({
-			queryKey: ["allBlockedTasksIds", team?.id],
+			queryKey: ["task", team?.id],
 		});
 	};
 

@@ -4,6 +4,9 @@ import { handle } from "hono/vercel";
 import { authRouter } from "./routers/auth-router";
 import { commentRouter } from "./routers/comment-router";
 import { eventRouter } from "./routers/event-router";
+import { filterRouter } from "./routers/filter-router";
+import { integrationRouter } from "./routers/integration-router";
+import { notificationRouter } from "./routers/notification-router";
 import { sprintRouter } from "./routers/sprint-router";
 import { taskRouter } from "./routers/task-router";
 import { teamRouter } from "./routers/team-router";
@@ -18,14 +21,17 @@ const app = new Hono().basePath("/api").use(cors());
  * All routers added in /server/routers should be manually added here.
  */
 const appRouter = app
-	.route("/authentication", authRouter)
-	.route("/workspace", workspaceRouter)
-	.route("/user", userRouter)
-	.route("/team", teamRouter)
-	.route("/task", taskRouter)
+	.route("/auth", authRouter)
 	.route("/comment", commentRouter)
 	.route("/event", eventRouter)
-	.route("/sprint", sprintRouter);
+	.route("/integration", integrationRouter)
+	.route("/filter", filterRouter)
+	.route("/notification", notificationRouter)
+	.route("/sprint", sprintRouter)
+	.route("/team", teamRouter)
+	.route("/task", taskRouter)
+	.route("/user", userRouter)
+	.route("/workspace", workspaceRouter);
 
 // The handler Next.js uses to answer API requests
 export const httpHandler = handle(app);

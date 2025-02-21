@@ -2,12 +2,10 @@ import {
 	type DBClient,
 	type Team,
 	type Workspace,
-	type WorkspaceRole,
 	and,
 	desc,
 	eq,
 	githubRepoInfoTable,
-	inArray,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -27,7 +25,7 @@ export class UserService implements UserRpc {
 	}
 
 	async onBoardUser({ userId }: { userId: string }) {
-		this.logger.info("Onboarding user with id: %s", userId);
+		this.logger.info("Onboarding user with id: ", userId);
 		return await this.db
 			.update(usersTable)
 			.set({ onBoarding: false })
@@ -40,7 +38,7 @@ export class UserService implements UserRpc {
 		userId,
 		...args
 	}: { userId: string; name: string; username?: string }) {
-		this.logger.info("Updating user with id: %s", userId);
+		this.logger.info("Updating user with id: ", userId);
 		return await this.db
 			.update(usersTable)
 			.set(args)
@@ -68,22 +66,34 @@ export class UserService implements UserRpc {
 
 	async updateUserNotifications({
 		userId,
-		notificationIds: savedNotificationIds,
+		notificationIds,
 	}: {
 		userId: string;
 		notificationIds: string[];
 	}) {
-		this.logger.info("Updating user notifications with id: %s", userId);
-		return await this.db
-			.update(usersTable)
-			.set({ savedNotificationIds })
-			.where(eq(usersTable.externalId, userId))
-			.returning()
-			.then((user) => user[0]);
+		this.logger.info("Updating user notifications with id: ", userId);
+		return await this.db.transaction(async (tx) => {
+			const currentNotifications = await tx
+				.select({ savedNotificationIds: usersTable.savedNotificationIds })
+				.from(usersTable)
+				.where(eq(usersTable.externalId, userId))
+				.then((results) => results[0].savedNotificationIds);
+
+			return tx
+				.update(usersTable)
+				.set({
+					savedNotificationIds: [
+						...new Set([...currentNotifications, ...notificationIds]),
+					],
+				})
+				.where(eq(usersTable.externalId, userId))
+				.returning()
+				.then((user) => user[0]);
+		});
 	}
 
 	async getUser({ userId }: { userId: string }) {
-		this.logger.info("Fetching user with id: %s", userId);
+		this.logger.info("Fetching user with id: ", userId);
 		return await this.db
 			.select()
 			.from(usersTable)
@@ -91,37 +101,8 @@ export class UserService implements UserRpc {
 			.then((user) => user[0]);
 	}
 
-	async getUserWorkspaceRole({
-		userId,
-		workspaceId,
-	}: {
-		userId: string;
-		workspaceId: string;
-	}): Promise<{ role: WorkspaceRole }> {
-		this.logger.info(
-			"Fetching user role for userId: %s in workspaceId: %s",
-			userId,
-			workspaceId,
-		);
-
-		const userWorkspace = await this.db
-			.select({ role: userWorkspacesTable.role })
-			.from(userWorkspacesTable)
-			.where(
-				and(
-					eq(userWorkspacesTable.userId, userId),
-					eq(userWorkspacesTable.workspaceId, workspaceId),
-				),
-			)
-			.limit(1)
-			.then((results) => results[0]);
-
-		if (!userWorkspace) throw new Error("User-Workspace connection not found");
-		return { role: userWorkspace.role };
-	}
-
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
-		this.logger.info("Fetching workspace users with id: %s", workspaceId);
+		this.logger.info("Fetching workspace users with id: ", workspaceId);
 		return await this.db
 			.select()
 			.from(userWorkspacesTable)
@@ -133,102 +114,8 @@ export class UserService implements UserRpc {
 			.then((users) => users.map((u) => u.User).filter((u) => !!u));
 	}
 
-	async getWorkspaceUsersWithRoles({ workspaceId }: { workspaceId: string }) {
-		this.logger.info("Fetching workspace users with id: %s", workspaceId);
-		const thingo = await this.db
-			.select()
-			.from(usersTable)
-			.leftJoin(
-				userWorkspacesTable,
-				eq(usersTable.externalId, userWorkspacesTable.userId),
-			)
-			.where(eq(userWorkspacesTable.workspaceId, workspaceId))
-			.limit(1)
-			.then((uw) => {
-				return uw.map((uuw) => {
-					return { ...uuw.User, role: uuw.UserWorkspace?.role ?? "member" };
-				});
-			});
-		return thingo;
-	}
-
-	async updateUsersRole({
-		callerId,
-		userId,
-		workspaceId,
-		newRole,
-	}: {
-		callerId: string;
-		userId: string;
-		workspaceId: string;
-		newRole: WorkspaceRole;
-	}) {
-		// Get both users current roles
-		const [callerRole, targetRole] = await this.db
-			.select()
-			.from(userWorkspacesTable)
-			.where(
-				and(
-					eq(userWorkspacesTable.workspaceId, workspaceId),
-					inArray(userWorkspacesTable.userId, [callerId, userId]),
-				),
-			);
-
-		if (!callerRole || !targetRole) {
-			throw new Error("One of the users was not found in workspace");
-		}
-
-		if (callerRole.role === "member") {
-			throw new Error("Members cannot modify roles");
-		}
-
-		if (
-			callerRole.role === "admin" &&
-			(targetRole.role === "owner" || targetRole.role === "admin")
-		) {
-			throw new Error("Admins cannot modify owner or other admin roles");
-		}
-
-		this.logger.info(
-			"User with id: %s is updating role for userId: %s to %s in workspace: %s",
-			callerId,
-			userId,
-			newRole,
-			workspaceId,
-		);
-
-		// Start a transaction to ensure both updates happen or neither happens
-		return await this.db.transaction(async (tx) => {
-			// Making sure there can only ever be one owner
-			if (newRole === "owner") {
-				await tx
-					.update(userWorkspacesTable)
-					.set({ role: "admin" })
-					.where(
-						and(
-							eq(userWorkspacesTable.workspaceId, workspaceId),
-							eq(userWorkspacesTable.role, "owner"),
-						),
-					);
-			}
-
-			const [result] = await tx
-				.update(userWorkspacesTable)
-				.set({ role: newRole })
-				.where(
-					and(
-						eq(userWorkspacesTable.userId, userId),
-						eq(userWorkspacesTable.workspaceId, workspaceId),
-					),
-				)
-				.returning();
-
-			return result;
-		});
-	}
-
 	async getTeamUsers({ teamId }: { teamId: string }) {
-		this.logger.info("Fetching team users with id: %s", teamId);
+		this.logger.info("Fetching team users with id: ", teamId);
 		return await this.db
 			.select()
 			.from(userTeamsTable)
@@ -238,7 +125,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getUserAvatars({ workspaceId }: { workspaceId: string }) {
-		this.logger.info("Fetching user avatars with id: %s", workspaceId);
+		this.logger.info("Fetching user avatars with id: ", workspaceId);
 		return await this.db
 			.select({
 				id: usersTable.externalId,
@@ -254,7 +141,7 @@ export class UserService implements UserRpc {
 	}
 
 	async getUserRepositories({ userId }: { userId: string }) {
-		this.logger.info("Fetching user repositories with id: %s", userId);
+		this.logger.info("Fetching user repositories with id: ", userId);
 		return await this.db.transaction(async (tx) => {
 			const user = await tx
 				.select({ githubUsername: usersTable.githubUsername })
@@ -276,7 +163,7 @@ export class UserService implements UserRpc {
 		});
 	}
 	async getUserTeams({ userId }: { userId: string }): Promise<Team[]> {
-		this.logger.info("Fetching user teams with id: %s", userId);
+		this.logger.info("Fetching user teams with id: ", userId);
 		return await this.db
 			.select()
 			.from(teamsTable)
@@ -293,7 +180,7 @@ export class UserService implements UserRpc {
 		taskId: string;
 	}) {
 		this.logger.info(
-			"Setting last viewed task for userId: %s, taskId: %s",
+			"Setting last viewed task for userId, taskId: ",
 			userId,
 			taskId,
 		);
@@ -308,7 +195,7 @@ export class UserService implements UserRpc {
 	async getDefaultWorkspace({
 		userId,
 	}: { userId: string }): Promise<Workspace | null> {
-		this.logger.info("Fetching default workspace for userId: %s", userId);
+		this.logger.info("Fetching default workspace for userId: ", userId);
 		const userWorkspace = await this.db.transaction(async (tx) => {
 			// First, try to get the user's default workspace
 			const defaultWorkspace = await tx
@@ -318,7 +205,7 @@ export class UserService implements UserRpc {
 				.from(usersTable)
 				.leftJoin(
 					workspacesTable,
-					eq(usersTable.defaultWorkspaceId, workspacesTable.id),
+					eq(usersTable.defaultWorkspaceId, workspacesTable.externalId),
 				)
 				.where(eq(usersTable.externalId, userId))
 				.then((results) => results[0]?.workspace);
@@ -335,7 +222,7 @@ export class UserService implements UserRpc {
 				.from(userWorkspacesTable)
 				.innerJoin(
 					workspacesTable,
-					eq(userWorkspacesTable.workspaceId, workspacesTable.id),
+					eq(userWorkspacesTable.workspaceId, workspacesTable.externalId),
 				)
 				.where(eq(userWorkspacesTable.userId, userId))
 				.orderBy(desc(workspacesTable.createdAt))
@@ -345,9 +232,7 @@ export class UserService implements UserRpc {
 			return firstWorkspace || null;
 		});
 
-		if (!userWorkspace) {
-			throw new Error("No workspace found for the user");
-		}
+		if (!userWorkspace) return null;
 
 		return userWorkspace;
 	}
@@ -360,7 +245,7 @@ export class UserService implements UserRpc {
 		teamIdentifier: string;
 	}): Promise<boolean> {
 		this.logger.info(
-			"Checking if user with id: %s is authorized for team with identifier: %s",
+			"Checking if user with id is authorized for team with identifier",
 			userId,
 			teamIdentifier,
 		);

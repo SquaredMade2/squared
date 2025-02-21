@@ -21,8 +21,9 @@ WORKDIR /app
 COPY --from=builder /app/apps/api /app/apps/api
 COPY --from=builder /app/packages/builder /app/packages/builder
 COPY --from=builder /app/packages/context /app/packages/context
-COPY --from=builder /app/packages/rpc /app/packages/rpc
 COPY --from=builder /app/packages/logger /app/packages/logger
+COPY --from=builder /app/packages/rpc /app/packages/rpc
+COPY --from=builder /app/packages/superjson /app/packages/superjson
 COPY --from=builder /app/packages/typescript-config /app/packages/typescript-config
 
 # First install dependencies (as they change less often)
@@ -55,6 +56,7 @@ ENV GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
 ENV EMAIL_USERNAME=${EMAIL_USERNAME}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 ENV DATABASE_URL=${DATABASE_URL}
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 RUN pnpm turbo build --filter=api...
 RUN pnpm db:migrate

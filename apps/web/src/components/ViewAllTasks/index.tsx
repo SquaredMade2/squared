@@ -1,13 +1,18 @@
-"use client";
-import { RenameModal } from "@/components/Modals";
 import { useViewStore } from "@/store";
+import { useFilterStore } from "@/store";
 import { Status } from "@squared/db";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { RenameModal } from "../Modals";
 import GroupColumn from "./GroupColumn";
+import TaskColumnTitle from "./TaskColumnTitle";
+
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	const { view, displayOptions } = useViewStore((state) => state);
+	const [showTasks, setShowTasks] = useState(true);
+	const { filterSearchTasks } = useFilterStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const pathname = usePathname();
 
@@ -40,18 +45,39 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 		}
 	}
 
+	const isListView = view === "list";
+
+	groupedColumns = groupedColumns
+		.map((column) => ({
+			...column,
+			tasks: filterSearchTasks(column.tasks),
+		}))
+		.filter((column) => column.tasks.length > 0);
+
 	return (
 		<>
 			<RenameModal />
-			<div className={view === "list" ? "block min-w-full" : "flex"}>
-				{groupedColumns.map((column: GroupedColumn) => (
-					<GroupColumn
-						key={column.group}
-						group={column.group}
-						tasks={column.tasks}
-						currentView={view}
-					/>
-				))}
+			<div className={isListView ? "block min-w-full" : "flex flex-col"}>
+				<div className={isListView ? "flex flex-col" : "flex gap-2"}>
+					{groupedColumns.map((column: GroupedColumn) => (
+						<div key={column.group} className={isListView ? "contents" : ""}>
+							<TaskColumnTitle
+								title={column.group}
+								showTasks={showTasks}
+								setShowTasks={setShowTasks}
+								numberOfTasks={column.tasks.length}
+								isListView={isListView}
+							/>
+							<GroupColumn
+								key={column.group}
+								group={column.group}
+								tasks={column.tasks}
+								currentView={view}
+								showTasks={showTasks}
+							/>
+						</div>
+					))}
+				</div>
 			</div>
 		</>
 	);

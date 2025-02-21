@@ -45,7 +45,7 @@ const EffortEstimateDropdown = () => {
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
 	const { mutate: updateEffortEstimate } = useMutation({
-		mutationKey: ["updateTaskEffortEstimate", taskId],
+		mutationKey: ["task", "updateEffort", taskId],
 		mutationFn: async (newEffortEstimate: number) => {
 			const res = await client.task.updateEffort.$post({
 				taskId,

@@ -1,6 +1,5 @@
 "use client";
 
-import { NewTaskModal } from "@/components/Modals";
 import { SidebarNav } from "@/components/Sidebar";
 import { useViewStore } from "@/store";
 import type { ViewPath } from "@/store/views";
@@ -48,10 +47,7 @@ export default function WorkspaceLayoutWrapper({
 			<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
 				<SidebarNav />
 			</div>
-			<main className="h-full w-full flex-grow overflow-auto">
-				<NewTaskModal />
-				{children}
-			</main>
+			<main className="h-full w-full flex-grow overflow-auto">{children}</main>
 		</div>
 	);
 }

@@ -50,7 +50,7 @@ export const sendMail = async ({
 		});
 		return sendResult;
 	} catch (error) {
-		logger.error("Error sending email: %s", error);
+		logger.error("Error sending email", error);
 		throw error;
 	}
 };
