@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			lastModified: new Date().toISOString(),
 		},
 		{
-			url: "https://app.squaredmade.com/[workspace]/join",
+			url: "https://app.squaredmade.com/[workspace]/create",
 			lastModified: new Date().toISOString(),
 		},
 		{
