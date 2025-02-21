@@ -115,14 +115,13 @@ export const NewTaskModal = () => {
 				toast({
 					title: "Task Created Successfully",
 					description: (
-						<>
+						<Button variant="link" asChild>
 							<Link
 								href={`/${organization.slug}/task/${newTask.identifier}/${formatUrl(newTask.title)}`}
-								className="cursor-pointer text-blue-500"
 							>
 								View Task
 							</Link>
-						</>
+						</Button>
 					),
 				});
 				setShowNewTask(false);
