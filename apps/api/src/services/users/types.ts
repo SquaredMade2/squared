@@ -38,4 +38,5 @@ export interface UserRpc {
 		userId: string;
 		teamIdentifier: string;
 	}) => Promise<boolean>;
+	markAsDeleted: (args: { userId: string }) => Promise<void>;
 }

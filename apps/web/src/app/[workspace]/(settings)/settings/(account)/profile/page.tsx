@@ -207,6 +207,9 @@ export default function Profile() {
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
 				</div>
+				<div>
+					<Button>Delete user</Button>
+				</div>
 			</div>
 		</div>
 	);

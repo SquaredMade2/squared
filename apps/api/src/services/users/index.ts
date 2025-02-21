@@ -95,6 +95,12 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.boolean(),
 	},
+	markAsDeleted: {
+		input: z.object({
+			userId: z.string(),
+		}),
+		output: z.void(),
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -115,4 +121,5 @@ export const createUserRpcHandler = (userService: UserService) =>
 		setLastViewedTask: (input) => userService.setLastViewedTask(input),
 		getDefaultWorkspace: (input) => userService.getDefaultWorkspace(input),
 		isUserAuthorized: (input) => userService.isUserAuthorized(input),
+		markAsDeleted: (input) => userService.markAsDeleted(input),
 	});
