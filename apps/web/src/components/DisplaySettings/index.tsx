@@ -11,14 +11,14 @@ import {
 	type View,
 } from "@/store/views";
 import {
-	AlignJustify,
 	ArrowDownWideNarrow,
 	ArrowUpWideNarrow,
 	ChevronDown,
-	Layers,
+	Layers3,
 	LayoutGrid,
+	Menu,
 	SlidersVertical,
-} from "lucide-react";
+} from "@squared/icons";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import {
@@ -159,7 +159,7 @@ const TopNavBarDisplay = () => {
 										value="list"
 										className="flex h-14 flex-1 cursor-pointer flex-col gap-1 border-[1px] border-secondary p-1"
 									>
-										<AlignJustify />
+										<Menu />
 										List
 									</ToggleGroupItem>
 									<ToggleGroupItem
@@ -181,7 +181,7 @@ const TopNavBarDisplay = () => {
 									<SelectTrigger>
 										<SelectValue>
 											<div className="flex w-full items-center justify-between">
-												<Layers className="size-4" />
+												<Layers3 className="size-4" />
 												<span className="mx-2 text-xs">{groupTasksBy}</span>
 											</div>
 										</SelectValue>

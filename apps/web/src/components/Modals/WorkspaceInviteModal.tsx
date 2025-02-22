@@ -4,8 +4,8 @@ import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
+import { LoaderCircle } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -93,7 +93,7 @@ export const WorkspaceInviteModal = () => {
 						className="w-32"
 					>
 						{isPending ? (
-							<Loader2 className="size-4 animate-spin" />
+							<LoaderCircle className="size-4 animate-spin" />
 						) : (
 							"Send invites"
 						)}

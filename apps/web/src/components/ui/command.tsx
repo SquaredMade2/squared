@@ -1,9 +1,9 @@
 "use client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/utils/cn";
+import { Search } from "@squared/icons";
 import type { DialogProps } from "@squaredmade/ui/dialog";
 import { Command as CommandPrimitive } from "cmdk";
-import { Search } from "lucide-react";
 import * as React from "react";
 const Command = React.forwardRef<
 	React.ElementRef<typeof CommandPrimitive>,

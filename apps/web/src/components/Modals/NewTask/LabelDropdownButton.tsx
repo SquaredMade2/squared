@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
-import { Check, Tag } from "lucide-react";
+import { Check, Tag } from "@squared/icons";
 import { useMemo, useState } from "react";
 
 export const LabelDropdownButton = () => {

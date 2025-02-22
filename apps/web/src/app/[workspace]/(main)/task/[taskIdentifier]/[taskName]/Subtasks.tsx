@@ -20,8 +20,8 @@ import {
 	Droppable,
 } from "@hello-pangea/dnd";
 import type { Task, User } from "@squared/db";
+import { ChevronDown, ChevronRight, UserSearch } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 

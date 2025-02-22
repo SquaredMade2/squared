@@ -8,7 +8,7 @@ import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { Priority, Status } from "@squared/db";
-import { CirclePlus, EllipsisVertical } from "lucide-react";
+import { CirclePlus, EllipsisVertical } from "@squared/icons";
 import { usePathname } from "next/navigation";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";

@@ -3,7 +3,7 @@ import { useUserStore } from "@/store";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
-import { FileSearch } from "lucide-react";
+import { FileSearch } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

@@ -7,7 +7,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PlusCircle } from "lucide-react";
+import { CirclePlus } from "@squared/icons";
 import { useCallback, useState } from "react";
 
 type ColumnType = "wentWell" | "toImprove" | "actionItems";
@@ -33,7 +33,7 @@ const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
 				<Button variant="outline" className="w-full">
-					<PlusCircle className="mr-2 h-4 w-4" />
+					<CirclePlus className="mr-2 h-4 w-4" />
 					Add Item
 				</Button>
 			</DialogTrigger>

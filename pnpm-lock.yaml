@@ -168,6 +168,12 @@ importers:
       '@squared/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
+      '@squared/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
+      '@squared/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@squared/rpc-client':
         specifier: workspace:*
         version: link:../../packages/rpc-client
@@ -340,6 +346,9 @@ importers:
       '@squared/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
+      '@squared/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@squaredmade/ui':
         specifier: 2.0.0-rc.2
         version: 2.0.0-rc.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -529,6 +538,9 @@ importers:
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
+      '@types/react':
+        specifier: 19.0.8
+        version: 19.0.8
       fs-extra:
         specifier: ^11.2.0
         version: 11.3.0

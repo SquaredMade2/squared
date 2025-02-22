@@ -13,7 +13,7 @@ import { useFilterStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import { formatName, getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
-import { Check, UserSearch } from "lucide-react";
+import { Check, UserSearch } from "@squared/icons";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {

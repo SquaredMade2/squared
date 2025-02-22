@@ -19,8 +19,8 @@ import {
 	getInitials,
 	truncateString,
 } from "@/utils/formatting";
+import { Calendar, UserSearch } from "@squared/icons";
 import { formatDate } from "date-fns";
-import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";

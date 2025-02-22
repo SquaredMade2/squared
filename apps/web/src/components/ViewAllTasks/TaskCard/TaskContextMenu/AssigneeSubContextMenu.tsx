@@ -12,8 +12,8 @@ import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
+import { Check, UserSearch } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Check, UserSearch } from "lucide-react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {

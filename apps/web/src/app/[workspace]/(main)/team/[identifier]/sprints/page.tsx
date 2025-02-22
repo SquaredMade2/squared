@@ -38,9 +38,9 @@ import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import type { Priority, Sprint, Task } from "@squared/db";
+import { CircleAlert } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
-import { AlertCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import {
 	Line,
@@ -445,7 +445,7 @@ export default function SprintDashboard() {
 							))}
 						</ScrollArea>
 						<Alert>
-							<AlertCircle className="h-4 w-4" />
+							<CircleAlert className="h-4 w-4" />
 							<AlertTitle>Auto-Assign</AlertTitle>
 							<AlertDescription>
 								This will assign {tasksToAutoAssign.length} task

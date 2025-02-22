@@ -23,8 +23,8 @@ import { useEventStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatName, getInitials } from "@/utils/formatting";
 import type { TaskEvent } from "@squared/db";
+import { Check, ChevronsUpDown, UserSearch } from "@squared/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";
 
 const AssigneeCombobox = () => {

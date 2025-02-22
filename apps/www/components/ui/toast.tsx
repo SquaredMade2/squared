@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { X } from "@squared/icons";
 import * as ToastPrimitives from "@squaredmade/ui/toast";
 import { type VariantProps, cva } from "class-variance-authority";
-import { X } from "lucide-react";
 import * as React from "react";
 
 const ToastProvider = ToastPrimitives.Provider;

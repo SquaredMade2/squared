@@ -4,17 +4,17 @@ import { Separator } from "@/components/ui/separator";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import type { Notification } from "@squared/db";
-import { Label } from "@squaredmade/ui/label";
 import {
 	BadgePlus,
 	Bookmark,
 	Check,
 	Handshake,
 	Inbox,
-	type LucideIcon,
 	MapPin,
 	MessageCircleMore,
-} from "lucide-react";
+	type SquaredIcon,
+} from "@squared/icons";
+import { Label } from "@squaredmade/ui/label";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;
@@ -24,7 +24,7 @@ type SidebarProps = {
 
 type FilterButtonProps = {
 	type: NotificationFilter;
-	icon: LucideIcon;
+	icon: SquaredIcon;
 	label: string;
 	unreadCount?: number;
 	isSelected: boolean;
@@ -101,7 +101,7 @@ export function InboxSidebar({
 }: SidebarProps) {
 	const filters: {
 		type: NotificationFilter;
-		icon: LucideIcon;
+		icon: SquaredIcon;
 		label: string;
 	}[] = [
 		{ type: "INBOX", icon: Inbox, label: "Inbox" },

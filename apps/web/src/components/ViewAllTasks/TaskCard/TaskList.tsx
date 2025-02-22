@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
 import { formatName, formatUrl, getInitials } from "@/utils/formatting";
+import { UserSearch } from "@squared/icons";
 import { formatDate } from "date-fns";
-import { UserSearch } from "lucide-react";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
