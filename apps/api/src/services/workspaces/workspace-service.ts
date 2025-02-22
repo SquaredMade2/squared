@@ -233,21 +233,6 @@ export class WorkspaceService implements WorkspaceRpc {
 			`User ${userName} attempting to join workspace ${workspaceId ? workspaceId : workspaceName}`,
 		);
 
-		const emails = Array.isArray(email) ? email : [email];
-		const inviteUser =
-			this.clerkClient.organizations.createOrganizationInvitation;
-		await Promise.all(
-			emails.map((e) =>
-				inviteUser({
-					organizationId: workspaceId,
-					emailAddress: e,
-					inviterUserId: userId,
-					role: "member",
-					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
-				}),
-			),
-		);
-
 		const { workspaceId, inviteLinks } = await this.verifyToken(
 			token,
 			isLink,
@@ -257,8 +242,31 @@ export class WorkspaceService implements WorkspaceRpc {
 			this.throwError("Invalid token");
 		}
 
-		if (!user) this.throwError("User not found.");
-		if (userWorkspace) return workspace;
+		const [workspace] = await this.db.transaction(async (tx) => {
+			const [user] = await tx
+				.insert(usersTable)
+				.values({
+					externalId: id,
+					name,
+					email,
+				})
+				.onConflictDoNothing({ target: [usersTable.externalId] })
+				.returning();
+
+			await tx
+				.insert(userWorkspacesTable)
+				.values({
+					userId: user.externalId,
+					workspaceId,
+				})
+				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
+				.returning();
+
+			return await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId));
+		});
 
 		// reduce link uses if new member and uses is finite
 
@@ -631,49 +639,33 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	private async verifyToken(
 		token: string,
-		isLink: boolean,
 		workspaceName?: string,
 	): Promise<{
 		workspaceId: string | null;
 		inviteLinks?: WorkspaceInviteLink[];
 	}> {
-		try {
-			if (!isLink) {
-				const decoded = jwt.verify(token, this.JWT_SECRET) as {
-					workspaceId: string;
-				};
-				return { workspaceId: decoded.workspaceId };
-			}
+		const { inviteLinks } = await this.db
+			.select({
+				id: workspacesTable.id,
+				inviteLinks: workspacesTable.inviteLinks,
+			})
+			.from(workspacesTable)
+			.where(eq(workspacesTable.name, workspaceName))
+			.then((results) => results[0]);
 
-			if (workspaceName) {
-				const { id, inviteLinks } = await this.db
-					.select({
-						id: workspacesTable.id,
-						inviteLinks: workspacesTable.inviteLinks,
-					})
-					.from(workspacesTable)
-					.where(eq(workspacesTable.name, workspaceName))
-					.then((results) => results[0]);
+		const inviteLink = inviteLinks.find((data) => data.link === token);
 
-				const inviteLink = inviteLinks.find((data) => data.link === token);
-
-				// Check link hasn't expired or exceeded number of uses
-				if (
-					(inviteLink?.expiration && Date.now() > inviteLink.expiration) ||
-					inviteLink?.uses === 0
-				) {
-					this.throwError(
-						`InviteLink has ${inviteLink?.uses === 0 ? "run out of allotted uses" : "expired"}`,
-					);
-				}
-
-				return { workspaceId: id, inviteLinks };
-			}
-			return { workspaceId: null };
-		} catch (error) {
-			this.logger.error("Token verification failed", error);
-			return { workspaceId: null };
+		// Check link hasn't expired or exceeded number of uses
+		if (
+			(inviteLink?.expiration && Date.now() > inviteLink.expiration) ||
+			inviteLink?.uses === 0
+		) {
+			this.throwError(
+				`InviteLink has ${inviteLink?.uses === 0 ? "run out of allotted uses" : "expired"}`,
+			);
 		}
+
+		return { inviteLinks };
 	}
 	private throwError(message: string): never {
 		this.logger.error(message);
