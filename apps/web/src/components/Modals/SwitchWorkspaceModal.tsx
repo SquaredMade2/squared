@@ -80,7 +80,7 @@ export function WorkspaceSwitcher() {
 							<CommandGroup>
 								<CommandItem
 									onSelect={() => {
-										router.push("/join");
+										router.push("/create");
 										setOpen(false);
 									}}
 									className="cursor-pointer"

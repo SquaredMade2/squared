@@ -13,7 +13,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
-import { formatUrl, getInitials } from "@/utils/formatting";
+import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { UserSearch } from "@squared/icons";
 import { formatDate } from "date-fns";
 import Link from "next/link";
@@ -83,7 +83,7 @@ const TaskList = ({
 								</div>
 							)}
 							{showAvatar &&
-								(user?.name ? (
+								(user ? (
 									<TooltipProvider>
 										<Tooltip>
 											<DropdownMenu>
@@ -95,9 +95,9 @@ const TaskList = ({
 																e.preventDefault();
 															}}
 														>
-															<AvatarImage src={user.avatarUrl ?? undefined} />
+															<AvatarImage src={user.imageUrl} />
 															<AvatarFallback className="text-xxs">
-																{getInitials(user.name)}
+																{getInitials(formatName(user))}
 															</AvatarFallback>
 														</Avatar>
 													</TooltipTrigger>
@@ -107,7 +107,7 @@ const TaskList = ({
 												>
 													<AssigneeBox task={task} />
 												</DropdownMenuContent>
-												<TooltipContent>{user.name}</TooltipContent>
+												<TooltipContent>{formatName(user)}</TooltipContent>
 											</DropdownMenu>
 										</Tooltip>
 									</TooltipProvider>

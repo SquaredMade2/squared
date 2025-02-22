@@ -19,7 +19,7 @@ const HomePage = () => {
 				.$get()
 				.then((res) => res.json());
 			if (!res || res.url === "undefined") {
-				router.push("/join");
+				router.push("/create");
 				return res;
 			}
 			router.push(`/${res.url}`);

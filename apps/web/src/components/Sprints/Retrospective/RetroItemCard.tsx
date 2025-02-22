@@ -6,8 +6,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useUsers } from "@/hooks/useUsers";
 import { formatName } from "@/utils/formatting";
-import { useOrganization } from "@clerk/nextjs";
 import { Draggable } from "@hello-pangea/dnd";
 import { ThumbsUp } from "@squared/icons";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
@@ -21,15 +21,7 @@ export const RetroItemCard = ({
 	index: number;
 	onLikeItem: (itemId: string) => void;
 }) => {
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const { users } = useUsers();
 	const author = users?.find((u) => u.userId === item.authorId);
 
 	const likedByUsers = item.likes
