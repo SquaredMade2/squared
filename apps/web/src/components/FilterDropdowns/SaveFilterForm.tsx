@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import {
 	useFilterStore,
 	useSprintStore,
 	useTeamStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import type { SavedFilter } from "@/store/filters";
@@ -51,7 +51,7 @@ export function SaveFilterForm({
 		mergeFilters,
 	} = useFilterStore((state) => state);
 	const { team } = useTeamStore((state) => state);
-	const { users } = useUserStore((state) => state);
+	const { users } = useUsers();
 	const { workspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const [formattedFilters, setFormattedFilters] = useState<
@@ -96,7 +96,7 @@ export function SaveFilterForm({
 
 	useEffect(() => {
 		const formatFilters = async () => {
-			if (workspace) {
+			if (workspace && users) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
 						formatFilterName(filter, workspace.labels, users),
