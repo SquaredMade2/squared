@@ -17,10 +17,9 @@ const db = createDb({
 	databaseUrl: process.env.DATABASE_URL,
 });
 
-const jwtSecret = process.env.JWT_SECRET;
 const clerkSecret = process.env.CLERK_SECRET;
 
-const auth = new AuthService(db, jwtSecret);
+const auth = new AuthService(db);
 const comment = new CommentService(db);
 const event = new EventService(db);
 const filter = new FilterService(db);
@@ -28,7 +27,7 @@ const sprint = new SprintService(db);
 const team = new TeamService(db);
 const task = new TaskService(db, event);
 const user = new UserService(db);
-const workspace = new WorkspaceService(db, jwtSecret, clerkSecret);
+const workspace = new WorkspaceService(db, clerkSecret);
 
 export const services = {
 	auth,
