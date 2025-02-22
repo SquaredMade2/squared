@@ -4,9 +4,9 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useOrganization } from "@clerk/nextjs";
 
 import { useToast } from "@/components/ui/use-toast";
+import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import type { AssigneeBoxProps } from "./interfaces";
@@ -15,16 +15,7 @@ export const AssigneeBox = ({ task }: AssigneeBoxProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const { users } = useUsers();
 
 	const updateAssignee = async (userId: string | null) => {
 		try {

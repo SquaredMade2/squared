@@ -13,7 +13,12 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
-import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
+import {
+	formatName,
+	formatUrl,
+	getInitials,
+	truncateString,
+} from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
@@ -53,7 +58,7 @@ const TaskGrid = ({
 							<div />
 						)}
 						{showAvatar &&
-							(user?.name ? (
+							(user ? (
 								<TooltipProvider>
 									<Tooltip>
 										<DropdownMenu>
@@ -65,9 +70,9 @@ const TaskGrid = ({
 															e.preventDefault();
 														}}
 													>
-														<AvatarImage src={user.avatarUrl ?? undefined} />
+														<AvatarImage src={user.imageUrl} />
 														<AvatarFallback className="text-xxs">
-															{getInitials(user.name)}
+															{getInitials(formatName(user))}
 														</AvatarFallback>
 													</Avatar>
 												</TooltipTrigger>
@@ -75,7 +80,7 @@ const TaskGrid = ({
 											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 												<AssigneeBox task={task} />
 											</DropdownMenuContent>
-											<TooltipContent>{user.name}</TooltipContent>
+											<TooltipContent>{formatName(user)}</TooltipContent>
 										</DropdownMenu>
 									</Tooltip>
 								</TooltipProvider>

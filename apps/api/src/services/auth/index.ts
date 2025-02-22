@@ -13,7 +13,6 @@ const registerSchema = createSchema<Register>()(
 		externalId: z.string(),
 		name: z.string(),
 		username: z.string(),
-		inviteToken: z.string().optional(),
 	}),
 );
 
