@@ -90,12 +90,21 @@ func (s *GithubService) GetWorkspaceOrganizations(ctx context.Context, req GetWo
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	var response GetWorkspaceOrganizationsResponse
-	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %w", err)
+	type GetWorkspaceOrganizationsResponseWrapper struct {
+		JSON GetWorkspaceOrganizationsResponse "json:\"json\""
 	}
 
-	return &response, nil
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper GetWorkspaceOrganizationsResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
 	
 }
 
@@ -185,8 +194,8 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	type upsertPullRequestResponseWrapper struct {
-		JSON UpsertPullRequestResponse `json:"json"`
+	type UpsertPullRequestResponseWrapper struct {
+		JSON UpsertPullRequestResponse "json:\"json\""
 	}
 
 	var responseString string
@@ -194,12 +203,13 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 		return nil, fmt.Errorf("error decoding response string: %w", err)
 	}
 
-	var wrapper upsertPullRequestResponseWrapper
+	var wrapper UpsertPullRequestResponseWrapper
 	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
 		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
 	}
 
 	return &wrapper.JSON, nil
+	
 }
 
 
@@ -267,12 +277,21 @@ func (s *GithubService) PushCommit(ctx context.Context, req PushCommitRequest) (
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	var response PushCommitResponse
-	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %w", err)
+	type PushCommitResponseWrapper struct {
+		JSON PushCommitResponse "json:\"json\""
 	}
 
-	return &response, nil
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper PushCommitResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
 	
 }
 
@@ -338,12 +357,21 @@ func (s *GithubService) UploadOrg(ctx context.Context, req UploadOrgRequest) (*U
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	var response UploadOrgResponse
-	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %w", err)
+	type UploadOrgResponseWrapper struct {
+		JSON UploadOrgResponse "json:\"json\""
 	}
 
-	return &response, nil
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper UploadOrgResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
 	
 }
 

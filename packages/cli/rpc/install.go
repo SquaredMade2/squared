@@ -287,12 +287,21 @@ func (s *{{capitalizeFirst $.Name}}Service) {{capitalizeFirst .MethodName}}(ctx 
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	var response {{capitalizeFirst .MethodName}}Response
-	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %w", err)
+	type {{capitalizeFirst .MethodName}}ResponseWrapper struct {
+		JSON {{capitalizeFirst .MethodName}}Response "json:\"json\""
 	}
 
-	return &response, nil
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper {{capitalizeFirst .MethodName}}ResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
 	{{else}}
 	return {{if eq .OutputType "nil"}}nil{{else}}nil{{end}}
 	{{end}}
