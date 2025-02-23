@@ -7,7 +7,7 @@ import {
 	Moon,
 	Sun,
 	Users,
-} from "lucide-react";
+} from "@squared/icons";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 

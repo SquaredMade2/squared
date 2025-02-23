@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@squared/icons";
 
 export const LoadingTask = () => {
 	return (

@@ -5,7 +5,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import type { Task } from "@squared/db";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis } from "@squared/icons";
 import DeleteTaskModal from "../DeleteTaskModal";
 
 export default function DeleteTaskPopOver({ task }: { task: Task }) {

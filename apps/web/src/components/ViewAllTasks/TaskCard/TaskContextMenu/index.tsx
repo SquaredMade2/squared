@@ -10,7 +10,7 @@ import { useOrganization } from "@clerk/nextjs";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,
-} from "lucide-react";
+} from "@squared/icons";
 import Link from "next/link";
 import { useState } from "react";
 import { DeleteTaskAlertDialog } from "../../DeleteTaskAlertDialog";

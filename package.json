@@ -5,6 +5,7 @@
 	"scripts": {
 		"api:gen": "pnpm run --filter=api gen",
 		"build": "turbo run build",
+		"build:icons": "pnpm --filter=@squared/icons run build",
 		"build:rpc": "pnpm --filter=@squared/rpc run build && pnpm --filter=@squared/rpc-client run build",
 		"build:ui": "pnpm --filter=@squaredmade/ui run build",
 		"check-types": "turbo run check-types",

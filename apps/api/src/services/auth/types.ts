@@ -5,7 +5,6 @@ export type Register = {
 	externalId: string;
 	name: string;
 	username: string;
-	inviteToken?: string;
 };
 
 export type RegisterReturn = {

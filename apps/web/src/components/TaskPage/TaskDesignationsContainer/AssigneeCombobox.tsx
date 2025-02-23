@@ -17,14 +17,14 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatName, getInitials } from "@/utils/formatting";
-import { useOrganization } from "@clerk/nextjs";
 import type { TaskEvent } from "@squared/db";
+import { Check, ChevronsUpDown, UserSearch } from "@squared/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";
 
 const AssigneeCombobox = () => {
@@ -32,15 +32,7 @@ const AssigneeCombobox = () => {
 	const { toast } = useToast();
 	const { setEvents } = useEventStore((state) => state);
 	const queryClient = useQueryClient();
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const { users } = useUsers();
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
