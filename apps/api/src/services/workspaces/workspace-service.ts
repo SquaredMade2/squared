@@ -1,5 +1,3 @@
-import { sendMail } from "@/utils/mail";
-import { joinWorkspaceTemplate } from "@/utils/templates";
 import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
@@ -7,7 +5,6 @@ import {
 	type Workspace,
 	and,
 	eq,
-	inArray,
 	sql,
 	teamsTable,
 	userTeamsTable,
@@ -17,7 +14,6 @@ import {
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
-import jwt from "jsonwebtoken";
 import type {
 	CreateWorkspaceParams,
 	WorkspaceParams,
@@ -41,15 +37,12 @@ const DEFAULT_LABELS = [
 export class WorkspaceService implements WorkspaceRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
-	private readonly JWT_SECRET: string;
 	private readonly clerkClient: ClerkClient;
 
-	constructor(db: DBClient, JWT_SECRET?: string, CLERK_SECRET?: string) {
+	constructor(db: DBClient, CLERK_SECRET?: string) {
 		this.db = db;
 		this.logger = createCustomLogger("workspace");
-		if (!JWT_SECRET) this.throwError("JWT_SECRET is not defined.");
 		if (!CLERK_SECRET) this.throwError("CLERK_SECRET is not defined.");
-		this.JWT_SECRET = JWT_SECRET;
 		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 	}
 
@@ -334,68 +327,12 @@ export class WorkspaceService implements WorkspaceRpc {
 					emailAddress: e,
 					inviterUserId: userId,
 					role: "member",
-					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/join`,
+					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
 				}),
 			),
 		);
 
-		return await this.db.transaction(async (tx) => {
-			// Check if the workspace exists
-			const workspaceWithUsers = await tx
-				.select({
-					workspace: workspacesTable,
-					user: usersTable,
-				})
-				.from(workspacesTable)
-				.leftJoin(
-					userWorkspacesTable,
-					eq(userWorkspacesTable.workspaceId, workspacesTable.externalId),
-				)
-				.leftJoin(
-					usersTable,
-					eq(userWorkspacesTable.userId, usersTable.externalId),
-				)
-				.where(eq(workspacesTable.externalId, workspaceId));
-
-			if (workspaceWithUsers.length === 0) {
-				this.throwError("Workspace not found.");
-			}
-
-			const workspace = workspaceWithUsers[0].workspace;
-			const workspaceEmails = workspaceWithUsers
-				.map((row) => row.user?.email)
-				.filter((email): email is string => email !== undefined);
-
-			// Generate token
-			const token = jwt.sign({ workspaceId, email }, this.JWT_SECRET, {
-				expiresIn: "1h",
-			});
-
-			const emailsToSend = Array.isArray(email) ? email : [email];
-			const existingUsers = await tx
-				.select()
-				.from(usersTable)
-				.where(inArray(usersTable.email, emailsToSend));
-
-			// Send email with the token
-			for (const email of emailsToSend.filter(
-				(email) => !workspaceEmails.includes(email),
-			)) {
-				const newUser = !existingUsers.some((u) => u.email === email);
-				await sendMail({
-					logger: this.logger,
-					email,
-					subject: "Workspace Invitation",
-					html: joinWorkspaceTemplate({
-						username: existingUsers.find((u) => u.email === email)?.name,
-						path: newUser ? `register?token=${token}` : `login?token=${token}`,
-						workspaceName: workspace.name,
-					}),
-				});
-			}
-
-			return { success: true };
-		});
+		return { success: true };
 	}
 	async getTakenWorkspaceUrls(): Promise<string[]> {
 		this.logger.info("Getting taken workspace urls");

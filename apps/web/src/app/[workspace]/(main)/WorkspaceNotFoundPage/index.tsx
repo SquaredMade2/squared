@@ -3,7 +3,7 @@ import { useUserStore } from "@/store";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
-import { FileSearch } from "lucide-react";
+import { FileSearch } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -79,7 +79,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						<span className="block w-full border-border border-t pb-1" />
 						<ul className="px-1.5">
 							<li
-								onClick={() => router.push("/join")}
+								onClick={() => router.push("/create")}
 								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 							>
 								Create or join a workspace

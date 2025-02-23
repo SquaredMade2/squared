@@ -6,6 +6,7 @@ interface BadgePlusProps {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const BadgePlus: FC<BadgePlusProps> = ({

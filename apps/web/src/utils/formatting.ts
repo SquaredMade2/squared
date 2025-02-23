@@ -2,7 +2,7 @@ import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import type { PublicUserData } from "@clerk/types";
-import { type Label, Priority, Status, type User } from "@squared/db";
+import { type Label, Priority, Status } from "@squared/db";
 import { format } from "date-fns";
 
 export const truncateString = (string: string, maxLength: number): string => {
@@ -198,7 +198,7 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 export const formatFilterName = async (
 	filter: FilterCondition,
 	labels: Label[],
-	users: User[],
+	users: PublicUserData[],
 ): Promise<{ name: string; value: string }> => {
 	if (!filter.value) return { name: filter.field, value: "" };
 	switch (filter.field) {
@@ -206,7 +206,9 @@ export const formatFilterName = async (
 			const assignees = getFilterAssignees([filter], users);
 			return {
 				name: assignees.length > 1 ? "Assignees" : "Assignee",
-				value: assignees.map((a) => a?.name || "Unassigned").join(", "),
+				value: assignees
+					.map((a) => formatName(a ?? undefined) || "Unassigned")
+					.join(", "),
 			};
 		}
 		case "status":

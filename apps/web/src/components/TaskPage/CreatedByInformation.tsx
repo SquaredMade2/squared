@@ -1,25 +1,18 @@
+import { useUsers } from "@/hooks/useUsers";
 import { useEventStore, useTaskStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import type { Commit, TaskEvent } from "@squared/db";
 import { formatDate } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const CreatedByInformation = () => {
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const { users } = useUsers();
 	const events = useEventStore((state) => state.events);
 	const currentTask = useTaskStore((state) => state.currentTask);
-	const authorId = currentTask?.authorId;
-	const foundUser = users?.find((user) => user.userId === authorId);
+	const foundUser = users?.find(
+		(user) => user.userId === currentTask?.authorId,
+	);
 
 	const displayDate = () => {
 		if (currentTask) {

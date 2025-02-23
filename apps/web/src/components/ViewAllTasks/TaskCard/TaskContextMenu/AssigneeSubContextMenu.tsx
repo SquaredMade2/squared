@@ -8,25 +8,16 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { Check, UserSearch } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Check, UserSearch } from "lucide-react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
-	const { user } = useUser();
+	const { user, users } = useUsers();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
 

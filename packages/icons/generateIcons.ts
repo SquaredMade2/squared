@@ -26,6 +26,7 @@ for (const file of svgFiles) {
 	);
 	exportStatements.push(`export * from './${componentName}'; `);
 }
+exportStatements.push("export * from '../types';");
 fs.writeFileSync(
 	path.join(outputDirectory, "index.ts"),
 	exportStatements.join("\n"),

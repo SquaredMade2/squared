@@ -1,4 +1,4 @@
-import { AlertCircle } from "lucide-react";
+import { CircleAlert } from "@squared/icons";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
@@ -15,7 +15,7 @@ export const SprintNotFound = ({
 		<div className="flex h-full w-full items-center justify-center">
 			<div className="space-y-4 text-center">
 				<div className="flex justify-center">
-					<AlertCircle className="h-12 w-12 text-yellow-500" />
+					<CircleAlert className="h-12 w-12 text-yellow-500" />
 				</div>
 				<h2 className="font-bold text-2xl tracking-tight">Sprint Not Found</h2>
 				<p className="text-muted-foreground">
