@@ -185,13 +185,21 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	var response UpsertPullRequestResponse
-	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %w", err)
+	type upsertPullRequestResponseWrapper struct {
+		JSON UpsertPullRequestResponse `json:"json"`
 	}
 
-	return &response, nil
-	
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper upsertPullRequestResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
 }
 
 

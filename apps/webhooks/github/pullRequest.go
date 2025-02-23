@@ -172,7 +172,7 @@ func addCommentToPR(owner, repo string, prNumber int, tasks rpc.UpsertPullReques
 
 	commentBody := fmt.Sprintf(`🔗 Linked Task(s) Found
 
-This pull request is associated with the following task(s) in [External Project Management System]:
+This pull request is associated with the following task(s) in Squared:
 
 %s
 Keeping tasks and PRs connected helps streamline progress and ensure visibility. If this is incorrect or missing tasks, please update the linked references accordingly.
