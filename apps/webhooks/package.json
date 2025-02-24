@@ -1,0 +1,13 @@
+{
+	"name": "webhooks",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"dev:go": "go run main.go",
+		"smee": "smee -u https://smee.io/xFrqLYhBh7KSCwP -p 3131",
+		"test": "go test -v ./..."
+	},
+	"devDependencies": {
+		"smee": "^0.2.0"
+	}
+}

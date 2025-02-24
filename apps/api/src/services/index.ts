@@ -6,6 +6,8 @@ import { createCommentRpcHandler } from "./comments";
 import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
 import { FilterService, createFilterRpcHandler } from "./filters";
+import { createGithubRpcHandler } from "./github";
+import { GithubService } from "./github/github-service";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
 import { TeamService, createTeamRpcHandler } from "./teams";
@@ -23,6 +25,7 @@ const auth = new AuthService(db);
 const comment = new CommentService(db);
 const event = new EventService(db);
 const filter = new FilterService(db);
+const github = new GithubService(db);
 const sprint = new SprintService(db);
 const team = new TeamService(db);
 const task = new TaskService(db, event);
@@ -34,6 +37,7 @@ export const services = {
 	comment,
 	event,
 	filter,
+	github,
 	sprint,
 	team,
 	task,
@@ -46,6 +50,7 @@ export const rpcHandlers = {
 	comment: createCommentRpcHandler(services.comment),
 	event: createEventRpcHandler(services.event),
 	filter: createFilterRpcHandler(services.filter),
+	github: createGithubRpcHandler(services.github),
 	sprint: createSprintRpcHandler(services.sprint),
 	task: createTaskRpcHandler(services.task),
 	team: createTeamRpcHandler(services.team),

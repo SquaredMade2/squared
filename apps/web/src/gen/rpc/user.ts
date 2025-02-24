@@ -156,12 +156,6 @@ export type GetUserAvatarsResponse = {
 	name: string;
 }[];
 
-export type GetUserRepositoriesRequest = {
-	userId: string;
-};
-
-export type GetUserRepositoriesResponse = string[];
-
 export type GetUserTeamsRequest = {
 	userId: string;
 };
@@ -312,16 +306,6 @@ export class UserService extends RPCContextClient {
 		req: GetUserAvatarsRequest,
 	): Promise<GetUserAvatarsResponse> {
 		return this.request(ctx, "getUserAvatars", req);
-	}
-
-	/**
-	 * getUserRepositories method
-	 */
-	getUserRepositories(
-		ctx: Context,
-		req: GetUserRepositoriesRequest,
-	): Promise<GetUserRepositoriesResponse> {
-		return this.request(ctx, "getUserRepositories", req);
 	}
 
 	/**

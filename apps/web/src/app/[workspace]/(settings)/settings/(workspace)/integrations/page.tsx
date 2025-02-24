@@ -7,9 +7,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { useOrganization } from "@clerk/nextjs";
 import Link from "next/link";
 
 const IntegrationSettings = () => {
+	const { organization } = useOrganization();
 	return (
 		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
 			<div className="bg-background mdsm:visible lg:hidden">
@@ -25,7 +27,7 @@ const IntegrationSettings = () => {
 							Enhance Squared experience by integrating add-ons
 						</header>
 					</div>
-					<Link href={"/settings/integrations/github"}>
+					<Link href={`/${organization?.slug}/settings/integrations/github`}>
 						<Card className="hover:bg-secondary">
 							<CardHeader className="flex flex-row items-center">
 								<div className="ml-4 flex h-16 w-16 items-center justify-center rounded-lg bg-white p-2">
