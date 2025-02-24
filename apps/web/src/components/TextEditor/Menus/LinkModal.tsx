@@ -11,7 +11,7 @@ import { useModalStore } from "@/store";
 import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "@squared/icons";
 import { useState } from "react";
-import type { LinkModalProps } from "./interfaces";
+import type { LinkModalProps } from "../interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 	// State
@@ -49,7 +49,7 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 	};
 	return (
 		<Dialog open={showLinkForm} onOpenChange={handleOpenChange}>
-			<DialogTrigger>
+			<DialogTrigger asChild>
 				<Button
 					variant="ghost"
 					size="icon"
