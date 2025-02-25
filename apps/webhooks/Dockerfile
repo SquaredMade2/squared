@@ -15,6 +15,7 @@ COPY main.go .
 COPY gen/ ./gen/
 COPY github/ ./github/
 COPY vercel/ ./vercel/
+COPY helpers/ ./helpers/
 
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o main .
