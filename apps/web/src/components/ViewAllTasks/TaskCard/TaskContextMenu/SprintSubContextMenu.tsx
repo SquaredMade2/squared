@@ -19,17 +19,19 @@ const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const { mutate: updateSprint } = useMutation({
 		mutationKey: ["task", "updateSprint", task.id],
-		mutationFn: async (sprintId: string) => {
-			await client.sprint.addSprintTasks.$post({
-				sprintId,
-				taskIds: [task.id],
-			});
+		mutationFn: async (sprintId: string | null) => {
 			const res = await client.task.updateSprint.$post({
 				taskId: task.id,
 				sprintId,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
+			if (sprintId) {
+				await client.sprint.addSprintTasks.$post({
+					sprintId,
+					taskIds: [task.id],
+				});
+			}
 			return updatedTask;
 		},
 		onError: (error) => {
@@ -40,10 +42,12 @@ const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
 				variant: "destructive",
 			});
 		},
-		onSuccess: (updatedTask) => {
+		onSuccess: (updatedTask, sprintId) => {
 			toast({
-				title: "Task added to sprint",
-				description: `${updatedTask.title} has been added to the active sprint.`,
+				title: "Task updated",
+				description: sprintId
+					? `${updatedTask.title} has been added to the active sprint.`
+					: `${updatedTask.title} has been removed from the active sprint.`,
 				variant: "default",
 			});
 		},
@@ -51,12 +55,18 @@ const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	return (
 		<ContextMenuSub>
-			<ContextMenuSubTrigger>Add to Sprint</ContextMenuSubTrigger>
+			<ContextMenuSubTrigger>Sprint</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
 				{!loading && activeSprint?.id ? (
-					<ContextMenuItem onClick={() => updateSprint(activeSprint.id)}>
-						{activeSprint?.name}
-					</ContextMenuItem>
+					task.sprintId === null ? (
+						<ContextMenuItem onClick={() => updateSprint(activeSprint.id)}>
+							Add to {activeSprint?.name}
+						</ContextMenuItem>
+					) : (
+						<ContextMenuItem onClick={() => updateSprint(null)}>
+							Remove from {activeSprint.name}
+						</ContextMenuItem>
+					)
 				) : (
 					<ContextMenuItem>Loading...</ContextMenuItem>
 				)}
@@ -66,7 +76,3 @@ const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
 };
 
 export default SprintSubContextMenu;
-
-// disable when team.sprintsEnabled is false
-//if no active sprint - none
-// active sprint - add to ${sprintName}
