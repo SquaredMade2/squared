@@ -2,7 +2,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { useEventStore, useTaskStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
-import type { Commit, TaskEvent } from "@squared/db";
+import type { GithubCommit, TaskEvent } from "@squared/db";
 import { formatDate } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
@@ -23,7 +23,7 @@ export const CreatedByInformation = () => {
 		}
 	};
 
-	const getEventTime = (event: TaskEvent | Commit) => {
+	const getEventTime = (event: TaskEvent | GithubCommit) => {
 		if ("createdAt" in event) {
 			return event.createdAt;
 		}

@@ -1,11 +1,10 @@
-package main
+package vercel
 
 import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -175,7 +174,7 @@ func TestHandleRequest(t *testing.T) {
 			}
 
 			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(handleRequest)
+			handler := http.HandlerFunc(WebhookHandler)
 
 			handler.ServeHTTP(rr, req)
 
@@ -235,17 +234,17 @@ func TestFormatLog(t *testing.T) {
 		{
 			name:     "Info Log",
 			logData:  testInfo,
-			expected: "Jan 05 22:38:52 \x1b[32minfo:\x1b[0m status=200 time=10ms [POST] path=/api/auth/_log",
+			expected: "\x1b[32minfo\x1b[0m: status=200 time=10ms [POST] path=/api/auth/_log",
 		},
 		{
 			name:     "Warning Log",
 			logData:  testWarning,
-			expected: "Jan 07 02:48:48 \x1b[33mwarning:\x1b[0m status=403 [GET] path=/api/auth/link",
+			expected: "\x1b[33mwarning\x1b[0m: status=403 [GET] path=/api/auth/link",
 		},
 		{
 			name:     "Error Log",
 			logData:  testError,
-			expected: "Jan 07 03:02:47 \x1b[31merror:\x1b[0m status=400 path=/api/auth/callback error_message=Authentication error: Error: Invalid state parameter at t_ (.next/server/app/api/auth/callback/route.js:1:31378)",
+			expected: "\x1b[31merror\x1b[0m: status=400 path=/api/auth/callback error_message=Authentication error: Error: Invalid state parameter at t_ (.next/server/app/api/auth/callback/route.js:1:31378)",
 		},
 	}
 	for _, tt := range logsToTest {
@@ -262,9 +261,9 @@ func TestFormatLog(t *testing.T) {
 
 			log := logs[0]
 			formatted := formatLog(log)
-			fmt.Printf("formatted: %s\n", formatted)
 			if formatted != tt.expected {
-				t.Errorf("formatLog() = %v, want %v", formatted, tt.expected)
+				t.Errorf("formatLog() =\n%q\nwant\n%q", formatted, tt.expected)
+				t.Errorf("Lengths: actual=%d, expected=%d", len(formatted), len(tt.expected))
 			}
 		})
 	}

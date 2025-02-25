@@ -4,11 +4,18 @@ FROM golang:1.23-alpine AS builder
 # Set the working directory
 WORKDIR /app
 
-# Copy go mod file
-COPY go.mod ./
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
 
 # Copy the source code
 COPY main.go .
+COPY gen/ ./gen/
+COPY github/ ./github/
+COPY vercel/ ./vercel/
+COPY helpers/ ./helpers/
 
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o main .
