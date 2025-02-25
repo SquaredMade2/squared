@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/SquaredMade2/squared/rpc"
 	"github.com/spf13/cobra"
 )
 
@@ -30,20 +31,29 @@ var rpcCmd = &cobra.Command{
 
 func init() {
 	rpcCmd.AddCommand(installCmd)
+	rpcCmd.AddCommand(installGoCmd)
 	rpcCmd.AddCommand(listCmd)
 }
 
 var installCmd = &cobra.Command{
 	Use:   "install [service_url]",
-	Short: "Install a service by URL",
-	Long:  `Install an RPC service in your Squared environment using the provided URL.`,
+	Short: "Install a service and generate TypeScript client",
+	Long:  `Install an RPC service in your Squared environment and generate a TypeScript client using the provided URL.`,
 	Args:  cobra.ExactArgs(1),
-	Run:   installService,
+	Run:   rpc.InstallService,
+}
+
+var installGoCmd = &cobra.Command{
+	Use:   "go [service_url]",
+	Short: "Install a service and generate Go client",
+	Long:  `Install an RPC service in your Squared environment and generate a Go client using the provided URL.`,
+	Args:  cobra.ExactArgs(1),
+	Run:   rpc.InstallService,
 }
 
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all available services",
 	Long:  `List all RPC services available in your Squared environment.`,
-	Run:   listServices,
+	Run:   rpc.ListServices,
 }

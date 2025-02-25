@@ -98,7 +98,7 @@ export function WorkspaceDropdown() {
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					onSelect={() => {
-						router.push("/join");
+						router.push("/create");
 					}}
 					className="hover:cursor-pointer"
 				>

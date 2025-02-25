@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useOrganization, useUser } from "@clerk/nextjs";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings } from "@squared/icons";
 import Link from "next/link";
 
 interface UserProfileProps {

@@ -1,10 +1,10 @@
 "use client";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
-import { Draggable } from "@hello-pangea/dnd";
+import { useUsers } from "@/hooks/useUsers";
+import { useViewStore, useWorkspaceStore } from "@/store";
 import type { DraggableProvided } from "@hello-pangea/dnd";
-import type { Task, User } from "@squared/db";
-import { useEffect, useState } from "react";
+import { Draggable } from "@hello-pangea/dnd";
+import type { Task } from "@squared/db";
 import TaskContextMenu from "./TaskContextMenu";
 import TaskGrid from "./TaskGrid";
 import TaskList from "./TaskList";
@@ -17,14 +17,10 @@ const TaskCard = ({
 	location,
 	isDisabled,
 }: TaskCardProps) => {
-	const [assignee, setAssignee] = useState<User | null>(null);
 	const { view } = useViewStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const { users } = useUserStore((state) => state);
-	useEffect(() => {
-		const foundUser = users.find((user) => user.externalId === task.assigneeId);
-		setAssignee(foundUser ?? null);
-	}, [task.assigneeId, users]);
+	const { users } = useUsers();
+	const assignee = users?.find((user) => user.userId === task.assigneeId);
 
 	const taskLabels =
 		workspace?.labels.filter((label) =>

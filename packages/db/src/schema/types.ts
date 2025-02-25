@@ -63,6 +63,19 @@ export type FilterCondition = {
 		| "arrayIncludesAny";
 };
 
+export const pullRequestState = pgEnum("PullRequestState", ["open", "closed"]);
+
+export type PullRequest = {
+	id: string;
+	number: number;
+	state: "open" | "closed";
+	title: string;
+	url: string;
+	branch: string;
+	body: string;
+	author: string;
+};
+
 function objEnum<T extends string>(enumValues: readonly T[]) {
 	const enumObject = {} as { [K in T]: K };
 	for (const enumValue of enumValues) {
@@ -88,3 +101,5 @@ export const SprintStatus = objEnum(sprintStatusType.enumValues);
 export type SprintStatus = (typeof sprintStatusType.enumValues)[number];
 export const Status = objEnum(statusType.enumValues);
 export type Status = (typeof statusType.enumValues)[number];
+export const PullRequestState = objEnum(pullRequestState.enumValues);
+export type PullRequestState = (typeof pullRequestState.enumValues)[number];

@@ -1,6 +1,7 @@
 import type {
 	Comment,
-	Commit,
+	GithubCommit,
+	GithubRepo,
 	Label,
 	Notification,
 	Sprint,
@@ -94,17 +95,28 @@ export const notificationSchema = createSchema<Notification>()(
 	}),
 );
 
-export const commitSchema = createSchema<Commit>()(
+export const commitSchema = createSchema<GithubCommit>()(
 	z.object({
 		id: z.string(),
-		branchId: z.string(),
-		message: z.string(),
-		timestamp: z.date(),
+		externalId: z.string(),
+		message: z.string().nullable(),
 		url: z.string(),
-		authorName: z.string().nullable(),
-		repoName: z.string().nullable(),
-		owner: z.string().nullable(),
-		taskId: z.string().nullable(),
+		author: z.string().nullable(),
+		repoId: z.string(),
+		pullId: z.string(),
+		timestamp: z.date(),
+	}),
+);
+
+export const githubRepoSchema = createSchema<GithubRepo>()(
+	z.object({
+		id: z.string(),
+		externalId: z.string(),
+		private: z.boolean(),
+		description: z.string().nullable(),
+		url: z.string(),
+		name: z.string(),
+		orgId: z.string(),
 	}),
 );
 

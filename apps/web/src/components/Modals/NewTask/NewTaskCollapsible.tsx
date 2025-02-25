@@ -25,9 +25,9 @@ import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CirclePlus } from "@squared/icons";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
 import { useMutation } from "@tanstack/react-query";
-import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -156,7 +156,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 						size="sm"
 						className="my-4 flex w-full items-center"
 					>
-						<PlusCircle className="mr-2 h-4 w-4" />
+						<CirclePlus className="mr-2 h-4 w-4" />
 						Add Subtask
 					</Button>
 				</AccordionTrigger>

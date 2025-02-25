@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+import { TriangleAlert } from "@squared/icons";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
@@ -16,7 +16,7 @@ export const SprintError = ({
 	return (
 		<div className="flex h-full w-full items-center justify-center">
 			<div className="max-w-md space-y-4 text-center">
-				<AlertTriangle className="mx-auto h-12 w-12 text-destructive" />
+				<TriangleAlert className="mx-auto h-12 w-12 text-destructive" />
 				<h2 className="font-semibold text-2xl tracking-tight">
 					Error Loading Sprint
 				</h2>
