@@ -18,6 +18,7 @@ import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 import LabelSubContextMenu from "./LabelSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
+import SprintSubContextMenu from "./SprintSubContextMenu";
 import StatusSubContextMenu from "./StatusSubContextMenu";
 import type { ContextMenuProps } from "./interfaces";
 
@@ -68,6 +69,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 				<DateSubContextMenu task={task} />
 
+				<SprintSubContextMenu task={task} />
 				{/* Need to make this with a Dialog comp */}
 				<ContextMenuItem
 					onClick={() => {
