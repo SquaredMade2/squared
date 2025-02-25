@@ -54,7 +54,6 @@ ENV GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
 ENV DATABASE_URL=${DATABASE_URL}
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-RUN pnpm turbo build --filter=api...
 RUN pnpm db:migrate
 
 FROM base AS runner
