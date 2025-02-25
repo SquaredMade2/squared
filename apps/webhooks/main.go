@@ -15,10 +15,12 @@ func main() {
 	http.HandleFunc("/github", github.WebhookHandler)
 	http.HandleFunc("/vercel", vercel.WebhookHandler)
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Printf("Error loading .env file")
-		return
+	if os.Getenv("PORT") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("Error loading .env file")
+			return
+		}
 	}
 
 	port := os.Getenv("PORT")
