@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
-import { labelSchema, taskSchema } from "../schema";
+import { labelSchema, statusEnum, taskSchema } from "../schema";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
 const createTaskParams = createSchema<CreateTaskParams>()(
@@ -15,17 +15,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		dueDate: z.date().optional().nullable(),
 		effortEstimate: z.number().min(1).max(5).optional().nullable(),
 		teamId: z.string(),
-		status: z
-			.enum([
-				"backlog",
-				"todo",
-				"inProgress",
-				"inReview",
-				"done",
-				"canceled",
-				"archived",
-			])
-			.optional(),
+		status: statusEnum.optional(),
 		priority: z
 			.enum(["noPriority", "urgent", "high", "medium", "low"])
 			.optional(),
@@ -43,17 +33,7 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		description: z.string().optional(),
 		dueDate: z.date().nullable().optional(),
 		effortEstimate: z.number().min(1).max(5).optional(),
-		status: z
-			.enum([
-				"backlog",
-				"todo",
-				"inProgress",
-				"inReview",
-				"done",
-				"canceled",
-				"archived",
-			])
-			.optional(),
+		status: statusEnum.optional(),
 		priority: z
 			.enum(["noPriority", "urgent", "high", "medium", "low"])
 			.optional(),

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus } from "@squared/icons";
 import Link from "next/link";
 
 const AddTeamButton = ({ workspaceUrl }: { workspaceUrl: string }) => {

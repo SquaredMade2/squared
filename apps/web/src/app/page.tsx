@@ -13,14 +13,14 @@ const HomePage = () => {
 	const { signOut } = useClerk();
 
 	const { isLoading: workspaceLoading, error: workspaceError } = useQuery({
-		queryKey: ["defaultWorkspace"],
+		queryKey: ["user", "defaultWorkspace"],
 		queryFn: async () => {
 			if (isLoaded && !user) await signOut();
 			const res = await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
 			if (!res || res.url === "undefined") {
-				router.push("/join");
+				router.push("/create");
 				return res;
 			}
 			setActive ? setActive({ organization: res.id }) : "";

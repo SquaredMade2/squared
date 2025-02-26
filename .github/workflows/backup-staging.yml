@@ -2,7 +2,7 @@ name: squared-staging
 
 on:
   schedule:
-    - cron: '0 0 1 * *' 
+    - cron: '0 0 1 * *' #runs first day each month at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
 
     permissions:
       id-token: write
+      contents: read
 
     env:
       S3_BUCKET_NAME: 'squared-staging-backup'
@@ -18,15 +19,13 @@ jobs:
       PG_VERSION: '16'
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup PostgreSQL
         uses: tj-actions/install-postgresql@v3
         with:
           postgresql-version: ${{env.PG_VERSION}}
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt install -y awscli
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

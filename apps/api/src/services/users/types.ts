@@ -29,7 +29,7 @@ export interface UserRpc {
 	setLastViewedTask: (args: {
 		userId: string;
 		taskId: string;
-	}) => Promise<void>;
+	}) => Promise<User>;
 	getDefaultWorkspace: (args: {
 		userId: string;
 	}) => Promise<Workspace | null>;

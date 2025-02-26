@@ -1,28 +1,23 @@
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
+import { useOrganization } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 
 export function useWorkspaces() {
-	const { setWorkspace, setWorkspaces, workspace } = useWorkspaceStore(
-		(state) => state,
-	);
-
-	const params = useParams();
-	const workspaceUrl = parseParams(params.workspace) || workspace?.url;
+	const { setWorkspace, setWorkspaces } = useWorkspaceStore((state) => state);
+	const { organization, isLoaded } = useOrganization();
 
 	const {
 		data,
 		isPending: loading,
 		error,
 	} = useQuery({
-		queryKey: ["workspaces", workspaceUrl],
+		queryKey: ["workspace", "getAllWorkspaces", organization?.slug],
 		queryFn: async () => {
 			const res = await client.workspace.getAllWorkspaces.$get();
 			const awaitedRes = await res.json();
-			const workspace = awaitedRes.find((ws) => ws.url === workspaceUrl);
+			const workspace = awaitedRes.find((ws) => ws.url === organization?.slug);
 			setWorkspaces(awaitedRes);
 			setWorkspace(workspace || null);
 			return { workspace, workspaces: awaitedRes };
@@ -30,7 +25,7 @@ export function useWorkspaces() {
 	});
 
 	return {
-		loading,
+		loading: loading || !isLoaded,
 		error: parseError(error, "Failed to fetch workspaces"),
 		workspace: data?.workspace,
 		workspaces: data?.workspaces,

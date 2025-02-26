@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/command";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { DialogTitle } from "@squaredmade/ui/dialog";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,
@@ -22,7 +20,9 @@ import {
 	Inbox,
 	MapPin,
 	MessageCircleMore,
-} from "lucide-react";
+} from "@squared/icons";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 

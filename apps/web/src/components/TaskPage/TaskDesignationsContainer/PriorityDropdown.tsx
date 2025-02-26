@@ -26,7 +26,7 @@ const PriorityDropdown = () => {
 	const { priority: sidebarPriority, id: taskId } = currentTask;
 
 	const { mutate: updatePriority } = useMutation({
-		mutationKey: ["updateTaskPriority", taskId],
+		mutationKey: ["task", "updatePriority", taskId],
 		mutationFn: async (newPriority: Priority) => {
 			const res = await client.task.updatePriority.$post({
 				taskId,

@@ -1,6 +1,7 @@
 import type {
 	Comment,
-	Commit,
+	GithubCommit,
+	GithubRepo,
 	Label,
 	Notification,
 	Sprint,
@@ -9,10 +10,28 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
-	WorkspaceRole,
 } from "@squared/db";
 import { createEnumSchema, createSchema } from "@squared/rpc";
 import z from "zod";
+
+export const statusEnum = createEnumSchema<Task["status"]>()(
+	z.enum([
+		"backlog",
+		"todo",
+		"inProgress",
+		"inReview",
+		"done",
+		"canceled",
+		"archived",
+		"duplicated",
+	]),
+);
+
+export const workspaceRoleEnum = z.enum([
+	"org:admin",
+	"org:member",
+	"org:owner",
+]);
 
 export const labelSchema = createSchema<Label>()(
 	z.object({
@@ -27,15 +46,7 @@ export const taskSchema = createSchema<Task>()(
 		id: z.string(),
 		title: z.string(),
 		description: z.string().nullable(),
-		status: z.enum([
-			"backlog",
-			"todo",
-			"inProgress",
-			"inReview",
-			"done",
-			"canceled",
-			"archived",
-		]),
+		status: statusEnum,
 		sprintId: z.string().nullable(),
 		teamId: z.string(),
 		updatedAt: z.date(),
@@ -84,17 +95,28 @@ export const notificationSchema = createSchema<Notification>()(
 	}),
 );
 
-export const commitSchema = createSchema<Commit>()(
+export const commitSchema = createSchema<GithubCommit>()(
 	z.object({
 		id: z.string(),
-		branchId: z.string(),
-		message: z.string(),
-		timestamp: z.date(),
+		externalId: z.string(),
+		message: z.string().nullable(),
 		url: z.string(),
-		authorName: z.string().nullable(),
-		repoName: z.string().nullable(),
-		owner: z.string().nullable(),
-		taskId: z.string().nullable(),
+		author: z.string().nullable(),
+		repoId: z.string(),
+		pullId: z.string(),
+		timestamp: z.date(),
+	}),
+);
+
+export const githubRepoSchema = createSchema<GithubRepo>()(
+	z.object({
+		id: z.string(),
+		externalId: z.string(),
+		private: z.boolean(),
+		description: z.string().nullable(),
+		url: z.string(),
+		name: z.string(),
+		orgId: z.string(),
 	}),
 );
 
@@ -114,15 +136,10 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
-export const workspaceRoleEnum = createEnumSchema<WorkspaceRole>()(
-	z.enum(["owner", "admin", "member"]),
-);
-
 export const userWorkspaceSchema = createSchema<UserWorkspace>()(
 	z.object({
 		userId: z.string(),
 		workspaceId: z.string(),
-		role: workspaceRoleEnum,
 	}),
 );
 
@@ -151,12 +168,6 @@ export const userSchema = createSchema<User>()(
 		subscribedTasks: z.array(z.string()),
 		githubUsername: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
-	}),
-);
-
-export const userWithRoleSchema = userSchema.merge(
-	z.object({
-		role: workspaceRoleEnum,
 	}),
 );
 

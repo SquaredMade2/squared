@@ -6,6 +6,7 @@ interface CirclePlusProps {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const CirclePlus: FC<CirclePlusProps> = ({

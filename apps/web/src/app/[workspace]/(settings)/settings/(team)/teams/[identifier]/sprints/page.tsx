@@ -4,14 +4,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamStore } from "@/store";
 import type { Team } from "@squared/db";
-import { addDays, format, startOfWeek } from "date-fns";
 import {
-	CalendarIcon,
+	Calendar as CalendarIcon,
 	ChevronDown,
 	ChevronRight,
 	Maximize2,
 	X,
-} from "lucide-react";
+} from "@squared/icons";
+import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -66,7 +66,7 @@ export default function SprintSettings() {
 		data: { pending, active } = { pending: 0, active: null },
 		refetch: refetchSprints,
 	} = useQuery({
-		queryKey: ["sprints", team?.id],
+		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (!team) return { pending: 0, active: null };
 			const sprints = await client.sprint.getSprints
@@ -81,7 +81,7 @@ export default function SprintSettings() {
 	});
 
 	const { mutate: handleUpdateTeam } = useMutation({
-		mutationKey: ["team", "updateTeam"],
+		mutationKey: ["team", "updateTeam", team?.id],
 		mutationFn: async (
 			data: Partial<
 				Pick<

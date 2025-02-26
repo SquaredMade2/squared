@@ -3,6 +3,8 @@ import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
 
+const effortEnum = z.enum(["LINEAR", "EXPONENTIAL", "FIBONACCI"]);
+
 export const teamRouter = router({
 	getUserTeams: privateProcedure.query(async ({ c, ctx }) => {
 		const { teamService, userId, workspaceId } = ctx;
@@ -43,5 +45,42 @@ export const teamRouter = router({
 					userId,
 				}),
 			);
+		}),
+	removeUser: privateProcedure
+		.input(z.object({ teamId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { teamService, user } = ctx;
+			const { teamId } = input;
+			return c.superjson(
+				await teamService.removeUserFromTeam(TODO, { teamId, userId: user.id }),
+			);
+		}),
+	updateTeam: privateProcedure
+		.input(
+			z.object({
+				teamId: z.string(),
+				name: z.string(),
+				identifier: z.string(),
+				effort: effortEnum,
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { teamService } = ctx;
+			const { teamId, name, identifier, effort } = input;
+			return c.superjson(
+				await teamService.updateTeam(TODO, {
+					id: teamId,
+					name,
+					identifier,
+					effort,
+				}),
+			);
+		}),
+	deleteTeam: privateProcedure
+		.input(z.object({ teamId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { teamService } = ctx;
+			const { teamId } = input;
+			return c.superjson(await teamService.deleteTeam(TODO, { teamId }));
 		}),
 });

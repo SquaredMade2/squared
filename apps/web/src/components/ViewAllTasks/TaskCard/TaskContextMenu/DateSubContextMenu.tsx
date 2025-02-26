@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/context-menu";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
+import { Calendar as CalendarIcon } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
@@ -18,7 +18,7 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updateDueDate } = useMutation({
-		mutationKey: ["updateTaskDueDate", task.id],
+		mutationKey: ["task", "updateDueDate", task.id],
 		mutationFn: async (date?: Date) => {
 			const res = await client.task.updateDueDate.$post({
 				taskId: task.id,

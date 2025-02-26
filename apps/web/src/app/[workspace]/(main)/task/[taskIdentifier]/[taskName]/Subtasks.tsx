@@ -9,18 +9,19 @@ import {
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
 import {
 	DragDropContext,
 	Draggable,
 	type DropResult,
 	Droppable,
 } from "@hello-pangea/dnd";
-import { TODO } from "@squared/context";
 import type { Task, User } from "@squared/db";
-import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
+import { ChevronDown, ChevronRight, UserSearch } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -29,22 +30,27 @@ const Subtasks = () => {
 	const { setSubtasks, subtasks } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
 
-	const onDragEnd = async (result: DropResult) => {
-		if (!result.destination) return;
+	const { mutate: onDragEnd } = useMutation({
+		mutationKey: ["task", "reorderSubtasks"],
+		mutationFn: async (result: DropResult) => {
+			if (!result.destination) return;
 
-		const items = Array.from(subtasks);
-		const [reorderedItem] = items.splice(result.source.index, 1);
-		items.splice(result.destination.index, 0, reorderedItem);
+			const items = Array.from(subtasks);
+			const [reorderedItem] = items.splice(result.source.index, 1);
+			items.splice(result.destination.index, 0, reorderedItem);
 
-		const updatedSubtasks = await taskService.reorderSubtasks(TODO, {
-			parentId: subtasks[0].parentId ?? "",
-			newOrder: items.map((item) => item.id),
-		});
+			const updatedSubtasks = await client.task.updateSubtaskOrder
+				.$post({
+					parentId: subtasks[0].parentId ?? "",
+					newOrder: items.map((item) => item.id),
+				})
+				.then((res) => res.json());
 
-		setSubtasks(updatedSubtasks);
+			setSubtasks(updatedSubtasks);
 
-		return updatedSubtasks;
-	};
+			return updatedSubtasks;
+		},
+	});
 
 	return (
 		<Collapsible
@@ -65,7 +71,7 @@ const Subtasks = () => {
 				</div>
 			</CollapsibleTrigger>
 			<CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out">
-				<DragDropContext onDragEnd={onDragEnd}>
+				<DragDropContext onDragEnd={(result) => onDragEnd(result)}>
 					<Droppable droppableId="subtasks">
 						{(provided) => (
 							<ul
@@ -120,13 +126,11 @@ interface SubtaskListProps {
 }
 
 const SubtaskList = ({ task, user }: SubtaskListProps) => {
-	const currentWorkspaceUrl = useWorkspaceStore(
-		(state) => state.workspace,
-	)?.url;
+	const { organization } = useOrganization();
 	return (
 		<Link
 			className="group/main grid w-full grid-cols-24 items-center border-border border-t border-solid bg-card py-2 hover:bg-accent"
-			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${organization?.slug}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<div className="col-span-1 min-h-9" />
 			<div className="col-span-23 grid grid-cols-10 pr-6 pl-2 lg:pl-0">

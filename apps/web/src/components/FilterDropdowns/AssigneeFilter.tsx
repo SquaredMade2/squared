@@ -8,11 +8,12 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
-import { useFilterStore, useUserStore } from "@/store";
+import { useUsers } from "@/hooks/useUsers";
+import { useFilterStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
-import { getInitials } from "@/utils/formatting";
-import type { User } from "@squared/db";
-import { Check, UserSearch } from "lucide-react";
+import { formatName, getInitials } from "@/utils/formatting";
+import type { PublicUserData } from "@clerk/types";
+import { Check, UserSearch } from "@squared/icons";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
@@ -26,18 +27,18 @@ import type { FilterOption } from "./interfaces";
 export default function AssigneeFilterDropDown({
 	filterOption,
 }: { filterOption: FilterOption }) {
-	const { users } = useUserStore((state) => state);
+	const { users } = useUsers();
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);
-	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
-		getFilterAssignees(currentFilters, users),
-	);
+	const [selectedAssignees, setSelectedAssignees] = useState<
+		(PublicUserData | null)[]
+	>(getFilterAssignees(currentFilters, users));
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleAssigneeChange = (label: User | null) => {
+	const handleAssigneeChange = (label: PublicUserData | null) => {
 		setSelectedAssignees((prev) =>
-			prev.some((l) => l?.externalId === label?.externalId)
-				? prev.filter((l) => l?.externalId !== label?.externalId)
+			prev.some((l) => l?.userId === label?.userId)
+				? prev.filter((l) => l?.userId !== label?.userId)
 				: [...prev, label],
 		);
 	};
@@ -47,7 +48,7 @@ export default function AssigneeFilterDropDown({
 		if (selectedAssignees.length > 0) {
 			addFilter({
 				field: "assigneeId",
-				value: selectedAssignees.map((u) => u?.externalId || null),
+				value: selectedAssignees.map((u) => u?.userId || null),
 				operator: "arrayIncludesAny",
 			});
 		}
@@ -63,8 +64,8 @@ export default function AssigneeFilterDropDown({
 	}, [currentFilterTypes]);
 
 	const filteredAssignees =
-		users.filter((u) =>
-			u.name.toLowerCase().includes(searchQuery.toLowerCase()),
+		users?.filter((u) =>
+			formatName(u).toLowerCase().includes(searchQuery.toLowerCase()),
 		) || [];
 
 	return (
@@ -104,28 +105,30 @@ export default function AssigneeFilterDropDown({
 									</div>
 								</CommandItem>
 								{filteredAssignees
-									.sort((a, b) => a.name.localeCompare(b.name))
+									.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
 										<CommandItem
-											key={user.externalId}
+											key={user.userId}
 											onSelect={() => handleAssigneeChange(user)}
 											className="flex h-8 cursor-pointer items-center space-x-2"
 										>
 											<div className="flex flex-1 items-center space-x-2">
 												{selectedAssignees.some(
-													(l) => l?.id === user.externalId,
+													(l) => l?.userId === user.userId,
 												) ? (
 													<Check className="h-4 w-4" />
 												) : (
 													<div className="h-4 w-4" />
 												)}
 												<Avatar className="size-6 text-xxs">
-													<AvatarImage src={user?.avatarUrl ?? ""} />
+													<AvatarImage src={user?.imageUrl} />
 													<AvatarFallback>
-														{getInitials(user.name)}
+														{getInitials(formatName(user))}
 													</AvatarFallback>
 												</Avatar>
-												<span className="w-2/3 truncate">{user.name}</span>
+												<span className="w-2/3 truncate">
+													{formatName(user)}
+												</span>
 											</div>
 										</CommandItem>
 									))}

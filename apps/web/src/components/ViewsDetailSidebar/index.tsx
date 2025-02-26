@@ -10,8 +10,8 @@ import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import type { Task } from "@squared/db";
+import { Info, Trash } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Info, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LabelBadge from "../LabelBadges";
@@ -81,7 +81,7 @@ const ViewsDetailSidebar = ({
 	const labelCount = getLabelCount();
 
 	const { mutate: handleDeleteSavedFilter, isPending } = useMutation({
-		mutationKey: ["deleteFilter", filter.id],
+		mutationKey: ["filter", "deleteFilter", filter.id],
 		mutationFn: async () => {
 			await client.filter.deleteFilter.$post({ filterId: filter.id });
 		},

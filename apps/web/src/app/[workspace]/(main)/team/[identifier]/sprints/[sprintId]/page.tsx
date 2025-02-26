@@ -7,16 +7,6 @@ import {
 	SprintNotFound,
 } from "@/components/Sprints";
 import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -25,6 +15,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
@@ -58,9 +57,8 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const router = useRouter();
-	const { sprints, team, workspace, loading, error, sprintTasks } = useSprints(
-		parseParams(sprintId),
-	);
+	const { sprints, team, organization, loading, error, sprintTasks } =
+		useSprints(parseParams(sprintId));
 	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -159,7 +157,7 @@ export default function SprintDashboardPage() {
 	};
 
 	const { mutate: handleBulkAssign } = useMutation({
-		mutationKey: ["sprintAssign", sprint?.id],
+		mutationKey: ["sprint", "sprintAssign", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
 			return await client.sprint.addSprintTasks
@@ -183,7 +181,7 @@ export default function SprintDashboardPage() {
 	});
 
 	const { mutate: endSprint } = useMutation({
-		mutationKey: ["sprintEnd", sprint?.id],
+		mutationKey: ["sprint", "sprintEnd", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
 			return await client.sprint.endSprint
@@ -201,13 +199,13 @@ export default function SprintDashboardPage() {
 		},
 		onSuccess: () => {
 			toast({ title: "Sprint ended successfully" });
-			router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
+			router.push(`/${organization?.slug}/team/${team?.identifier}/all`);
 		},
 	});
 
 	const handleEndSprintConfirm = async () => {
 		if (!sprint || !team) return;
-
+		setShowEndSprintDialog(false);
 		if (newSprint) {
 			setShowNextSprint(true);
 		} else {
@@ -228,7 +226,7 @@ export default function SprintDashboardPage() {
 		return (
 			<SprintError
 				error={parseError(error, "Failed to fetch sprint data")}
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
 			/>
 		);
@@ -236,7 +234,7 @@ export default function SprintDashboardPage() {
 	if (!sprint) {
 		return (
 			<SprintNotFound
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
 			/>
 		);
@@ -398,7 +396,7 @@ export default function SprintDashboardPage() {
 					End Sprint
 				</Button>
 				<Link
-					href={`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
+					href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
 					className="flex-1"
 					passHref
 				>
@@ -463,32 +461,29 @@ export default function SprintDashboardPage() {
 				</div>
 			</Tabs>
 
-			<AlertDialog
-				open={showEndSprintDialog}
-				onOpenChange={setShowEndSprintDialog}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>End Sprint</AlertDialogTitle>
-						<AlertDialogDescription>
+			<Dialog open={showEndSprintDialog} onOpenChange={setShowEndSprintDialog}>
+				<DialogContent className="md:w-2/3 xl:w-1/3">
+					<DialogHeader>
+						<DialogTitle>End Sprint</DialogTitle>
+						<DialogDescription>
 							Are you sure you want to end this sprint?
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={handleEndSprintConfirm}>
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose>Cancel</DialogClose>
+						<Button className="mb-3 sm:mb-0" onClick={handleEndSprintConfirm}>
 							End Sprint
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			<NewSprintModal
 				isOpen={showNextSprint}
 				onClose={() => setShowNextSprint(false)}
 				team={team || null}
 				initialSprintName={newSprintName}
-				redirectUrl={`/${workspace?.url}/team/${team?.identifier}/sprints`}
+				redirectUrl={`/${organization?.slug}/team/${team?.identifier}/sprints`}
 			/>
 		</div>
 	);

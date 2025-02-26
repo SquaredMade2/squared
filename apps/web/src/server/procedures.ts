@@ -2,6 +2,7 @@ import { AuthService } from "@/gen/rpc/auth";
 import { CommentService } from "@/gen/rpc/comment";
 import { EventService } from "@/gen/rpc/event";
 import { FilterService } from "@/gen/rpc/filter";
+import { GithubService } from "@/gen/rpc/github";
 import { SprintService } from "@/gen/rpc/sprint";
 import { TaskService } from "@/gen/rpc/task";
 import { TeamService } from "@/gen/rpc/team";
@@ -40,6 +41,7 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 	const commentService = new CommentService(serverUrl);
 	const eventService = new EventService(serverUrl);
 	const filterService = new FilterService(serverUrl);
+	const githubService = new GithubService(serverUrl);
 	const sprintService = new SprintService(serverUrl);
 	const taskService = new TaskService(serverUrl);
 	const teamService = new TeamService(serverUrl);
@@ -53,6 +55,7 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 		commentService,
 		eventService,
 		filterService,
+		githubService,
 		sprintService,
 		taskService,
 		teamService,

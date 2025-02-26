@@ -1,4 +1,6 @@
+import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { TODO } from "@squared/context";
+import { NotificationType } from "@squared/db";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";
@@ -79,4 +81,24 @@ export const notificationRouter = router({
 			}),
 		);
 	}),
+
+	createMention: privateProcedure
+		.input(
+			z.object({
+				description: z.string(),
+				type: z.enum(Object.values(NotificationType) as [NotificationType]),
+				taskId: z.string(),
+				userId: z.string(),
+				workspaceId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const newMention: CreateNotificationRequest = {
+				...input,
+			};
+			const { eventService } = ctx;
+			return c.superjson(
+				await eventService.createNotification(TODO, newMention),
+			);
+		}),
 });

@@ -1,4 +1,3 @@
-import { joinWorkspace } from "@/utils/joinWorkspace";
 import { type DBClient, eq, usersTable } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
@@ -7,9 +6,8 @@ import type { AuthRpc, Register, RegisterReturn } from "./types";
 export class AuthService implements AuthRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
-	constructor(db: DBClient, secret?: string) {
+	constructor(db: DBClient) {
 		this.db = db;
-		if (!secret) throw new Error("Invalid JWT Secret");
 		this.logger = createCustomLogger("auth");
 	}
 	async register({
@@ -17,7 +15,6 @@ export class AuthService implements AuthRpc {
 		name,
 		username,
 		externalId,
-		inviteToken,
 	}: Register): Promise<RegisterReturn> {
 		this.logger.info("Registering user %s", email);
 
@@ -39,20 +36,6 @@ export class AuthService implements AuthRpc {
 				externalId,
 			})
 			.returning();
-
-		if (inviteToken && user) {
-			this.logger.info("Joining workspace with invite token %s", inviteToken);
-			const {
-				message,
-				variant,
-				status,
-				data: newUser,
-			} = await joinWorkspace(inviteToken, user.id, this.db);
-			if (status === 200) {
-				return { user: newUser, message, variant };
-			}
-			return { user, message, variant };
-		}
 
 		return { user, message: "Registered Successfully", variant: "default" };
 	}

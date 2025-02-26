@@ -75,7 +75,7 @@ export function useTaskPage() {
 	});
 
 	const commentsQuery = useQuery({
-		queryKey: ["comments", taskQuery.data?.id],
+		queryKey: ["comment", taskQuery.data?.id],
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.comment.getComments.$get({

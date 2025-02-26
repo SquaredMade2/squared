@@ -1,7 +1,8 @@
 "use client";
 
-import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
+import { useModalStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
@@ -21,7 +22,7 @@ export function TaskSelector() {
 	const { showTaskSelector: open, setShowTaskSelector: setOpen } =
 		useModalStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 
 	return (
 		<CommandDialog open={open} onOpenChange={setOpen}>
@@ -39,7 +40,7 @@ export function TaskSelector() {
 								onSelect={() => {
 									setCurrentTask(task);
 									router.push(
-										`/${workspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
+										`/${organization?.slug}/task/${task?.identifier}/${formatUrl(task.title)}`,
 									);
 									setOpen(false);
 								}}

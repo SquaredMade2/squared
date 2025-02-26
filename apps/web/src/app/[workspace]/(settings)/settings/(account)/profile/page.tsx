@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ImageUpload from "@/components/ImageUpload";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -178,24 +178,16 @@ export default function Profile() {
 						</Form>
 					</div>
 					<div>
-						<div className="space-y-4">
+						<div className="flex flex-col items-center space-y-4">
 							<h2 className="text-center font-semibold text-xl">
 								Profile Picture
 							</h2>
-							<div className="flex flex-col items-center space-y-4">
-								<Avatar className="h-32 w-32">
-									<AvatarImage src={user.imageUrl} />
-									<AvatarFallback className="text-4xl">
-										{getInitials(`${user.firstName} ${user.lastName}`)}
-									</AvatarFallback>
-								</Avatar>
-								<Input
-									type="file"
-									accept="image/*"
-									onChange={handleImageUpload}
-									className="max-w-[200px]"
-								/>
-							</div>
+							<ImageUpload
+								alt="User Avatar"
+								fallbackText={getInitials(`${user.firstName} ${user.lastName}`)}
+								handleImageUpload={handleImageUpload}
+								imageUrl={user.imageUrl}
+							/>
 						</div>
 					</div>
 				</div>

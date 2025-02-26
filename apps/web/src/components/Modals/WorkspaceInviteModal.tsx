@@ -1,9 +1,11 @@
 "use client";
 
-import { workspaceService } from "@/lib/services";
-import { useModalStore, useWorkspaceStore } from "@/store";
-import { TODO } from "@squared/context";
-import { Loader2 } from "lucide-react";
+import { client } from "@/lib/client";
+import { useModalStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
+import { LoaderCircle } from "@squared/icons";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -19,44 +21,43 @@ import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
 
 export const WorkspaceInviteModal = () => {
-	const { workspace } = useWorkspaceStore((state) => state);
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(
 		(state) => state,
 	);
 	const [inviteEmails, setInviteEmails] = useState<string>("");
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const { organization } = useOrganization();
 	const { toast } = useToast();
 
-	const handleInvite = async () => {
-		const emails = inviteEmails
-			.split(",")
-			.map((email) => email.trim())
-			.filter(Boolean);
+	const { mutate: handleInvite, isPending } = useMutation({
+		mutationKey: ["workspace", "workspaceInvite", organization?.id],
+		mutationFn: async () => {
+			if (!organization?.slug) return;
+			const emailAddresses = inviteEmails
+				.split(",")
+				.map((email) => email.trim())
+				.filter(Boolean);
 
-		if (!emails.length || !workspace) return;
-
-		setIsLoading(true);
-
-		try {
-			await workspaceService.inviteToWorkspace(TODO, {
-				workspaceId: workspace.externalId,
-				email: emails,
+			await client.workspace.inviteToWorkspace.$post({
+				email: emailAddresses,
+				workspaceId: organization.id,
+				workspaceSlug: organization.slug,
 			});
+		},
+		onSuccess: () => {
 			setInviteEmails("");
 			setShowWorkspaceInvite(false);
 			toast({
 				title: "Invites sent!",
 			});
-		} catch (error) {
-			console.error("Error sending invites:", error);
+		},
+		onError: (error) => {
 			toast({
 				title: "Error sending invites",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		} finally {
-			setIsLoading(false);
-		}
-	};
+		},
+	});
 
 	return (
 		<Dialog open={showWorkspaceInvite} onOpenChange={setShowWorkspaceInvite}>
@@ -64,9 +65,9 @@ export const WorkspaceInviteModal = () => {
 				<DialogHeader>
 					<div className="flex items-center gap-2 text-lg">
 						<Avatar>
-							<AvatarImage src={workspace?.avatarUrl ?? undefined} />
+							<AvatarImage src={organization?.imageUrl ?? undefined} />
 							<AvatarFallback className="capitalize">
-								{workspace?.name
+								{organization?.name
 									?.split(" ")
 									.map((word) => word[0])
 									.join("")
@@ -86,9 +87,13 @@ export const WorkspaceInviteModal = () => {
 					/>{" "}
 				</div>
 				<DialogFooter>
-					<Button onClick={handleInvite} disabled={isLoading} className="w-32">
-						{isLoading ? (
-							<Loader2 className="size-4 animate-spin" />
+					<Button
+						onClick={() => handleInvite()}
+						disabled={isPending}
+						className="w-32"
+					>
+						{isPending ? (
+							<LoaderCircle className="size-4 animate-spin" />
 						) : (
 							"Send invites"
 						)}

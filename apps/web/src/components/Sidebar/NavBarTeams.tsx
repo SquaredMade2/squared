@@ -1,7 +1,6 @@
-import { taskService } from "@/lib/services";
-import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
-import { TODO } from "@squared/context";
-import { Activity, Copy, Layers } from "lucide-react";
+import { useTeamStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
+import { Activity, Copy, Layers3 } from "@squared/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -18,9 +17,8 @@ const NavBarTeams = ({
 	currentPage,
 	active,
 }: NavBarTeamProps) => {
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const { teams, setTeam } = useTeamStore((state) => state);
-	const { setTasks } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const router = useRouter();
@@ -28,7 +26,7 @@ const NavBarTeams = ({
 	const handleActiveParams = (param: string): void => {
 		if (teamIdentifier) {
 			getTeamOnSelect();
-			router.push(`/${workspace?.url}/team/${teamIdentifier}/${param}`);
+			router.push(`/${organization?.slug}/team/${teamIdentifier}/${param}`);
 		} else {
 			toast({ title: "Team identifier not found", variant: "destructive" });
 		}
@@ -38,7 +36,6 @@ const NavBarTeams = ({
 		const team = teams.find((team) => team.identifier === teamIdentifier);
 		if (team) {
 			setTeam(team);
-			setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
 		}
 	};
 
@@ -106,7 +103,7 @@ const NavBarTeams = ({
 				</>
 			)}
 			<Link
-				href={`/${workspace?.url}/team/${teamIdentifier}/views`}
+				href={`/${organization?.slug}/team/${teamIdentifier}/views`}
 				className="block"
 			>
 				<Button
@@ -114,7 +111,7 @@ const NavBarTeams = ({
 					onClick={() => handleActiveParams("views")}
 					className="h-6 w-full justify-start"
 				>
-					<Layers className="mr-2 size-4 text-muted-foreground" />
+					<Layers3 className="mr-2 size-4 text-muted-foreground" />
 					<p>Views</p>
 				</Button>
 			</Link>

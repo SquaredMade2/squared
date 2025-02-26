@@ -25,8 +25,8 @@ import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronRight } from "@squared/icons";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -129,7 +129,7 @@ export const NewTaskModal = () => {
 	};
 
 	useQuery({
-		queryKey: ["teams", organization?.id],
+		queryKey: ["team", "getUserTeams", organization?.id],
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams

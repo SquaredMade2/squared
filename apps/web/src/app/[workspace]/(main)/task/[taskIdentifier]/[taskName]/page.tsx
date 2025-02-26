@@ -26,6 +26,13 @@ const TaskPage = () => {
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
+	useEffect(() => {
+		if (!currentTask) return;
+		client.task.setLastViewedTask.$post({
+			taskId: currentTask.id,
+		});
+	}, [currentTask]);
+
 	const lastViewedTaskMutation = useMutation({
 		mutationFn: async () => {
 			await client.user.setLastViewedTask.$post({

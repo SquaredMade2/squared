@@ -1,21 +1,22 @@
 import { CompletedTaskPeriod } from "@/store/views";
-import type { Priority, Status } from "@squared/db";
+import { Priority, Status } from "@squared/db";
 
 export const statusOptions: Status[] = [
-	"backlog",
-	"todo",
-	"inProgress",
-	"inReview",
-	"done",
-	"canceled",
+	Status.backlog,
+	Status.todo,
+	Status.inProgress,
+	Status.inReview,
+	Status.done,
+	Status.canceled,
+	Status.duplicated,
 ];
 
 export const priorityOptions: Priority[] = [
-	"noPriority",
-	"urgent",
-	"high",
-	"medium",
-	"low",
+	Priority.noPriority,
+	Priority.urgent,
+	Priority.high,
+	Priority.medium,
+	Priority.low,
 ];
 
 export const effortEstimateOptions = (effortType: string | undefined) => {

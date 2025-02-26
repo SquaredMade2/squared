@@ -1,8 +1,8 @@
 "use client";
 
+import { Moon } from "@squared/icons";
 import { IconSunLow } from "@tabler/icons-react";
 import { motion } from "framer-motion";
-import { MoonIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import * as React from "react";
 
@@ -60,7 +60,7 @@ export function ModeToggle() {
 							duration: 0.3,
 						}}
 					>
-						<MoonIcon className="h-4 w-4 flex-shrink-0 text-neutral-700 dark:text-neutral-500" />
+						<Moon className="h-4 w-4 flex-shrink-0 text-neutral-700 dark:text-neutral-500" />
 					</motion.div>
 				)}
 

@@ -13,8 +13,8 @@ import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { TaskEvent } from "@squared/db";
+import { ChevronDown } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
 import { type JSX, useState } from "react";
 
 const EffortEstimateDropdown = () => {
@@ -45,7 +45,7 @@ const EffortEstimateDropdown = () => {
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
 	const { mutate: updateEffortEstimate } = useMutation({
-		mutationKey: ["updateTaskEffortEstimate", taskId],
+		mutationKey: ["task", "updateEffort", taskId],
 		mutationFn: async (newEffortEstimate: number) => {
 			const res = await client.task.updateEffort.$post({
 				taskId,

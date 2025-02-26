@@ -20,15 +20,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
 import {
-	ClipboardList,
+	Clipboard,
 	Inbox,
-	type LucideIcon,
 	Moon,
 	Search,
+	type SquaredIcon,
 	Sun,
-} from "lucide-react";
+} from "@squared/icons";
+import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -49,7 +49,7 @@ function SidebarContent() {
 	const { organization } = useOrganization();
 
 	const { data: notifications = [] } = useQuery({
-		queryKey: ["notifications", user?.id],
+		queryKey: ["notification", user?.id],
 		queryFn: async () => {
 			const notifications = await client.event.getNotifications
 				.$get()
@@ -59,7 +59,7 @@ function SidebarContent() {
 	});
 
 	const { data: teams = [] } = useQuery({
-		queryKey: ["teams", user?.id, organization?.id],
+		queryKey: ["team", user?.id, organization?.id],
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
@@ -127,7 +127,7 @@ function SidebarContent() {
 						notificationCount={notifications.length}
 					/>
 					<IconButton
-						icon={ClipboardList}
+						icon={Clipboard}
 						label="My Tasks"
 						onClick={() =>
 							navigateTo(`${organization?.slug}/my-tasks/assigned`)
@@ -187,9 +187,8 @@ function ToggleSidebarButton() {
 		/>
 	);
 }
-
 interface IconButtonProps {
-	icon: LucideIcon;
+	icon: SquaredIcon;
 	label: string;
 	onClick: () => void;
 	notificationCount?: number;
