@@ -41,54 +41,8 @@ export const userRouter = router({
 				}),
 			);
 		}),
-	getUserWorkspaceRole: privateProcedure.query(async ({ c, ctx }) => {
-		const { userService, userId, workspaceId } = ctx;
-		const roleData = await userService.getUserWorkspaceRole(TODO, {
-			userId,
-			workspaceId,
-		});
-		return c.json(roleData);
-	}),
-
-	updateUsersRole: privateProcedure
-		.input(
-			z.object({
-				newRole: z.enum(["owner", "admin", "member"]),
-			}),
-		)
-		.mutation(async ({ c, ctx, input }) => {
-			const { userService, userId, workspaceId } = ctx;
-			const { newRole } = input;
-
-			return c.json(
-				await userService.updateUsersRole(TODO, {
-					callerId: userId,
-					userId,
-					workspaceId,
-					newRole,
-				}),
-			);
-		}),
-	getWorkspaceUsersWithRoles: privateProcedure.query(async ({ c, ctx }) => {
-		const { userService, workspaceId } = ctx;
-		return c.superjson(
-			await userService.getWorkspaceUsersWithRoles(TODO, {
-				workspaceId,
-			}),
-		);
-	}),
 	getWorkspaceAvatars: privateProcedure.query(async ({ c, ctx }) => {
 		const { userService, workspaceId } = ctx;
 		return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
 	}),
-	setLastViewedTask: privateProcedure
-		.input(z.object({ taskId: z.string() }))
-		.mutation(async ({ c, ctx, input }) => {
-			const { userService, userId } = ctx;
-			const { taskId } = input;
-
-			await userService.setLastViewedTask(TODO, { userId, taskId });
-
-			return c.json({ success: true });
-		}),
 });

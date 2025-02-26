@@ -36,7 +36,6 @@ const ManageMembersRoleButton = ({
 			return await client.workspace.updateUserRole.$post({
 				role: newRole,
 			});
-			return newRole;
 		},
 		onSuccess: (_, newRole) => {
 			queryClient.invalidateQueries({

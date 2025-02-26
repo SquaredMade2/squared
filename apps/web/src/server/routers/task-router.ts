@@ -320,10 +320,10 @@ export const taskRouter = router({
 	setLastViewedTask: privateProcedure
 		.input(z.object({ taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { userService, user } = ctx;
+			const { userService, userId } = ctx;
 			const { taskId } = input;
 			return c.superjson(
-				await userService.setLastViewedTask(TODO, { userId: user.id, taskId }),
+				await userService.setLastViewedTask(TODO, { userId, taskId }),
 			);
 		}),
 	deleteTask: privateProcedure

@@ -39,7 +39,6 @@ export const WorkspaceInviteModal = () => {
 
 			await client.workspace.inviteToWorkspace.$post({
 				email: emailAddresses,
-				workspaceId: organization.id,
 				workspaceSlug: organization.slug,
 			});
 		},

@@ -46,50 +46,47 @@ export const workspaceRouter = router({
 	removeUser: privateProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, user } = ctx;
+			const { workspaceService, userId } = ctx;
 			const { workspaceId } = input;
 			return c.json(
 				await workspaceService.removeUserFromWorkspace(TODO, {
 					workspaceId,
-					userId: user.id,
+					userId,
 				}),
 			);
 		}),
 	inviteToWorkspace: privateProcedure
 		.input(
 			z.object({
-				workspaceId: z.string(),
 				email: z.array(z.string()),
 				workspaceSlug: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, user } = ctx;
-			const { workspaceId, email, workspaceSlug: slug } = input;
+			const { workspaceService, userId, workspaceId } = ctx;
+			const { email, workspaceSlug: slug } = input;
 			return c.json(
 				await workspaceService.inviteToWorkspace(TODO, {
 					workspaceId,
 					email,
-					userId: user.id,
+					userId,
 					slug,
 				}),
 			);
 		}),
 	joinWorkspace: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
+		.input(z.object({ userEmail: z.string(), userName: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, user } = ctx;
-			const { workspaceId } = input;
+			const { workspaceService, userId, workspaceId } = ctx;
+			const { userEmail, userName } = input;
 			return c.superjson(
 				await workspaceService.joinWorkspace(TODO, {
-					workspaceId,
 					user: {
-						email: user.emailAddresses[0].emailAddress,
-						id: user.id,
-						name:
-							user.fullName ??
-							user.emailAddresses[0].emailAddress.split("@")[0],
+						id: userId,
+						name: userName,
+						email: userEmail,
 					},
+					workspaceId,
 				}),
 			);
 		}),
@@ -179,14 +176,12 @@ export const workspaceRouter = router({
 	updateUserRole: privateProcedure
 		.input(
 			z.object({
-				workspaceId: z.string(),
-				userId: z.string(),
 				role: z.enum(["org:admin", "org:member", "org:owner"]),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService } = ctx;
-			const { workspaceId, role, userId } = input;
+			const { workspaceService, workspaceId, userId } = ctx;
+			const { role } = input;
 			await workspaceService.updateWorkspaceRole(TODO, {
 				userId,
 				workspaceId,

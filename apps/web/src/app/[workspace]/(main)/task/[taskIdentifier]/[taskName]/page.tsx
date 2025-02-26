@@ -35,7 +35,7 @@ const TaskPage = () => {
 
 	const lastViewedTaskMutation = useMutation({
 		mutationFn: async () => {
-			await client.user.setLastViewedTask.$post({
+			await client.task.setLastViewedTask.$post({
 				taskId: currentTask?.id || "",
 			});
 		},
