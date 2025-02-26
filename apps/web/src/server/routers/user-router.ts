@@ -65,7 +65,7 @@ export const userRouter = router({
 			const { userService } = ctx;
 			const { userId } = input;
 
-			await userService.markAsDeleted(userId);
+			await userService.markAsDeleted(TODO, { userId });
 
 			return c.json({ success: true, message: "User marked as deleted" });
 		}),

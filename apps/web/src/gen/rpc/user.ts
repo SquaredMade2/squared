@@ -10,6 +10,7 @@ export type OnBoardUserResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -32,6 +33,7 @@ export type UpdateUserResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -53,6 +55,7 @@ export type UpdateUserAvatarResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -74,6 +77,7 @@ export type UpdateUserNotificationsResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -94,6 +98,7 @@ export type GetUserResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -114,6 +119,7 @@ export type GetWorkspaceUsersResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -134,6 +140,7 @@ export type GetTeamUsersResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -188,6 +195,7 @@ export type SetLastViewedTaskResponse = {
 	avatarUrl: string | null;
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
+	deleted: boolean;
 	email: string;
 	externalId: string;
 	githubUsername: string | null;
@@ -228,6 +236,10 @@ export type IsUserAuthorizedRequest = {
 };
 
 export type IsUserAuthorizedResponse = boolean;
+
+export type MarkAsDeletedRequest = {
+	userId: string;
+};
 
 /**
  * user service
@@ -362,5 +374,12 @@ export class UserService extends RPCContextClient {
 		req: IsUserAuthorizedRequest,
 	): Promise<IsUserAuthorizedResponse> {
 		return this.request(ctx, "isUserAuthorized", req);
+	}
+
+	/**
+	 * markAsDeleted method
+	 */
+	markAsDeleted(ctx: Context, req: MarkAsDeletedRequest): Promise<void> {
+		return this.request(ctx, "markAsDeleted", req);
 	}
 }

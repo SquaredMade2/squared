@@ -14,9 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
+import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -33,6 +36,9 @@ export default function Profile() {
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
+	const users = useUserStore((state) => state.users);
+	const selectedUser = users.find((char) => char.externalId === user?.id);
+	console.log(selectedUser);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -97,6 +103,22 @@ export default function Profile() {
 				});
 			}
 		}
+	};
+
+	const { mutate: markAsDeleted } = useMutation({
+		mutationFn: async (userId: string) => {
+			return client.user.markAsDeleted.$post({ userId });
+		},
+		onSuccess: () => {
+			console.log("User successfully marked as deleted!");
+		},
+		onError: (err) => {
+			console.error("Error deleting user:", err);
+		},
+	});
+
+	const handleDelete = () => {
+		markAsDeleted(user?.id || "qweqw");
 	};
 
 	if (!isLoaded || !user) return null;
@@ -200,7 +222,7 @@ export default function Profile() {
 					</p>
 				</div>
 				<div>
-					<Button>Delete user</Button>
+					<Button onClick={handleDelete}>Delete user</Button>
 				</div>
 			</div>
 		</div>
