@@ -25,7 +25,6 @@ export interface UserRpc {
 	getWorkspaceUsers: (args: { workspaceId: string }) => Promise<User[]>;
 	getTeamUsers: (args: { teamId: string }) => Promise<User[]>;
 	getUserAvatars: (args: { workspaceId: string }) => Promise<UserAvatar[]>;
-	getUserRepositories: (args: { userId: string }) => Promise<string[]>;
 	getUserTeams: (args: { userId: string }) => Promise<Team[]>;
 	setLastViewedTask: (args: {
 		userId: string;

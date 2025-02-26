@@ -4,6 +4,7 @@ import {
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { useTeams } from "@/hooks/useTeams";
 import { useModalStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
@@ -18,6 +19,7 @@ import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 import LabelSubContextMenu from "./LabelSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
+import SprintSubContextMenu from "./SprintSubContextMenu";
 import StatusSubContextMenu from "./StatusSubContextMenu";
 import type { ContextMenuProps } from "./interfaces";
 
@@ -27,7 +29,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		useModalStore((state) => state);
 	const { organization } = useOrganization();
 	const { toast } = useToast();
-
+	const { team } = useTeams();
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
 
@@ -68,6 +70,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 				<DateSubContextMenu task={task} />
 
+				{team?.sprintsEnabled && <SprintSubContextMenu task={task} />}
 				{/* Need to make this with a Dialog comp */}
 				<ContextMenuItem
 					onClick={() => {
