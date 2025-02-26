@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { TODO } from "@squared/context";
+// import { TODO } from "@squared/context";
 import { NextResponse } from "next/server";
-import { userService } from "./lib/services";
+// import { userService } from "./lib/services";
 
 const getDeploymentUrl = () => {
 	if (process.env.VERCEL_TARGET_ENV === "preview") {
@@ -22,26 +22,15 @@ export default clerkMiddleware(
 		}
 
 		if (!isPublicRoute(request)) {
-			const { userId, orgId } = await auth.protect();
-
-			if (!orgId) {
-				const defaultWorkspace = await userService.getDefaultWorkspace(TODO, {
-					userId,
-				});
-
-				//
-				if (defaultWorkspace?.id && defaultWorkspace?.url) {
-					return NextResponse.redirect(
-						new URL(`${deploymentUrl}/${defaultWorkspace.url}`),
-					);
-				}
-				return NextResponse.redirect(new URL(`${deploymentUrl}/join`));
-			}
+			await auth.protect();
 		}
 	},
 	() => ({
 		signInUrl: `${deploymentUrl}/sign-in`,
 		signUpUrl: `${deploymentUrl}/sign-up`,
+		organizationSyncOptions: {
+			organizationPatterns: ["/orgs/:slug", "/orgs/:slug/(.*)"],
+		},
 	}),
 );
 
