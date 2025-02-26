@@ -8,7 +8,7 @@ import {
 	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFilterStore } from "@/store/filters";
-import { Check } from "lucide-react";
+import { Check } from "@squared/icons";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 

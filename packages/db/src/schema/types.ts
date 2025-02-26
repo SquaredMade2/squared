@@ -38,13 +38,8 @@ export const statusType = pgEnum("Status", [
 	"inReview",
 	"done",
 	"canceled",
+	"duplicated",
 	"archived",
-]);
-
-export const workspaceRoleType = pgEnum("WorkspaceRole", [
-	"owner",
-	"admin",
-	"member",
 ]);
 
 export type FilterValue =
@@ -68,6 +63,19 @@ export type FilterCondition = {
 		| "arrayIncludesAny";
 };
 
+export const pullRequestState = pgEnum("PullRequestState", ["open", "closed"]);
+
+export type PullRequest = {
+	id: string;
+	number: number;
+	state: "open" | "closed";
+	title: string;
+	url: string;
+	branch: string;
+	body: string;
+	author: string;
+};
+
 function objEnum<T extends string>(enumValues: readonly T[]) {
 	const enumObject = {} as { [K in T]: K };
 	for (const enumValue of enumValues) {
@@ -87,11 +95,11 @@ export type Priority = (typeof priorityType.enumValues)[number];
 export const RetrospectiveItemType = objEnum(retrospectiveItemType.enumValues);
 export type RetrospectiveItemType =
 	(typeof retrospectiveItemType.enumValues)[number];
-export const WorkspaceRole = objEnum(workspaceRoleType.enumValues);
-export type WorkspaceRole = (typeof workspaceRoleType.enumValues)[number];
 export const SavedFilterType = objEnum(savedFilterType.enumValues);
 export type SavedFilterType = (typeof savedFilterType.enumValues)[number];
 export const SprintStatus = objEnum(sprintStatusType.enumValues);
 export type SprintStatus = (typeof sprintStatusType.enumValues)[number];
 export const Status = objEnum(statusType.enumValues);
 export type Status = (typeof statusType.enumValues)[number];
+export const PullRequestState = objEnum(pullRequestState.enumValues);
+export type PullRequestState = (typeof pullRequestState.enumValues)[number];

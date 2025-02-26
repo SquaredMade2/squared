@@ -1,7 +1,7 @@
-import { Bold, Heading, Italic } from "lucide-react";
+import { Bold, Heading, Italic } from "@squared/icons";
 import { Button } from "../ui/button";
-import ImgModal from "./ImgModal";
-import LinkModal from "./LinkModal";
+import ImgModal from "./Menus/ImgModal";
+import LinkModal from "./Menus/LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
 
 const TextEditorToolBar = ({

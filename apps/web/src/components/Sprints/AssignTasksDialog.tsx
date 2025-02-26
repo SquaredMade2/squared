@@ -241,12 +241,9 @@ export function AssignTasksDialog({
 							<TabsTrigger value="list">List View</TabsTrigger>
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
-						<TabsContent
-							value="list"
-							className="mt-0 flex-grow overflow-hidden"
-						>
+						<TabsContent value="list" className="mt-0">
 							<ScrollArea className="h-full w-full rounded-md border">
-								<div className="p-4">
+								<div className="w-full p-4 sm:w-[450px] md:w-[800px]">
 									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">
 										<Checkbox
 											id="select-all"
@@ -259,7 +256,9 @@ export function AssignTasksDialog({
 									</div>
 									{filteredTasks.map((task) => {
 										const taskLabels = workspace?.labels.filter((label) =>
-											task.labels.includes(label),
+											task.labels.some(
+												(taskLabel) => taskLabel.name === label.name,
+											),
 										);
 										return (
 											<div
@@ -275,11 +274,11 @@ export function AssignTasksDialog({
 													/>
 													<PriorityIcon priority={task.priority} />
 													<StatusIcon status={task.status} />
-													<span className="max-w-64 truncate font-medium text-sm">
+													<span className="truncate font-medium text-sm">
 														{task.title}
 													</span>
 												</div>
-												<div className="ml-2 flex flex-shrink-0 items-center justify-end gap-2">
+												<div className="ml-2 hidden flex-shrink-0 items-center justify-end gap-2 sm:flex">
 													<div className="flex flex-row">
 														{taskLabels?.map((label) => (
 															<div key={label.name} className="mx-0.5">

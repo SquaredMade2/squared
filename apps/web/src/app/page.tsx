@@ -2,25 +2,30 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 const HomePage = () => {
 	const router = useRouter();
+	const { user, isLoaded } = useUser();
+	const { signOut } = useClerk();
 
 	const { isLoading: workspaceLoading, error: workspaceError } = useQuery({
-		queryKey: ["defaultWorkspace"],
+		queryKey: ["user", "defaultWorkspace"],
 		queryFn: async () => {
+			if (isLoaded && !user) await signOut();
 			const res = await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
-			if (!res) {
-				router.push("/join");
+			if (!res || res.url === "undefined") {
+				router.push("/create");
 				return res;
 			}
 			router.push(`/${res.url}`);
 			return null;
 		},
+		enabled: isLoaded && !!user,
 	});
 
 	if (workspaceLoading) {

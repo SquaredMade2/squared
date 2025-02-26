@@ -6,7 +6,7 @@ import {
 	Tag,
 	User,
 	X,
-} from "lucide-react";
+} from "@squared/icons";
 
 import { useFilterStore } from "@/store";
 import { PriorityIcon } from "../Icons";

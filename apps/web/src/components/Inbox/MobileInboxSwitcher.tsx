@@ -10,8 +10,7 @@ import {
 	CommandSeparator,
 } from "@/components/ui/command";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { DialogTitle } from "@squaredmade/ui/dialog";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import {
 	BadgePlus,
 	Bookmark,
@@ -21,7 +20,9 @@ import {
 	Inbox,
 	MapPin,
 	MessageCircleMore,
-} from "lucide-react";
+} from "@squared/icons";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
@@ -35,30 +36,26 @@ type NotificationFilter =
 	| "CREATED"
 	| "WORKSPACE";
 
-type Workspace = { id: string; name: string };
-
 interface MobileInboxSwitcherProps {
 	setFilterType: (type: NotificationFilter) => void;
-	setWorkspace: (workspace: string) => void;
 	filterType: NotificationFilter;
 	readNotifications: GetNotificationsResponse;
-	workspaces: Workspace[];
-	workspace: string | null;
 	filterRead: boolean;
 	setFilterRead: (value: boolean) => void;
 }
 
 export function MobileInboxSwitcher({
 	setFilterType,
-	setWorkspace,
 	filterType,
 	readNotifications,
-	workspaces,
-	workspace,
 	filterRead,
 	setFilterRead,
 }: MobileInboxSwitcherProps) {
 	const [open, setOpen] = useState(false);
+	const { organization } = useOrganization();
+	const { userMemberships, setActive } = useOrganizationList({
+		userMemberships: true,
+	});
 
 	const filters = [
 		{ type: "INBOX" as const, label: "Inbox", icon: Inbox },
@@ -72,10 +69,13 @@ export function MobileInboxSwitcher({
 
 	const handleSelect = (value: string) => {
 		const selectedFilter = filters.find((f) => f.type === value);
+		const org =
+			userMemberships.data?.find((m) => m.organization.id === value) ??
+			userMemberships.data?.[0];
 		if (selectedFilter) {
 			setFilterType(selectedFilter.type);
-		} else {
-			setWorkspace(value);
+		} else if (org) {
+			setActive?.({ organization: org.organization });
 			setFilterType("WORKSPACE");
 		}
 		setOpen(false);
@@ -132,14 +132,14 @@ export function MobileInboxSwitcher({
 			className="relative flex items-center justify-between"
 		>
 			<div>
-				{workspace === id && filterType === "WORKSPACE" && (
+				{organization?.id === id && filterType === "WORKSPACE" && (
 					<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
 				)}
 				{name}
 			</div>
 			{unreadCount > 0 && (
 				<div
-					className={`w-7 rounded-full ${workspace === id && filterType === "WORKSPACE" ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
+					className={`w-7 rounded-full ${organization?.id === id && filterType === "WORKSPACE" ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
 				>
 					{unreadCount}
 				</div>
@@ -237,7 +237,7 @@ export function MobileInboxSwitcher({
 						</CommandGroup>
 						<CommandSeparator />
 						<CommandGroup heading="Workspaces">
-							{workspaces.map((w) => (
+							{userMemberships.data?.map(({ organization: w }) => (
 								<WorkspaceItem
 									key={w.id}
 									id={w.id}

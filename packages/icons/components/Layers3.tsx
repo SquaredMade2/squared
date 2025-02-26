@@ -6,6 +6,7 @@ interface Layers3Props {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const Layers3: FC<Layers3Props> = ({

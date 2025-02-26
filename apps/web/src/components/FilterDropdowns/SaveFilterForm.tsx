@@ -12,19 +12,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { filterService } from "@/lib/services";
+import { useUsers } from "@/hooks/useUsers";
+import { client } from "@/lib/client";
 import {
 	useFilterStore,
 	useSprintStore,
 	useTeamStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import type { SavedFilter } from "@/store/filters";
 import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -51,10 +51,9 @@ export function SaveFilterForm({
 		mergeFilters,
 	} = useFilterStore((state) => state);
 	const { team } = useTeamStore((state) => state);
-	const { users, user } = useUserStore((state) => state);
+	const { users } = useUsers();
 	const { workspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
-	const [isSaving, setIsSaving] = useState(false);
 	const [formattedFilters, setFormattedFilters] = useState<
 		{ name: string; value: string }[]
 	>([]);
@@ -97,7 +96,7 @@ export function SaveFilterForm({
 
 	useEffect(() => {
 		const formatFilters = async () => {
-			if (workspace) {
+			if (workspace && users) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
 						formatFilterName(filter, workspace.labels, users),
@@ -123,97 +122,78 @@ export function SaveFilterForm({
 		router.push(filterURL);
 	};
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		setIsSaving(true);
-		if (!team) {
-			toast({
-				title: "Error",
-				description: "No team found",
-				variant: "destructive",
-			});
-			setIsSaving(false);
-			return;
-		}
-		try {
+	const { mutate: upsertFilter, isPending } = useMutation({
+		mutationKey: ["filter", "create"],
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			if (!team) throw new Error("No team found");
 			if (currentSavedFilter) {
 				const newFilters = mergeFilters(currentFilters, currentSavedFilter.id);
 				// edit existing view
 				if (type === "edit") {
-					const updatedFilter = await filterService.updateFilter(TODO, {
-						filterId: currentSavedFilter.id,
-						filters: {
-							name: values.title,
-							description: values.description ?? null,
-							filter: newFilters,
-						},
-					});
+					const updatedFilter = await client.filter.updateFilter
+						.$post({
+							filterId: currentSavedFilter.id,
+							filters: {
+								name: values.title,
+								description: values.description ?? null,
+								filter: newFilters,
+							},
+						})
+						.then((res) => res.json());
 					updateSavedFilter(updatedFilter);
 					setSavedFilters(
 						savedFilters.map((f) =>
 							f.id === updatedFilter.id ? updatedFilter : f,
 						),
 					);
-					handleUrl(updatedFilter);
-					toast({
-						title: "Filter Updated Successfully",
-					});
+					return updatedFilter;
 					// create new view from existing view
-				} else if (type === "new" && user) {
-					const savedFilter = await filterService.createFilter(TODO, {
+				}
+				return await client.filter.createFilter
+					.$post({
 						name: values.title,
 						description: values.description ?? null,
 						filter: newFilters,
-						authorId: user.externalId,
 						teamId: team.id,
 						sprintId: null,
-					});
-					saveFilter(savedFilter);
-					handleUrl(savedFilter);
-				}
-				//create new view
-			} else if (team && user) {
-				const savedFilter = await filterService.createFilter(TODO, {
+					})
+					.then((res) => res.json());
+			}
+			return await client.filter.createFilter
+				.$post({
 					name: values.title,
 					description: values.description ?? null,
 					filter: currentFilters,
 					teamId: team.id,
-					authorId: user.externalId,
 					sprintId: pathname.split("/").includes("sprints")
 						? (sprint?.id as string)
 						: null,
-				});
-
-				saveFilter(savedFilter);
-
-				handleUrl(savedFilter);
-			} else {
-				toast({
-					title: "Team not found",
-					variant: "destructive",
-				});
-			}
-		} catch (error) {
-			error instanceof Error
-				? toast({
-						title: "Error",
-						description: error.message,
-						variant: "destructive",
-					})
-				: toast({
-						title: "Error",
-						description: "An unknown error occurred",
-						variant: "destructive",
-					});
-		}
-
-		setIsSaving(false);
-		clearFilter();
-		onCancel();
-	};
+				})
+				.then((res) => res.json());
+		},
+		onSuccess: (data) => {
+			saveFilter(data);
+			handleUrl(data);
+		},
+		onError: (error) => {
+			toast({
+				title: `Error ${type === "new" ? "Creating" : "Updating"} Filter`,
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+		onSettled: () => {
+			clearFilter();
+			onCancel();
+		},
+	});
 
 	return (
 		<Form {...form}>
-			<form onSubmit={handleSubmit(onSubmit)} className="mb-8 space-y-4">
+			<form
+				onSubmit={handleSubmit((values) => upsertFilter(values))}
+				className="mb-8 space-y-4"
+			>
 				<FormField
 					control={control}
 					name="title"
@@ -254,7 +234,7 @@ export function SaveFilterForm({
 					<Button type="button" variant="outline" onClick={onCancel}>
 						Cancel
 					</Button>
-					<Button type="submit" disabled={isSaving}>
+					<Button type="submit" disabled={isPending}>
 						{type === "new" ? "Save New Filter" : "Save"}
 					</Button>
 				</div>

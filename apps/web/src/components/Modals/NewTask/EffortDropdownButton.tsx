@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useModalStore, useTeamStore } from "@/store";
-import { Check } from "lucide-react";
+import { Check } from "@squared/icons";
 
 import type { JSX } from "react";
 

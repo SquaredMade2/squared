@@ -11,9 +11,8 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useWorkspaceStore } from "@/store";
-import { useUser } from "@clerk/nextjs";
-import { LogOut, Settings } from "lucide-react";
+import { useOrganization, useUser } from "@clerk/nextjs";
+import { LogOut, Settings } from "@squared/icons";
 import Link from "next/link";
 
 interface UserProfileProps {
@@ -23,17 +22,17 @@ interface UserProfileProps {
 export function UserProfile({ onLogout }: UserProfileProps) {
 	const { state } = useSidebar();
 	const { user } = useUser();
-	const { workspace } = useWorkspaceStore((state) => state);
+	const { organization } = useOrganization();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="ghost"
-					size={state === "collapsed" ? "icon" : "default"}
+					size={state === "collapsed" ? "icon" : "sm"}
 					className={`relative ${
 						state === "collapsed"
 							? "mx-1 justify-center px-3"
-							: "w-full justify-start"
+							: "w-full justify-start gap-2"
 					}`}
 				>
 					<Avatar className="size-5">
@@ -56,7 +55,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
-					<Link href={`/${workspace?.url}/settings/profile`}>
+					<Link href={`/${organization?.slug}/settings/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>
 					</Link>

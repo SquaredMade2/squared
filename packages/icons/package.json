@@ -8,10 +8,12 @@
 		}
 	},
 	"scripts": {
-		"build": "ts-node generateIcons.ts"
+		"build": "ts-node generateIcons.ts",
+		"clean": "rimraf dist && rimraf node_modules"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^11.0.4",
+		"@types/react": "19.0.8",
 		"@types/node": "^22.10.10",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.0.0",

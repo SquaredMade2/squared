@@ -6,41 +6,39 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-	useTaskStore,
-	useTeamStore,
-	useViewStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useTaskStore, useTeamStore, useViewStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import Link from "next/link";
 
 export const TaskBreadcrumbs = () => {
-	const { workspaces, workspace } = useWorkspaceStore((state) => state);
+	const { organization, memberships } = useOrganization({ memberships: true });
+	const organizations = memberships?.data?.map((item) => item.organization);
 	const { currentTask: task } = useTaskStore((state) => state);
 	const { team } = useTeamStore((state) => state);
 	const { lastVisitedPage } = useViewStore((state) => state);
-	const index: number = workspace
-		? workspaces.findIndex((item) => item.id === workspace.id)
-		: -1;
+	const index: number =
+		organization && organizations
+			? organizations?.findIndex((item) => item.id === organization.id)
+			: -1;
 
 	return (
 		<>
 			<Breadcrumb className="ml-4">
 				<BreadcrumbList className="flex w-full items-center gap-2 whitespace-nowrap text-foreground">
 					<BreadcrumbItem>
-						{workspace && (
+						{organization && (
 							<Link
 								className="flex items-center text-muted-foreground hover:text-foreground"
-								href={`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace.url}/team/${team?.identifier}/${lastVisitedPage}`}`}
+								href={`${lastVisitedPage === "inbox" ? "/inbox" : `/${organization?.slug}/team/${team?.identifier}/${lastVisitedPage}`}`}
 							>
 								<div className="mt-0.5 rounded">
 									<WorkspaceInitials
-										workspaceName={workspace.name}
+										workspaceName={organization.name}
 										backgroundColor={index}
 										location="workspaceMenu"
 									/>
 								</div>
-								<p>{workspace.url}</p>
+								<p>{organization?.slug}</p>
 							</Link>
 						)}
 					</BreadcrumbItem>

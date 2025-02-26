@@ -1,7 +1,7 @@
+import type { PublicUserData } from "@clerk/types";
 import type { Task } from "@squared/db";
-import type { BaseSelection, Node, NodeEntry } from "slate";
-
-import type { JSX } from "react";
+import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
+import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
@@ -32,12 +32,25 @@ export interface LinkModalProps {
 export interface ImgModalProps {
 	injectImgContent: (img: File) => void;
 }
+export interface TextEditorMentionsProps {
+	cursorPosition: { x: number; y: number } | null;
+	mentionsFilter: string;
+	editor: Editor;
+	setCurrentEnterUser: Dispatch<SetStateAction<PublicUserData | null>>;
+	setToggleMentions: Dispatch<SetStateAction<boolean>>;
+	debounceRef: MutableRefObject<boolean>;
+}
+
+export interface MentionHoverProps {
+	mentionedUser: PublicUserData;
+}
 
 export type MarkActives = {
 	isBoldActive: () => boolean;
 	isItalicActive: () => boolean;
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
+	isMentionActive: () => boolean;
 };
 
 export type CustomElementAttributes = Omit<
@@ -61,6 +74,8 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 	img?: boolean;
+	mention?: boolean;
+	mentionConfirm?: PublicUserData;
 };
 
 export type MarkTypes = keyof Omit<CustomText, "text">;

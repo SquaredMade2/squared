@@ -1,7 +1,8 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
-import { type Label, Priority, Status, type User } from "@squared/db";
+import type { PublicUserData } from "@clerk/types";
+import { type Label, Priority, Status } from "@squared/db";
 import { format } from "date-fns";
 
 export const truncateString = (string: string, maxLength: number): string => {
@@ -45,6 +46,11 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 	return typeof workspaceName === "string" && workspaceName.length > 20
 		? `${workspaceName.slice(0, 20)}...`
 		: workspaceName;
+};
+
+export const formatName = (user: PublicUserData | undefined): string => {
+	if (!user) return "Unknown User";
+	return `${user.firstName} ${user.lastName}`;
 };
 
 export const getInitials = (name?: string | null): string => {
@@ -153,6 +159,11 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 				if (leaf.url) {
 					return `[${leaf.text}](${leaf.url})`;
 				}
+				if (leaf.mentionConfirm) {
+					return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
+				}
+
+				// input mentionConfirms
 				// helper vars
 				const returnBoldMarks = leaf.bold ? "**" : "";
 				const returnItalicMarks = leaf.italic ? "*" : "";
@@ -187,7 +198,7 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 export const formatFilterName = async (
 	filter: FilterCondition,
 	labels: Label[],
-	users: User[],
+	users: PublicUserData[],
 ): Promise<{ name: string; value: string }> => {
 	if (!filter.value) return { name: filter.field, value: "" };
 	switch (filter.field) {
@@ -195,7 +206,9 @@ export const formatFilterName = async (
 			const assignees = getFilterAssignees([filter], users);
 			return {
 				name: assignees.length > 1 ? "Assignees" : "Assignee",
-				value: assignees.map((a) => a?.name || "Unassigned").join(", "),
+				value: assignees
+					.map((a) => formatName(a ?? undefined) || "Unassigned")
+					.join(", "),
 			};
 		}
 		case "status":

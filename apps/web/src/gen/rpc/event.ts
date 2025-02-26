@@ -15,13 +15,12 @@ export type GetTaskEventsResponse = (
 			taskId: string;
 	  }
 	| {
-			authorName: string | null;
-			branchId: string;
+			author: string | null;
+			externalId: string;
 			id: string;
-			message: string;
-			owner: string | null;
-			repoName: string | null;
-			taskId: string | null;
+			message: string | null;
+			pullId: string;
+			repoId: string;
 			timestamp: Date;
 			url: string;
 	  }
@@ -70,7 +69,7 @@ export type GetNotificationsResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
-		externalId: string | null;
+		externalId: string;
 		id: string;
 		labels: {
 			color: string;
@@ -207,7 +206,7 @@ export type ToggleNotificationResponse = {
 		companySize: number | null;
 		createdAt: Date;
 		defaultView: string | null;
-		externalId: string | null;
+		externalId: string;
 		id: string;
 		labels: {
 			color: string;

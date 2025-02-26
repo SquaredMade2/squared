@@ -1,11 +1,28 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
-import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
+import {
+	formatName,
+	formatUrl,
+	getInitials,
+	truncateString,
+} from "@/utils/formatting";
+import { Calendar, UserSearch } from "@squared/icons";
 import { formatDate } from "date-fns";
-import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
+import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 
@@ -41,15 +58,53 @@ const TaskGrid = ({
 							<div />
 						)}
 						{showAvatar &&
-							(user?.name ? (
-								<Avatar className="size-6">
-									<AvatarImage src={user.avatarUrl ?? undefined} />
-									<AvatarFallback className="text-xxs">
-										{getInitials(user.name)}
-									</AvatarFallback>
-								</Avatar>
+							(user ? (
+								<TooltipProvider>
+									<Tooltip>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<TooltipTrigger asChild>
+													<Avatar
+														className="size-6"
+														onClick={(e) => {
+															e.preventDefault();
+														}}
+													>
+														<AvatarImage src={user.imageUrl} />
+														<AvatarFallback className="text-xxs">
+															{getInitials(formatName(user))}
+														</AvatarFallback>
+													</Avatar>
+												</TooltipTrigger>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
+												<AssigneeBox task={task} />
+											</DropdownMenuContent>
+											<TooltipContent>{formatName(user)}</TooltipContent>
+										</DropdownMenu>
+									</Tooltip>
+								</TooltipProvider>
 							) : (
-								<UserSearch className="size-6 text-[#9597AD]" />
+								<TooltipProvider>
+									<Tooltip>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<TooltipTrigger asChild>
+													<UserSearch
+														className="size-6 text-[#9597AD]"
+														onClick={(e) => {
+															e.preventDefault();
+														}}
+													/>
+												</TooltipTrigger>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
+												<AssigneeBox task={task} />
+											</DropdownMenuContent>
+											<TooltipContent>Assign task</TooltipContent>
+										</DropdownMenu>
+									</Tooltip>
+								</TooltipProvider>
 							))}
 					</div>
 

@@ -37,6 +37,7 @@ const statusOrder = [
 	Status.inReview,
 	Status.done,
 	Status.canceled,
+	Status.duplicated,
 	Status.archived,
 ];
 

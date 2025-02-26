@@ -1,10 +1,29 @@
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import type { CreateNotificationRequest } from "@/gen/rpc/event";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
-import { useCommentStore, useModalStore } from "@/store";
+import { useCommentStore, useModalStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
+import {
+	clearCurrentLeafContent,
+	getMentionFromLeaf,
+	getMentionsFromSlate,
+	injectMentionConfirm,
+	isValidMentionBlock,
+} from "@/utils/textEditorSelection";
+import { useOrganization } from "@clerk/nextjs";
+import type { PublicUserData } from "@clerk/types";
 import { useMutation } from "@tanstack/react-query";
-import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
+import {
+	type KeyboardEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -13,8 +32,7 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
+import TextEditorMentions from "./Menus/TextEditorMentions";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import ImgElement from "./TextEditorElements/ElementBlocks/ImgElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
@@ -49,14 +67,36 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
+	const currentTask = useTaskStore((state) => state.currentTask);
+	const { memberships } = useOrganization({
+		memberships: {
+			infinite: true,
+			pageSize: 100,
+		},
+	});
+
+	const users = memberships?.data?.map(
+		(membership) => membership.publicUserData,
+	);
+	const { workspace } = useTaskDashboard();
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
 
+	const [toggleMentions, setToggleMentions] = useState(false);
+	const [position, setPosition] = useState({ x: 0, y: 0 });
+	// Mention search filter
+	const [mentionsFilter, setMentionsFilter] = useState("");
+	const [currentEnterUser, setCurrentEnterUser] =
+		useState<PublicUserData | null>(null);
+
+	const debounceRef = useRef(false);
+	const editorRef = useRef<HTMLDivElement | null>(null);
+	const { toast } = useToast();
 	// Functions
 	const { mutate: addCommentToTask } = useMutation({
-		mutationKey: ["addComment", task?.id],
+		mutationKey: ["comment", "addComment", task?.id],
 		mutationFn: async () => {
 			if (task) {
 				if (checkIfSlateEmpty(editor)) {
@@ -72,6 +112,34 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						.$post(newComment)
 						.then((res) => res.json()),
 				);
+				const mentions = getMentionsFromSlate(editorContent);
+
+				if (currentTask && workspace && users) {
+					for (let i = 0; i < mentions.length; i++) {
+						const currentMentionUser = mentions[i];
+
+						const mentionedUser = users.find(
+							(user) => user.firstName === currentMentionUser,
+						);
+
+						if (!mentionedUser || !mentionedUser.userId) return;
+
+						const mentionEvent: CreateNotificationRequest = {
+							description: "Task Comment Mention",
+							taskId: currentTask.id,
+							type: "MENTIONED",
+							userId: mentionedUser.userId,
+							workspaceId: workspace.id,
+						};
+						client.notification.createMention.$post(mentionEvent);
+					}
+				} else {
+					toast({
+						title: "Workspace, Task, or User not found.",
+						variant: "destructive",
+					});
+				}
+
 				setEditorContent([]);
 				editor.children = [
 					{
@@ -99,6 +167,31 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			});
 		},
 	});
+
+	const handleMentionKeyUp = (event: KeyboardEvent) => {
+		if (event.key === "@") {
+			const selection = window.getSelection();
+			if (!selection) {
+				setPosition({ x: 0, y: 0 });
+				return;
+			}
+			if (!selection.rangeCount) {
+				setPosition({ x: 0, y: 0 });
+				return;
+			}
+
+			const { left } = editorRef.current
+				? editorRef.current.getBoundingClientRect()
+				: { left: 0 };
+
+			const range = selection.getRangeAt(0).cloneRange();
+			const rect = range.getBoundingClientRect();
+			setPosition({
+				y: rect.top,
+				x: rect.left - left,
+			});
+		}
+	};
 
 	const injectLinkContent = (linkName: string, linkUrl: string) => {
 		if (!(linkName && linkUrl)) return;
@@ -176,6 +269,10 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				return "isItalicActive";
 			case "code":
 				return "isCodeActive";
+			case "mention":
+				return "isMentionActive";
+			case "mentionConfirm":
+				return "isMentionConfirmActive";
 			case "url":
 				return "isLinkActive";
 			case "img":
@@ -186,7 +283,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const isMarkActive = (type: MarkTypes): boolean => {
 		if (!editor.selection) return false;
 		const marks = Editor.marks(editor);
-		return type === "url" ? !!marks?.[type] : Boolean(marks?.[type]);
+		return type === "url" || type === "mentionConfirm"
+			? !!marks?.[type]
+			: Boolean(marks?.[type]);
 	};
 
 	const isElementActive = (elementType: ElementTypes) => {
@@ -204,14 +303,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
 		isImgActive: () => isMarkActive("img"),
+		isMentionActive: () => isMarkActive("mention"),
+		isMentionConfirmActive: () => isMarkActive("mentionConfirm"),
 	});
 
-	const createLeaf = (markType: MarkTypes) => {
-		Editor.addMark(
-			editor,
-			markType,
-			!useEditorMarks()[useLeafActive(markType)](),
-		);
+	const createLeaf = (
+		markType: MarkTypes,
+		markState = !useEditorMarks()[useLeafActive(markType)](),
+	) => {
+		Editor.addMark(editor, markType, markState);
 	};
 
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -227,9 +327,35 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				Editor.removeMark(editor, mark);
 			}
 		});
-		console.log(editor.children);
+		if (isMarkActive("mentionConfirm") && e.key !== "Backspace") {
+			Editor.removeMark(editor, "mentionConfirm");
+		}
 		switch (e.key) {
 			// Element Blocks
+
+			// Submit Mention
+
+			case "Enter": {
+				if (toggleMentions) {
+					e.preventDefault();
+					debounceRef.current = true;
+					if (currentEnterUser) injectMentionConfirm(editor, currentEnterUser);
+					setToggleMentions(false);
+				}
+				break;
+			}
+
+			case "Backspace": {
+				if (isMarkActive("mentionConfirm")) {
+					clearCurrentLeafContent(editor);
+				}
+				break;
+			}
+
+			case "@": {
+				createLeaf("mention", true);
+				break;
+			}
 
 			case "`": {
 				if (e[universalHotKey]) {
@@ -307,13 +433,35 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		const deleteEntireMention = () => {
+			if (useEditorMarks().isMentionActive()) {
+				clearCurrentLeafContent(editor);
+				createLeaf("mention", false);
+				setToggleMentions(false);
+			}
+		};
+		const allowEntireMention = () => {
+			createLeaf("mention", true);
+			setToggleMentions(true);
+		};
+		if (debounceRef.current) {
+			debounceRef.current = false;
+			return;
+		}
+		isValidMentionBlock(editor) ? allowEntireMention() : deleteEntireMention();
+		if (toggleMentions) {
+			setMentionsFilter(getMentionFromLeaf(editor));
+		}
+	}, [editor.selection]);
+
 	return (
 		<Slate
 			editor={editor}
 			initialValue={initialValue}
 			onChange={(newValue) => setEditorContent(newValue)}
 		>
-			<div className="markdown-content">
+			<div className="markdown-content" onKeyUp={handleMentionKeyUp}>
 				<div
 					className={cn(
 						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
@@ -332,14 +480,28 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						selection={editor.selection}
 						injectImgContent={injectImgContent}
 					/>
-					<Editable
-						onKeyDown={handleSetEditorContent}
-						renderLeaf={renderLeaf}
-						renderElement={renderElement}
-						className="min-h-[160px] w-full px-3 py-4"
-					/>
+					<div ref={editorRef}>
+						<Editable
+							onKeyDown={handleSetEditorContent}
+							renderLeaf={renderLeaf}
+							renderElement={renderElement}
+							className="min-h-[160px] w-full px-3 py-4"
+						/>
+					</div>
 				</div>
 			</div>
+
+			{toggleMentions && (
+				<TextEditorMentions
+					cursorPosition={position}
+					mentionsFilter={mentionsFilter}
+					editor={editor}
+					setCurrentEnterUser={setCurrentEnterUser}
+					setToggleMentions={setToggleMentions}
+					debounceRef={debounceRef}
+				/>
+			)}
+
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
 				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}

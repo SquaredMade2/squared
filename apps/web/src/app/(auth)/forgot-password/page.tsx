@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth, useSignIn } from "@clerk/nextjs";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Eye, EyeOff } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
@@ -198,9 +198,9 @@ const ForgotPasswordPage = () => {
 										onClick={() => setHidePassword(!hidePassword)}
 									>
 										{hidePassword ? (
-											<EyeIcon className="h-6 w-6" />
+											<Eye className="h-6 w-6" />
 										) : (
-											<EyeOffIcon className="h-6 w-6" />
+											<EyeOff className="h-6 w-6" />
 										)}
 									</Button>
 								</div>
@@ -225,9 +225,9 @@ const ForgotPasswordPage = () => {
 										onClick={() => setHideConfirmPassword(!hideConfirmPassword)}
 									>
 										{hideConfirmPassword ? (
-											<EyeIcon className="h-6 w-6" />
+											<Eye className="h-6 w-6" />
 										) : (
-											<EyeOffIcon className="h-6 w-6" />
+											<EyeOff className="h-6 w-6" />
 										)}
 									</Button>
 								</div>

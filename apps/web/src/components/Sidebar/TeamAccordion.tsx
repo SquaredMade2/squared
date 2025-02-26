@@ -3,7 +3,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/utils/cn";
 import type { Team } from "@squared/db";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "@squared/icons";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddTeamButton from "../Buttons/AddTeamButton";

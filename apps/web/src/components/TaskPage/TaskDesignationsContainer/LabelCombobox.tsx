@@ -18,8 +18,8 @@ import {
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, TaskEvent } from "@squared/db";
+import { Check, Plus, Tag } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
 
@@ -36,12 +36,13 @@ const LabelCombobox = () => {
 	const allLabels = useMemo(() => workspace?.labels || [], [workspace]);
 
 	const taskLabels = useMemo(
-		() => allLabels.filter((label) => labels.includes(label)),
+		() =>
+			allLabels.filter((label) => labels.some((l) => l.name === label.name)),
 		[allLabels, labels],
 	);
 
 	const { mutate: updateLabels } = useMutation({
-		mutationKey: ["updateTaskLabels", taskId],
+		mutationKey: ["task", "updateLabels", taskId],
 		mutationFn: async (newLabels: Label[]) => {
 			const res = await client.task.updateLabels.$post({
 				taskId,
@@ -100,9 +101,8 @@ const LabelCombobox = () => {
 			</div>
 		);
 	};
-
 	return (
-		<div className="md:w-full">
+		<div className={`${taskLabels.length === 0 && "h-10"} md:w-full`}>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
@@ -110,11 +110,13 @@ const LabelCombobox = () => {
 						className="h-8 w-fit justify-start md:h-10 md:w-full"
 					>
 						<>
-							<div className="item hidden md:flex">
+							<div className="item hidden items-center md:flex">
 								<Plus className="mr-2 size-4" />
 								<span>Add label</span>
 							</div>
-							<div className="md:hidden">{renderLabelButton()}</div>
+							<div className="flex items-center md:hidden">
+								{renderLabelButton()}
+							</div>
 						</>
 					</Button>
 				</PopoverTrigger>
@@ -150,8 +152,8 @@ const LabelCombobox = () => {
 					</Command>
 				</PopoverContent>
 			</Popover>
-			<div className="mt-2 hidden w-full md:block">
-				<div className="mb-2 flex flex-wrap items-center space-x-1 space-y-2 ">
+			<div className="mt-1 hidden w-full md:block">
+				<div className="mb-1 flex flex-wrap items-center space-x-1 space-y-2">
 					{taskLabels.map((label: Label, index: number) => (
 						<span key={label.name} className={index === 0 ? "mt-2" : ""}>
 							<LabelBadge label={label} />

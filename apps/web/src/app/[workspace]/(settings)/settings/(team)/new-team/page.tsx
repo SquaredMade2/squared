@@ -21,10 +21,10 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ const formSchema = z.object({
 export default function CreateTeam() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { workspace, loading: workspaceLoading } = useWorkspaces();
+	const { organization, isLoaded } = useOrganization();
 	const { loading: teamLoading, authorized } = useTeams();
 	const { createTeam: addTeam } = useTeamStore((state) => state);
 
@@ -65,16 +65,16 @@ export default function CreateTeam() {
 	});
 
 	const { mutate: onSubmit } = useMutation({
-		mutationKey: ["createTeam", workspace?.id],
+		mutationKey: ["team", "createTeam", organization?.id],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			if (!workspace) {
+			if (!organization) {
 				throw new Error("Workspace not found");
 			}
 			const res = await client.team.createTeam
 				.$post({
 					name: values.teamName.trim(),
 					identifier: values.teamIdentifier.toUpperCase(),
-					workspaceId: workspace.id,
+					workspaceId: organization.id,
 				})
 				.then((res) => res.json());
 
@@ -85,7 +85,7 @@ export default function CreateTeam() {
 			if (!data) return;
 			addTeam(data);
 			router.push(
-				`/${workspace?.url}/team/${data?.identifier?.toUpperCase()}/all`,
+				`/${organization?.slug}/team/${data?.identifier?.toUpperCase()}/all`,
 			);
 			toast({ title: "Team created" });
 		},
@@ -99,14 +99,14 @@ export default function CreateTeam() {
 	});
 
 	useEffect(() => {
-		if (!authorized && !teamLoading && workspace) {
-			router.push(`/${workspace.url}`);
-		} else if (!workspace && !workspaceLoading) {
+		if (!authorized && !teamLoading && organization) {
+			router.push(`/${organization.slug}`);
+		} else if (!organization && isLoaded) {
 			router.push("/");
 		}
-	}, [authorized, workspace, teamLoading, workspaceLoading]);
+	}, [authorized, organization, teamLoading, isLoaded]);
 
-	if (workspaceLoading || teamLoading)
+	if (!isLoaded || teamLoading)
 		return (
 			<div className="container mx-auto mb-16 w-2/3 space-y-6 p-4">
 				<h1 className="mb-2 font-bold text-3xl">New Team Settings</h1>

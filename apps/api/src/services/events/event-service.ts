@@ -1,13 +1,17 @@
 import {
-	type Commit,
 	type DBClient,
+	type GithubCommit,
 	type Notification,
 	type NotificationType,
 	type Task,
 	type TaskEvent,
+	and,
 	asc,
-	commitsTable,
+	desc,
 	eq,
+	githubCommitsTable,
+	githubPullRequestTaskTable,
+	githubPullRequestsTable,
 	inArray,
 	notificationsTable,
 	sprintsTable,
@@ -30,7 +34,7 @@ export class EventService implements EventRpc {
 	}
 	async getTaskEvents({
 		taskId,
-	}: { taskId: string }): Promise<(TaskEvent | Commit)[]> {
+	}: { taskId: string }): Promise<(TaskEvent | GithubCommit)[]> {
 		this.logger.info(
 			`Fetching TaskEvents and Commits for Task ID ${taskId}...`,
 		);
@@ -42,10 +46,32 @@ export class EventService implements EventRpc {
 				.where(eq(taskEventsTable.taskId, taskId))
 				.orderBy(asc(taskEventsTable.createdAt)),
 			this.db
-				.select()
-				.from(commitsTable)
-				.where(eq(commitsTable.taskId, taskId))
-				.orderBy(asc(commitsTable.timestamp)),
+				.select({
+					id: githubCommitsTable.id,
+					externalId: githubCommitsTable.externalId,
+					message: githubCommitsTable.message,
+					url: githubCommitsTable.url,
+					author: githubCommitsTable.author,
+					timestamp: githubCommitsTable.timestamp,
+					repoId: githubCommitsTable.repoId,
+					pullId: githubPullRequestsTable.externalId,
+				})
+				.from(githubCommitsTable)
+				.innerJoin(
+					githubPullRequestsTable,
+					eq(githubCommitsTable.pullId, githubPullRequestsTable.externalId),
+				)
+				.innerJoin(
+					githubPullRequestTaskTable,
+					and(
+						eq(
+							githubPullRequestsTable.externalId,
+							githubPullRequestTaskTable.pullRequestId,
+						),
+						eq(githubPullRequestTaskTable.taskId, taskId),
+					),
+				)
+				.orderBy(desc(githubCommitsTable.timestamp)),
 		]);
 
 		this.logger.info(
@@ -68,7 +94,7 @@ export class EventService implements EventRpc {
 			.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
 			.leftJoin(
 				workspacesTable,
-				eq(notificationsTable.workspaceId, workspacesTable.id),
+				eq(notificationsTable.workspaceId, workspacesTable.externalId),
 			)
 			.where(eq(notificationsTable.userId, userId));
 
@@ -202,7 +228,7 @@ export class EventService implements EventRpc {
 				.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
 				.leftJoin(
 					workspacesTable,
-					eq(notificationsTable.workspaceId, workspacesTable.id),
+					eq(notificationsTable.workspaceId, workspacesTable.externalId),
 				)
 				.where(inArray(notificationsTable.id, notificationIds));
 

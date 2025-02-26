@@ -1,5 +1,40 @@
 "use client";
 
+import {
+	AssignTasksDialog,
+	SprintError,
+	SprintLoading,
+	SprintNotFound,
+} from "@/components/Sprints";
+import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/components/ui/use-toast";
+import { useSprints } from "@/hooks/useSprints";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
+import type { Sprint, Status, Task } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -17,52 +52,13 @@ import {
 	YAxis,
 } from "recharts";
 
-import {
-	AssignTasksDialog,
-	SprintError,
-	SprintLoading,
-	SprintNotFound,
-} from "@/components/Sprints";
-import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
-
-import { useSprints } from "@/hooks/useSprints";
-import { sprintService, taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
-import { TODO } from "@squared/context";
-import type { Sprint, Status, Task } from "@squared/db";
-
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const router = useRouter();
-	const { sprints, team, workspace, loading, error, sprintTasks } = useSprints(
-		parseParams(sprintId),
-	);
+	const { sprints, team, organization, loading, error, sprintTasks } =
+		useSprints(parseParams(sprintId));
 	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -160,36 +156,60 @@ export default function SprintDashboardPage() {
 		}));
 	};
 
-	const handleBulkAssign = async () => {
-		if (!sprint) return;
-		await taskService.addSprintTasks(TODO, {
-			sprintId: sprint.id,
-			taskIds: selectedTasks.map((t) => t.id),
-		});
-		setSelectedTasks([]);
-		team && setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
-	};
+	const { mutate: handleBulkAssign } = useMutation({
+		mutationKey: ["sprint", "sprintAssign", sprint?.id],
+		mutationFn: async () => {
+			if (!sprint) throw new Error("Sprint not found");
+			return await client.sprint.addSprintTasks
+				.$post({
+					sprintId: sprint.id,
+					taskIds: selectedTasks.map((t) => t.id),
+				})
+				.then((res) => res.json());
+		},
+		onError: (error) => {
+			toast({
+				title: "Failed to assign tasks to sprint",
+				description: parseError(error, "Unknown error"),
+				variant: "destructive",
+			});
+		},
+		onSuccess: (data) => {
+			toast({ title: "Tasks assigned to sprint" });
+			setTasks(data);
+		},
+	});
+
+	const { mutate: endSprint } = useMutation({
+		mutationKey: ["sprint", "sprintEnd", sprint?.id],
+		mutationFn: async () => {
+			if (!sprint) throw new Error("Sprint not found");
+			return await client.sprint.endSprint
+				.$post({
+					sprintId: sprint.id,
+				})
+				.then((res) => res.json());
+		},
+		onError: (error) => {
+			toast({
+				title: "Failed to end the sprint.",
+				description: parseError(error, "Unknown error"),
+				variant: "destructive",
+			});
+		},
+		onSuccess: () => {
+			toast({ title: "Sprint ended successfully" });
+			router.push(`/${organization?.slug}/team/${team?.identifier}/all`);
+		},
+	});
 
 	const handleEndSprintConfirm = async () => {
 		if (!sprint || !team) return;
-
-		try {
-			if (newSprint) {
-				setShowNextSprint(true);
-			} else {
-				await sprintService.endSprint(TODO, {
-					sprintId: sprint.id,
-				});
-				toast({ title: "Sprint ended successfully" });
-				router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
-			}
-		} catch (error) {
-			console.error("Error ending sprint:", error);
-			toast({
-				title: "Failed to end the sprint.",
-				description: error instanceof Error ? error.message : "Unknown error",
-				variant: "destructive",
-			});
+		setShowEndSprintDialog(false);
+		if (newSprint) {
+			setShowNextSprint(true);
+		} else {
+			endSprint();
 		}
 	};
 
@@ -206,7 +226,7 @@ export default function SprintDashboardPage() {
 		return (
 			<SprintError
 				error={parseError(error, "Failed to fetch sprint data")}
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
 			/>
 		);
@@ -214,7 +234,7 @@ export default function SprintDashboardPage() {
 	if (!sprint) {
 		return (
 			<SprintNotFound
-				workspaceUrl={workspace?.url}
+				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
 			/>
 		);
@@ -376,7 +396,7 @@ export default function SprintDashboardPage() {
 					End Sprint
 				</Button>
 				<Link
-					href={`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
+					href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
 					className="flex-1"
 					passHref
 				>
@@ -391,7 +411,7 @@ export default function SprintDashboardPage() {
 				<div className="space-x-4">
 					<AssignTasksDialog
 						activeSprint={sprint}
-						handleBulkAssign={handleBulkAssign}
+						handleBulkAssign={() => handleBulkAssign()}
 						selectedTasks={selectedTasks}
 						setSelectedTasks={setSelectedTasks}
 						unassignedTasks={unassignedTasks}
@@ -441,32 +461,29 @@ export default function SprintDashboardPage() {
 				</div>
 			</Tabs>
 
-			<AlertDialog
-				open={showEndSprintDialog}
-				onOpenChange={setShowEndSprintDialog}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>End Sprint</AlertDialogTitle>
-						<AlertDialogDescription>
+			<Dialog open={showEndSprintDialog} onOpenChange={setShowEndSprintDialog}>
+				<DialogContent className="md:w-2/3 xl:w-1/3">
+					<DialogHeader>
+						<DialogTitle>End Sprint</DialogTitle>
+						<DialogDescription>
 							Are you sure you want to end this sprint?
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={handleEndSprintConfirm}>
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose>Cancel</DialogClose>
+						<Button className="mb-3 sm:mb-0" onClick={handleEndSprintConfirm}>
 							End Sprint
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			<NewSprintModal
 				isOpen={showNextSprint}
 				onClose={() => setShowNextSprint(false)}
 				team={team || null}
 				initialSprintName={newSprintName}
-				redirectUrl={`/${workspace?.url}/team/${team?.identifier}/sprints`}
+				redirectUrl={`/${organization?.slug}/team/${team?.identifier}/sprints`}
 			/>
 		</div>
 	);

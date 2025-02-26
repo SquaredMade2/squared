@@ -10,6 +10,7 @@ export default function createSquaredIcon(name: string, svgContent: string) {
       color?: string;
       strokeWidth?: number;
       absoluteStrokeWidth?: boolean;
+      onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
     }
     
   export const ${name}: FC<${name}Props> = ({

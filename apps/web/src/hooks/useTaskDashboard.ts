@@ -35,7 +35,7 @@ export function useTaskDashboard() {
 		isLoading,
 		error: tasksError,
 	} = useQuery<Task[], Error>({
-		queryKey: ["tasks", team?.id],
+		queryKey: ["task", "getAllTasks", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllTasks.$get({
@@ -49,7 +49,7 @@ export function useTaskDashboard() {
 	});
 
 	const allBlockedTaskIdsQuery = useQuery({
-		queryKey: ["allBlockedTasksIds", team?.id],
+		queryKey: ["task", "allBlockedTasksIds", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllBlockedTaskIds.$get({
@@ -76,7 +76,7 @@ export function useTaskDashboard() {
 			return updatedTask;
 		},
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ["tasks", team?.id] });
+			await queryClient.invalidateQueries({ queryKey: ["task", team?.id] });
 		},
 	});
 
@@ -104,7 +104,6 @@ export function useTaskDashboard() {
 				.$post({
 					parentId: draggedTask.parentId,
 					newOrder: items.map((item) => item.id),
-					teamId: team.id,
 				})
 				.then((res) => res.json());
 			setTasks(teamTasks);
@@ -115,7 +114,7 @@ export function useTaskDashboard() {
 			status: destination.droppableId as Status,
 		});
 		await queryClient.invalidateQueries({
-			queryKey: ["allBlockedTasksIds", team?.id],
+			queryKey: ["task", team?.id],
 		});
 	};
 
