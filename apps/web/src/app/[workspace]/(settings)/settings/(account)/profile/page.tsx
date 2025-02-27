@@ -1,6 +1,17 @@
 "use client";
 
 import ImageUpload from "@/components/ImageUpload";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -23,6 +34,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -37,8 +49,6 @@ export default function Profile() {
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const users = useUserStore((state) => state.users);
-	const selectedUser = users.find((char) => char.externalId === user?.id);
-	console.log(selectedUser);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -105,7 +115,7 @@ export default function Profile() {
 		}
 	};
 
-	const { mutate: markAsDeleted } = useMutation({
+	const { mutate: markAsDeleted, isPaused: isDeleting } = useMutation({
 		mutationFn: async (userId: string) => {
 			return client.user.markAsDeleted.$post({ userId });
 		},
@@ -118,7 +128,8 @@ export default function Profile() {
 	});
 
 	const handleDelete = () => {
-		markAsDeleted(user?.id || "qweqw");
+		markAsDeleted(user?.id || "");
+		user?.delete();
 	};
 
 	if (!isLoaded || !user) return null;
@@ -221,8 +232,36 @@ export default function Profile() {
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
 				</div>
-				<div>
-					<Button onClick={handleDelete}>Delete user</Button>
+				<div className="rounded-lg bg-destructive/10 p-6">
+					<h2 className="mb-4 font-semibold text-xl">Delete Account</h2>
+					<p className="mb-4 text-muted-foreground">
+						Permanently delete your account and all of its contents from the
+						platform. This action is not reversible, so please continue with
+						caution.
+					</p>
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<Button variant="destructive">Delete Account</Button>
+						</AlertDialogTrigger>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+								<AlertDialogDescription>
+									This action cannot be undone. This will permanently delete
+									your account and remove your data from our servers.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<AlertDialogAction
+									className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+									onClick={handleDelete}
+								>
+									{isDeleting ? "Deleting..." : "Yes, delete account"}
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
 				</div>
 			</div>
 		</div>
