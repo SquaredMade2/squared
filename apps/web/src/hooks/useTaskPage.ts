@@ -6,6 +6,7 @@ import { useOrganization } from "@clerk/nextjs";
 import type { TaskEvent } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { useTasks } from "./useTasks";
 import { useTeams } from "./useTeams";
 
 export function useTaskPage() {
@@ -24,6 +25,7 @@ export function useTaskPage() {
 		allBlockedTaskIds,
 	} = useTaskStore((state) => state);
 
+	const { loading: tasksLoading, error: tasksError } = useTasks();
 	const { setComments } = useCommentStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
@@ -104,6 +106,7 @@ export function useTaskPage() {
 	});
 
 	const isLoading =
+		tasksLoading ||
 		!isLoaded ||
 		teamLoading ||
 		taskQuery.isLoading ||
@@ -113,6 +116,7 @@ export function useTaskPage() {
 		eventsQuery.isLoading;
 
 	const error =
+		tasksError ||
 		teamError ||
 		taskQuery.error ||
 		subtasksQuery.error ||
