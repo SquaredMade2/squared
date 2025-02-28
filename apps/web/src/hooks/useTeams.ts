@@ -12,7 +12,9 @@ export function useTeams() {
 	const { setUsers } = useUserStore((state) => state);
 
 	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier);
+	const teamIdentifier =
+		parseParams(params.identifier) ||
+		parseParams(params.taskIdentifier)?.split("-")[0];
 
 	const { data: authorized = true, isLoading: authLoading } = useQuery({
 		queryKey: ["team", "teamAuthorization", teamIdentifier],
