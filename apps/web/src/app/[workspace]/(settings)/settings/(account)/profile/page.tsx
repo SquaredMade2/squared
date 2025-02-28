@@ -26,7 +26,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,7 +47,6 @@ export default function Profile() {
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
-	const users = useUserStore((state) => state.users);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
