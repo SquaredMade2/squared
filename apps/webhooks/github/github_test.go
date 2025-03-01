@@ -6,10 +6,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"io"
+	"log"
 
 	"net/http"
 	"net/http/httptest"
-	"net/http/httputil"
 	"os"
 	"strings"
 	"testing"
@@ -25,34 +26,31 @@ func NewMockRPCServer() *MockRPCServer {
 
 	// Create a test server that returns appropriate responses
 	mock.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Log request for debugging
-		dump, _ := httputil.DumpRequest(r, true)
-		fmt.Printf("Received request: %s\n", string(dump))
+		// Only log request path for debugging, not the entire request body
+		fmt.Printf("Received request to: %s\n", r.URL.Path)
 
 		// Parse the endpoint path to determine which mock response to return
 		endpoint := r.URL.Path
 
 		switch {
 		case strings.Contains(endpoint, "/github/upsertPullRequest"):
-			// Mock response for pull request updates
-			response := `{"json":"{\"tasks\":[{\"identifier\":\"SQ-123\",\"title\":\"Test Task\",\"url\":\"/tasks/123\"}]}"}`
+			// Mock response for pull request updates - just return a string directly
+			// This matches what superjson expects
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(response))
+			w.Write([]byte(`"{\"tasks\":[{\"identifier\":\"SQ-123\",\"title\":\"Test Task\",\"url\":\"/tasks/123\"}]}"`))
 
 		case strings.Contains(endpoint, "/github/pushCommit"):
 			// Mock response for commit pushes
-			response := `{"json":"{}"}`
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(response))
+			w.Write([]byte(`"{}"`))
 
 		case strings.Contains(endpoint, "/github/uploadOrg"):
 			// Mock response for organization uploads
-			response := `{"json":"{}"}`
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(response))
+			w.Write([]byte(`"{}"`))
 
 		default:
 			// Unknown endpoint
@@ -76,8 +74,18 @@ func TestMain(m *testing.M) {
 	os.Setenv("WEBHOOK_SECRET", "squared")
 	os.Setenv("SERVER_URL", "http://localhost:5173")
 
+	// Set log level to quiet for tests to reduce noise
+	SetLogLevel(LogLevelQuiet)
+
+	// Optionally capture log output to prevent it from cluttering test output
+	originalOutput := log.Writer()
+	log.SetOutput(io.Discard)
+
 	// Run tests
 	code := m.Run()
+
+	// Restore log output
+	log.SetOutput(originalOutput)
 
 	// Teardown
 	os.Unsetenv("WEBHOOK_SECRET")
