@@ -15,6 +15,7 @@ import (
 
 func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
 	var webhookEvent WebhookPullRequest
+	fmt.Println(fmt.Sprintf("Webhook event: %s", string(body)))
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
