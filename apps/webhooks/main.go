@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", handleRequest)
-	http.HandleFunc("/github", github.WebhookHandler)
+	http.HandleFunc("/bob", handleRequest)
+	http.HandleFunc("/", github.WebhookHandler)
 	http.HandleFunc("/vercel", vercel.WebhookHandler)
 
 	if os.Getenv("PORT") == "" {
