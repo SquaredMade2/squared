@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/github", github.WebhookHandler)
 	http.HandleFunc("/vercel", vercel.WebhookHandler)
