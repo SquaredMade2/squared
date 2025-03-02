@@ -267,19 +267,24 @@ jobs:
         working-directory: apps/webhooks
         run: go mod download
 
+      - name: Set up private key
+        run: |
+          echo "${{ secrets.GH_APP_PRIVATE_KEY }}" > apps/webhooks/githubAppPrivateKey.pem
+          chmod 600 apps/webhooks/githubAppPrivateKey.pem
+
       - name: Create .env file
         working-directory: apps/webhooks
         run: |
           cat << EOF > .env
           # Main
-          SERVER_URL="http://localhost:5173"
-          BASE_URL="http://localhost:8081"
+          SERVER_URL=http://localhost:5173
+          BASE_URL=http://localhost:8081
           PORT=3131
 
           # Github
           WEBHOOK_SECRET=squared
-          GITHUB_APP_PRIVATE_KEY=${{ secrets.GH_APP_PRIVATE_KEY }}
-          APP_URL="https://app.squaredmade.com"
+          PRIVATE_KEY_PATH=apps/webhooks/githubAppPrivateKey.pem
+          APP_URL=https://app.squaredmade.com
           GITHUB_BOT_ID=${{ secrets.GH_BOT_ID }}
 
           # Vercel
