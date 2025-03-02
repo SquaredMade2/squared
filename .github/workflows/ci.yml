@@ -267,11 +267,6 @@ jobs:
         working-directory: apps/webhooks
         run: go mod download
 
-      - name: Set up private key
-        run: |
-          echo "${{ secrets.GH_APP_PRIVATE_KEY }}" > apps/webhooks/githubAppPrivateKey.pem
-          chmod 600 apps/webhooks/githubAppPrivateKey.pem
-
       - name: Create .env file
         working-directory: apps/webhooks
         run: |
@@ -283,14 +278,17 @@ jobs:
 
           # Github
           WEBHOOK_SECRET=squared
-          PRIVATE_KEY_PATH=apps/webhooks/githubAppPrivateKey.pem
           APP_URL=https://app.squaredmade.com
           GITHUB_BOT_ID=${{ secrets.GH_BOT_ID }}
+          PRIVATE_KEY_PATH=./githubAppPrivateKey.pem
 
           # Vercel
           PAPERTRAIL_URL=logs.papertrailapp.com:35736
-
           EOF
+
+          # Write the private key to a separate file
+          echo "${{ secrets.GH_APP_PRIVATE_KEY }}" > githubAppPrivateKey.pem
+          chmod 600 githubAppPrivateKey.pem
 
       - name: Verify .env file
         working-directory: apps/webhooks
