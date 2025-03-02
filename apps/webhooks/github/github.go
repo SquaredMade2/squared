@@ -2,6 +2,7 @@ package github
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -115,7 +116,7 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	body, err = io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %v", err)
-		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error reading request body: %v", err), http.StatusInternalServerError)
 		return
 	}
 
