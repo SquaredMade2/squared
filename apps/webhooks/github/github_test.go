@@ -194,6 +194,7 @@ func TestWebhookHandler_PullRequest(t *testing.T) {
 	// Check response status
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+		t.Logf("Response body: %s", rr.Body.String())
 	}
 }
 
