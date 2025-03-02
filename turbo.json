@@ -47,8 +47,7 @@
 			"dependsOn": ["^studio"]
 		},
 		"test": {
-			"dependsOn": [],
-			"outputs": ["coverage/**"]
+			"dependsOn": []
 		},
 		"test:ci": {
 			"dependsOn": ["^test:ci"]

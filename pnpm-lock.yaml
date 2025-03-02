@@ -582,8 +582,11 @@ importers:
         specifier: ^8.0.2
         version: 8.3.5(@swc/core@1.7.6(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(typescript@5.7.3)(yaml@2.7.0)
       typescript:
-        specifier: ^5.5.4
+        specifier: ^5.7.3
         version: 5.7.3
+      vitest:
+        specifier: ^0.34.6
+        version: 0.34.6(jsdom@20.0.3(bufferutil@4.0.8)(utf-8-validate@6.0.4))(terser@5.37.0)
 
   packages/rpc:
     dependencies:
