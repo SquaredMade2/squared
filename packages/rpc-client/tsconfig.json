@@ -2,6 +2,7 @@
 	"extends": "@squared/typescript-config/dependency.json",
 	"compilerOptions": {
 		"rootDir": ".",
+		"types": ["node"],
 		"outDir": "./dist"
 	},
 	"exclude": ["node_modules", "dist"]

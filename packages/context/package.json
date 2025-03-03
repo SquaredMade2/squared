@@ -18,13 +18,18 @@
 	},
 	"scripts": {
 		"build": "squared-build src/index.ts/index.ts",
+		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist",
-		"prepare": "pnpm run build"
+		"prepare": "pnpm run build",
+		"test": "vitest run",
+		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
 		"@squared/builder": "workspace:*",
-		"@types/node": "^22.8.1"
+		"@squared/typescript-config": "workspace:*",
+		"@types/node": "^22.8.1",
+		"typescript": "^5.8.2",
+		"vitest": "^0.34.6"
 	}
 }
