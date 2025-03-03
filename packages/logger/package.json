@@ -17,15 +17,18 @@
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"lint": "biome lint --error-on-warnings ./src",
-		"prepare": "tsup src/index.ts --format cjs,esm --dts"
+		"prepare": "tsup src/index.ts --format cjs,esm --dts",
+		"test": "vitest run",
+		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
 		"@biomejs/biome": "1.9.4",
+		"@squared/typescript-config": "workspace:*",
 		"@types/node": "^22.5.1",
 		"@types/winston": "^2.4.4",
-		"typescript": "^5.5.4",
-		"tsup": "^8.0.2"
+		"tsup": "^8.0.2",
+		"typescript": "^5.7.3",
+		"vitest": "^0.34.6"
 	},
 	"dependencies": {
 		"winston": "^3.14.2"
