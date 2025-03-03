@@ -3,7 +3,6 @@ import {
 	type Team,
 	type Workspace,
 	and,
-	deletedUsers,
 	desc,
 	eq,
 	teamsTable,
@@ -24,34 +23,12 @@ export class UserService implements UserRpc {
 		this.logger = createCustomLogger("users");
 	}
 
-	async markAsDeleted({ userId }: { userId: string }) {
+	async deleteUser({ userId }: { userId: string }) {
 		this.logger.info("Marking user as deleted", userId);
-
-		await this.db.transaction(async (tx) => {
-			const userRecord = await tx
-				.select()
-				.from(usersTable)
-				.where(eq(usersTable.externalId, userId))
-				.limit(1)
-				.then((results) => results[0]);
-
-			if (!userRecord) {
-				throw new Error(`User with id ${userId} not found`);
-			}
-			if (userRecord.deleted) {
-				throw new Error(`User with id ${userId} is already deleted`);
-			}
-
-			await tx
-				.update(usersTable)
-				.set({ deleted: true })
-				.where(eq(usersTable.externalId, userId));
-
-			await tx.insert(deletedUsers).values({
-				id: userRecord.id,
-				deletedAt: new Date(),
-			});
-		});
+		await this.db
+			.update(usersTable)
+			.set({ deleted: true })
+			.where(eq(usersTable.externalId, userId));
 	}
 
 	async onBoardUser({ userId }: { userId: string }) {

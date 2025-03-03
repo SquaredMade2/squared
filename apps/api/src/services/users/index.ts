@@ -89,7 +89,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.boolean(),
 	},
-	markAsDeleted: {
+	deleteUser: {
 		input: z.object({
 			userId: z.string(),
 		}),
@@ -114,5 +114,5 @@ export const createUserRpcHandler = (userService: UserService) =>
 		setLastViewedTask: (input) => userService.setLastViewedTask(input),
 		getDefaultWorkspace: (input) => userService.getDefaultWorkspace(input),
 		isUserAuthorized: (input) => userService.isUserAuthorized(input),
-		markAsDeleted: (input) => userService.markAsDeleted(input),
+		deleteUser: (input) => userService.deleteUser(input),
 	});

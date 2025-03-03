@@ -23,14 +23,6 @@ import {
 	statusType,
 } from "./types";
 
-export const deletedUsers = pgTable("DeletedUsers", {
-	id: uuid("id")
-		.primaryKey()
-		.notNull()
-		.references(() => usersTable.id, { onDelete: "cascade" }),
-	deletedAt: timestamp("deleted_at").notNull().defaultNow(),
-});
-
 export const teamsTable = pgTable(
 	"Team",
 	{
