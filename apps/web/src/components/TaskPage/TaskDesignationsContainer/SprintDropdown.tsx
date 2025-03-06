@@ -8,7 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
-const SprintCombobox = () => {
+const SprintDropdown = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 	const { team } = useTeamStore((state) => state);
@@ -87,4 +87,4 @@ const SprintCombobox = () => {
 	);
 };
 
-export default SprintCombobox;
+export default SprintDropdown;
