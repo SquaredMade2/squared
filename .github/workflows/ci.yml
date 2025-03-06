@@ -10,7 +10,7 @@ concurrency:
 jobs:
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     outputs:
       api-changed: ${{ steps.check-changes.outputs.api }}
       web-changed: ${{ steps.check-changes.outputs.web }}
@@ -65,13 +65,13 @@ jobs:
     name: Setup
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.only-go-changed == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -80,7 +80,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -93,14 +93,14 @@ jobs:
   lint-and-type-check:
     name: Lint and Type Check
     needs: [setup, detect-changes]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -109,7 +109,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -125,14 +125,14 @@ jobs:
   test-packages:
     name: Test Packages
     needs: [setup, detect-changes]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ !needs.detect-changes.outputs.only-go-changed == 'false' && needs.detect-changes.outputs.packages-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -141,7 +141,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -157,7 +157,7 @@ jobs:
   test-api:
     name: Test API
     needs: [detect-changes, setup]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
@@ -166,7 +166,7 @@ jobs:
         with:
           version: 9.15.4
 
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -177,7 +177,7 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -217,14 +217,14 @@ jobs:
   test-web:
     name: Test Web
     needs: [detect-changes, setup]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -233,7 +233,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -252,14 +252,14 @@ jobs:
   test-webhooks:
     name: Test Webhooks
     needs: [detect-changes]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.webhooks-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: useblacksmith/setup-go@v6
         with:
           go-version: "1.23"
 
@@ -283,14 +283,14 @@ jobs:
   test-www:
     name: Test WWW
     needs: [detect-changes, setup]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -299,7 +299,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -313,7 +313,7 @@ jobs:
   ci-status:
     name: CI Pipeline
     needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: always()
     steps:
       - name: Check CI status
