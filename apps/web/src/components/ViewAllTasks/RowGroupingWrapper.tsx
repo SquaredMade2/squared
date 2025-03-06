@@ -46,66 +46,6 @@ export const RowGroupingWrapper = ({
 	// Sort the row groups consistently based on type
 	const uniqueRowGroups = Array.from(allRowGroups);
 
-	// Sort the rows based on the groupRowsBy type
-	const sortedRowGroups = (() => {
-		switch (groupRowsBy) {
-			case "Status":
-				// Sort by Status: backlog, todo, inProgress, inReview, done, etc.
-				return uniqueRowGroups.sort((a, b) => {
-					const statusOrder = {
-						backlog: 0,
-						todo: 1,
-						inProgress: 2,
-						inReview: 3,
-						done: 4,
-						canceled: 5,
-						duplicated: 6,
-						archived: 7,
-					};
-					return (
-						(statusOrder[a as keyof typeof statusOrder] || 999) -
-						(statusOrder[b as keyof typeof statusOrder] || 999)
-					);
-				});
-
-			case "Priority":
-				// Sort by Priority: urgent, high, medium, low, noPriority
-				return uniqueRowGroups.sort((a, b) => {
-					const priorityOrder = {
-						urgent: 0,
-						high: 1,
-						medium: 2,
-						low: 3,
-						noPriority: 4,
-					};
-					return (
-						(priorityOrder[a as keyof typeof priorityOrder] || 999) -
-						(priorityOrder[b as keyof typeof priorityOrder] || 999)
-					);
-				});
-
-			case "Assignee":
-				// Sort alphabetically for assignees, with "Unassigned" at the end
-				return uniqueRowGroups.sort((a, b) => {
-					if (a === "Unassigned" || a === null) return 1;
-					if (b === "Unassigned" || b === null) return -1;
-					return a.localeCompare(b);
-				});
-
-			case "Label":
-				// Sort alphabetically for labels
-				return uniqueRowGroups.sort((a, b) => {
-					if (a === "No labels" || a === null) return 1;
-					if (b === "No labels" || b === null) return -1;
-					return a.localeCompare(b);
-				});
-
-			default:
-				// Default alphabetical sorting
-				return uniqueRowGroups.sort();
-		}
-	})();
-
 	return (
 		<div className="w-full">
 			{/* Render column headers only once at the top - make them sticky */}
@@ -139,7 +79,7 @@ export const RowGroupingWrapper = ({
 			)}
 
 			{/* Render row groups */}
-			{sortedRowGroups.map((rowGroup) => (
+			{uniqueRowGroups.map((rowGroup) => (
 				<RowGroup
 					key={rowGroup}
 					rowGroup={rowGroup}
