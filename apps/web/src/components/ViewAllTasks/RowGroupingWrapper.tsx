@@ -15,12 +15,20 @@ import type { GroupedColumn } from "./interfaces";
 export const RowGroupingWrapper = ({
 	groupedColumns,
 	isListView,
+	visibleColumns,
 }: {
 	groupedColumns: GroupedColumn[];
 	isListView: boolean;
+	visibleColumns: Map<string, boolean>;
 }) => {
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupRowsBy } = displayOptions;
+	const getColumnVisibility = (columnGroup: string): boolean => {
+		return visibleColumns.has(columnGroup)
+			? // biome-ignore lint/style/noNonNullAssertion: We just checked that this key exists
+				visibleColumns.get(columnGroup)!
+			: true;
+	};
 
 	// This component is only used when groupRowsBy !== "None"
 	if (groupRowsBy === "None") {
@@ -107,7 +115,7 @@ export const RowGroupingWrapper = ({
 						<div key={`header-${column.group}`} className="w-72">
 							<TaskColumnTitle
 								title={column.group}
-								showTasks={column.showTasks}
+								showTasks={getColumnVisibility(column.group)}
 								setShowTasks={(show) => {
 									console.log(
 										`Setting showTasks to ${show} for column ${column.group}`,
@@ -137,6 +145,7 @@ export const RowGroupingWrapper = ({
 					rowGroup={rowGroup}
 					groupedColumns={groupedColumns}
 					isListView={isListView}
+					visibleColumns={visibleColumns}
 				/>
 			))}
 		</div>
@@ -150,10 +159,12 @@ const RowGroup = ({
 	rowGroup,
 	groupedColumns,
 	isListView,
+	visibleColumns,
 }: {
 	rowGroup: string;
 	groupedColumns: GroupedColumn[];
 	isListView: boolean;
+	visibleColumns: Map<string, boolean>;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
 	const { displayOptions } = useViewStore((state) => state);
@@ -184,6 +195,13 @@ const RowGroup = ({
 	if (visibleTasksInRow === 0 && totalTasksInRow === 0) {
 		return null;
 	}
+
+	const getColumnVisibility = (columnGroup: string): boolean => {
+		return visibleColumns.has(columnGroup)
+			? // biome-ignore lint/style/noNonNullAssertion: We just checked that this key exists
+				visibleColumns.get(columnGroup)!
+			: true;
+	};
 
 	return (
 		<div className="mb-8 w-full pb-4">
@@ -250,7 +268,7 @@ const RowGroup = ({
 														group={`${column.group}-${rowGroup}`}
 														tasks={matchingRowGroup.tasks}
 														currentView="list"
-														showTasks={column.showTasks}
+														showTasks={getColumnVisibility(column.group)}
 													/>
 													{provided.placeholder}
 												</div>
@@ -290,7 +308,7 @@ const RowGroup = ({
 																group={`${column.group}-${rowGroup}`}
 																tasks={matchingRowGroup.tasks}
 																currentView="grid"
-																showTasks={column.showTasks}
+																showTasks={getColumnVisibility(column.group)}
 															/>
 														</div>
 													)}

@@ -107,6 +107,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 					<RowGroupingWrapper
 						groupedColumns={groupedColumns}
 						isListView={isListView}
+						visibleColumns={visibleColumns}
 					/>
 				) : (
 					<div className={isListView ? "flex flex-col" : "flex gap-2"}>
@@ -127,7 +128,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 									tasks={column.tasks}
 									rowGroups={column.rowGroups}
 									currentView={view}
-									showTasks={true}
+									showTasks={getColumnVisibility(column.group)}
 								/>
 							</div>
 						))}

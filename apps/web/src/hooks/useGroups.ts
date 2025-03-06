@@ -1,3 +1,4 @@
+import type { GroupedColumn } from "@/components/ViewAllTasks/interfaces";
 import {
 	useTaskStore,
 	useUserStore,
@@ -16,6 +17,36 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		(state) => state,
 	);
 	const { groupTasksBy, groupRowsBy } = displayOptions;
+
+	// Helper to get pre-defined sort order for statuses and priorities
+	const getSortOrderIndex = (group: string, groupType: TaskGroup): number => {
+		if (groupType === "Status") {
+			const statusOrder = [
+				Status.backlog,
+				Status.todo,
+				Status.inProgress,
+				Status.inReview,
+				Status.done,
+				Status.canceled,
+				Status.duplicated,
+				Status.archived,
+			];
+			return statusOrder.indexOf(group as Status);
+		}
+
+		if (groupType === "Priority") {
+			const priorityOrder = [
+				Priority.urgent,
+				Priority.high,
+				Priority.medium,
+				Priority.low,
+				Priority.noPriority,
+			];
+			return priorityOrder.indexOf(group as Priority);
+		}
+
+		return -1;
+	};
 
 	//all logic related to grouping by parent task is commented out until subtask rendering is fixed
 	const getGroupColumnTitles = (group: TaskGroup) => {
@@ -159,6 +190,44 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		}
 	};
 
+	// Helper function to sort groups based on type
+	const sortGroups = (
+		groups: Omit<GroupedColumn, "showTasks">[],
+		groupType: TaskGroup,
+	) => {
+		if (!groups || groups.length === 0) return [];
+
+		return [...groups].sort((a, b) => {
+			// Handle special cases first
+			if (groupType === "Assignee") {
+				if (a.group === "Unassigned") return 1;
+				if (b.group === "Unassigned") return -1;
+
+				const aUsername =
+					users.find((u) => u.externalId === a.group)?.username ?? "";
+				const bUsername =
+					users.find((u) => u.externalId === b.group)?.username ?? "";
+
+				// Compare by username alphabetically
+				return aUsername.localeCompare(bUsername);
+			}
+
+			// Use predefined order for Status and Priority
+			if (groupType === "Status" || groupType === "Priority") {
+				const aIndex = getSortOrderIndex(a.group, groupType);
+				const bIndex = getSortOrderIndex(b.group, groupType);
+
+				// If both groups have a defined index, sort by that
+				if (aIndex !== -1 && bIndex !== -1) {
+					return aIndex - bIndex;
+				}
+			}
+
+			// Default to alphabetical sort for other types like Label
+			return a.group.localeCompare(b.group);
+		});
+	};
+
 	const getGroupedColumns = () => {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
 
@@ -185,7 +254,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				// If row grouping is enabled and not "None"
 				if (groupRowsBy && groupRowsBy !== "None") {
 					const rowGroupTitles = getGroupColumnTitles(groupRowsBy);
-					const rowGroups = rowGroupTitles
+					let rowGroups = rowGroupTitles
 						.map((rowGroup) => {
 							// Get tasks that belong to both this column group and this row group
 							const tasksForRowGroup = tasksForColumn.filter((task) =>
@@ -203,6 +272,11 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 						})
 						.filter((group) => group !== null);
 
+					// Sort row groups using the same logic as column groups
+					if (rowGroups.length > 0) {
+						rowGroups = sortGroups(rowGroups, groupRowsBy);
+					}
+
 					return {
 						group: columnGroup,
 						tasks: tasksForColumn, // Keep original tasks array for compatibility
@@ -218,20 +292,9 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			})
 			.filter((item) => item !== null);
 
-		if (groupTasksBy === "Assignee") {
-			groupedColumns = groupedColumns.sort((a, b) => {
-				if (a.group === "Unassigned") return 1;
-				if (b.group === "Unassigned") return -1;
+		// Sort the columns according to their type
+		groupedColumns = sortGroups(groupedColumns, groupTasksBy);
 
-				const aUsername =
-					users.find((u) => u.externalId === a.group)?.username ?? "";
-				const bUsername =
-					users.find((u) => u.externalId === b.group)?.username ?? "";
-
-				// Compare by the first letter of the username
-				return aUsername[0].localeCompare(bUsername[0]);
-			});
-		}
 		return groupedColumns;
 	};
 
