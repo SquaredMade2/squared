@@ -98,7 +98,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	}, *tasks, webhookEvent.Installation.Id); err != nil {
 
 		log.Printf("Error updating pull request description: %v", err)
-		http.Error(w, "Error updating pull request description", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error updating pull request description: %v", err), http.StatusInternalServerError)
 		return
 	}
 

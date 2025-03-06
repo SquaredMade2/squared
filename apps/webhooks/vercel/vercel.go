@@ -86,7 +86,7 @@ func handleLogs(w http.ResponseWriter, body []byte) {
 		return
 	}
 
-	papertrailAddr := getPapertrailAddr(isStaging(logs[0].Branch))
+	papertrailAddr := os.Getenv("PAPERTRAIL_URL")
 	if papertrailAddr == "" {
 		log.Printf("No Papertrail address found")
 		http.Error(w, "No Papertrail address configured", http.StatusInternalServerError)
@@ -113,13 +113,6 @@ func handleLogs(w http.ResponseWriter, body []byte) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-}
-
-func getPapertrailAddr(isStaging bool) string {
-	if isStaging {
-		return os.Getenv("STAGING_PAPERTRAIL_URL")
-	}
-	return os.Getenv("PROD_PAPERTRAIL_URL")
 }
 
 func formatLog(log VercelLog) string {
