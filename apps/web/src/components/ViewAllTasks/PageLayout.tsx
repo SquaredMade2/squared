@@ -81,7 +81,7 @@ export function TaskPageLayout({
 							view === "list"
 								? "h-[calc(100vh-145px)] overflow-y-auto"
 								: isRowGroupingActive
-									? "h-[calc(100vh-55px)] overflow-y-auto"
+									? "max-h-[calc(100vh-55px)] overflow-y-auto pb-24"
 									: "h-[calc(100vh-55px)] overflow-x-auto",
 						)}
 					>

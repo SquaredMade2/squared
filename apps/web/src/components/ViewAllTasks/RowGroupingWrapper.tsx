@@ -170,7 +170,7 @@ const RowGroup = ({
 	}
 
 	return (
-		<div className="mb-6 w-full">
+		<div className="mb-8 w-full pb-4">
 			{/* Row Header - full width regardless of collapsed state */}
 			<div
 				className={cn(
