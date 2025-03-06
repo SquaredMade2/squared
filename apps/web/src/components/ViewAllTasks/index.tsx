@@ -18,7 +18,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	// Default visibility is true if not explicitly set
 	const getColumnVisibility = (columnGroup: string): boolean => {
 		return visibleColumns.has(columnGroup)
-			? // biome-ignore lint/style/noNonNullAssertion: We just checked if it has the key
+			? // biome-ignore lint/style/noNonNullAssertion: We just checked that this key exists
 				visibleColumns.get(columnGroup)!
 			: true;
 	};

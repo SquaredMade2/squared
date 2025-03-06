@@ -38,6 +38,37 @@ export const RowGroupingWrapper = ({
 
 	return (
 		<div className="w-full">
+			{/* Render column headers only once at the top */}
+			{!isListView && (
+				<div className="mb-4 flex gap-2">
+					{groupedColumns.map((column) => (
+						<div key={`header-${column.group}`} className="w-72">
+							<TaskColumnTitle
+								title={column.group}
+								showTasks={column.showTasks}
+								setShowTasks={(show) => {
+									console.log(
+										`Setting showTasks to ${show} for column ${column.group}`,
+									);
+								}}
+								numberOfTasks={column.tasks.length}
+								isListView={false}
+							/>
+						</div>
+					))}
+				</div>
+			)}
+
+			{/* For list view, we'll render one consolidated set of column titles at the top */}
+			{isListView && (
+				<div className="mb-4 w-full">
+					<div className="mb-2 flex items-center rounded bg-card p-2">
+						<span className="font-medium">Columns</span>
+					</div>
+				</div>
+			)}
+
+			{/* Render row groups */}
 			{uniqueRowGroups.map((rowGroup) => (
 				<RowGroup
 					key={rowGroup}
@@ -79,8 +110,12 @@ const RowGroup = ({
 
 	return (
 		<div className="mb-6 w-full">
-			{/* Row Header */}
-			<div className="mb-2 flex items-center rounded bg-secondary/40 p-2">
+			{/* Row Header - full width regardless of collapsed state */}
+			<div
+				className={cn(
+					"mb-2 flex w-full items-center rounded bg-secondary/40 p-2",
+				)}
+			>
 				<Button
 					variant="ghost"
 					size="sm"
@@ -102,14 +137,9 @@ const RowGroup = ({
 
 			{/* Row Content */}
 			{!isCollapsed && (
-				<div
-					className={cn(
-						"grid gap-2",
-						isListView ? "grid-cols-1" : `grid-cols-${groupedColumns.length}`,
-					)}
-				>
+				<div className={isListView ? "w-full" : "flex gap-2"}>
 					{isListView ? (
-						// List view - single column structure with all column headers
+						// List view - single column structure without duplicate column headers
 						<div className="w-full">
 							{groupedColumns.map((column) => {
 								const matchingRowGroup = column.rowGroups?.find(
@@ -120,20 +150,12 @@ const RowGroup = ({
 
 								return (
 									<div key={column.group} className="mb-4">
-										<TaskColumnTitle
-											title={column.group}
-											showTasks={column.showTasks}
-											setShowTasks={(show) => {
-												// We'd need to update the column's showTasks property
-												// This would require lifting state up to ViewAllTasks
-												// For now, we'll log for debugging
-												console.log(
-													`Setting showTasks to ${show} for column ${column.group}`,
-												);
-											}}
-											numberOfTasks={matchingRowGroup.tasks.length}
-											isListView={isListView}
-										/>
+										<div className="mb-2 rounded bg-secondary/20 p-2">
+											<span className="font-medium">{column.group}</span>
+											<span className="ml-2 text-muted-foreground text-xs">
+												({matchingRowGroup.tasks.length})
+											</span>
+										</div>
 										<GroupColumn
 											group={column.group}
 											tasks={matchingRowGroup.tasks}
@@ -145,29 +167,23 @@ const RowGroup = ({
 							})}
 						</div>
 					) : (
-						// Grid view - multi-column layout
+						// Grid view - multi-column layout without column headers (already at top)
 						groupedColumns.map((column) => {
 							const matchingRowGroup = column.rowGroups?.find(
 								(group) => group.group === rowGroup,
 							);
-							if (!matchingRowGroup)
-								return <div key={column.group} className="w-72" />;
 
+							// Always render all column placeholders to maintain layout
 							return (
 								<div key={column.group} className="w-72">
-									<TaskColumnTitle
-										title={column.group}
-										showTasks={column.showTasks}
-										setShowTasks={() => {}}
-										numberOfTasks={matchingRowGroup.tasks.length}
-										isListView={false}
-									/>
-									<GroupColumn
-										group={column.group}
-										tasks={matchingRowGroup.tasks}
-										currentView="grid"
-										showTasks={column.showTasks}
-									/>
+									{matchingRowGroup && matchingRowGroup.tasks.length > 0 && (
+										<GroupColumn
+											group={column.group}
+											tasks={matchingRowGroup.tasks}
+											currentView="grid"
+											showTasks={column.showTasks}
+										/>
+									)}
 								</div>
 							);
 						})
