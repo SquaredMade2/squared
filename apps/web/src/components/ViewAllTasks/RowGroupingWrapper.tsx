@@ -1,5 +1,6 @@
 import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
+import { Droppable } from "@hello-pangea/dnd";
 import { ChevronDown, ChevronRight } from "@squared/icons";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -156,17 +157,32 @@ const RowGroup = ({
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
 	const { displayOptions } = useViewStore((state) => state);
-	const { groupRowsBy } = displayOptions;
+	const { groupRowsBy, showSubTasks } = displayOptions;
 
 	// Calculate total tasks in this row group across all columns
 	let totalTasksInRow = 0;
+	let visibleTasksInRow = 0;
+
 	for (const column of groupedColumns) {
 		const matchingRowGroup = column.rowGroups?.find(
 			(group) => group.group === rowGroup,
 		);
+
 		if (matchingRowGroup) {
+			// Count all tasks including subtasks for total
 			totalTasksInRow += matchingRowGroup.tasks.length;
+
+			// Count only visible tasks (parent tasks or visible subtasks)
+			const visibleTasks = matchingRowGroup.tasks.filter(
+				(task) => !task.parentId || (task.parentId && showSubTasks),
+			);
+			visibleTasksInRow += visibleTasks.length;
 		}
+	}
+
+	// Don't render row if there are no visible tasks and no hidden subtasks
+	if (visibleTasksInRow === 0 && totalTasksInRow === 0) {
+		return null;
 	}
 
 	return (
@@ -217,12 +233,29 @@ const RowGroup = ({
 												({matchingRowGroup.tasks.length})
 											</span>
 										</div>
-										<GroupColumn
-											group={column.group}
-											tasks={matchingRowGroup.tasks}
-											currentView="list"
-											showTasks={column.showTasks}
-										/>
+										<Droppable
+											droppableId={`${column.group}-${rowGroup}`}
+											type="TASK"
+										>
+											{(provided, snapshot) => (
+												<div
+													ref={provided.innerRef}
+													{...provided.droppableProps}
+													className={cn(
+														"min-h-[40px] rounded p-1",
+														snapshot.isDraggingOver && "bg-secondary/30",
+													)}
+												>
+													<GroupColumn
+														group={`${column.group}-${rowGroup}`}
+														tasks={matchingRowGroup.tasks}
+														currentView="list"
+														showTasks={column.showTasks}
+													/>
+													{provided.placeholder}
+												</div>
+											)}
+										</Droppable>
 									</div>
 								);
 							})}
@@ -234,21 +267,37 @@ const RowGroup = ({
 								(group) => group.group === rowGroup,
 							);
 
-							// Always render all column placeholders to maintain layout
+							// Always render column placeholders to maintain layout
 							return (
 								<div key={column.group} className="w-72 flex-shrink-0">
-									{matchingRowGroup && matchingRowGroup.tasks.length > 0 && (
-										<div className="h-auto overflow-visible">
-											{" "}
-											{/* Remove height constraints */}
-											<GroupColumn
-												group={column.group}
-												tasks={matchingRowGroup.tasks}
-												currentView="grid"
-												showTasks={column.showTasks}
-											/>
-										</div>
-									)}
+									<Droppable
+										droppableId={`${column.group}-${rowGroup}`}
+										type="TASK"
+									>
+										{(provided, snapshot) => (
+											<div
+												ref={provided.innerRef}
+												{...provided.droppableProps}
+												className={cn(
+													"min-h-[40px] rounded p-1",
+													snapshot.isDraggingOver && "bg-secondary/30",
+												)}
+											>
+												{matchingRowGroup &&
+													matchingRowGroup.tasks.length > 0 && (
+														<div className="h-auto overflow-visible">
+															<GroupColumn
+																group={`${column.group}-${rowGroup}`}
+																tasks={matchingRowGroup.tasks}
+																currentView="grid"
+																showTasks={column.showTasks}
+															/>
+														</div>
+													)}
+												{provided.placeholder}
+											</div>
+										)}
+									</Droppable>
 								</div>
 							);
 						})
