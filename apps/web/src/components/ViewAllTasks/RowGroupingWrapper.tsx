@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import GroupColumn from "./GroupColumn";
 import { RowGroupHeader } from "./RowGroupHeader";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { GroupColumnProps } from "./interfaces";
+import type { GroupedColumn } from "./interfaces";
 
 /**
  * A component that handles row-based task grouping across multiple columns
@@ -15,7 +15,7 @@ export const RowGroupingWrapper = ({
 	groupedColumns,
 	isListView,
 }: {
-	groupedColumns: GroupColumnProps[];
+	groupedColumns: GroupedColumn[];
 	isListView: boolean;
 }) => {
 	const { displayOptions } = useViewStore((state) => state);
@@ -151,7 +151,7 @@ const RowGroup = ({
 	isListView,
 }: {
 	rowGroup: string;
-	groupedColumns: GroupColumnProps[];
+	groupedColumns: GroupedColumn[];
 	isListView: boolean;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
