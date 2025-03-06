@@ -93,7 +93,7 @@ export const GridColumnNewTaskButton = ({
 				className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border-dashed"
 			>
 				<CirclePlus className="size-4 text-muted-foreground" />
-				<span className="text-muted-foreground text-sm">New issue</span>
+				<span className="text-muted-foreground text-sm">New task</span>
 			</Button>
 		</div>
 	);
