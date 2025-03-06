@@ -65,6 +65,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			description: "",
 		},
 	});
+	console.log("newTaskData", newTaskData);
+	console.log(parentId);
 
 	const { mutate: handleCreateTask, isPending } = useMutation({
 		mutationKey: ["task", "create"],
@@ -122,6 +124,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				),
 			});
 			setNewTaskData({});
+			form.reset({ title: "", description: "" });
+			setIsOpen("");
 		},
 		onError: (error) => {
 			toast({
