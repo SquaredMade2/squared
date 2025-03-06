@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import GroupColumn from "./GroupColumn";
 import { RowGroupHeader } from "./RowGroupHeader";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { GroupedColumn } from "./interfaces";
+import type { GroupColumnProps } from "./interfaces";
 
 /**
  * A component that handles row-based task grouping across multiple columns
@@ -15,7 +15,7 @@ export const RowGroupingWrapper = ({
 	groupedColumns,
 	isListView,
 }: {
-	groupedColumns: GroupedColumn[];
+	groupedColumns: GroupColumnProps[];
 	isListView: boolean;
 }) => {
 	const { displayOptions } = useViewStore((state) => state);
@@ -34,13 +34,74 @@ export const RowGroupingWrapper = ({
 		}
 	}
 
-	const uniqueRowGroups = Array.from(allRowGroups).sort();
+	// Sort the row groups consistently based on type
+	const uniqueRowGroups = Array.from(allRowGroups);
+
+	// Sort the rows based on the groupRowsBy type
+	const sortedRowGroups = (() => {
+		switch (groupRowsBy) {
+			case "Status":
+				// Sort by Status: backlog, todo, inProgress, inReview, done, etc.
+				return uniqueRowGroups.sort((a, b) => {
+					const statusOrder = {
+						backlog: 0,
+						todo: 1,
+						inProgress: 2,
+						inReview: 3,
+						done: 4,
+						canceled: 5,
+						duplicated: 6,
+						archived: 7,
+					};
+					return (
+						(statusOrder[a as keyof typeof statusOrder] || 999) -
+						(statusOrder[b as keyof typeof statusOrder] || 999)
+					);
+				});
+
+			case "Priority":
+				// Sort by Priority: urgent, high, medium, low, noPriority
+				return uniqueRowGroups.sort((a, b) => {
+					const priorityOrder = {
+						urgent: 0,
+						high: 1,
+						medium: 2,
+						low: 3,
+						noPriority: 4,
+					};
+					return (
+						(priorityOrder[a as keyof typeof priorityOrder] || 999) -
+						(priorityOrder[b as keyof typeof priorityOrder] || 999)
+					);
+				});
+
+			case "Assignee":
+				// Sort alphabetically for assignees, with "Unassigned" at the end
+				return uniqueRowGroups.sort((a, b) => {
+					if (a === "Unassigned" || a === null) return 1;
+					if (b === "Unassigned" || b === null) return -1;
+					return a.localeCompare(b);
+				});
+
+			case "Label":
+				// Sort alphabetically for labels
+				return uniqueRowGroups.sort((a, b) => {
+					if (a === "No labels" || a === null) return 1;
+					if (b === "No labels" || b === null) return -1;
+					return a.localeCompare(b);
+				});
+
+			default:
+				// Default alphabetical sorting
+				return uniqueRowGroups.sort();
+		}
+	})();
 
 	return (
 		<div className="w-full">
-			{/* Render column headers only once at the top */}
+			{/* Render column headers only once at the top - make them sticky */}
 			{!isListView && (
-				<div className="mb-4 flex gap-2">
+				<div className="sticky top-0 z-10 mb-4 flex gap-2 bg-background pt-2 pb-2">
 					{groupedColumns.map((column) => (
 						<div key={`header-${column.group}`} className="w-72">
 							<TaskColumnTitle
@@ -59,9 +120,9 @@ export const RowGroupingWrapper = ({
 				</div>
 			)}
 
-			{/* For list view, we'll render one consolidated set of column titles at the top */}
+			{/* For list view, sticky header */}
 			{isListView && (
-				<div className="mb-4 w-full">
+				<div className="sticky top-0 z-10 mb-4 w-full bg-background pt-2 pb-2">
 					<div className="mb-2 flex items-center rounded bg-card p-2">
 						<span className="font-medium">Columns</span>
 					</div>
@@ -69,7 +130,7 @@ export const RowGroupingWrapper = ({
 			)}
 
 			{/* Render row groups */}
-			{uniqueRowGroups.map((rowGroup) => (
+			{sortedRowGroups.map((rowGroup) => (
 				<RowGroup
 					key={rowGroup}
 					rowGroup={rowGroup}
@@ -90,7 +151,7 @@ const RowGroup = ({
 	isListView,
 }: {
 	rowGroup: string;
-	groupedColumns: GroupedColumn[];
+	groupedColumns: GroupColumnProps[];
 	isListView: boolean;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);

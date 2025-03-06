@@ -38,6 +38,8 @@ const TaskColumnTitle = ({
 	const path = usePathname();
 	const assignee = users.find((u) => u.externalId === title);
 	const label = workspace?.labels.find((l) => l.name === title);
+	const { groupRowsBy } = displayOptions;
+	const isRowGroupingActive = groupRowsBy !== "None";
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
@@ -88,6 +90,7 @@ const TaskColumnTitle = ({
 			className={cn(
 				isListView ? "sticky top-0 z-10 bg-background" : "min-w-72",
 				isListView && "border-border border-b",
+				isRowGroupingActive && !isListView && "sticky top-0 z-10 bg-background",
 			)}
 		>
 			<div
