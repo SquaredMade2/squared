@@ -236,14 +236,18 @@ const RowGroup = ({
 
 							// Always render all column placeholders to maintain layout
 							return (
-								<div key={column.group} className="w-72">
+								<div key={column.group} className="w-72 flex-shrink-0">
 									{matchingRowGroup && matchingRowGroup.tasks.length > 0 && (
-										<GroupColumn
-											group={column.group}
-											tasks={matchingRowGroup.tasks}
-											currentView="grid"
-											showTasks={column.showTasks}
-										/>
+										<div className="h-auto overflow-visible">
+											{" "}
+											{/* Remove height constraints */}
+											<GroupColumn
+												group={column.group}
+												tasks={matchingRowGroup.tasks}
+												currentView="grid"
+												showTasks={column.showTasks}
+											/>
+										</div>
 									)}
 								</div>
 							);

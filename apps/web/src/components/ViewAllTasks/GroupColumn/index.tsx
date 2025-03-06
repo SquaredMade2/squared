@@ -32,6 +32,9 @@ const GroupColumn = ({
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupRowsBy } = displayOptions;
 
+	// Check if row grouping is active
+	const isRowGroupingActive = groupRowsBy !== "None";
+
 	return (
 		<div
 			className={isListView ? "mb-2 w-full" : "w-72 flex-shrink-0 pr-2 pb-2"}
@@ -51,11 +54,21 @@ const GroupColumn = ({
 						className={cn(
 							isListView
 								? "z-30 flex w-full flex-col items-start gap-2"
-								: "9fr] mb-2 grid h-[calc(100vh-250px)] w-72 flex-grow grid-rows-[1fr rounded-lg bg-card transition-all duration-500 ease-in-out",
+								: cn(
+										"9fr] mb-2 grid w-72 flex-grow grid-rows-[1fr rounded-lg bg-card transition-all duration-500 ease-in-out",
+										// Remove height constraint when row grouping is active
+										!isRowGroupingActive && "h-[calc(100vh-250px)]",
+									),
 							dropSnapshot.isDraggingOver && "bg-[#242d42]",
 						)}
 					>
-						<div className="scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent w-full overflow-auto">
+						<div
+							className={cn(
+								"w-full overflow-auto",
+								!isRowGroupingActive &&
+									"scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent",
+							)}
+						>
 							<div
 								className={cn(
 									"w-full grow",
@@ -65,7 +78,7 @@ const GroupColumn = ({
 								<div
 									ref={dropProvided.innerRef}
 									{...dropProvided.droppableProps}
-									className="flex min-h-[60px] w-full flex-col items-start"
+									className="flex w-full flex-col items-start"
 								>
 									{showTasks &&
 										(rowGroups && rowGroups.length > 0 ? (
@@ -104,7 +117,7 @@ const GroupColumn = ({
 	);
 };
 
-// Add a new component to render row group headers
+// Reuse the RowGroupHeader component
 const RowGroupHeader = ({
 	group,
 	groupType,
