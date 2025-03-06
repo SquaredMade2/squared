@@ -14,12 +14,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -97,6 +100,22 @@ export default function Profile() {
 				});
 			}
 		}
+	};
+
+	const { mutate: markAsDeleted } = useMutation({
+		mutationFn: async (userId: string) => {
+			return client.user.deleteUser.$post({ userId });
+		},
+		onSuccess: () => {
+			console.log("User successfully marked as deleted!");
+		},
+		onError: (err) => {
+			console.error("Error deleting user:", err);
+		},
+	});
+
+	const handleDelete = () => {
+		markAsDeleted(user?.id || "");
 	};
 
 	if (!isLoaded || !user) return null;
@@ -198,6 +217,9 @@ export default function Profile() {
 						Member Since:{" "}
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
+				</div>
+				<div>
+					<Button onClick={handleDelete}>delete user</Button>
 				</div>
 			</div>
 		</div>

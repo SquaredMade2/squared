@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "deleted" boolean DEFAULT false NOT NULL;
