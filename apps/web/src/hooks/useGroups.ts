@@ -15,7 +15,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { displayOptions, view, getGridOptions, getListOptions } = useViewStore(
 		(state) => state,
 	);
-	const { groupTasksBy } = displayOptions;
+	const { groupTasksBy, groupRowsBy } = displayOptions;
 
 	//all logic related to grouping by parent task is commented out until subtask rendering is fixed
 	const getGroupColumnTitles = (group: TaskGroup) => {
@@ -95,6 +95,38 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		}
 	};
 
+	// Helper function to check if a task belongs to a specific group type and value
+	const belongsToGroup = (
+		task: Task,
+		groupValue: string,
+		groupType: TaskGroup,
+	): boolean => {
+		switch (groupType) {
+			case "Status":
+				if (groupValue === Status.done) {
+					return (
+						task.status === Status.done ||
+						task.status === Status.canceled ||
+						task.status === Status.duplicated
+					);
+				}
+				return task.status === groupValue;
+			case "Assignee":
+				return task.assigneeId === groupValue;
+			case "Priority":
+				return task.priority === groupValue;
+			case "Label":
+				return task.labels.map((l) => l.name).includes(groupValue);
+			// case "Parent Task":
+			// 	if (groupValue === "No parent") {
+			// 		return task.parentId === null;
+			// 	}
+			// 	return task.parentId === groupValue;
+			default:
+				return false;
+		}
+	};
+
 	const filterTasksByPeriod = (
 		tasks: Task[],
 		period: CompletedTaskPeriod,
@@ -131,15 +163,15 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
 
 		let groupedColumns = groupColumnTitles
-			.map((group) => {
-				let tasksForGroup = getTasksForGroup(group);
+			.map((columnGroup) => {
+				let tasksForColumn = getTasksForGroup(columnGroup);
 
 				if (groupTasksBy === "Status") {
-					if (group === Status.archived) return null;
-					if (group === Status.done) {
+					if (columnGroup === Status.archived) return null;
+					if (columnGroup === Status.done) {
 						const { period, show } = displayOptions.showCompletedTasks;
 						if (!show) return null;
-						tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
+						tasksForColumn = filterTasksByPeriod(tasksForColumn, period);
 					}
 				}
 
@@ -147,11 +179,44 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 					view === "grid"
 						? getGridOptions().showEmptyGroups
 						: getListOptions().showEmptyGroups;
-				if (tasksForGroup.length === 0 && !showEmptyGroups) return null;
 
-				return { group, tasks: tasksForGroup };
+				if (tasksForColumn.length === 0 && !showEmptyGroups) return null;
+
+				// If row grouping is enabled and not "None"
+				if (groupRowsBy && groupRowsBy !== "None") {
+					const rowGroupTitles = getGroupColumnTitles(groupRowsBy);
+					const rowGroups = rowGroupTitles
+						.map((rowGroup) => {
+							// Get tasks that belong to both this column group and this row group
+							const tasksForRowGroup = tasksForColumn.filter((task) =>
+								belongsToGroup(task, rowGroup, groupRowsBy),
+							);
+
+							if (tasksForRowGroup.length === 0 && !showEmptyGroups) {
+								return null;
+							}
+
+							return {
+								group: rowGroup,
+								tasks: tasksForRowGroup,
+							};
+						})
+						.filter((group) => group !== null);
+
+					return {
+						group: columnGroup,
+						tasks: tasksForColumn, // Keep original tasks array for compatibility
+						rowGroups,
+					};
+				}
+
+				// No row grouping
+				return {
+					group: columnGroup,
+					tasks: tasksForColumn,
+				};
 			})
-			.filter((item) => item !== null); // Filter out null values
+			.filter((item) => item !== null);
 
 		if (groupTasksBy === "Assignee") {
 			groupedColumns = groupedColumns.sort((a, b) => {

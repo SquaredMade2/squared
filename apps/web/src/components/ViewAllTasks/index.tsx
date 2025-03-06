@@ -1,12 +1,10 @@
-import { useViewStore } from "@/store";
-import { useFilterStore } from "@/store";
+import { useFilterStore, useViewStore } from "@/store";
 import { Status } from "@squared/db";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { RenameModal } from "../Modals";
 import GroupColumn from "./GroupColumn";
 import TaskColumnTitle from "./TaskColumnTitle";
-
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
@@ -47,11 +45,32 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 
 	const isListView = view === "list";
 
+	// Apply search filtering to tasks and rowGroups if present
 	groupedColumns = groupedColumns
-		.map((column) => ({
-			...column,
-			tasks: filterSearchTasks(column.tasks),
-		}))
+		.map((column) => {
+			const filteredTasks = filterSearchTasks(column.tasks);
+
+			// If we have row groups, filter those as well
+			if (column.rowGroups) {
+				const filteredRowGroups = column.rowGroups
+					.map((rowGroup) => ({
+						...rowGroup,
+						tasks: filterSearchTasks(rowGroup.tasks),
+					}))
+					.filter((rowGroup) => rowGroup.tasks.length > 0);
+
+				return {
+					...column,
+					tasks: filteredTasks,
+					rowGroups: filteredRowGroups,
+				};
+			}
+
+			return {
+				...column,
+				tasks: filteredTasks,
+			};
+		})
 		.filter((column) => column.tasks.length > 0);
 
 	return (
@@ -72,6 +91,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 								key={column.group}
 								group={column.group}
 								tasks={column.tasks}
+								rowGroups={column.rowGroups}
 								currentView={view}
 								showTasks={showTasks}
 							/>

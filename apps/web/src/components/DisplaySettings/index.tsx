@@ -5,10 +5,10 @@ import {
 	type DisplayOptions,
 	type DisplayProperty,
 	type TaskGroup,
-	TaskGroupOptions,
 	type TaskOrder,
 	TaskOrderOptions,
 	type View,
+	taskGroupOptions,
 } from "@/store/views";
 import {
 	ArrowDownWideNarrow,
@@ -58,10 +58,10 @@ const TopNavBarDisplay = () => {
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
-	const { taskOrder, groupTasksBy, showCompletedTasks } = displayOptions;
+	const { taskOrder, groupTasksBy, showCompletedTasks, groupRowsBy } =
+		displayOptions;
 
 	const orderByOptions: TaskOrder[] = [...TaskOrderOptions];
-	const groupByOptions: TaskGroup[] = TaskGroupOptions;
 	const completedPeriodOptions: CompletedTaskPeriod[] =
 		CompletedTaskPeriodOptions;
 
@@ -173,9 +173,11 @@ const TopNavBarDisplay = () => {
 							</div>
 							<Separator className="my-4" />
 							<div className="mb-3 flex items-center justify-between">
-								<span className="mr-4 text-foreground text-xs">Grouping</span>
+								<span className="mr-4 text-foreground text-xs">Columns</span>
 								<Select
-									onValueChange={(value) => setOptions({ groupTasksBy: value })}
+									onValueChange={(value: TaskGroup) =>
+										setOptions({ groupTasksBy: value })
+									}
 									value={groupTasksBy}
 								>
 									<SelectTrigger>
@@ -187,7 +189,7 @@ const TopNavBarDisplay = () => {
 										</SelectValue>
 									</SelectTrigger>
 									<SelectContent>
-										{groupByOptions.map((option) => (
+										{taskGroupOptions.map((option) => (
 											<SelectItem
 												key={option}
 												value={option}
@@ -196,6 +198,37 @@ const TopNavBarDisplay = () => {
 												{option}
 											</SelectItem>
 										))}
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="mb-3 flex items-center justify-between">
+								<span className="mr-4 text-foreground text-xs">Rows</span>
+								<Select
+									onValueChange={(value: TaskGroup | "None") =>
+										setOptions({ groupRowsBy: value })
+									}
+									value={groupRowsBy}
+								>
+									<SelectTrigger>
+										<SelectValue>
+											<div className="flex w-full items-center justify-between">
+												<Layers3 className="size-4" />
+												<span className="mx-2 text-xs">{groupRowsBy}</span>
+											</div>
+										</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
+										{[...taskGroupOptions, "None"]
+											.filter((option) => option !== groupTasksBy)
+											.map((option) => (
+												<SelectItem
+													key={option}
+													value={option}
+													className="text-xs"
+												>
+													{option}
+												</SelectItem>
+											))}
 									</SelectContent>
 								</Select>
 							</div>
