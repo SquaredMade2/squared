@@ -3,6 +3,7 @@
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTaskStore, useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squared/db";
@@ -30,9 +31,12 @@ export function TaskPageLayout({
 	pageTitle,
 	children,
 }: TaskPageLayoutProps) {
-	const { view } = useViewStore((state) => state);
+	const { view, displayOptions } = useViewStore((state) => state);
+	const { groupRowsBy } = displayOptions;
 	const { user } = useUser();
 	const { tasks } = useTaskStore((state) => state);
+
+	const isRowGroupingActive = groupRowsBy !== "None";
 
 	if (loading) {
 		return (
@@ -72,22 +76,32 @@ export function TaskPageLayout({
 			) : currentWorkspace ? (
 				<div className="flex-grow overflow-hidden">
 					<ScrollArea
-						className={`${
+						className={cn(
+							"px-2",
 							view === "list"
 								? "h-[calc(100vh-145px)] overflow-y-auto"
-								: "h-[calc(100vh-55px)] overflow-x-auto"
-						} px-2`}
+								: isRowGroupingActive
+									? "h-[calc(100vh-55px)] overflow-y-auto"
+									: "h-[calc(100vh-55px)] overflow-x-auto",
+						)}
 					>
 						<div
-							className={`mx-2 flex ${
-								view === "grid" ? "flex-nowrap" : "flex-wrap"
-							}`}
+							className={cn(
+								"mx-2",
+								view === "grid" && !isRowGroupingActive
+									? "flex flex-nowrap"
+									: isRowGroupingActive
+										? "w-full"
+										: "flex flex-wrap",
+							)}
 						>
 							<DragDropContext onDragEnd={handleDragEnd}>
 								{children}
 							</DragDropContext>
 						</div>
-						{view === "grid" && <ScrollBar orientation="horizontal" />}
+						{view === "grid" && !isRowGroupingActive && (
+							<ScrollBar orientation="horizontal" />
+						)}
 					</ScrollArea>
 				</div>
 			) : (

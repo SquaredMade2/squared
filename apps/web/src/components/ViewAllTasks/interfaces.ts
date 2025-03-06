@@ -4,7 +4,9 @@ export type GroupedColumn = {
 	group: string;
 	tasks: Task[];
 	rowGroups?: { group: string; tasks: Task[] }[];
+	showTasks: boolean;
 };
+
 export interface ViewAllTasksProps {
 	getGroupedColumns: () => GroupedColumn[];
 	allowedColumns?: Status[];
