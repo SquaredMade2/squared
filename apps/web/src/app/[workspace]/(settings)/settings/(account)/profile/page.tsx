@@ -102,7 +102,8 @@ export default function Profile() {
 		}
 	};
 
-	const { mutate: markAsDeleted } = useMutation({
+	// for future deleteUser button
+	const { mutate: deleteUser } = useMutation({
 		mutationFn: async (userId: string) => {
 			return client.user.deleteUser.$post({ userId });
 		},
@@ -113,10 +114,6 @@ export default function Profile() {
 			console.error("Error deleting user:", err);
 		},
 	});
-
-	const handleDelete = () => {
-		markAsDeleted(user?.id || "");
-	};
 
 	if (!isLoaded || !user) return null;
 
@@ -217,9 +214,6 @@ export default function Profile() {
 						Member Since:{" "}
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
-				</div>
-				<div>
-					<Button onClick={handleDelete}>delete user</Button>
 				</div>
 			</div>
 		</div>
