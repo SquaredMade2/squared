@@ -93,6 +93,17 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const editorRef = useRef<HTMLDivElement | null>(null);
 	const { toast } = useToast();
 	// Functions
+	function submitText() {
+		if (checkIfSlateEmpty(editor)) {
+			return;
+		}
+		const newComment = {
+			comment: handleFormatSlateToComment(editorContent),
+			date: new Date(),
+			taskId: task.id,
+		};
+		return addText(newComment);
+	}
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", task?.id],
 		mutationFn: async () => {
@@ -466,7 +477,8 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			)}
 
 			<Button
-				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
+				onClick={submitText}
+				// onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
 				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 			>
 				Comment
