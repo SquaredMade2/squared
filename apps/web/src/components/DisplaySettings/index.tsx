@@ -175,9 +175,19 @@ const TopNavBarDisplay = () => {
 							<div className="mb-3 flex items-center justify-between">
 								<span className="mr-4 text-foreground text-xs">Columns</span>
 								<Select
-									onValueChange={(value: TaskGroup) =>
-										setOptions({ groupTasksBy: value })
-									}
+									onValueChange={(value: TaskGroup) => {
+										if (value === groupRowsBy) {
+											// Apply the swap
+											setOptions({
+												groupRowsBy: "None",
+												groupTasksBy: value,
+											});
+										} else {
+											setOptions({
+												groupRowsBy: value,
+											});
+										}
+									}}
 									value={groupTasksBy}
 								>
 									<SelectTrigger>
@@ -204,9 +214,20 @@ const TopNavBarDisplay = () => {
 							<div className="mb-3 flex items-center justify-between">
 								<span className="mr-4 text-foreground text-xs">Rows</span>
 								<Select
-									onValueChange={(value: TaskGroup | "None") =>
-										setOptions({ groupRowsBy: value })
-									}
+									onValueChange={(value: TaskGroup | "None") => {
+										if (value === groupTasksBy) {
+											// Apply the swap
+											setOptions({
+												groupRowsBy: value,
+												groupTasksBy:
+													value === "Status" ? "Priority" : "Status",
+											});
+										} else {
+											setOptions({
+												groupRowsBy: value,
+											});
+										}
+									}}
 									value={groupRowsBy}
 								>
 									<SelectTrigger>
@@ -218,17 +239,15 @@ const TopNavBarDisplay = () => {
 										</SelectValue>
 									</SelectTrigger>
 									<SelectContent>
-										{[...taskGroupOptions, "None"]
-											.filter((option) => option !== groupTasksBy)
-											.map((option) => (
-												<SelectItem
-													key={option}
-													value={option}
-													className="text-xs"
-												>
-													{option}
-												</SelectItem>
-											))}
+										{[...taskGroupOptions, "None"].map((option) => (
+											<SelectItem
+												key={option}
+												value={option}
+												className="text-xs"
+											>
+												{option}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 							</div>
