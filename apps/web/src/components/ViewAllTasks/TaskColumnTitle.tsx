@@ -1,12 +1,13 @@
+import { useUsers } from "@/hooks/useUsers";
 import {
 	useModalStore,
 	useSprintStore,
-	useUserStore,
+	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
+import type { PublicUserData } from "@clerk/types";
 import type { Priority, Status } from "@squared/db";
 import { CirclePlus, EllipsisVertical } from "@squared/icons";
 import { usePathname } from "next/navigation";
@@ -32,21 +33,27 @@ const TaskColumnTitle = ({
 	const { setNewTaskData, setShowNewTask } = useModalStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
-	const { users } = useUserStore((state) => state);
+	const { users } = useUsers();
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
-	const assignee = users.find((u) => u.externalId === title);
+	const assignee = users?.find((u) => u.userId === title);
 	const label = workspace?.labels.find((l) => l.name === title);
 	const { groupRowsBy } = displayOptions;
 	const isRowGroupingActive = groupRowsBy !== "None";
+
+	const getName = (user?: PublicUserData) => {
+		return user?.firstName
+			? `${user.firstName} ${user.lastName}`
+			: "Unassigned";
+	};
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
 			case "Status":
 				return formatStatus(title as Status);
 			case "Assignee": {
-				return assignee ? assignee.name : "Unassigned";
+				return getName(assignee);
 			}
 			case "Priority":
 				return formatPriority(title as Priority);
@@ -117,8 +124,10 @@ const TaskColumnTitle = ({
 								<PriorityIcon priority={title as Priority} />
 							) : groupTasksBy === "Assignee" && assignee ? (
 								<Avatar className="size-4 text-xxs">
-									<AvatarImage src={assignee.avatarUrl ?? ""} />
-									<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+									<AvatarImage src={assignee.imageUrl ?? ""} />
+									<AvatarFallback>
+										{getInitials(getName(assignee))}
+									</AvatarFallback>
 								</Avatar>
 							) : groupTasksBy === "Label" && label ? (
 								<LabelColor label={label} />
@@ -145,8 +154,10 @@ const TaskColumnTitle = ({
 							<PriorityIcon priority={title as Priority} />
 						) : groupTasksBy === "Assignee" && assignee ? (
 							<Avatar className="size-4 text-xxs">
-								<AvatarImage src={assignee.avatarUrl ?? ""} />
-								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+								<AvatarImage src={assignee.imageUrl ?? ""} />
+								<AvatarFallback>
+									{getInitials(getName(assignee))}
+								</AvatarFallback>
 							</Avatar>
 						) : groupTasksBy === "Label" && label ? (
 							<LabelColor label={label} />

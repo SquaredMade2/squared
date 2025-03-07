@@ -58,9 +58,7 @@ export const RowGroupingWrapper = ({
 								title={column.group}
 								showTasks={getColumnVisibility(column.group)}
 								setShowTasks={(show) => {
-									console.log(
-										`Setting showTasks to ${show} for column ${column.group}`,
-									);
+									visibleColumns.set(column.group, show);
 								}}
 								numberOfTasks={column.tasks.length}
 								isListView={false}
