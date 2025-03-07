@@ -172,88 +172,97 @@ const TopNavBarDisplay = () => {
 								</ToggleGroup>
 							</div>
 							<Separator className="my-4" />
-							<div className="mb-3 flex items-center justify-between">
-								<span className="mr-4 text-foreground text-xs">Columns</span>
-								<Select
-									onValueChange={(value: TaskGroup) => {
-										if (value === groupRowsBy) {
-											// Apply the swap
-											setOptions({
-												groupRowsBy: "None",
-												groupTasksBy: value,
-											});
-										} else {
-											setOptions({
-												groupRowsBy: value,
-											});
-										}
-									}}
-									value={groupTasksBy}
-								>
-									<SelectTrigger>
-										<SelectValue>
-											<div className="flex w-full items-center justify-between">
-												<Layers3 className="size-4" />
-												<span className="mx-2 text-xs">{groupTasksBy}</span>
-											</div>
-										</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{taskGroupOptions.map((option) => (
-											<SelectItem
-												key={option}
-												value={option}
-												className="text-xs"
-											>
-												{option}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="mb-3 flex items-center justify-between">
-								<span className="mr-4 text-foreground text-xs">Rows</span>
-								<Select
-									onValueChange={(value: TaskGroup | "None") => {
-										if (value === groupTasksBy) {
-											// Apply the swap
-											setOptions({
-												groupRowsBy: value,
-												groupTasksBy:
-													value === "Status" ? "Priority" : "Status",
-											});
-										} else {
-											setOptions({
-												groupRowsBy: value,
-											});
-										}
-									}}
-									value={groupRowsBy}
-								>
-									<SelectTrigger>
-										<SelectValue>
-											<div className="flex w-full items-center justify-between">
-												<Layers3 className="size-4" />
-												<span className="mx-2 text-xs">{groupRowsBy}</span>
-											</div>
-										</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{[...taskGroupOptions, "None"].map((option) => (
-											<SelectItem
-												key={option}
-												value={option}
-												className="text-xs"
-											>
-												{option}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-foreground text-xs">Ordering</span>
-								<div className="w-[120px]">
+							<div className="grid grid-cols-6 items-center gap-1">
+								{/* Columns Row */}
+								<span className="col-span-2 text-foreground text-xs">
+									Columns
+								</span>
+								<div className="col-span-4">
+									<Select
+										onValueChange={(value: TaskGroup) => {
+											if (value === groupRowsBy) {
+												// Apply the swap
+												setOptions({
+													groupRowsBy: "None",
+													groupTasksBy: value,
+												});
+											} else {
+												setOptions({
+													groupTasksBy: value,
+												});
+											}
+										}}
+										value={groupTasksBy}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue>
+												<div className="flex w-full items-center justify-between">
+													<Layers3 className="size-4" />
+													<span className="mx-2 text-xs">{groupTasksBy}</span>
+												</div>
+											</SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											{taskGroupOptions.map((option) => (
+												<SelectItem
+													key={option}
+													value={option}
+													className="text-xs"
+												>
+													{option}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+
+								{/* Rows Row */}
+								<span className="col-span-2 text-foreground text-xs">Rows</span>
+								<div className="col-span-4">
+									<Select
+										onValueChange={(value: TaskGroup | "None") => {
+											if (value === groupTasksBy) {
+												// Apply the swap
+												setOptions({
+													groupRowsBy: value,
+													groupTasksBy:
+														value === "Status" ? "Priority" : "Status",
+												});
+											} else {
+												setOptions({
+													groupRowsBy: value,
+												});
+											}
+										}}
+										value={groupRowsBy}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue>
+												<div className="flex w-full items-center justify-between">
+													<Layers3 className="size-4" />
+													<span className="mx-2 text-xs">{groupRowsBy}</span>
+												</div>
+											</SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											{[...taskGroupOptions, "None"].map((option) => (
+												<SelectItem
+													key={option}
+													value={option}
+													className="text-xs"
+												>
+													{option}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+
+								{/* Ordering Row */}
+								<span className="col-span-2 text-foreground text-xs">
+									Ordering
+								</span>
+								<div className="col-span-3">
 									<Select
 										onValueChange={(value) =>
 											setOptions({
@@ -265,12 +274,12 @@ const TopNavBarDisplay = () => {
 										}
 										value={taskOrder.orderBy}
 									>
-										<SelectTrigger>
-											<SelectValue className=" justify-between">
+										<SelectTrigger className="w-full">
+											<SelectValue>
 												<span className="text-xs">{taskOrder.orderBy}</span>
 											</SelectValue>
 										</SelectTrigger>
-										<SelectContent className="w-[120px]">
+										<SelectContent>
 											{orderByOptions
 												.filter((option) => option !== groupTasksBy)
 												.map((option) => (
@@ -285,29 +294,32 @@ const TopNavBarDisplay = () => {
 										</SelectContent>
 									</Select>
 								</div>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() =>
-												setOptions({
-													taskOrder: {
-														...taskOrder,
-														orderAscending: !taskOrder.orderAscending,
-													},
-												})
-											}
-										>
-											{taskOrder.orderAscending ? (
-												<ArrowUpWideNarrow className="size-4" />
-											) : (
-												<ArrowDownWideNarrow className="size-4" />
-											)}
-										</Button>
-									</TooltipTrigger>
-									<TooltipContent>{tooltipContent()}</TooltipContent>
-								</Tooltip>
+
+								<div className="col-span-1 text-right">
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() =>
+													setOptions({
+														taskOrder: {
+															...taskOrder,
+															orderAscending: !taskOrder.orderAscending,
+														},
+													})
+												}
+											>
+												{taskOrder.orderAscending ? (
+													<ArrowUpWideNarrow className="size-4" />
+												) : (
+													<ArrowDownWideNarrow className="size-4" />
+												)}
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>{tooltipContent()}</TooltipContent>
+									</Tooltip>
+								</div>
 							</div>
 							<Separator className="my-4" />
 
