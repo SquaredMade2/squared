@@ -4,6 +4,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import { ChevronDown, ChevronRight } from "@squared/icons";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
 import GroupColumn from "./GroupColumn";
 import { RowGroupHeader } from "./RowGroupHeader";
 import TaskColumnTitle from "./TaskColumnTitle";
@@ -47,10 +48,10 @@ export const RowGroupingWrapper = ({
 	const uniqueRowGroups = Array.from(allRowGroups);
 
 	return (
-		<div className="w-full">
-			{/* Render column headers only once at the top - make them sticky */}
+		<div className="flex h-full w-full flex-col">
+			{/* Column headers - completely outside of scrollable area */}
 			{!isListView && (
-				<div className="sticky top-0 z-10 mb-4 flex gap-2 bg-background pt-2 pb-2">
+				<div className="z-30 mb-2 flex gap-2 bg-background pt-2 pb-2">
 					{groupedColumns.map((column) => (
 						<div key={`header-${column.group}`} className="w-72">
 							<TaskColumnTitle
@@ -69,25 +70,18 @@ export const RowGroupingWrapper = ({
 				</div>
 			)}
 
-			{/* For list view, sticky header */}
-			{isListView && (
-				<div className="sticky top-0 z-10 mb-4 w-full bg-background pt-2 pb-2">
-					<div className="mb-2 flex items-center rounded bg-card p-2">
-						<span className="font-medium">Columns</span>
-					</div>
-				</div>
-			)}
-
-			{/* Render row groups */}
-			{uniqueRowGroups.map((rowGroup) => (
-				<RowGroup
-					key={rowGroup}
-					rowGroup={rowGroup}
-					groupedColumns={groupedColumns}
-					isListView={isListView}
-					visibleColumns={visibleColumns}
-				/>
-			))}
+			{/* Scrollable container for row groups only */}
+			<ScrollArea className="max-h-[calc(100vh-145px)] flex-grow">
+				{uniqueRowGroups.map((rowGroup) => (
+					<RowGroup
+						key={rowGroup}
+						rowGroup={rowGroup}
+						groupedColumns={groupedColumns}
+						isListView={isListView}
+						visibleColumns={visibleColumns}
+					/>
+				))}
+			</ScrollArea>
 		</div>
 	);
 };

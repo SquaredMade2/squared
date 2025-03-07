@@ -75,34 +75,32 @@ export function TaskPageLayout({
 				</div>
 			) : currentWorkspace ? (
 				<div className="flex-grow overflow-hidden">
-					<ScrollArea
-						className={cn(
-							"px-2",
-							view === "list"
-								? "h-[calc(100vh-145px)] overflow-y-auto"
-								: isRowGroupingActive
-									? "max-h-[calc(100vh-55px)] overflow-y-auto pb-24"
-									: "h-[calc(100vh-55px)] overflow-x-auto",
-						)}
-					>
-						<div
-							className={cn(
-								"mx-2",
-								view === "grid" && !isRowGroupingActive
-									? "flex flex-nowrap"
-									: isRowGroupingActive
-										? "w-full"
-										: "flex flex-wrap",
-							)}
-						>
+					{/* When row grouping is active, don't use ScrollArea */}
+					{isRowGroupingActive ? (
+						<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">
 							<DragDropContext onDragEnd={handleDragEnd}>
 								{children}
 							</DragDropContext>
 						</div>
-						{view === "grid" && !isRowGroupingActive && (
-							<ScrollBar orientation="horizontal" />
-						)}
-					</ScrollArea>
+					) : (
+						<ScrollArea
+							className={cn(
+								"px-2",
+								view === "list"
+									? "h-[calc(100vh-145px)] overflow-y-auto"
+									: "h-[calc(100vh-55px)] overflow-x-auto",
+							)}
+						>
+							<div
+								className={cn("mx-2", view === "grid" && "flex flex-nowrap")}
+							>
+								<DragDropContext onDragEnd={handleDragEnd}>
+									{children}
+								</DragDropContext>
+							</div>
+							{view === "grid" && <ScrollBar orientation="horizontal" />}
+						</ScrollArea>
+					)}
 				</div>
 			) : (
 				<div className="flex h-full w-screen flex-col items-center bg-background">
