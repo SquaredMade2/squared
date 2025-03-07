@@ -102,7 +102,7 @@ const RowGroup = ({
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
 	const { displayOptions } = useViewStore((state) => state);
-	const { groupRowsBy, showSubTasks } = displayOptions;
+	const { groupRowsBy, showSubTasks, groupTasksBy } = displayOptions;
 
 	// Calculate total tasks in this row group across all columns
 	let totalTasksInRow = 0;
@@ -179,12 +179,11 @@ const RowGroup = ({
 
 								return (
 									<div key={column.group} className="mb-4">
-										<div className="mb-2 rounded bg-secondary/20 p-2">
-											<span className="font-medium">{column.group}</span>
-											<span className="ml-2 text-muted-foreground text-xs">
-												({matchingRowGroup.tasks.length})
-											</span>
-										</div>
+										<RowGroupHeader
+											group={column.group}
+											groupType={groupTasksBy}
+											count={matchingRowGroup.tasks.length}
+										/>
 										<Droppable
 											droppableId={`${column.group}-${rowGroup}`}
 											type="TASK"
