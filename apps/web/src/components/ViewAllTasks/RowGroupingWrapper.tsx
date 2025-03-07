@@ -69,7 +69,7 @@ export const RowGroupingWrapper = ({
 			)}
 
 			{/* Scrollable container for row groups only */}
-			<ScrollArea className="max-h-[calc(100vh-145px)] w-fit flex-grow pr-2">
+			<ScrollArea className="max-h-[calc(100vh-145px)] w-full flex-grow pr-2">
 				{uniqueRowGroups.map((rowGroup) => (
 					<RowGroup
 						key={rowGroup}
