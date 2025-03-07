@@ -71,7 +71,7 @@ export const RowGroupingWrapper = ({
 			)}
 
 			{/* Scrollable container for row groups only */}
-			<ScrollArea className="max-h-[calc(100vh-145px)] flex-grow">
+			<ScrollArea className="max-h-[calc(100vh-145px)] w-fit flex-grow pr-2">
 				{uniqueRowGroups.map((rowGroup) => (
 					<RowGroup
 						key={rowGroup}
@@ -101,6 +101,11 @@ const RowGroup = ({
 	visibleColumns: Map<string, boolean>;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
+	// Track collapsed state for each column within this row group (for list view)
+	const [collapsedColumns, setCollapsedColumns] = useState<
+		Record<string, boolean>
+	>({});
+
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupRowsBy, showSubTasks, groupTasksBy } = displayOptions;
 
@@ -137,6 +142,19 @@ const RowGroup = ({
 			: true;
 	};
 
+	// Toggle specific column collapsed state (for list view)
+	const toggleColumnCollapsed = (columnGroup: string) => {
+		setCollapsedColumns((prev) => ({
+			...prev,
+			[columnGroup]: !prev[columnGroup],
+		}));
+	};
+
+	// Check if a specific column is collapsed
+	const isColumnCollapsed = (columnGroup: string): boolean => {
+		return collapsedColumns[columnGroup] || false;
+	};
+
 	return (
 		<div className="mb-8 w-full pb-4">
 			{/* Row Header - full width regardless of collapsed state */}
@@ -168,8 +186,9 @@ const RowGroup = ({
 			{!isCollapsed && (
 				<div className={isListView ? "w-full" : "flex gap-2"}>
 					{isListView ? (
-						// List view - single column structure without duplicate column headers
-						<div className="w-full">
+						// List view - single column structure with collapsible sub-headers
+						<div className="w-full pl-6">
+							{/* Apply indentation for hierarchy */}
 							{groupedColumns.map((column) => {
 								const matchingRowGroup = column.rowGroups?.find(
 									(group) => group.group === rowGroup,
@@ -179,34 +198,57 @@ const RowGroup = ({
 
 								return (
 									<div key={column.group} className="mb-4">
-										<RowGroupHeader
-											group={column.group}
-											groupType={groupTasksBy}
-											count={matchingRowGroup.tasks.length}
-										/>
-										<Droppable
-											droppableId={`${column.group}-${rowGroup}`}
-											type="TASK"
+										{/* Column sub-header with collapse toggle */}
+										<div
+											className="mb-2 flex cursor-pointer items-center justify-between rounded bg-secondary/20 p-2"
+											onClick={() => toggleColumnCollapsed(column.group)}
 										>
-											{(provided, snapshot) => (
-												<div
-													ref={provided.innerRef}
-													{...provided.droppableProps}
-													className={cn(
-														"min-h-[40px] rounded p-1",
-														snapshot.isDraggingOver && "bg-secondary/30",
-													)}
+											<div className="flex items-center">
+												<Button
+													variant="ghost"
+													size="sm"
+													className="mr-2 h-6 w-6 p-0"
 												>
-													<GroupColumn
-														group={`${column.group}-${rowGroup}`}
-														tasks={matchingRowGroup.tasks}
-														currentView="list"
-														showTasks={getColumnVisibility(column.group)}
-													/>
-													{provided.placeholder}
-												</div>
-											)}
-										</Droppable>
+													{isColumnCollapsed(column.group) ? (
+														<ChevronRight className="size-3" />
+													) : (
+														<ChevronDown className="size-3" />
+													)}
+												</Button>
+												<RowGroupHeader
+													group={column.group}
+													groupType={groupTasksBy}
+													count={matchingRowGroup.tasks.length}
+												/>
+											</div>
+										</div>
+
+										{/* Column content - conditionally rendered based on collapsed state */}
+										{!isColumnCollapsed(column.group) && (
+											<Droppable
+												droppableId={`${column.group}-${rowGroup}`}
+												type="TASK"
+											>
+												{(provided, snapshot) => (
+													<div
+														ref={provided.innerRef}
+														{...provided.droppableProps}
+														className={cn(
+															"min-h-[40px] rounded p-1 pl-6", // Additional indentation for tasks
+															snapshot.isDraggingOver && "bg-secondary/30",
+														)}
+													>
+														<GroupColumn
+															group={`${column.group}-${rowGroup}`}
+															tasks={matchingRowGroup.tasks}
+															currentView="list"
+															showTasks={getColumnVisibility(column.group)}
+														/>
+														{provided.placeholder}
+													</div>
+												)}
+											</Droppable>
+										)}
 									</div>
 								);
 							})}
