@@ -23,7 +23,7 @@ export const RowGroupingWrapper = ({
 	visibleColumns: Map<string, boolean>;
 }) => {
 	const { displayOptions } = useViewStore((state) => state);
-	const { groupRowsBy } = displayOptions;
+	const { groupRowsBy, groupTasksBy } = displayOptions;
 	const getColumnVisibility = (columnGroup: string): boolean => {
 		return visibleColumns.has(columnGroup)
 			? // biome-ignore lint/style/noNonNullAssertion: We just checked that this key exists
@@ -47,6 +47,46 @@ export const RowGroupingWrapper = ({
 	// Sort the row groups consistently based on type
 	const uniqueRowGroups = Array.from(allRowGroups);
 
+	// Track collapsed state for each column and row group (for list view)
+	const [collapsedColumns, setCollapsedColumns] = useState<
+		Record<string, boolean>
+	>({});
+	const [collapsedRowGroups, setCollapsedRowGroups] = useState<
+		Record<string, Record<string, boolean>>
+	>({});
+
+	// Toggle column collapsed state
+	const toggleColumnCollapsed = (columnGroup: string) => {
+		setCollapsedColumns((prev) => ({
+			...prev,
+			[columnGroup]: !prev[columnGroup],
+		}));
+	};
+
+	// Toggle row group collapsed state
+	const toggleRowGroupCollapsed = (columnGroup: string, rowGroup: string) => {
+		setCollapsedRowGroups((prev) => ({
+			...prev,
+			[columnGroup]: {
+				...(prev[columnGroup] || {}),
+				[rowGroup]: !(prev[columnGroup]?.[rowGroup] || false),
+			},
+		}));
+	};
+
+	// Check if a column is collapsed
+	const isColumnCollapsed = (columnGroup: string): boolean => {
+		return collapsedColumns[columnGroup] || false;
+	};
+
+	// Check if a row group is collapsed
+	const isRowGroupCollapsed = (
+		columnGroup: string,
+		rowGroup: string,
+	): boolean => {
+		return collapsedRowGroups[columnGroup]?.[rowGroup] || false;
+	};
+
 	return (
 		<div className="flex h-full w-full flex-col">
 			{/* Column headers - completely outside of scrollable area */}
@@ -68,17 +108,130 @@ export const RowGroupingWrapper = ({
 				</div>
 			)}
 
-			{/* Scrollable container for row groups only */}
+			{/* Scrollable container */}
 			<ScrollArea className="max-h-[calc(100vh-145px)] w-full flex-grow pr-2">
-				{uniqueRowGroups.map((rowGroup) => (
-					<RowGroup
-						key={rowGroup}
-						rowGroup={rowGroup}
-						groupedColumns={groupedColumns}
-						isListView={isListView}
-						visibleColumns={visibleColumns}
-					/>
-				))}
+				{isListView ? (
+					// List view - organize by columns first, then by row groups
+					<div className="w-full">
+						{groupedColumns.map((column) => (
+							<div key={column.group} className="mb-6">
+								{/* Column header */}
+								<div
+									className="mb-2 flex cursor-pointer items-center justify-between rounded bg-secondary/40 p-2"
+									onClick={() => toggleColumnCollapsed(column.group)}
+								>
+									<div className="flex items-center">
+										<Button
+											variant="ghost"
+											size="sm"
+											className="mr-2 h-6 w-6 p-0"
+										>
+											{isColumnCollapsed(column.group) ? (
+												<ChevronRight className="size-4" />
+											) : (
+												<ChevronDown className="size-4" />
+											)}
+										</Button>
+										<RowGroupHeader
+											group={column.group}
+											groupType={groupTasksBy}
+											count={column.tasks.length}
+										/>
+									</div>
+								</div>
+
+								{/* Row groups within this column */}
+								{!isColumnCollapsed(column.group) && (
+									<div className="pl-6">
+										{uniqueRowGroups.map((rowGroup) => {
+											const matchingRowGroup = column.rowGroups?.find(
+												(group) => group.group === rowGroup,
+											);
+
+											if (
+												!matchingRowGroup ||
+												matchingRowGroup.tasks.length === 0
+											)
+												return null;
+
+											return (
+												<div
+													key={`${column.group}-${rowGroup}`}
+													className="mb-4"
+												>
+													{/* Row group subheader */}
+													<div
+														className="mb-2 flex cursor-pointer items-center rounded bg-secondary/20 p-2"
+														onClick={() =>
+															toggleRowGroupCollapsed(column.group, rowGroup)
+														}
+													>
+														<Button
+															variant="ghost"
+															size="sm"
+															className="mr-2 h-6 w-6 p-0"
+														>
+															{isRowGroupCollapsed(column.group, rowGroup) ? (
+																<ChevronRight className="size-3" />
+															) : (
+																<ChevronDown className="size-3" />
+															)}
+														</Button>
+														<RowGroupHeader
+															group={rowGroup}
+															groupType={groupRowsBy}
+															count={matchingRowGroup.tasks.length}
+														/>
+													</div>
+
+													{/* Tasks within this row group */}
+													{!isRowGroupCollapsed(column.group, rowGroup) && (
+														<Droppable
+															droppableId={`${column.group}-${rowGroup}`}
+															type="TASK"
+														>
+															{(provided, snapshot) => (
+																<div
+																	ref={provided.innerRef}
+																	{...provided.droppableProps}
+																	className={cn(
+																		"min-h-[40px] rounded p-1 pl-6",
+																		snapshot.isDraggingOver &&
+																			"bg-secondary/30",
+																	)}
+																>
+																	<GroupColumn
+																		group={`${column.group}-${rowGroup}`}
+																		tasks={matchingRowGroup.tasks}
+																		currentView="list"
+																		showTasks={getColumnVisibility(
+																			column.group,
+																		)}
+																	/>
+																	{provided.placeholder}
+																</div>
+															)}
+														</Droppable>
+													)}
+												</div>
+											);
+										})}
+									</div>
+								)}
+							</div>
+						))}
+					</div>
+				) : (
+					// Grid view - organize by row groups first, then columns
+					uniqueRowGroups.map((rowGroup) => (
+						<RowGroup
+							key={rowGroup}
+							rowGroup={rowGroup}
+							groupedColumns={groupedColumns}
+							visibleColumns={visibleColumns}
+						/>
+					))
+				)}
 			</ScrollArea>
 		</div>
 	);
@@ -86,26 +239,20 @@ export const RowGroupingWrapper = ({
 
 /**
  * A component that renders a single row group spanning all columns
+ * Note: Only used for Grid view now
  */
 const RowGroup = ({
 	rowGroup,
 	groupedColumns,
-	isListView,
 	visibleColumns,
 }: {
 	rowGroup: string;
 	groupedColumns: GroupedColumn[];
-	isListView: boolean;
 	visibleColumns: Map<string, boolean>;
 }) => {
 	const [isCollapsed, setIsCollapsed] = useState(false);
-	// Track collapsed state for each column within this row group (for list view)
-	const [collapsedColumns, setCollapsedColumns] = useState<
-		Record<string, boolean>
-	>({});
-
 	const { displayOptions } = useViewStore((state) => state);
-	const { groupRowsBy, showSubTasks, groupTasksBy } = displayOptions;
+	const { groupRowsBy, showSubTasks } = displayOptions;
 
 	// Calculate total tasks in this row group across all columns
 	let totalTasksInRow = 0;
@@ -140,19 +287,6 @@ const RowGroup = ({
 			: true;
 	};
 
-	// Toggle specific column collapsed state (for list view)
-	const toggleColumnCollapsed = (columnGroup: string) => {
-		setCollapsedColumns((prev) => ({
-			...prev,
-			[columnGroup]: !prev[columnGroup],
-		}));
-	};
-
-	// Check if a specific column is collapsed
-	const isColumnCollapsed = (columnGroup: string): boolean => {
-		return collapsedColumns[columnGroup] || false;
-	};
-
 	return (
 		<div className="mb-8 w-full pb-4">
 			{/* Row Header - full width regardless of collapsed state */}
@@ -180,119 +314,48 @@ const RowGroup = ({
 				/>
 			</div>
 
-			{/* Row Content */}
+			{/* Row Content for Grid View */}
 			{!isCollapsed && (
-				<div className={isListView ? "w-full" : "flex gap-2"}>
-					{isListView ? (
-						// List view - single column structure with collapsible sub-headers
-						<div className="w-full pl-6">
-							{/* Apply indentation for hierarchy */}
-							{groupedColumns.map((column) => {
-								const matchingRowGroup = column.rowGroups?.find(
-									(group) => group.group === rowGroup,
-								);
-								if (!matchingRowGroup || matchingRowGroup.tasks.length === 0)
-									return null;
+				<div className="flex gap-2">
+					{groupedColumns.map((column) => {
+						const matchingRowGroup = column.rowGroups?.find(
+							(group) => group.group === rowGroup,
+						);
 
-								return (
-									<div key={column.group} className="mb-4">
-										{/* Column sub-header with collapse toggle */}
+						// Always render column placeholders to maintain layout
+						return (
+							<div key={column.group} className="w-72 flex-shrink-0">
+								<Droppable
+									droppableId={`${column.group}-${rowGroup}`}
+									type="TASK"
+								>
+									{(provided, snapshot) => (
 										<div
-											className="mb-2 flex cursor-pointer items-center justify-between rounded bg-secondary/20 p-2"
-											onClick={() => toggleColumnCollapsed(column.group)}
+											ref={provided.innerRef}
+											{...provided.droppableProps}
+											className={cn(
+												"min-h-[40px] rounded p-1",
+												snapshot.isDraggingOver && "bg-secondary/30",
+											)}
 										>
-											<div className="flex items-center">
-												<Button
-													variant="ghost"
-													size="sm"
-													className="mr-2 h-6 w-6 p-0"
-												>
-													{isColumnCollapsed(column.group) ? (
-														<ChevronRight className="size-3" />
-													) : (
-														<ChevronDown className="size-3" />
-													)}
-												</Button>
-												<RowGroupHeader
-													group={column.group}
-													groupType={groupTasksBy}
-													count={matchingRowGroup.tasks.length}
-												/>
-											</div>
-										</div>
-
-										{/* Column content - conditionally rendered based on collapsed state */}
-										{!isColumnCollapsed(column.group) && (
-											<Droppable
-												droppableId={`${column.group}-${rowGroup}`}
-												type="TASK"
-											>
-												{(provided, snapshot) => (
-													<div
-														ref={provided.innerRef}
-														{...provided.droppableProps}
-														className={cn(
-															"min-h-[40px] rounded p-1 pl-6", // Additional indentation for tasks
-															snapshot.isDraggingOver && "bg-secondary/30",
-														)}
-													>
+											{matchingRowGroup &&
+												matchingRowGroup.tasks.length > 0 && (
+													<div className="h-auto overflow-visible">
 														<GroupColumn
 															group={`${column.group}-${rowGroup}`}
 															tasks={matchingRowGroup.tasks}
-															currentView="list"
+															currentView="grid"
 															showTasks={getColumnVisibility(column.group)}
 														/>
-														{provided.placeholder}
 													</div>
 												)}
-											</Droppable>
-										)}
-									</div>
-								);
-							})}
-						</div>
-					) : (
-						// Grid view - multi-column layout without column headers (already at top)
-						groupedColumns.map((column) => {
-							const matchingRowGroup = column.rowGroups?.find(
-								(group) => group.group === rowGroup,
-							);
-
-							// Always render column placeholders to maintain layout
-							return (
-								<div key={column.group} className="w-72 flex-shrink-0">
-									<Droppable
-										droppableId={`${column.group}-${rowGroup}`}
-										type="TASK"
-									>
-										{(provided, snapshot) => (
-											<div
-												ref={provided.innerRef}
-												{...provided.droppableProps}
-												className={cn(
-													"min-h-[40px] rounded p-1",
-													snapshot.isDraggingOver && "bg-secondary/30",
-												)}
-											>
-												{matchingRowGroup &&
-													matchingRowGroup.tasks.length > 0 && (
-														<div className="h-auto overflow-visible">
-															<GroupColumn
-																group={`${column.group}-${rowGroup}`}
-																tasks={matchingRowGroup.tasks}
-																currentView="grid"
-																showTasks={getColumnVisibility(column.group)}
-															/>
-														</div>
-													)}
-												{provided.placeholder}
-											</div>
-										)}
-									</Droppable>
-								</div>
-							);
-						})
-					)}
+											{provided.placeholder}
+										</div>
+									)}
+								</Droppable>
+							</div>
+						);
+					})}
 				</div>
 			)}
 		</div>
