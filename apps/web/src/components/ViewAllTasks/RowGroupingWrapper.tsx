@@ -222,15 +222,17 @@ export const RowGroupingWrapper = ({
 						))}
 					</div>
 				) : (
-					// Grid view - organize by row groups first, then columns
-					uniqueRowGroups.map((rowGroup) => (
-						<RowGroup
-							key={rowGroup}
-							rowGroup={rowGroup}
-							groupedColumns={groupedColumns}
-							visibleColumns={visibleColumns}
-						/>
-					))
+					<div className="mb-8">
+						{/* // Grid view - organize by row groups first, then columns */}
+						{uniqueRowGroups.map((rowGroup) => (
+							<RowGroup
+								key={rowGroup}
+								rowGroup={rowGroup}
+								groupedColumns={groupedColumns}
+								visibleColumns={visibleColumns}
+							/>
+						))}
+					</div>
 				)}
 			</ScrollArea>
 		</div>
@@ -288,7 +290,7 @@ const RowGroup = ({
 	};
 
 	return (
-		<div className="mb-8 w-full pb-4">
+		<div className="w-full pb-4">
 			{/* Row Header - full width regardless of collapsed state */}
 			<div
 				className={cn(

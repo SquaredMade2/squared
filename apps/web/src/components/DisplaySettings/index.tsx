@@ -175,7 +175,7 @@ const TopNavBarDisplay = () => {
 							<div className="grid grid-cols-6 items-center gap-1">
 								{/* Columns Row */}
 								<span className="col-span-2 text-foreground text-xs">
-									Columns
+									{view === "list" ? "Groups" : "Columns"}
 								</span>
 								<div className="col-span-4">
 									<Select
@@ -217,7 +217,9 @@ const TopNavBarDisplay = () => {
 								</div>
 
 								{/* Rows Row */}
-								<span className="col-span-2 text-foreground text-xs">Rows</span>
+								<span className="col-span-2 text-foreground text-xs">
+									{view === "list" ? "Subgroups" : "Rows"}
+								</span>
 								<div className="col-span-4">
 									<Select
 										onValueChange={(value: TaskGroup | "None") => {
