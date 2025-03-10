@@ -83,21 +83,20 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				transformingMentionInputs(description ?? "");
 
 			const newTask = {
-				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${team.identifier}-${workspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
-				dateCreated: new Date(),
+				// dateCreated: new Date(),		// do we need this for custom timestamp?
 				teamId: team.id,
 				workspaceId: workspace.externalId,
-				updatedAt: new Date(),
+				// updatedAt: new Date(), 		// do we need this for custom timestamp?
 				parentId: parentId,
 			};
+
 			const createdTask = await client.task.createTask
 				.$post(newTask)
 				.then((res) => res.json());
@@ -122,6 +121,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				),
 			});
 			setNewTaskData({});
+			form.reset({ title: "", description: "" });
+			setIsOpen("");
 		},
 		onError: (error) => {
 			toast({
