@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,22 @@ import (
 )
 
 func main() {
+	// Define command line flags
+	verboseLogging := flag.Bool("verbose", false, "Enable verbose logging")
+	quietLogging := flag.Bool("quiet", false, "Disable all non-essential logging")
+	flag.Parse()
+
+	// Set the logging level based on flags
+	if *verboseLogging {
+		github.SetLogLevel(github.LogLevelFull)
+		log.Println("Verbose logging enabled")
+	} else if *quietLogging {
+		github.SetLogLevel(github.LogLevelQuiet)
+		log.Println("Quiet mode enabled")
+	} else {
+		github.SetLogLevel(github.LogLevelBasic)
+	}
+
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/github", github.WebhookHandler)
 	http.HandleFunc("/vercel", vercel.WebhookHandler)
