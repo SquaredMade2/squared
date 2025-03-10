@@ -58,15 +58,6 @@ jobs:
           pr_updated_at=$(echo "$pr" | jq -r '.updatedAt')
           reviewers=$(echo "$pr" | jq -r '.reviewRequests[].login')
 
-          # Fetch PR review details
-          reviews=$(gh pr view "$pr_number" --json reviews)
-          unresolved_reviews=$(echo "$reviews" | jq '[.reviews[] | select(.state == "CHANGES_REQUESTED" or .state == "COMMENTED")] | length')
-
-          if [[ "$unresolved_reviews" -gt 0 ]]; then
-            echo "Skipping PR #$pr_number due to unresolved reviews or comments"
-            continue
-          fi
-
           # Calculate PR age and stale time
           current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           pr_age_days=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 86400 ))
