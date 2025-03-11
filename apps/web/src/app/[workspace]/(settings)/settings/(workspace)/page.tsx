@@ -192,7 +192,6 @@ export default function WorkspaceSettings() {
 			}
 		},
 		onError: (error) => {
-			console.log(error);
 			toast({
 				title: "Error deleting workspace",
 				description: parseError(error),
