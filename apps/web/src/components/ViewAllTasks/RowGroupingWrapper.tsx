@@ -109,7 +109,7 @@ export const RowGroupingWrapper = ({
 			)}
 
 			{/* Scrollable container */}
-			<ScrollArea className="max-h-[calc(100vh-145px)] w-full flex-grow pr-2">
+			<ScrollArea className="max-h-[calc(100vh-145px)] w-full grow pr-2">
 				{isListView ? (
 					// List view - organize by columns first, then by row groups
 					<div className="w-full">
@@ -326,7 +326,7 @@ const RowGroup = ({
 
 						// Always render column placeholders to maintain layout
 						return (
-							<div key={column.group} className="w-72 flex-shrink-0">
+							<div key={column.group} className="w-72 shrink-0">
 								<Droppable
 									droppableId={`${column.group}-${rowGroup}`}
 									type="TASK"

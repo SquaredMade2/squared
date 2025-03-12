@@ -46,7 +46,7 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 					)}
 				>
 					{labels.map((label) => (
-						<div key={label.name} className="label-badge flex-shrink">
+						<div key={label.name} className="label-badge shrink">
 							<LabelBadge label={label} />
 						</div>
 					))}
@@ -54,7 +54,7 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 			) : (
 				<>
 					{labels.map((label) => (
-						<div key={label.name} className="label-badge mb-1 flex-shrink">
+						<div key={label.name} className="label-badge mb-1 shrink">
 							<LabelBadge label={label} />
 						</div>
 					))}

@@ -59,8 +59,8 @@ export default function WelcomePage() {
 
 	if (mutation.isError) {
 		return (
-			<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
-				<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
+			<div className="flex min-h-screen w-full items-center justify-center bg-linear-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+				<Card className="w-full max-w-md bg-linear-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 					<CardHeader>
 						<CardTitle className="text-center font-bold text-2xl">
 							Oops! Something went wrong
@@ -86,8 +86,8 @@ export default function WelcomePage() {
 	}
 
 	return (
-		<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
-			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
+		<div className="flex min-h-screen w-full items-center justify-center bg-linear-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+			<Card className="w-full max-w-md bg-linear-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader>
 					<CardTitle className="text-center font-bold text-2xl">
 						Welcome to Squared!
