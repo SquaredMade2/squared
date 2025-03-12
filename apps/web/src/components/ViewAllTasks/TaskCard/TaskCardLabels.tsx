@@ -42,8 +42,9 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 				<div
 					ref={containerRef}
 					className={cn(
-						`flex w-fit max-w-full flex-wrap items-center justify-end gap-1 text-muted-foreground min-w-[${minWidth}px]`,
+						"flex w-fit max-w-full flex-wrap items-center justify-end gap-1 text-muted-foreground",
 					)}
+					style={{ minWidth: minWidth > 0 ? `${minWidth}px` : undefined }}
 				>
 					{labels.map((label) => (
 						<div key={label.name} className="label-badge shrink">
