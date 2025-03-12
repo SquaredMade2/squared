@@ -21,7 +21,7 @@ export const SkeletonFour = () => {
 
 const MovingGrid = () => {
 	return (
-		<div className="relative z-40 mb-4 flex flex-shrink-0 space-x-4 p-2">
+		<div className="relative z-40 mb-4 flex shrink-0 space-x-4 p-2">
 			<span
 				className={cn(
 					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",

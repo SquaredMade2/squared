@@ -22,7 +22,7 @@ export function ModeToggle() {
 				onClick={() => {
 					resolvedTheme === "dark" ? setTheme("light") : setTheme("dark");
 				}}
-				className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg outline-none hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none active:ring-0 dark:hover:bg-background-navBarHover"
+				className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg outline-hidden hover:bg-gray-50 focus:outline-hidden focus:ring-0 active:outline-hidden active:ring-0 dark:hover:bg-background-navBarHover"
 			>
 				{resolvedTheme === "light" && (
 					<motion.div
@@ -40,7 +40,7 @@ export function ModeToggle() {
 							ease: "easeOut",
 						}}
 					>
-						<IconSunLow className="h-4 w-4 flex-shrink-0 text-neutral-700 dark:text-neutral-500" />
+						<IconSunLow className="h-4 w-4 shrink-0 text-neutral-700 dark:text-neutral-500" />
 					</motion.div>
 				)}
 
@@ -60,7 +60,7 @@ export function ModeToggle() {
 							duration: 0.3,
 						}}
 					>
-						<Moon className="h-4 w-4 flex-shrink-0 text-neutral-700 dark:text-neutral-500" />
+						<Moon className="h-4 w-4 shrink-0 text-neutral-700 dark:text-neutral-500" />
 					</motion.div>
 				)}
 
