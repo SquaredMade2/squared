@@ -167,6 +167,8 @@ export class WorkspaceService implements WorkspaceRpc {
 		await this.db
 			.delete(workspacesTable)
 			.where(eq(workspacesTable.externalId, workspaceId));
+
+		await this.clerkClient.organizations.deleteOrganization(workspaceId);
 	}
 
 	async getUserWorkspaces({

@@ -1,4 +1,3 @@
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
@@ -158,27 +157,15 @@ export const taskRouter = router({
 				teamId: z.string(),
 				workspaceId: z.string(),
 				sprintId: z.string().optional().nullable(),
+				parentId: z.string().optional().nullable(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService, user } = ctx;
 
-			const { transformedInput: transformedTitle } = transformingMentionInputs(
-				input.title,
-			);
-			const { transformedInput: transformedDescription } =
-				transformingMentionInputs(input.description || "");
-
 			const newTask = {
 				...input,
 				authorId: user.id,
-				title: transformedTitle,
-				description: transformedDescription,
-				status: input.status || "backlog",
-				priority: input.priority || "noPriority",
-				labels: input.labels || [],
-				dueDate: input.dueDate || null,
-				effortEstimate: input.effortEstimate || null,
 			};
 
 			const task = await taskService.createTask(TODO, newTask);

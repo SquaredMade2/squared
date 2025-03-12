@@ -5,8 +5,8 @@ import { RPCContextClient } from "@squared/rpc-client";
 export type CreateTaskRequest = {
 	authorId: string;
 	description?: string;
-	dueDate: Date | null;
-	effortEstimate: number | null;
+	dueDate?: Date | null;
+	effortEstimate?: number | null;
 	labels?: {
 		color: string;
 		description?: string | null;

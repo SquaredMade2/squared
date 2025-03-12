@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore, useSprintStore, useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
 import type { Status } from "@squared/db";
-import { SquarePen } from "@squared/icons";
+import { CirclePlus, SquarePen } from "@squared/icons";
 import { usePathname } from "next/navigation";
 
 export const NewTaskButton = () => {
@@ -47,49 +48,54 @@ export const NewTaskButton = () => {
 	);
 };
 
-export const GridColumnNewTaskButton = ({ group }: { group: string }) => {
-	const { setShowNewTask, newTaskData, setNewTaskData } = useModalStore(
-		(state) => state,
-	);
-	const { displayOptions } = useViewStore((state) => state);
+export const GridColumnNewTaskButton = ({
+	group,
+	isRowGrouped = false,
+}: {
+	group: string;
+	isRowGrouped?: boolean;
+}) => {
+	const { setNewTaskData, setShowNewTask } = useModalStore((state) => state);
+	const { groupTasksBy } = useViewStore((state) => state.displayOptions);
 	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
-	const { groupTasksBy } = displayOptions;
 
-	const key = (() => {
-		switch (groupTasksBy) {
-			case "Status":
-				return "status";
-			case "Assignee":
-				return "assigneeId";
-			case "Priority":
-				return "priority";
-			case "Label":
-				return "labels";
-			// case "Parent Task":
-			// 	return "parentId";
-			default:
-				return "status";
-		}
-	})();
+	const handleClick = () => {
+		const key = (() => {
+			switch (groupTasksBy) {
+				case "Status":
+					return "status";
+				case "Assignee":
+					return "assigneeId";
+				case "Priority":
+					return "priority";
+				case "Label":
+					return "labels";
+				// case "Parent Task":
+				//  return "parentId";
+				default:
+					return "status";
+			}
+		})();
 
-	const handleOpen = () => {
-		setShowNewTask(true);
 		setNewTaskData({
-			...newTaskData,
 			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: group,
 		});
+		setShowNewTask(true);
 	};
+
 	return (
-		<Button
-			onClick={() => handleOpen()}
-			variant={"outline"}
-			className="w-full"
-			aria-label="Create new task"
-		>
-			<SquarePen className="size-5" />
-		</Button>
+		<div className={cn("w-72 flex-shrink-0", isRowGrouped ? "mt-2" : "")}>
+			<Button
+				onClick={handleClick}
+				variant="outline"
+				className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border-dashed"
+			>
+				<CirclePlus className="size-4 text-muted-foreground" />
+				<span className="text-muted-foreground text-sm">New task</span>
+			</Button>
+		</div>
 	);
 };
 

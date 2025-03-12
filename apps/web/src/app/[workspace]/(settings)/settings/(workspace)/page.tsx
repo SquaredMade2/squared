@@ -66,7 +66,7 @@ export default function WorkspaceSettings() {
 	const { toast } = useToast();
 	const router = useRouter();
 	const { organization } = useOrganization();
-	const { userMemberships } = useOrganizationList();
+	const { userMemberships } = useOrganizationList({ userMemberships: true });
 
 	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
 	const defaultSelect =
