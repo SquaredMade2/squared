@@ -1,5 +1,3 @@
-import type { Config } from "tailwindcss";
-
 const config = {
 	darkMode: ["class"],
 	content: [
@@ -53,11 +51,11 @@ const config = {
 					foreground: "hsl(var(--card-foreground))",
 				},
 				chart: {
-					"1": "hsl(var(--chart-1))",
-					"2": "hsl(var(--chart-2))",
-					"3": "hsl(var(--chart-3))",
-					"4": "hsl(var(--chart-4))",
-					"5": "hsl(var(--chart-5))",
+					1: "hsl(var(--chart-1))",
+					2: "hsl(var(--chart-2))",
+					3: "hsl(var(--chart-3))",
+					4: "hsl(var(--chart-4))",
+					5: "hsl(var(--chart-5))",
 				},
 				sidebar: {
 					DEFAULT: "hsl(var(--sidebar-background))",
@@ -83,8 +81,8 @@ const config = {
 				sans: ["var(--font-noirden-sans)"],
 			},
 			gridTemplateColumns: {
-				"16": "repeat(16, minmax(0, 1fr))",
-				"24": "repeat(24, minmax(0, 1fr))",
+				16: "repeat(16, minmax(0, 1fr))",
+				24: "repeat(24, minmax(0, 1fr))",
 			},
 			gridColumn: {
 				"span-15": "span 15 / span 15",
@@ -138,6 +136,6 @@ const config = {
 		require("@squared/fonts/tailwind-plugin"),
 		require("tailwind-scrollbar")({ nocompatible: true }),
 	],
-} satisfies Config;
+};
 
 export default config;
