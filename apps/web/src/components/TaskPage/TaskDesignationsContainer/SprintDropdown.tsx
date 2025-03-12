@@ -14,22 +14,24 @@ const SprintDropdown = () => {
 	const { team } = useTeamStore((state) => state);
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
-	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
+	const [assignedSprint, setAssignedSprint] = useState<Sprint | null>(null);
+	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 
 	const taskId = currentTask?.id ?? "";
-	const sprintId = assignedSprintId?.id ?? "";
-	const sprintName = assignedSprintId?.name ?? "";
+	const assignedSprintId = assignedSprint?.id ?? "";
+	const assignedSprintName = assignedSprint?.name ?? "";
 
-	const { data: sprints = [] } = useQuery({
+	useQuery({
 		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (team) {
 				const res = await client.sprint.getSprints
 					.$get({ teamId: team.id })
 					.then((res) => res.json());
-				setAssignedSprintId(
+				setAssignedSprint(
 					res.find((s: Sprint) => s.id === currentTask?.sprintId) ?? null,
 				);
+				setActiveSprint(res.find((s: Sprint) => s.status === "ACTIVE") ?? null);
 				return res;
 			}
 			return [];
@@ -75,11 +77,13 @@ const SprintDropdown = () => {
 		<DesignationCombobox
 			open={open}
 			setOpen={setOpen}
-			triggerText={sprintName ? sprintName : "No sprint assigned"}
+			triggerText={
+				assignedSprintName ? assignedSprintName : "No sprint assigned"
+			}
 			emptyText="No sprints found."
-			listItems={sprints || []}
-			selectedItemId={sprintId}
-			selectedItemLabel={sprintName}
+			listItems={activeSprint ? [activeSprint] : []}
+			selectedItemId={assignedSprintId}
+			selectedItemLabel={assignedSprintName}
 			itemLabel={(sprint: Sprint) => sprint.name}
 			itemId={(sprint: Sprint) => sprint.id}
 			onItemSelect={handleAssignToSprint}
