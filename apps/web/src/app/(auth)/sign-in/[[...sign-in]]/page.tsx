@@ -23,6 +23,7 @@ const LoginPage = () => {
 
 	useEffect(() => {
 		if (isLoaded && user) {
+			console.log("loaded user", user);
 			return router.push("/");
 		}
 		if (incorrectPassword) {
@@ -65,6 +66,9 @@ const LoginPage = () => {
 								alternativeMethodsBlockButton:
 									"bg-primary/20 text-foreground/80",
 								backLink: "text-muted-foreground",
+								otpCodeFieldInput:
+									"border border-primary hover:border-primary/60 focus:border-primary/60 text-primary-foreground",
+								formResendCodeLink: "text-muted-foreground",
 							},
 						}}
 						signUpForceRedirectUrl={"/welcome"}
