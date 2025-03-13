@@ -18,8 +18,6 @@ const SprintDropdown = () => {
 	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 
 	const taskId = currentTask?.id ?? "";
-	const assignedSprintId = assignedSprint?.id ?? "";
-	const assignedSprintName = assignedSprint?.name ?? "";
 
 	useQuery({
 		queryKey: ["sprint", team?.id],
@@ -78,12 +76,12 @@ const SprintDropdown = () => {
 			open={open}
 			setOpen={setOpen}
 			triggerText={
-				assignedSprintName ? assignedSprintName : "No sprint assigned"
+				assignedSprint?.name ? assignedSprint.name : "No sprint assigned"
 			}
 			emptyText="No sprints found."
 			listItems={activeSprint ? [activeSprint] : []}
-			selectedItemId={assignedSprintId}
-			selectedItemLabel={assignedSprintName}
+			selectedItemId={assignedSprint?.id ?? ""}
+			selectedItemLabel={assignedSprint?.name ?? ""}
 			itemLabel={(sprint: Sprint) => sprint.name}
 			itemId={(sprint: Sprint) => sprint.id}
 			onItemSelect={handleAssignToSprint}
