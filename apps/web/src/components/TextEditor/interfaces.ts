@@ -5,6 +5,7 @@ import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
+	addAction: (editorContent: CustomDescendant[]) => void;
 }
 
 export interface TextEditorToolBarProps {

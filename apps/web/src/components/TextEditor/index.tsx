@@ -60,7 +60,7 @@ const initialValue: CustomDescendant[] = [
 	},
 ];
 
-const TextEditor = ({ task }: TextEditorProps) => {
+const TextEditor = ({ task, addAction }: TextEditorProps) => {
 	// State
 
 	const { setShowLinkForm } = useModalStore((state) => state);
@@ -93,16 +93,37 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const editorRef = useRef<HTMLDivElement | null>(null);
 	const { toast } = useToast();
 	// Functions
-	function submitText() {
+	function handleSubmitEditor() {
 		if (checkIfSlateEmpty(editor)) {
+			setEditorContent([]);
+			editor.children = [
+				{
+					type: "paragraph",
+					children: [{ text: "" }],
+				},
+			];
+			Transforms.select(editor, {
+				anchor: { path: [0, 0], offset: 0 },
+				focus: { path: [0, 0], offset: 0 },
+			});
 			return;
 		}
-		const newComment = {
-			comment: handleFormatSlateToComment(editorContent),
-			date: new Date(),
-			taskId: task.id,
-		};
-		return addText(newComment);
+
+		addAction(editorContent);
+
+		// reset editor
+
+		setEditorContent([]);
+		editor.children = [
+			{
+				type: "paragraph",
+				children: [{ text: "" }],
+			},
+		];
+		Transforms.select(editor, {
+			anchor: { path: [0, 0], offset: 0 },
+			focus: { path: [0, 0], offset: 0 },
+		});
 	}
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", task?.id],
@@ -148,18 +169,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						variant: "destructive",
 					});
 				}
-
-				setEditorContent([]);
-				editor.children = [
-					{
-						type: "paragraph",
-						children: [{ text: "" }],
-					},
-				];
-				Transforms.select(editor, {
-					anchor: { path: [0, 0], offset: 0 },
-					focus: { path: [0, 0], offset: 0 },
-				});
 			} else {
 				toast({
 					title: "Error getting comments",
@@ -477,7 +486,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			)}
 
 			<Button
-				onClick={submitText}
+				onClick={handleSubmitEditor}
 				// onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
 				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 			>
