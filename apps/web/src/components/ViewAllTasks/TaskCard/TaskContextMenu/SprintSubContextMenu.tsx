@@ -15,7 +15,6 @@ const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const { sprint: activeSprint, loading } = useSprints();
-	console.log(activeSprint);
 
 	const { mutate: updateSprint } = useMutation({
 		mutationKey: ["task", "updateSprint", task.id],
