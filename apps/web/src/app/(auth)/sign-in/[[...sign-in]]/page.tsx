@@ -9,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,21 +16,12 @@ import { useEffect } from "react";
 const LoginPage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
-	const { toast } = useToast();
 	const pathname = usePathname();
 	const incorrectPassword = pathname.includes("factor-one");
 
 	useEffect(() => {
 		if (isLoaded && user) {
-			console.log("loaded user", user);
 			return router.push("/");
-		}
-		if (incorrectPassword) {
-			toast({
-				title: "Error",
-				description: "Incorrect Password",
-				variant: "destructive",
-			});
 		}
 	}, [isLoaded, user, router]);
 
