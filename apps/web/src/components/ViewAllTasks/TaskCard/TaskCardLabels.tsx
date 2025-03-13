@@ -1,6 +1,5 @@
 import LabelBadge from "@/components/LabelBadges";
 import { useViewStore } from "@/store";
-import { cn } from "@/utils/cn";
 import type { Label } from "@squared/db";
 import { useEffect, useRef, useState } from "react";
 import type { TaskCardLabelsProps } from "./interfaces";
@@ -41,9 +40,7 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 			{view === "list" ? (
 				<div
 					ref={containerRef}
-					className={cn(
-						"flex w-fit max-w-full flex-wrap items-center justify-end gap-1 text-muted-foreground",
-					)}
+					className="flex w-fit max-w-full flex-wrap items-center justify-end gap-1 text-muted-foreground"
 					style={{ minWidth: minWidth > 0 ? `${minWidth}px` : undefined }}
 				>
 					{labels.map((label) => (
