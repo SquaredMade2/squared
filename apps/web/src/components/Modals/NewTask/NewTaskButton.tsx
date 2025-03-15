@@ -86,7 +86,7 @@ export const GridColumnNewTaskButton = ({
 	};
 
 	return (
-		<div className={cn("w-72 flex-shrink-0", isRowGrouped ? "mt-2" : "")}>
+		<div className={cn("w-72 shrink-0", isRowGrouped ? "mt-2" : "")}>
 			<Button
 				onClick={handleClick}
 				variant="outline"

@@ -40,9 +40,7 @@ const GroupColumn = ({
 	const columnStatus = group.includes("-") ? group.split("-")[0] : group;
 
 	return (
-		<div
-			className={isListView ? "mb-2 w-full" : "w-72 flex-shrink-0 pr-2 pb-2"}
-		>
+		<div className={isListView ? "mb-2 w-full" : "w-72 shrink-0 pr-2 pb-2"}>
 			{/* When row grouping is active, the Droppable is already created in RowGroupingWrapper */}
 			{!isRowGroupingActive ? (
 				<Droppable
@@ -61,7 +59,7 @@ const GroupColumn = ({
 								isListView
 									? "z-30 flex w-full flex-col items-start gap-2"
 									: cn(
-											"9fr] mb-2 grid w-72 flex-grow grid-rows-[1fr rounded-lg bg-card transition-all duration-500 ease-in-out",
+											"9fr] mb-2 grid w-72 grow grid-rows-[1fr rounded-lg bg-card transition-all duration-500 ease-in-out",
 											// Remove height constraint when row grouping is active
 											!isRowGroupingActive && "h-[calc(100vh-250px)]",
 										),

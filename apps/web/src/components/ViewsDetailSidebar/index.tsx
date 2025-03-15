@@ -131,7 +131,7 @@ const ViewsDetailSidebar = ({
 						<div className="flex items-center justify-between">
 							<span className="text-xs">Owner</span>
 							<div className="flex items-center gap-2">
-								<Avatar className="size-6 flex-shrink-0">
+								<Avatar className="size-6 shrink-0">
 									<AvatarImage src={author?.avatarUrl ?? ""} />
 									<AvatarFallback className="text-xxs">
 										{author && getInitials(author.name)}

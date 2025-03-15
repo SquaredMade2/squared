@@ -37,7 +37,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 					type="button"
 					onClick={() => setMenuOpen(!menuOpen)}
 					className={
-						"h-20 w-1/7 cursor-pointer rounded border border-blueGlow bg-blueGlowLight px-5 text-2xl shadow-lg duration-200 hover:shadow-glow focus:shadow-sm focus:outline-none active:shadow-3xl dark:bg-blueButton"
+						"h-20 w-1/7 cursor-pointer rounded border border-blueGlow bg-blueGlowLight px-5 text-2xl shadow-lg duration-200 hover:shadow-glow focus:shadow-xs focus:outline-hidden active:shadow-3xl dark:bg-blueButton"
 					}
 				>
 					Select Another Workspace

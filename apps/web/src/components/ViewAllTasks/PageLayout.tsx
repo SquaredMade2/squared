@@ -74,7 +74,7 @@ export function TaskPageLayout({
 					<NoTasksNewTaskButton />
 				</div>
 			) : currentWorkspace ? (
-				<div className="flex-grow overflow-hidden">
+				<div className="grow overflow-hidden">
 					{/* When row grouping is active, don't use ScrollArea */}
 					{isRowGroupingActive ? (
 						<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">

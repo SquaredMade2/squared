@@ -87,10 +87,10 @@ const Feature = ({
 			)}
 		>
 			{index < 4 && (
-				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-t from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
+				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-linear-to-t from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
 			)}
 			{index >= 4 && (
-				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-gradient-to-b from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
+				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-linear-to-b from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
 			)}
 			<div className="relative z-10 mb-4 px-10">{icon}</div>
 			<div className="relative z-10 mb-2 px-10 font-bold text-lg">

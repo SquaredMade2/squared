@@ -25,7 +25,7 @@ export const SkeletonTwo = () => {
 	};
 	return (
 		<div className="relative mt-4 h-full w-full">
-			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-t from-white via-white to-transparent dark:from-black dark:via-black" />
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full bg-linear-to-t from-white via-white to-transparent dark:from-black dark:via-black" />
 			<div className="z-20 h-full rounded-[32px] border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
 				<div className="h-full rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
 					<div className="mx-auto h-6 w-20 rounded-full bg-neutral-200/80 dark:bg-neutral-800/80" />
