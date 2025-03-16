@@ -37,7 +37,7 @@ const AssigneeCombobox = () => {
 		(state) => state,
 	);
 
-	const assignee = users?.find((u) => u.identifier === currentTask?.assigneeId);
+	const assignee = users?.find((u) => u.userId === currentTask?.assigneeId);
 
 	const updateAssigneeMutation = useMutation({
 		mutationFn: async (assigneeId?: string) => {
