@@ -9,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,20 +16,12 @@ import { useEffect } from "react";
 const LoginPage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
-	const { toast } = useToast();
 	const pathname = usePathname();
 	const incorrectPassword = pathname.includes("factor-one");
 
 	useEffect(() => {
 		if (isLoaded && user) {
 			return router.push("/");
-		}
-		if (incorrectPassword) {
-			toast({
-				title: "Error",
-				description: "Incorrect Password",
-				variant: "destructive",
-			});
 		}
 	}, [isLoaded, user, router]);
 
@@ -65,6 +56,9 @@ const LoginPage = () => {
 								alternativeMethodsBlockButton:
 									"bg-primary/20 text-foreground/80",
 								backLink: "text-muted-foreground",
+								otpCodeFieldInput:
+									"border border-primary hover:border-primary/60 focus:border-primary/60 text-primary-foreground",
+								formResendCodeLink: "text-muted-foreground",
 							},
 						}}
 						signUpForceRedirectUrl={"/welcome"}
