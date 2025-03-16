@@ -81,7 +81,7 @@ const AssigneeCombobox = () => {
 		updateAssigneeMutation.mutate(userId);
 		setOpen(false);
 	};
-	console.log(assignee);
+
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
