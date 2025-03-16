@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth, useSignIn } from "@clerk/nextjs";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Eye, EyeOff } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
@@ -106,8 +106,8 @@ const ForgotPasswordPage = () => {
 	}
 
 	return (
-		<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
-			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
+		<div className="flex min-h-screen w-full items-center justify-center bg-linear-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+			<Card className="w-full max-w-md bg-linear-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-center font-bold text-2xl">
 						{!successfulCreation
@@ -198,9 +198,9 @@ const ForgotPasswordPage = () => {
 										onClick={() => setHidePassword(!hidePassword)}
 									>
 										{hidePassword ? (
-											<EyeIcon className="h-6 w-6" />
+											<Eye className="h-6 w-6" />
 										) : (
-											<EyeOffIcon className="h-6 w-6" />
+											<EyeOff className="h-6 w-6" />
 										)}
 									</Button>
 								</div>
@@ -225,9 +225,9 @@ const ForgotPasswordPage = () => {
 										onClick={() => setHideConfirmPassword(!hideConfirmPassword)}
 									>
 										{hideConfirmPassword ? (
-											<EyeIcon className="h-6 w-6" />
+											<Eye className="h-6 w-6" />
 										) : (
-											<EyeOffIcon className="h-6 w-6" />
+											<EyeOff className="h-6 w-6" />
 										)}
 									</Button>
 								</div>

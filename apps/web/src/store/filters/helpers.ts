@@ -1,4 +1,5 @@
-import type { SavedFilter as SavedFilterType, Task, User } from "@squared/db";
+import type { PublicUserData } from "@clerk/types";
+import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
 import type { FilterCondition, SavedFilter } from "./interfaces";
 
 export function checkCondition(
@@ -99,17 +100,19 @@ export function checkCondition(
  */
 export function getFilterAssignees(
 	currentFilters: FilterCondition[],
-	users: User[],
+	users?: PublicUserData[],
 ) {
 	const assigneeFilter = currentFilters.find((f) => f.field === "assigneeId");
-	if (!assigneeFilter) return [];
+	if (!assigneeFilter || !users) return [];
 
 	// I have to do this array check thing because filter values are a union type, so typescript will complain otherwise
 	const assigneeIds = Array.isArray(assigneeFilter.value)
 		? assigneeFilter.value
 		: [assigneeFilter.value];
 
-	const assignees = users.filter((u) => assigneeIds.includes(u.externalId));
+	const assignees = users.filter(
+		(u) => u.userId && assigneeIds.includes(u.userId),
+	);
 
 	// the "unassigned" user is just a user who is null
 	const hasUnassigned = assigneeIds.includes(null);

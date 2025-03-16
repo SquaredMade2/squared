@@ -1,5 +1,5 @@
 import type {
-	Commit,
+	GithubCommit,
 	Notification,
 	NotificationType,
 	Task,
@@ -14,7 +14,7 @@ export type FullNotification = Notification & {
 	Task: Task;
 };
 
-export type TaskEventsReturn = Promise<(TaskEvent | Commit)[]>;
+export type TaskEventsReturn = Promise<(TaskEvent | GithubCommit)[]>;
 
 export interface EventRpc {
 	getTaskEvents: ({ taskId }: { taskId: string }) => TaskEventsReturn;

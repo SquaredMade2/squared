@@ -16,6 +16,7 @@ import {
 	effortType,
 	notificationType,
 	priorityType,
+	pullRequestState,
 	retrospectiveItemType,
 	savedFilterType,
 	sprintStatusType,
@@ -52,25 +53,55 @@ export const teamsTable = pgTable(
 	],
 );
 
-export const branchesTable = pgTable(
-	"Branch",
+export const githubCommitsTable = pgTable(
+	"GithubCommit",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		taskId: uuid().notNull(),
-		githubRepoInfoId: uuid().notNull(),
+		externalId: text().notNull().unique(),
+		message: text(),
+		url: text().notNull(),
+		author: text(),
+		repoId: text().notNull(),
+		pullId: text().notNull(),
+		timestamp: timestamp({ precision: 3 }).notNull(),
 	},
 	(table) => [
 		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [tasksTable.id],
-			name: "Branch_taskId_fkey",
+			columns: [table.pullId],
+			foreignColumns: [githubPullRequestsTable.externalId],
+			name: "Commit_pull_request_fkey",
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
 		foreignKey({
+			columns: [table.repoId],
+			foreignColumns: [githubRepoTable.externalId],
+			name: "Commit_task_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+	],
+);
+
+export const githubPullRequestsTable = pgTable(
+	"GithubPullRequest",
+	{
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().notNull().unique(),
+		number: integer().notNull(),
+		state: pullRequestState().notNull(),
+		title: text().notNull(),
+		url: text().notNull(),
+		branch: text().notNull(),
+		timestamp: timestamp({ precision: 3 }).notNull(),
+		body: text(),
+		author: text().notNull(),
+		githubRepoInfoId: text().notNull(),
+	},
+	(table) => [
+		foreignKey({
 			columns: [table.githubRepoInfoId],
-			foreignColumns: [githubRepoInfoTable.id],
+			foreignColumns: [githubRepoTable.externalId],
 			name: "Branch_githubRepoInfoId_fkey",
 		})
 			.onUpdate("cascade")
@@ -78,17 +109,57 @@ export const branchesTable = pgTable(
 	],
 );
 
-export const githubRepoInfoTable = pgTable(
-	"GithubRepoInfo",
+export const githubRepoTable = pgTable(
+	"GithubRepo",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		repoName: text().default("").notNull(),
-		owner: text().default("").notNull(),
+		externalId: text().notNull().unique(),
+		private: boolean().default(false).notNull(),
+		description: text(),
+		url: text().notNull(),
+		name: text().default("").notNull(),
+		orgId: text().notNull(),
 	},
 	(table) => [
-		uniqueIndex("GithubRepoInfo_repoName_key").using(
+		uniqueIndex("GithubRepoInfo_name_key").using(
 			"btree",
-			table.repoName.asc().nullsLast().op("text_ops"),
+			table.name.asc().nullsLast().op("text_ops"),
+		),
+		foreignKey({
+			columns: [table.orgId],
+			foreignColumns: [githubOrgTable.externalId],
+			name: "GithubRepoInfo_orgId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+	],
+);
+
+export const githubOrgTable = pgTable(
+	"GithubOrg",
+	{
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		externalId: text().notNull().unique(),
+		name: text().notNull(),
+		description: text(),
+		workspaceId: text().notNull().unique(),
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+	},
+	(table) => [
+		uniqueIndex("GithubOrg_name_key").using(
+			"btree",
+			table.name.asc().nullsLast().op("text_ops"),
+		),
+		foreignKey({
+			columns: [table.workspaceId],
+			foreignColumns: [workspacesTable.externalId],
+			name: "GithubOrg_workspaceId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		uniqueIndex("GithubOrg_workspaceId_key").using(
+			"btree",
+			table.workspaceId.asc().nullsLast().op("text_ops"),
 		),
 	],
 );
@@ -349,7 +420,7 @@ export const workspaceRepositoriesTable = pgTable(
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.repoId],
-			foreignColumns: [githubRepoInfoTable.id],
+			foreignColumns: [githubRepoTable.id],
 			name: "WorkspaceRepositories_repoId_fkey",
 		})
 			.onUpdate("cascade")
@@ -380,37 +451,6 @@ export const projectsTable = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
-	],
-);
-
-export const commitsTable = pgTable(
-	"Commit",
-	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		message: text().notNull(),
-		url: text().notNull(),
-		authorName: text(),
-		repoName: text(),
-		owner: text(),
-		branchId: uuid().notNull(),
-		taskId: uuid(),
-		timestamp: timestamp({ precision: 3 }).notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.branchId],
-			foreignColumns: [branchesTable.id],
-			name: "Commit_branchId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [tasksTable.id],
-			name: "Commit_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
 	],
 );
 
@@ -602,11 +642,40 @@ export const userTeamsTable = pgTable(
 	],
 );
 
+export const githubPullRequestTaskTable = pgTable(
+	"GithubPullRequestTask",
+	{
+		pullRequestId: text().notNull(),
+		taskId: uuid().notNull(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.pullRequestId],
+			foreignColumns: [githubPullRequestsTable.externalId],
+			name: "GithubPullRequestTask_pullRequestId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		foreignKey({
+			columns: [table.taskId],
+			foreignColumns: [tasksTable.id],
+			name: "GithubPullRequestTask_taskId_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		primaryKey({
+			columns: [table.pullRequestId, table.taskId],
+			name: "GithubPullRequestTask_pkey",
+		}),
+	],
+);
+
 export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
-export type Branch = typeof branchesTable.$inferSelect;
+export type GithubPullRequest = typeof githubPullRequestsTable.$inferSelect;
+export type GithubCommit = typeof githubCommitsTable.$inferSelect;
+export type GithubRepo = typeof githubRepoTable.$inferSelect;
+export type GithubOrg = typeof githubOrgTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
-export type Commit = typeof commitsTable.$inferSelect;
-export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;
 export type Label = {
 	name: string;
 	description?: string | null;

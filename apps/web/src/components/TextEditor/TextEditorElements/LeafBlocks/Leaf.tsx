@@ -20,7 +20,11 @@ const Leaf = (props: RenderLeafProps) => {
 			return <CodeLeaf {...props} />;
 		}
 		return (
-			<span {...props.attributes} style={leafStyling}>
+			<span
+				{...props.attributes}
+				style={leafStyling}
+				className={`${props.leaf.mentionConfirm && "bg-muted-foreground"}`}
+			>
 				{props.children}
 			</span>
 		);
@@ -29,6 +33,9 @@ const Leaf = (props: RenderLeafProps) => {
 	const leafStyling = {
 		fontWeight: props.leaf.bold ? "bold" : "normal",
 		fontStyle: props.leaf.italic ? "italic" : "",
+		borderRadius: props.leaf.mentionConfirm ? "4px" : "",
+		paddingTop: props.leaf.mentionConfirm ? "2px" : "",
+		paddingBottom: props.leaf.mentionConfirm ? "2px" : "",
 	};
 	return renderLeafType();
 };

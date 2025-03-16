@@ -6,6 +6,7 @@ interface SunProps {
 	color?: string;
 	strokeWidth?: number;
 	absoluteStrokeWidth?: boolean;
+	onClick?: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
 export const Sun: FC<SunProps> = ({

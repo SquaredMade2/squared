@@ -4,8 +4,8 @@ import { client } from "@/lib/client";
 import { useModalStore, useTaskStore } from "@/store";
 import type { InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
+import { Pencil } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -76,7 +76,7 @@ export const RenameModal = () => {
 						</DialogHeader>
 						<Input
 							type="text"
-							className="block w-full py-5 text-lg focus:outline-none"
+							className="block w-full py-5 text-lg focus:outline-hidden"
 							value={inputValue}
 							onFocus={(e) => e.target.select()}
 							spellCheck="false"

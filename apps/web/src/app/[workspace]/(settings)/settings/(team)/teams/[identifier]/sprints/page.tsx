@@ -4,14 +4,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamStore } from "@/store";
 import type { Team } from "@squared/db";
-import { addDays, format, startOfWeek } from "date-fns";
 import {
-	CalendarIcon,
+	Calendar as CalendarIcon,
 	ChevronDown,
 	ChevronRight,
 	Maximize2,
 	X,
-} from "lucide-react";
+} from "@squared/icons";
+import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 

@@ -159,6 +159,7 @@ describe("ViewStore", () => {
 				displayOptions: {
 					taskOrder: { orderBy: "Due Date", orderAscending: true },
 					groupTasksBy: "Priority",
+					groupRowsBy: "None",
 					showCompletedTasks: {
 						show: false,
 						period: CompletedTaskPeriod.pastMonth,

@@ -1,9 +1,4 @@
-import {
-	useTaskStore,
-	useUserStore,
-	useViewStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { Droppable } from "@hello-pangea/dnd";
 import type { Priority, Status, Task } from "@squared/db";
@@ -26,7 +21,6 @@ const HiddenColumns = ({
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const { tasks } = useTaskStore((state) => state);
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
@@ -44,12 +38,12 @@ const HiddenColumns = ({
 				);
 				return labelName ? labelName.name : "No label";
 			}
-			case "Parent Task": {
-				const parentTask = tasks.find((t) => t.id === title);
-				return parentTask ? parentTask.title : "No parent";
-			}
-			case "No grouping":
-				return title;
+			// case "Parent Task": {
+			// 	const parentTask = tasks.find((t) => t.id === title);
+			// 	return parentTask ? parentTask.title : "No parent";
+			// }
+			// case "No grouping":
+			// 	return title;
 		}
 	};
 

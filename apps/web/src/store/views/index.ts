@@ -17,6 +17,7 @@ export const createViewStore = (
 		displayOptions: {
 			taskOrder: { orderBy: "Priority", orderAscending: false },
 			groupTasksBy: "Status",
+			groupRowsBy: "None",
 			showCompletedTasks: { show: true, period: CompletedTaskPeriod.all },
 			showSubTasks: false,
 			viewOptions: {
@@ -68,6 +69,10 @@ export const createViewStore = (
 				},
 				setLastVisitedPage: (input: LastVisitedPathOption) =>
 					set({ lastVisitedPage: input }),
+				setGroupRowsBy: (input: ViewState["displayOptions"]["groupRowsBy"]) =>
+					set({
+						displayOptions: { ...get().displayOptions, groupRowsBy: input },
+					}),
 			}),
 			{
 				name: "view-store",

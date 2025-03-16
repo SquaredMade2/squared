@@ -10,7 +10,7 @@ class BaseClient {
 	private serviceName: string;
 
 	constructor(baseURL: string, serviceName: string) {
-		this.baseURL = baseURL.endsWith("/") ? `${baseURL}/rpc` : `${baseURL}/rpc`;
+		this.baseURL = baseURL.endsWith("/") ? `${baseURL}rpc` : `${baseURL}/rpc`;
 		this.serviceName = serviceName;
 	}
 

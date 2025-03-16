@@ -92,8 +92,10 @@ const simpleRules = [
 				message: v.message,
 			};
 
-			for (const prop in superJson.allowedErrorProps) {
-				baseError[prop] = (v as any)[prop];
+			for (const prop of superJson.allowedErrorProps) {
+				if (prop in v) {
+					baseError[prop] = (v as any)[prop];
+				}
 			}
 
 			return baseError;
@@ -103,8 +105,10 @@ const simpleRules = [
 			e.name = v.name;
 			e.stack = v.stack;
 
-			for (const prop in superJson.allowedErrorProps) {
-				(e as any)[prop] = v[prop];
+			for (const prop of superJson.allowedErrorProps) {
+				if (prop in v) {
+					(e as any)[prop] = v[prop];
+				}
 			}
 
 			return e;

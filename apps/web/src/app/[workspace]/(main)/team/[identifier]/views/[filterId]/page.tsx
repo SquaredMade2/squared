@@ -78,7 +78,7 @@ export default function FilterViewPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}
 		>
-			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+			<div className={`flex grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&

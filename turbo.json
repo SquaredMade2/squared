@@ -24,6 +24,10 @@
 			"cache": false,
 			"persistent": true
 		},
+		"dev:go": {
+			"cache": false,
+			"persistent": true
+		},
 		"format:check": {
 			"dependsOn": ["^format:check"]
 		},
@@ -43,8 +47,7 @@
 			"dependsOn": ["^studio"]
 		},
 		"test": {
-			"dependsOn": [],
-			"outputs": ["coverage/**"]
+			"dependsOn": []
 		},
 		"test:ci": {
 			"dependsOn": ["^test:ci"]

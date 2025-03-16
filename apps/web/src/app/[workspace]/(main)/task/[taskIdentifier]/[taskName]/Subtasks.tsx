@@ -20,8 +20,8 @@ import {
 	Droppable,
 } from "@hello-pangea/dnd";
 import type { Task, User } from "@squared/db";
+import { ChevronDown, ChevronRight, UserSearch } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -56,7 +56,7 @@ const Subtasks = () => {
 		<Collapsible
 			open={isSubtasksExpanded}
 			onOpenChange={setIsSubtasksExpanded}
-			className="mt-6 rounded-lg bg-background p-4 shadow-sm"
+			className="mt-6 rounded-lg bg-background p-4 shadow-xs"
 		>
 			<CollapsibleTrigger asChild>
 				<div className="mb-2 flex cursor-pointer items-center">
@@ -138,28 +138,24 @@ const SubtaskList = ({ task, user }: SubtaskListProps) => {
 					<div className="flex w-full justify-between">
 						<div className="flex min-w-0 items-center gap-2 text-base">
 							<PriorityIcon priority={task.priority} />
-							<span className="xs:hidden min-w-16 flex-shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
+							<span className="xs:hidden min-w-16 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 								{task.identifier}
 							</span>
-							<Button
-								variant="ghost"
-								size="sm"
-								className="mx-1 flex-shrink-0 p-0"
-							>
+							<Button variant="ghost" size="sm" className="mx-1 shrink-0 p-0">
 								<StatusIcon status={task.status} />
 							</Button>
 							<span className="min-w-0 truncate">{task.title}</span>
 						</div>
 						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{user ? (
-								<Avatar className="size-6 flex-shrink-0">
+								<Avatar className="size-6 shrink-0">
 									<AvatarImage src={user.avatarUrl ?? undefined} />
 									<AvatarFallback className="text-xxs">
 										{getInitials(user.name ?? "")}
 									</AvatarFallback>
 								</Avatar>
 							) : (
-								<UserSearch className="size-6 flex-shrink-0 text-[#9597AD]" />
+								<UserSearch className="size-6 shrink-0 text-[#9597AD]" />
 							)}
 						</div>
 					</div>

@@ -13,9 +13,9 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
-import { formatUrl, getInitials } from "@/utils/formatting";
+import { formatName, formatUrl, getInitials } from "@/utils/formatting";
+import { UserSearch } from "@squared/icons";
 import { formatDate } from "date-fns";
-import { UserSearch } from "lucide-react";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";
 import TaskCardLabels from "./TaskCardLabels";
@@ -54,16 +54,12 @@ const TaskList = ({
 						<div className="flex min-w-0 items-center gap-2 text-base">
 							{showPriority && <PriorityIcon priority={task.priority} />}
 							{showIdentifier && (
-								<span className="xs:hidden min-w-28 flex-shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
+								<span className="xs:hidden min-w-28 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 									{task.identifier}
 								</span>
 							)}
 							{showStatus && (
-								<Button
-									variant="ghost"
-									size="sm"
-									className="mx-1 flex-shrink-0 p-0"
-								>
+								<Button variant="ghost" size="sm" className="mx-1 shrink-0 p-0">
 									<StatusIcon status={task.status} />
 								</Button>
 							)}
@@ -76,28 +72,28 @@ const TaskList = ({
 						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{showLabels && <TaskCardLabels labels={taskLabels} />}
 							{showDueDate && (
-								<div className="xs:hidden flex-shrink-0 whitespace-nowrap text-muted-foreground sm:hidden md:flex">
+								<div className="xs:hidden shrink-0 whitespace-nowrap text-muted-foreground sm:hidden md:flex">
 									{task.dueDate
 										? formatDate(new Date(task.dueDate), "MMM dd")
 										: "No Date"}
 								</div>
 							)}
 							{showAvatar &&
-								(user?.name ? (
+								(user ? (
 									<TooltipProvider>
 										<Tooltip>
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
 													<TooltipTrigger asChild>
 														<Avatar
-															className="size-6 flex-shrink-0"
+															className="size-6 shrink-0"
 															onClick={(e) => {
 																e.preventDefault();
 															}}
 														>
-															<AvatarImage src={user.avatarUrl ?? undefined} />
+															<AvatarImage src={user.imageUrl} />
 															<AvatarFallback className="text-xxs">
-																{getInitials(user.name)}
+																{getInitials(formatName(user))}
 															</AvatarFallback>
 														</Avatar>
 													</TooltipTrigger>
@@ -107,7 +103,7 @@ const TaskList = ({
 												>
 													<AssigneeBox task={task} />
 												</DropdownMenuContent>
-												<TooltipContent>{user.name}</TooltipContent>
+												<TooltipContent>{formatName(user)}</TooltipContent>
 											</DropdownMenu>
 										</Tooltip>
 									</TooltipProvider>
@@ -118,7 +114,7 @@ const TaskList = ({
 												<DropdownMenuTrigger asChild>
 													<TooltipTrigger asChild>
 														<UserSearch
-															className="size-6 flex-shrink-0 text-[#9597AD]"
+															className="size-6 shrink-0 text-[#9597AD]"
 															onClick={(e) => {
 																e.preventDefault();
 															}}

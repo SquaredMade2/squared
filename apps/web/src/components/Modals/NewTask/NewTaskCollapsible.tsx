@@ -25,9 +25,9 @@ import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CirclePlus } from "@squared/icons";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
 import { useMutation } from "@tanstack/react-query";
-import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -83,21 +83,20 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				transformingMentionInputs(description ?? "");
 
 			const newTask = {
-				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${team.identifier}-${workspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
-				dateCreated: new Date(),
+				// dateCreated: new Date(),		// do we need this for custom timestamp?
 				teamId: team.id,
 				workspaceId: workspace.externalId,
-				updatedAt: new Date(),
+				// updatedAt: new Date(), 		// do we need this for custom timestamp?
 				parentId: parentId,
 			};
+
 			const createdTask = await client.task.createTask
 				.$post(newTask)
 				.then((res) => res.json());
@@ -122,6 +121,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				),
 			});
 			setNewTaskData({});
+			form.reset({ title: "", description: "" });
+			setIsOpen("");
 		},
 		onError: (error) => {
 			toast({
@@ -156,7 +157,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 						size="sm"
 						className="my-4 flex w-full items-center"
 					>
-						<PlusCircle className="mr-2 h-4 w-4" />
+						<CirclePlus className="mr-2 h-4 w-4" />
 						Add Subtask
 					</Button>
 				</AccordionTrigger>

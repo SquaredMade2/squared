@@ -7,16 +7,6 @@ import {
 	SprintNotFound,
 } from "@/components/Sprints";
 import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -25,6 +15,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
@@ -206,7 +205,7 @@ export default function SprintDashboardPage() {
 
 	const handleEndSprintConfirm = async () => {
 		if (!sprint || !team) return;
-
+		setShowEndSprintDialog(false);
 		if (newSprint) {
 			setShowNextSprint(true);
 		} else {
@@ -462,25 +461,22 @@ export default function SprintDashboardPage() {
 				</div>
 			</Tabs>
 
-			<AlertDialog
-				open={showEndSprintDialog}
-				onOpenChange={setShowEndSprintDialog}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>End Sprint</AlertDialogTitle>
-						<AlertDialogDescription>
+			<Dialog open={showEndSprintDialog} onOpenChange={setShowEndSprintDialog}>
+				<DialogContent className="md:w-2/3 xl:w-1/3">
+					<DialogHeader>
+						<DialogTitle>End Sprint</DialogTitle>
+						<DialogDescription>
 							Are you sure you want to end this sprint?
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={handleEndSprintConfirm}>
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose>Cancel</DialogClose>
+						<Button className="mb-3 sm:mb-0" onClick={handleEndSprintConfirm}>
 							End Sprint
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			<NewSprintModal
 				isOpen={showNextSprint}

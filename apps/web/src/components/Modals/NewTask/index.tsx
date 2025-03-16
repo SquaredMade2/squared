@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
+
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
@@ -115,7 +116,7 @@ export const NewTaskModal = () => {
 				toast({
 					title: "Task Created Successfully",
 					description: (
-						<Button variant="link" asChild>
+						<Button variant="link" asChild style={{ padding: "0" }}>
 							<Link
 								href={`/${organization.slug}/task/${newTask.identifier}/${formatUrl(newTask.title)}`}
 							>
