@@ -29,7 +29,7 @@ const github = new GithubService(db);
 const sprint = new SprintService(db);
 const team = new TeamService(db);
 const task = new TaskService(db, event);
-const user = new UserService(db);
+const user = new UserService(db, clerkSecret);
 const workspace = new WorkspaceService(db, clerkSecret);
 
 export const services = {

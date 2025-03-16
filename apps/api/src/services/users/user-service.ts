@@ -1,3 +1,4 @@
+import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
 	type Team,
@@ -13,22 +14,44 @@ import {
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
-import type { UserRpc } from "./types";
+import type { DeletedUser, UserRpc } from "./types";
 
 export class UserService implements UserRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
-	constructor(db: DBClient) {
+	private readonly clerkClient: ClerkClient;
+	constructor(db: DBClient, CLERK_SECRET?: string) {
 		this.db = db;
 		this.logger = createCustomLogger("users");
+		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 	}
 
 	async deleteUser({ userId }: { userId: string }) {
 		this.logger.info("Marking user as deleted", userId);
+
 		await this.db
 			.update(usersTable)
 			.set({ deleted: true })
 			.where(eq(usersTable.externalId, userId));
+
+		const user = await this.clerkClient.users.getUser(userId);
+
+		const deletedUser: DeletedUser = {
+			id: user.id,
+			name: user.fullName,
+			avatarUrl: user.imageUrl,
+			deletedAt: new Date(),
+		};
+
+		const memberships =
+			await this.clerkClient.users.getOrganizationMembershipList({ userId });
+		const orgId = memberships.data[0].organization.id;
+
+		await this.clerkClient.organizations.updateOrganization(orgId, {
+			publicMetadata: {
+				deletedUsers: [deletedUser],
+			},
+		});
 	}
 
 	async onBoardUser({ userId }: { userId: string }) {

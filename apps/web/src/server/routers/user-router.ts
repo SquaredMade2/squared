@@ -59,14 +59,12 @@ export const userRouter = router({
 			const { workspaceId } = input;
 			return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
 		}),
-	deleteUser: privateProcedure
-		.input(z.object({ userId: z.string() }))
-		.mutation(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { userId } = input;
+	deleteUser: privateProcedure.mutation(async ({ c, ctx }) => {
+		const { userService } = ctx;
+		const { id: userId } = ctx.user;
 
-			await userService.deleteUser(TODO, { userId });
+		await userService.deleteUser(TODO, { userId });
 
-			return c.json({ success: true, message: "User marked as deleted" });
-		}),
+		return c.json({ success: true, message: "User was deleted" });
+	}),
 });

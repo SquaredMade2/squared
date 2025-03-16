@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { getInitials } from "@/utils/formatting";
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ export default function Profile() {
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
+	const { signOut } = useClerk();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -108,12 +109,26 @@ export default function Profile() {
 			return client.user.deleteUser.$post({ userId });
 		},
 		onSuccess: () => {
-			console.log("User successfully marked as deleted!");
+			toast({
+				title: "Success",
+				description: "User successfully deleted!",
+			});
 		},
 		onError: (err) => {
-			console.error("Error deleting user:", err);
+			const errorMessage = err instanceof Error ? err.message : String(err);
+			toast({
+				title: "Error",
+				description: errorMessage,
+			});
 		},
 	});
+
+	const handleDelete = (userId: string) => {
+		deleteUser(userId);
+		signOut();
+	};
+
+	console.log(user);
 
 	if (!isLoaded || !user) return null;
 
@@ -214,6 +229,10 @@ export default function Profile() {
 						Member Since:{" "}
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
+				</div>
+				For testing
+				<div>
+					<Button onClick={() => handleDelete(user.id)}>DELETE</Button>
 				</div>
 			</div>
 		</div>

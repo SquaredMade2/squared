@@ -39,3 +39,10 @@ export interface UserRpc {
 	}) => Promise<boolean>;
 	deleteUser: (args: { userId: string }) => Promise<void>;
 }
+
+export type DeletedUser = {
+	id: string;
+	name: string | null;
+	avatarUrl?: string;
+	deletedAt: Date;
+};
