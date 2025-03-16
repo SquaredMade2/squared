@@ -20,6 +20,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { user, users } = useUsers();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
+	const assignedUser = users?.find((u) => u.userId === task.assigneeId);
 
 	const { mutate: updateAssignee } = useMutation({
 		mutationKey: ["task", "updateAssignee", taskId],
@@ -47,7 +48,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						<UserSearch className="size-5 text-[#9597AD]" />
 					) : (
 						<Avatar className="mr-2 flex size-4 text-xxs">
-							<AvatarImage src={user?.imageUrl ?? ""} />
+							<AvatarImage src={assignedUser?.imageUrl ?? ""} />
 							<AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
 						</Avatar>
 					)}
