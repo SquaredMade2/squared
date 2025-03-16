@@ -60,9 +60,9 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 					<span className="sr-only">Link</span>
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="!w-3/12 h-auto rounded-lg border border-secondary bg-popover p-5 pt-1">
+			<DialogContent className="h-auto w-3/12! rounded-lg border border-secondary bg-popover p-5 pt-1">
 				<DialogHeader className="ml-2">
-					<DialogTitle className="!mt-5 !text-2xl leading-3">
+					<DialogTitle className="mt-5! text-2xl! leading-3">
 						Insert Link
 					</DialogTitle>
 				</DialogHeader>

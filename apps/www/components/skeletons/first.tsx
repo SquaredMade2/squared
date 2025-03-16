@@ -29,33 +29,33 @@ export const SkeletonOne = () => {
 				</div>
 			</div>
 			<div className="absolute inset-0 flex flex-col gap-4">
-				<div className="r z-20 mx-auto h-[250px] w-[250px] flex-shrink-0 rounded-[32px] border border-neutral-200 bg-neutral-100 p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-neutral-700 dark:bg-neutral-800">
-					<div className="flex-shrink-0 rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+				<div className="r z-20 mx-auto h-[250px] w-[250px] shrink-0 rounded-[32px] border border-neutral-200 bg-neutral-100 p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-neutral-700 dark:bg-neutral-800">
+					<div className="shrink-0 rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
 						{/* todo change based on light or dark */}
 						<BlurImage
 							src="/track-changes/track-changes-1-dark.png"
 							alt="header"
 							width={800}
 							height={800}
-							className="aspect-square h-full w-full flex-shrink-0 rounded-[20px] object-cover object-bottom grayscale"
+							className="aspect-square h-full w-full shrink-0 rounded-[20px] object-cover object-bottom grayscale"
 						/>
 					</div>
 				</div>
-				<div className="r z-20 mx-auto h-[250px] w-[250px] flex-shrink-0 rounded-[32px] border border-neutral-200 bg-neutral-100 p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-neutral-700 dark:bg-neutral-800">
-					<div className="flex-shrink-0 rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+				<div className="r z-20 mx-auto h-[250px] w-[250px] shrink-0 rounded-[32px] border border-neutral-200 bg-neutral-100 p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-neutral-700 dark:bg-neutral-800">
+					<div className="shrink-0 rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
 						<BlurImage
 							src="/track-changes/track-changes-2-dark.png"
 							alt="header"
 							width={800}
 							height={800}
-							className="aspect-square h-full w-full flex-shrink-0 rounded-[20px] object-cover object-bottom grayscale"
+							className="aspect-square h-full w-full shrink-0 rounded-[20px] object-cover object-bottom grayscale"
 						/>
 					</div>
 				</div>
 			</div>
 			{/* Divs are disabled because they don't look good in dark mode.  */}
-			<div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-60 w-full bg-gradient-to-t from-white via-white to-transparent dark:from-background dark:via-background" />
-			<div className="pointer-events-none absolute inset-x-0 top-0 z-40 h-60 w-full bg-gradient-to-b from-white via-transparent to-transparent dark:from-background" />
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-60 w-full bg-linear-to-t from-white via-white to-transparent dark:from-background dark:via-background" />
+			<div className="pointer-events-none absolute inset-x-0 top-0 z-40 h-60 w-full bg-linear-to-b from-white via-transparent to-transparent dark:from-background" />
 		</div>
 	);
 };
@@ -106,7 +106,7 @@ const AIMessage = ({ children }: { children: React.ReactNode }) => {
 			variants={variantsSecond}
 			className="flex flex-row items-center justify-start space-x-2 rounded-2xl bg-white p-2 dark:bg-neutral-900 "
 		>
-			<div className="h-4 w-4 flex-shrink-0 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 md:h-10 md:w-10" />
+			<div className="h-4 w-4 shrink-0 rounded-full bg-linear-to-r from-pink-500 to-violet-500 md:h-10 md:w-10" />
 			<p className="text-[10px] text-neutral-500 sm:text-sm">{children}</p>
 		</motion.div>
 	);

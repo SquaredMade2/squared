@@ -1,3 +1,4 @@
+import type { GroupedColumn } from "@/components/ViewAllTasks/interfaces";
 import {
 	useTaskStore,
 	useUserStore,
@@ -15,7 +16,37 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { displayOptions, view, getGridOptions, getListOptions } = useViewStore(
 		(state) => state,
 	);
-	const { groupTasksBy } = displayOptions;
+	const { groupTasksBy, groupRowsBy } = displayOptions;
+
+	// Helper to get pre-defined sort order for statuses and priorities
+	const getSortOrderIndex = (group: string, groupType: TaskGroup): number => {
+		if (groupType === "Status") {
+			const statusOrder = [
+				Status.backlog,
+				Status.todo,
+				Status.inProgress,
+				Status.inReview,
+				Status.done,
+				Status.canceled,
+				Status.duplicated,
+				Status.archived,
+			];
+			return statusOrder.indexOf(group as Status);
+		}
+
+		if (groupType === "Priority") {
+			const priorityOrder = [
+				Priority.urgent,
+				Priority.high,
+				Priority.medium,
+				Priority.low,
+				Priority.noPriority,
+			];
+			return priorityOrder.indexOf(group as Priority);
+		}
+
+		return -1;
+	};
 
 	//all logic related to grouping by parent task is commented out until subtask rendering is fixed
 	const getGroupColumnTitles = (group: TaskGroup) => {
@@ -95,6 +126,38 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		}
 	};
 
+	// Helper function to check if a task belongs to a specific group type and value
+	const belongsToGroup = (
+		task: Task,
+		groupValue: string,
+		groupType: TaskGroup,
+	): boolean => {
+		switch (groupType) {
+			case "Status":
+				if (groupValue === Status.done) {
+					return (
+						task.status === Status.done ||
+						task.status === Status.canceled ||
+						task.status === Status.duplicated
+					);
+				}
+				return task.status === groupValue;
+			case "Assignee":
+				return task.assigneeId === groupValue;
+			case "Priority":
+				return task.priority === groupValue;
+			case "Label":
+				return task.labels.map((l) => l.name).includes(groupValue);
+			// case "Parent Task":
+			// 	if (groupValue === "No parent") {
+			// 		return task.parentId === null;
+			// 	}
+			// 	return task.parentId === groupValue;
+			default:
+				return false;
+		}
+	};
+
 	const filterTasksByPeriod = (
 		tasks: Task[],
 		period: CompletedTaskPeriod,
@@ -127,34 +190,16 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		}
 	};
 
-	const getGroupedColumns = () => {
-		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
+	// Helper function to sort groups based on type
+	const sortGroups = (
+		groups: Omit<GroupedColumn, "showTasks">[],
+		groupType: TaskGroup,
+	) => {
+		if (!groups || groups.length === 0) return [];
 
-		let groupedColumns = groupColumnTitles
-			.map((group) => {
-				let tasksForGroup = getTasksForGroup(group);
-
-				if (groupTasksBy === "Status") {
-					if (group === Status.archived) return null;
-					if (group === Status.done) {
-						const { period, show } = displayOptions.showCompletedTasks;
-						if (!show) return null;
-						tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
-					}
-				}
-
-				const showEmptyGroups =
-					view === "grid"
-						? getGridOptions().showEmptyGroups
-						: getListOptions().showEmptyGroups;
-				if (tasksForGroup.length === 0 && !showEmptyGroups) return null;
-
-				return { group, tasks: tasksForGroup };
-			})
-			.filter((item) => item !== null); // Filter out null values
-
-		if (groupTasksBy === "Assignee") {
-			groupedColumns = groupedColumns.sort((a, b) => {
+		return [...groups].sort((a, b) => {
+			// Handle special cases first
+			if (groupType === "Assignee") {
 				if (a.group === "Unassigned") return 1;
 				if (b.group === "Unassigned") return -1;
 
@@ -163,10 +208,93 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				const bUsername =
 					users.find((u) => u.externalId === b.group)?.username ?? "";
 
-				// Compare by the first letter of the username
-				return aUsername[0].localeCompare(bUsername[0]);
-			});
-		}
+				// Compare by username alphabetically
+				return aUsername.localeCompare(bUsername);
+			}
+
+			// Use predefined order for Status and Priority
+			if (groupType === "Status" || groupType === "Priority") {
+				const aIndex = getSortOrderIndex(a.group, groupType);
+				const bIndex = getSortOrderIndex(b.group, groupType);
+
+				// If both groups have a defined index, sort by that
+				if (aIndex !== -1 && bIndex !== -1) {
+					return aIndex - bIndex;
+				}
+			}
+
+			// Default to alphabetical sort for other types like Label
+			return a.group.localeCompare(b.group);
+		});
+	};
+
+	const getGroupedColumns = () => {
+		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
+
+		let groupedColumns = groupColumnTitles
+			.map((columnGroup) => {
+				let tasksForColumn = getTasksForGroup(columnGroup);
+
+				if (groupTasksBy === "Status") {
+					if (columnGroup === Status.archived) return null;
+					if (columnGroup === Status.done) {
+						const { period, show } = displayOptions.showCompletedTasks;
+						if (!show) return null;
+						tasksForColumn = filterTasksByPeriod(tasksForColumn, period);
+					}
+				}
+
+				const showEmptyGroups =
+					view === "grid"
+						? getGridOptions().showEmptyGroups
+						: getListOptions().showEmptyGroups;
+
+				if (tasksForColumn.length === 0 && !showEmptyGroups) return null;
+
+				// If row grouping is enabled and not "None"
+				if (groupRowsBy && groupRowsBy !== "None") {
+					const rowGroupTitles = getGroupColumnTitles(groupRowsBy);
+					let rowGroups = rowGroupTitles
+						.map((rowGroup) => {
+							// Get tasks that belong to both this column group and this row group
+							const tasksForRowGroup = tasksForColumn.filter((task) =>
+								belongsToGroup(task, rowGroup, groupRowsBy),
+							);
+
+							if (tasksForRowGroup.length === 0 && !showEmptyGroups) {
+								return null;
+							}
+
+							return {
+								group: rowGroup,
+								tasks: tasksForRowGroup,
+							};
+						})
+						.filter((group) => group !== null);
+
+					// Sort row groups using the same logic as column groups
+					if (rowGroups.length > 0) {
+						rowGroups = sortGroups(rowGroups, groupRowsBy);
+					}
+
+					return {
+						group: columnGroup,
+						tasks: tasksForColumn, // Keep original tasks array for compatibility
+						rowGroups,
+					};
+				}
+
+				// No row grouping
+				return {
+					group: columnGroup,
+					tasks: tasksForColumn,
+				};
+			})
+			.filter((item) => item !== null);
+
+		// Sort the columns according to their type
+		groupedColumns = sortGroups(groupedColumns, groupTasksBy);
+
 		return groupedColumns;
 	};
 

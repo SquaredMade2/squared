@@ -23,7 +23,7 @@ export default async function Layout(
 	return (
 		<div className="flex min-h-screen flex-col">
 			<NavBar />
-			<div className="flex-grow">
+			<div className="grow">
 				<DocsLayout>{children}</DocsLayout>
 			</div>
 		</div>

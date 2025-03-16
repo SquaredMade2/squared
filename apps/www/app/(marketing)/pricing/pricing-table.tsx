@@ -7,7 +7,7 @@ import { IconCheck } from "@tabler/icons-react";
 export function PricingTable() {
 	const CheckIcon = () => {
 		return (
-			<IconCheck className="mx-auto h-4 w-4 flex-shrink-0 text-black dark:text-white" />
+			<IconCheck className="mx-auto h-4 w-4 shrink-0 text-black dark:text-white" />
 		);
 	};
 

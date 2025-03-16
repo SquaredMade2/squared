@@ -54,16 +54,12 @@ const TaskList = ({
 						<div className="flex min-w-0 items-center gap-2 text-base">
 							{showPriority && <PriorityIcon priority={task.priority} />}
 							{showIdentifier && (
-								<span className="xs:hidden min-w-28 flex-shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
+								<span className="xs:hidden min-w-28 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 									{task.identifier}
 								</span>
 							)}
 							{showStatus && (
-								<Button
-									variant="ghost"
-									size="sm"
-									className="mx-1 flex-shrink-0 p-0"
-								>
+								<Button variant="ghost" size="sm" className="mx-1 shrink-0 p-0">
 									<StatusIcon status={task.status} />
 								</Button>
 							)}
@@ -76,7 +72,7 @@ const TaskList = ({
 						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{showLabels && <TaskCardLabels labels={taskLabels} />}
 							{showDueDate && (
-								<div className="xs:hidden flex-shrink-0 whitespace-nowrap text-muted-foreground sm:hidden md:flex">
+								<div className="xs:hidden shrink-0 whitespace-nowrap text-muted-foreground sm:hidden md:flex">
 									{task.dueDate
 										? formatDate(new Date(task.dueDate), "MMM dd")
 										: "No Date"}
@@ -90,7 +86,7 @@ const TaskList = ({
 												<DropdownMenuTrigger asChild>
 													<TooltipTrigger asChild>
 														<Avatar
-															className="size-6 flex-shrink-0"
+															className="size-6 shrink-0"
 															onClick={(e) => {
 																e.preventDefault();
 															}}
@@ -118,7 +114,7 @@ const TaskList = ({
 												<DropdownMenuTrigger asChild>
 													<TooltipTrigger asChild>
 														<UserSearch
-															className="size-6 flex-shrink-0 text-[#9597AD]"
+															className="size-6 shrink-0 text-[#9597AD]"
 															onClick={(e) => {
 																e.preventDefault();
 															}}
