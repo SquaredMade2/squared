@@ -65,7 +65,7 @@ export default function WorkspaceSettings() {
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
-	const { organization } = useOrganization();
+	const { membership, organization } = useOrganization();
 	const { userMemberships } = useOrganizationList({ userMemberships: true });
 
 	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
@@ -115,6 +115,10 @@ export default function WorkspaceSettings() {
 
 	useEffect(() => {
 		if (!workspace) return;
+
+		if (membership?.role !== "org:admin") {
+			router.push(`/${organization?.slug}/settings/profile`);
+		}
 
 		//on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
 		if (
