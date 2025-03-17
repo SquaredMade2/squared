@@ -72,44 +72,46 @@ function SettingsNavbarContent() {
 				<ScrollArea className="h-[calc(100vh-8rem)]">
 					<div className="space-y-4 p-4">
 						<div className="space-y-4">
-							<div>
-								<h2 className="mb-2 flex items-center font-medium text-muted-foreground text-sm">
-									<BriefcaseBusiness className="mr-2 h-4 w-4" />
-									Workspace
-								</h2>
-								<div className="ml-6 space-y-1">
-									<Button
-										variant="ghost"
-										className="w-full justify-start"
-										onClick={() => navigateTo("")}
-									>
-										General
-									</Button>
-									<Button
-										variant="ghost"
-										className="w-full justify-start"
-										onClick={() => navigateTo("members")}
-									>
-										Members
-									</Button>
-									<Button
-										variant="ghost"
-										className="w-full justify-start"
-										onClick={() => navigateTo("integrations")}
-									>
-										Integrations
-									</Button>
-									<Button
-										variant="ghost"
-										className="w-full justify-start"
-										onClick={() => navigateTo("labels")}
-									>
-										Labels
-									</Button>
+							<Protect condition={(has) => has({ role: "org:admin" })}>
+								<div>
+									<h2 className="mb-2 flex items-center font-medium text-muted-foreground text-sm">
+										<BriefcaseBusiness className="mr-2 h-4 w-4" />
+										Workspace
+									</h2>
+									<div className="ml-6 space-y-1">
+										<Button
+											variant="ghost"
+											className="w-full justify-start"
+											onClick={() => navigateTo("")}
+										>
+											General
+										</Button>
+										<Button
+											variant="ghost"
+											className="w-full justify-start"
+											onClick={() => navigateTo("members")}
+										>
+											Members
+										</Button>
+										<Button
+											variant="ghost"
+											className="w-full justify-start"
+											onClick={() => navigateTo("integrations")}
+										>
+											Integrations
+										</Button>
+										<Button
+											variant="ghost"
+											className="w-full justify-start"
+											onClick={() => navigateTo("labels")}
+										>
+											Labels
+										</Button>
+									</div>
 								</div>
-							</div>
 
-							<Separator />
+								<Separator />
+							</Protect>
 
 							<div>
 								<h2 className="mb-2 flex items-center font-medium text-muted-foreground text-sm">
