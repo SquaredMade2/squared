@@ -32,7 +32,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
+import { Protect, useOrganization } from "@clerk/nextjs";
 import type { Team } from "@squared/db";
 
 function SettingsNavbarContent() {
