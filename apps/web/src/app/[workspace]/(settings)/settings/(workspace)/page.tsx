@@ -219,7 +219,7 @@ export default function WorkspaceSettings() {
 
 	return (
 		<div className="container mx-auto w-full py-10 md:w-3/4 ">
-			<Protect role={"org:admin"}>
+			<Protect condition={(has) => has({ role: "org:admin" })}>
 				<h1 className="mb-2 font-bold text-3xl">Workspace</h1>
 				<p className="mb-6 text-muted-foreground">
 					Manage your workspace settings
