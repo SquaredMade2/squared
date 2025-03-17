@@ -11,7 +11,6 @@ import { WorkspaceService } from "@/gen/rpc/workspace";
 import { auth } from "@clerk/nextjs/server";
 import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
-// import { HTTPException } from "hono/http-exception";
 import { j } from "./__internals/j";
 
 /**
