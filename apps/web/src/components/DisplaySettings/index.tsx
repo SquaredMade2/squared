@@ -194,7 +194,7 @@ const TopNavBarDisplay = () => {
 										}}
 										value={groupTasksBy}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full hover:cursor-pointer hover:bg-accent hover:text-accent-foreground">
 											<SelectValue>
 												<div className="flex w-full items-center justify-between">
 													<Layers3 className="size-4" />
@@ -238,7 +238,7 @@ const TopNavBarDisplay = () => {
 										}}
 										value={groupRowsBy}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full hover:cursor-pointer hover:bg-accent hover:text-accent-foreground">
 											<SelectValue>
 												<div className="flex w-full items-center justify-between">
 													<Layers3 className="size-4" />
@@ -276,7 +276,7 @@ const TopNavBarDisplay = () => {
 										}
 										value={taskOrder.orderBy}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full hover:cursor-pointer hover:bg-accent hover:text-accent-foreground">
 											<SelectValue>
 												<span className="text-xs">{taskOrder.orderBy}</span>
 											</SelectValue>
