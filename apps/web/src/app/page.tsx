@@ -30,7 +30,7 @@ const HomePage = () => {
 				.then((res) => res.json());
 
 			setActive ? setActive({ organization: res?.id }) : "";
-
+      
 			return res;
 		},
 		enabled: isLoaded && !!user,

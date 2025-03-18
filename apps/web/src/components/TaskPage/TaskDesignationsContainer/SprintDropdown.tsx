@@ -8,28 +8,28 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
-const SprintCombobox = () => {
+const SprintDropdown = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 	const { team } = useTeamStore((state) => state);
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
-	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
+	const [assignedSprint, setAssignedSprint] = useState<Sprint | null>(null);
+	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 
 	const taskId = currentTask?.id ?? "";
-	const sprintId = assignedSprintId?.id ?? "";
-	const sprintName = assignedSprintId?.name ?? "";
 
-	const { data: sprints = [] } = useQuery({
+	useQuery({
 		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (team) {
 				const res = await client.sprint.getSprints
 					.$get({ teamId: team.id })
 					.then((res) => res.json());
-				setAssignedSprintId(
+				setAssignedSprint(
 					res.find((s: Sprint) => s.id === currentTask?.sprintId) ?? null,
 				);
+				setActiveSprint(res.find((s: Sprint) => s.status === "ACTIVE") ?? null);
 				return res;
 			}
 			return [];
@@ -75,11 +75,13 @@ const SprintCombobox = () => {
 		<DesignationCombobox
 			open={open}
 			setOpen={setOpen}
-			triggerText={sprintName ? sprintName : "No sprint assigned"}
+			triggerText={
+				assignedSprint?.name ? assignedSprint.name : "No sprint assigned"
+			}
 			emptyText="No sprints found."
-			listItems={sprints || []}
-			selectedItemId={sprintId}
-			selectedItemLabel={sprintName}
+			listItems={activeSprint ? [activeSprint] : []}
+			selectedItemId={assignedSprint?.id ?? ""}
+			selectedItemLabel={assignedSprint?.name ?? ""}
 			itemLabel={(sprint: Sprint) => sprint.name}
 			itemId={(sprint: Sprint) => sprint.id}
 			onItemSelect={handleAssignToSprint}
@@ -87,4 +89,4 @@ const SprintCombobox = () => {
 	);
 };
 
-export default SprintCombobox;
+export default SprintDropdown;

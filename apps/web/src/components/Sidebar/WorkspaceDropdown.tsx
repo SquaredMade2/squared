@@ -40,12 +40,15 @@ export function WorkspaceDropdown() {
 	};
 
 	useEffect(() => {
-		userMemberships.revalidate?.();
 		if (!organization && userMemberships.data?.length) {
 			setActive?.({ organization: userMemberships.data[0].organization });
 			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
 		}
 	}, [userMemberships.data, organization]);
+
+	useEffect(() => {
+		userMemberships.revalidate?.();
+	}, []);
 
 	return (
 		<DropdownMenu>

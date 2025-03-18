@@ -47,7 +47,7 @@ const MentionHover = ({ mentionedUser }: MentionHoverProps) => {
 			<HoverCardContent className="absolute bottom-8 min-h-20">
 				<Card className="flex min-h-20 flex-row items-center justify-center px-1 py-0">
 					<CardContent className="flex flex-row items-center px-1 py-0">
-						<Avatar className="mx-2 flex size-6 flex-shrink-0 items-center">
+						<Avatar className="mx-2 flex size-6 shrink-0 items-center">
 							<AvatarImage src={currentUser?.imageUrl} />
 							<AvatarFallback className="text-xxs">
 								{getInitials(formatName(currentUser))}

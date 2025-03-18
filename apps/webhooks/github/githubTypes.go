@@ -191,7 +191,7 @@ type Repo struct {
 	// The repository visibility: public, private, or internal.
 	Visibility string `json:"visibility"`
 	PushedAt   string `json:"pushed_at"`
-	CreatedAt  string `json:"created_at"`
+	CreatedAt  int64  `json:"created_at"`
 	UpdatedAt  string `json:"updated_at"`
 	// Whether to allow rebase merges for pull requests.
 	AllowRebaseMerge bool   `json:"allow_rebase_merge"`

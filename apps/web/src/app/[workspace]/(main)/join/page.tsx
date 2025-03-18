@@ -57,7 +57,7 @@ export default function JoinWorkspace() {
 	}
 
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/20">
+		<div className="flex min-h-screen items-center justify-center bg-linear-to-b from-background to-secondary/20">
 			<Card className="w-full max-w-md">
 				<CardHeader>
 					<CardTitle className="text-center font-bold text-2xl">

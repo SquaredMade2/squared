@@ -97,7 +97,7 @@ export const TaskPageForm = () => {
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
 			<div className="space-y-2">
 				<Input
-					className="mt-2 rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-none"
+					className="mt-2 rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-hidden"
 					value={updatedTitle}
 					onChange={handleTitleChange}
 					onBlur={handleSubmit}
