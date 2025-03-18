@@ -1,7 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-// import { TODO } from "@squared/context";
 import { NextResponse } from "next/server";
-// import { userService } from "./lib/services";
 
 const getDeploymentUrl = () => {
 	if (process.env.VERCEL_TARGET_ENV === "preview") {

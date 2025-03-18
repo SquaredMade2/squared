@@ -3,10 +3,10 @@ import { TODO } from "@squared/context";
 import { NotificationType } from "@squared/db";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 export const notificationRouter = router({
-	markAsUnread: privateProcedure
+	markAsUnread: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { eventService } = ctx;
@@ -18,7 +18,7 @@ export const notificationRouter = router({
 				}),
 			);
 		}),
-	markAsRead: privateProcedure
+	markAsRead: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { eventService } = ctx;
@@ -30,7 +30,7 @@ export const notificationRouter = router({
 				}),
 			);
 		}),
-	dismiss: privateProcedure
+	dismiss: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { eventService } = ctx;
@@ -42,7 +42,7 @@ export const notificationRouter = router({
 				}),
 			);
 		}),
-	restore: privateProcedure
+	restore: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { eventService } = ctx;
@@ -54,7 +54,7 @@ export const notificationRouter = router({
 				}),
 			);
 		}),
-	delete: privateProcedure
+	delete: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { eventService } = ctx;
@@ -62,7 +62,7 @@ export const notificationRouter = router({
 			await eventService.deleteNotification(TODO, { notificationIds });
 			return c.json({ success: true });
 		}),
-	updateUserNotifications: privateProcedure
+	updateUserNotifications: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { userService, userId } = ctx;
@@ -73,7 +73,7 @@ export const notificationRouter = router({
 			});
 			return c.json({ success: true });
 		}),
-	getNotifications: privateProcedure.query(async ({ c, ctx }) => {
+	getNotifications: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { eventService, userId } = ctx;
 		return c.superjson(
 			await eventService.getNotifications(TODO, {
@@ -82,7 +82,7 @@ export const notificationRouter = router({
 		);
 	}),
 
-	createMention: privateProcedure
+	createMention: workspaceProcedure
 		.input(
 			z.object({
 				description: z.string(),

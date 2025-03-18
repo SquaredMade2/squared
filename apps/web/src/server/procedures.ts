@@ -37,6 +37,26 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 	const serverUrl = variables.NEXT_PUBLIC_SERVER;
 
 	const authService = new AuthService(serverUrl);
+	const userService = new UserService(serverUrl);
+	const workspaceService = new WorkspaceService(serverUrl);
+
+	return await next({
+		userId,
+		authService,
+		userService,
+		workspaceService,
+	});
+});
+
+const workspaceMiddleware = j.middleware(async ({ c, next }) => {
+	// Get the current workspace to add it to the context
+	const { orgId } = await auth();
+	if (!orgId)
+		throw new HTTPException(401, { message: "Workspace not available" });
+
+	const variables = env(c);
+	const serverUrl = variables.NEXT_PUBLIC_SERVER;
+
 	const commentService = new CommentService(serverUrl);
 	const eventService = new EventService(serverUrl);
 	const filterService = new FilterService(serverUrl);
@@ -44,13 +64,9 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 	const sprintService = new SprintService(serverUrl);
 	const taskService = new TaskService(serverUrl);
 	const teamService = new TeamService(serverUrl);
-	const userService = new UserService(serverUrl);
-	const workspaceService = new WorkspaceService(serverUrl);
 
 	return await next({
-		userId,
 		workspaceId: orgId,
-		authService,
 		commentService,
 		eventService,
 		filterService,
@@ -58,8 +74,6 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 		sprintService,
 		taskService,
 		teamService,
-		userService,
-		workspaceService,
 	});
 });
 
@@ -71,3 +85,4 @@ const authMiddleware = j.middleware(async ({ c, next }) => {
 export const baseProcedure = j.procedure;
 export const publicProcedure = baseProcedure.use(extendedContextMiddleware);
 export const privateProcedure = publicProcedure.use(authMiddleware);
+export const workspaceProcedure = privateProcedure.use(workspaceMiddleware);

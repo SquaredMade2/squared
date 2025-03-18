@@ -2,7 +2,7 @@ import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 const statusEnum = z.enum([
 	"backlog",
@@ -24,7 +24,7 @@ const labelSchema = z.object({
 });
 
 export const taskRouter = router({
-	getTaskByIdentifier: privateProcedure
+	getTaskByIdentifier: workspaceProcedure
 		.input(z.object({ identifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService, workspaceId } = ctx;
@@ -36,14 +36,14 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	getSubtasks: privateProcedure
+	getSubtasks: workspaceProcedure
 		.input(z.object({ parentId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
 			const { parentId } = input;
 			return c.superjson(await taskService.getSubtasks(TODO, { parentId }));
 		}),
-	getAllTasks: privateProcedure
+	getAllTasks: workspaceProcedure
 		.input(
 			z.object({
 				teamId: z.string(),
@@ -54,7 +54,7 @@ export const taskRouter = router({
 			const { teamId } = input;
 			return c.superjson(await taskService.getTeamTasks(TODO, { teamId }));
 		}),
-	getTaskBlockedByAndBlocking: privateProcedure
+	getTaskBlockedByAndBlocking: workspaceProcedure
 		.input(z.object({ taskId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
@@ -63,7 +63,7 @@ export const taskRouter = router({
 				await taskService.getTaskBlockedByAndBlocking(TODO, { taskId }),
 			);
 		}),
-	getAllBlockedTaskIds: privateProcedure
+	getAllBlockedTaskIds: workspaceProcedure
 		.input(z.object({ teamId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
@@ -72,7 +72,7 @@ export const taskRouter = router({
 				await taskService.getAllBlockedTaskIds(TODO, { teamId }),
 			);
 		}),
-	updateBlockedOrBlockingTasks: privateProcedure
+	updateBlockedOrBlockingTasks: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -91,7 +91,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateStatus: privateProcedure
+	updateStatus: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -109,7 +109,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updatePriority: privateProcedure
+	updatePriority: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -127,7 +127,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateEffort: privateProcedure
+	updateEffort: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -145,7 +145,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	createTask: privateProcedure
+	createTask: workspaceProcedure
 		.input(
 			z.object({
 				title: z.string(),
@@ -189,7 +189,7 @@ export const taskRouter = router({
 
 			return c.superjson(task);
 		}),
-	updateParent: privateProcedure
+	updateParent: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -207,7 +207,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateSprint: privateProcedure
+	updateSprint: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -226,7 +226,7 @@ export const taskRouter = router({
 			);
 		}),
 
-	updateDueDate: privateProcedure
+	updateDueDate: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -244,7 +244,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateAssignee: privateProcedure
+	updateAssignee: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -262,7 +262,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateLabels: privateProcedure
+	updateLabels: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -280,7 +280,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateMetadata: privateProcedure
+	updateMetadata: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -300,7 +300,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateSubtaskOrder: privateProcedure
+	updateSubtaskOrder: workspaceProcedure
 		.input(
 			z.object({
 				parentId: z.string(),
@@ -317,7 +317,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	setLastViewedTask: privateProcedure
+	setLastViewedTask: workspaceProcedure
 		.input(z.object({ taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { userService, userId } = ctx;
@@ -326,7 +326,7 @@ export const taskRouter = router({
 				await userService.setLastViewedTask(TODO, { userId, taskId }),
 			);
 		}),
-	deleteTask: privateProcedure
+	deleteTask: workspaceProcedure
 		.input(z.object({ taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;

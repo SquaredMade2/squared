@@ -1,7 +1,7 @@
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 const FilterValueSchema = z.union([
 	z.string(),
@@ -52,7 +52,7 @@ const filterConditionSchema = z.object({
 });
 
 export const filterRouter = router({
-	deleteFilter: privateProcedure
+	deleteFilter: workspaceProcedure
 		.input(z.object({ filterId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { filterService } = ctx;
@@ -61,7 +61,7 @@ export const filterRouter = router({
 
 			return c.json({ success: true });
 		}),
-	updateFilter: privateProcedure
+	updateFilter: workspaceProcedure
 		.input(
 			z.object({
 				filterId: z.string(),
@@ -82,7 +82,7 @@ export const filterRouter = router({
 
 			return c.json(updatedFilter);
 		}),
-	createFilter: privateProcedure
+	createFilter: workspaceProcedure
 		.input(
 			z.object({
 				name: z.string(),
@@ -101,7 +101,7 @@ export const filterRouter = router({
 
 			return c.json(savedFilter);
 		}),
-	getFilters: privateProcedure
+	getFilters: workspaceProcedure
 		.input(z.object({ teamId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { filterService } = ctx;

@@ -1,10 +1,10 @@
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, workspaceProcedure } from "../procedures";
 
 export const userRouter = router({
-	getAllUsers: privateProcedure.query(async ({ c, ctx }) => {
+	getAllUsers: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { userService, workspaceId } = ctx;
 		return c.superjson(
 			await userService.getWorkspaceUsers(TODO, { workspaceId }),
@@ -41,7 +41,7 @@ export const userRouter = router({
 				}),
 			);
 		}),
-	getWorkspaceAvatars: privateProcedure.query(async ({ c, ctx }) => {
+	getWorkspaceAvatars: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { userService, workspaceId } = ctx;
 		return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
 	}),
