@@ -37,7 +37,7 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		priority: z
 			.enum(["noPriority", "urgent", "high", "medium", "low"])
 			.optional(),
-		assigneeId: z.string().nullable().optional(),
+		assigneeId: z.string().nullable(),
 		labels: z.array(labelSchema).optional(),
 		parentId: z.string().nullable().optional(),
 		sprintId: z.string().nullable().optional(),
