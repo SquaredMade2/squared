@@ -43,18 +43,15 @@ export const workspaceRouter = router({
 			}),
 		);
 	}),
-	removeUser: privateProcedure
-		.input(z.object({ workspaceId: z.string() }))
-		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, userId } = ctx;
-			const { workspaceId } = input;
-			return c.json(
-				await workspaceService.removeUserFromWorkspace(TODO, {
-					workspaceId,
-					userId,
-				}),
-			);
-		}),
+	removeUser: workspaceProcedure.mutation(async ({ c, ctx }) => {
+		const { workspaceService, userId, workspaceId } = ctx;
+		return c.json(
+			await workspaceService.removeUserFromWorkspace(TODO, {
+				workspaceId,
+				userId,
+			}),
+		);
+	}),
 	inviteToWorkspace: workspaceProcedure
 		.input(
 			z.object({
@@ -75,10 +72,16 @@ export const workspaceRouter = router({
 			);
 		}),
 	joinWorkspace: privateProcedure
-		.input(z.object({ userEmail: z.string(), userName: z.string() }))
+		.input(
+			z.object({
+				userEmail: z.string(),
+				userName: z.string(),
+				workspaceId: z.string(),
+			}),
+		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, userId, workspaceId } = ctx;
-			const { userEmail, userName } = input;
+			const { workspaceService, userId } = ctx;
+			const { userEmail, userName, workspaceId } = input;
 			return c.superjson(
 				await workspaceService.joinWorkspace(TODO, {
 					user: {
@@ -111,7 +114,7 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
-	createWorkspaceLabel: privateProcedure
+	createWorkspaceLabel: workspaceProcedure
 		.input(
 			z.object({
 				label: z.object({
@@ -139,7 +142,7 @@ export const workspaceRouter = router({
 			await workspaceService.deleteWorkspace(TODO, { workspaceId });
 			return c.json({ success: true });
 		}),
-	updateWorkspaceLabel: privateProcedure
+	updateWorkspaceLabel: workspaceProcedure
 		.input(
 			z.object({
 				labelName: z.string(),
@@ -161,7 +164,7 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
-	deleteWorkspaceLabel: privateProcedure
+	deleteWorkspaceLabel: workspaceProcedure
 		.input(z.object({ labelName: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { labelName } = input;
@@ -173,7 +176,7 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
-	updateUserRole: privateProcedure
+	updateUserRole: workspaceProcedure
 		.input(
 			z.object({
 				role: z.enum(["org:admin", "org:member", "org:owner"]),

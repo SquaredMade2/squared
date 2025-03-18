@@ -161,11 +161,11 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 
 			const newTask = {
 				...input,
-				authorId: user.id,
+				authorId: userId,
 			};
 
 			const task = await taskService.createTask(TODO, newTask);

@@ -29,8 +29,8 @@ const HomePage = () => {
 				.$get()
 				.then((res) => res.json());
 
-			setActive ? setActive({ organization: res?.id }) : "";
-      
+			setActive && res?.id ? setActive({ organization: res.id }) : "";
+
 			return res;
 		},
 		enabled: isLoaded && !!user,

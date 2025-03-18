@@ -25,6 +25,7 @@ export default function JoinWorkspace() {
 				userName:
 					user?.fullName ??
 					(user?.emailAddresses[0].emailAddress.split("@")[0] || ""),
+				workspaceId: organization.id,
 			});
 		},
 		onSuccess: () => {
