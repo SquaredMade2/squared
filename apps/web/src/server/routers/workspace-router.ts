@@ -1,7 +1,7 @@
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, workspaceProcedure } from "../procedures";
 
 export const workspaceRouter = router({
 	getAllWorkspaces: privateProcedure.query(async ({ c, ctx }) => {
@@ -35,7 +35,7 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
-	getWorkspaceLabels: privateProcedure.query(async ({ c, ctx }) => {
+	getWorkspaceLabels: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { workspaceService, workspaceId } = ctx;
 		return c.superjson(
 			await workspaceService.getWorkspaceLabels(TODO, {
@@ -55,7 +55,7 @@ export const workspaceRouter = router({
 				}),
 			);
 		}),
-	inviteToWorkspace: privateProcedure
+	inviteToWorkspace: workspaceProcedure
 		.input(
 			z.object({
 				email: z.array(z.string()),
