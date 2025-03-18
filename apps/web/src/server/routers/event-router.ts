@@ -13,8 +13,6 @@ export const eventRouter = router({
 		}),
 	getNotifications: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { eventService, userId } = ctx;
-		return c.superjson(
-			await eventService.getNotifications(TODO, { userId: userId }),
-		);
+		return c.superjson(await eventService.getNotifications(TODO, { userId }));
 	}),
 });

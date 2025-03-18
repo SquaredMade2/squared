@@ -69,7 +69,7 @@ export const notificationRouter = router({
 			const { notificationIds } = input;
 			await userService.updateUserNotifications(TODO, {
 				notificationIds,
-				userId: userId,
+				userId,
 			});
 			return c.json({ success: true });
 		}),
@@ -77,7 +77,7 @@ export const notificationRouter = router({
 		const { eventService, userId } = ctx;
 		return c.superjson(
 			await eventService.getNotifications(TODO, {
-				userId: userId,
+				userId,
 			}),
 		);
 	}),

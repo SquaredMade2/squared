@@ -29,9 +29,8 @@ const extendedContextMiddleware = j.middleware(async ({ c, next }) => {
 
 const authMiddleware = j.middleware(async ({ c, next }) => {
 	// Get the current user to add it to the context
-	const { userId, orgId } = await auth();
-	if (!userId || !orgId)
-		throw new HTTPException(401, { message: "Unauthorized" });
+	const { userId } = await auth();
+	if (!userId) throw new HTTPException(401, { message: "Unauthorized" });
 
 	const variables = env(c);
 	const serverUrl = variables.NEXT_PUBLIC_SERVER;
