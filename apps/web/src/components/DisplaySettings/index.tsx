@@ -27,7 +27,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -136,8 +135,8 @@ const TopNavBarDisplay = () => {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<div className="relative flex h-10 flex-col items-end gap-2 ">
-				<Popover>
-					<PopoverTrigger asChild>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" className="gap-2">
 							<SlidersVertical className="size-4" />
 							<div className="hidden items-center gap-2 md:flex">
@@ -145,8 +144,8 @@ const TopNavBarDisplay = () => {
 								<ChevronDown className="size-4" />
 							</div>
 						</Button>
-					</PopoverTrigger>
-					<PopoverContent>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent className="min-width:none w-72 p-4">
 						<div className="flex flex-col">
 							<div className="mb-3 flex w-full items-center justify-between">
 								<ToggleGroup
@@ -415,8 +414,8 @@ const TopNavBarDisplay = () => {
 								</ToggleGroup>
 							</div>
 						</div>
-					</PopoverContent>
-				</Popover>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</TooltipProvider>
 	);
