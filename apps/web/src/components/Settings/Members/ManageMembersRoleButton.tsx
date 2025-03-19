@@ -33,12 +33,9 @@ const ManageMembersRoleButton = ({
 	const updateRoleMutation = useMutation({
 		mutationFn: async (newRole: ClerkAuthorization["role"]) => {
 			if (!pageId) throw new Error("Missing required data");
-			await client.workspace.updateUserRole.$post({
-				userId,
-				workspaceId: pageId,
+			return await client.workspace.updateUserRole.$post({
 				role: newRole,
 			});
-			return newRole;
 		},
 		onSuccess: (_, newRole) => {
 			queryClient.invalidateQueries({

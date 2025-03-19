@@ -10,8 +10,8 @@ import { useEffect } from "react";
 const HomePage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
-	const { signOut, organization } = useClerk();
 	const { setActive } = useOrganizationList();
+	const { signOut, organization } = useClerk();
 
 	const {
 		data: workspace,
@@ -28,6 +28,8 @@ const HomePage = () => {
 			const res = await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
+
+			setActive && res?.id ? setActive({ organization: res.id }) : "";
 
 			return res;
 		},

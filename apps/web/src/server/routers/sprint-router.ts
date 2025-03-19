@@ -1,19 +1,19 @@
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 const retroTypeEnum = z.enum(["toImprove", "wentWell", "actionItems"]);
 
 export const sprintRouter = router({
-	getSprints: privateProcedure
+	getSprints: workspaceProcedure
 		.input(z.object({ teamId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { sprintService } = ctx;
 			const { teamId } = input;
 			return c.superjson(await sprintService.getSprints(TODO, { teamId }));
 		}),
-	getSprintTasks: privateProcedure
+	getSprintTasks: workspaceProcedure
 		.input(z.object({ sprintId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { sprintService } = ctx;
@@ -22,7 +22,7 @@ export const sprintRouter = router({
 				await sprintService.getSprintTasks(TODO, { sprintId }),
 			);
 		}),
-	addSprintTasks: privateProcedure
+	addSprintTasks: workspaceProcedure
 		.input(z.object({ sprintId: z.string(), taskIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
@@ -31,14 +31,14 @@ export const sprintRouter = router({
 				await taskService.addSprintTasks(TODO, { sprintId, taskIds }),
 			);
 		}),
-	endSprint: privateProcedure
+	endSprint: workspaceProcedure
 		.input(z.object({ sprintId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { sprintService } = ctx;
 			const { sprintId } = input;
 			return c.superjson(await sprintService.endSprint(TODO, { sprintId }));
 		}),
-	getRetro: privateProcedure
+	getRetro: workspaceProcedure
 		.input(z.object({ sprintId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { sprintService } = ctx;
@@ -47,7 +47,7 @@ export const sprintRouter = router({
 				await sprintService.getRetrospectiveItems(TODO, { sprintId }),
 			);
 		}),
-	addRetroItem: privateProcedure
+	addRetroItem: workspaceProcedure
 		.input(
 			z.object({
 				sprintId: z.string(),
@@ -56,34 +56,34 @@ export const sprintRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { sprintService, user } = ctx;
+			const { sprintService, userId } = ctx;
 			const { sprintId, type, content } = input;
 			return c.superjson(
 				await sprintService.addRetrospectiveItem(TODO, {
 					sprintId,
 					type,
-					authorId: user.id,
+					authorId: userId,
 					content,
 				}),
 			);
 		}),
-	likeRetroItem: privateProcedure
+	likeRetroItem: workspaceProcedure
 		.input(
 			z.object({
 				retroItemId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { sprintService, user } = ctx;
+			const { sprintService, userId } = ctx;
 			const { retroItemId } = input;
 			return c.superjson(
 				await sprintService.likeRetrospectiveItem(TODO, {
 					retrospectiveItemId: retroItemId,
-					userId: user.id,
+					userId,
 				}),
 			);
 		}),
-	updateRetroItemType: privateProcedure
+	updateRetroItemType: workspaceProcedure
 		.input(
 			z.object({
 				retrospectiveItemId: z.string(),
@@ -102,7 +102,7 @@ export const sprintRouter = router({
 				}),
 			);
 		}),
-	startNextSprint: privateProcedure
+	startNextSprint: workspaceProcedure
 		.input(
 			z.object({
 				teamId: z.string(),
@@ -118,7 +118,7 @@ export const sprintRouter = router({
 				await sprintService.startNextSprint(TODO, { teamId, sprintData }),
 			);
 		}),
-	updateTeamSprints: privateProcedure
+	updateTeamSprints: workspaceProcedure
 		.input(
 			z.object({
 				teamId: z.string(),
@@ -139,14 +139,14 @@ export const sprintRouter = router({
 				await teamService.updateTeamSprints(TODO, { id: teamId, ...data }),
 			);
 		}),
-	initializeSprints: privateProcedure
+	initializeSprints: workspaceProcedure
 		.input(z.object({ teamId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { sprintService } = ctx;
 			const { teamId } = input;
 			return c.json(await sprintService.initializeSprints(TODO, { teamId }));
 		}),
-	addActiveTasks: privateProcedure
+	addActiveTasks: workspaceProcedure
 		.input(z.object({ sprintId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;

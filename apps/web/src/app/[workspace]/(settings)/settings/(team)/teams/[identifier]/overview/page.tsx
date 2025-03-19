@@ -157,7 +157,6 @@ export default function TeamsSetting() {
 					await client.team.getTeamByIdentifier
 						.$get({
 							identifier: updatedTeam.identifier,
-							workspaceId: updatedTeam.workspaceId,
 						})
 						.then((res) => res.json()),
 				);

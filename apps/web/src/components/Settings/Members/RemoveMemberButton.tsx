@@ -34,9 +34,7 @@ const RemoveMemberButton = ({
 		mutationFn: async () => {
 			if (!pageId) throw new Error("No pageId provided");
 			if (page === "workspace") {
-				await client.workspace.removeUser.$post({
-					workspaceId: pageId,
-				});
+				await client.workspace.removeUser.$post();
 				return "Workspace member removed";
 			}
 			await client.team.removeUser.$post({

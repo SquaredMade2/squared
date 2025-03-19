@@ -21,7 +21,6 @@ export function useSprints(sprintId?: string) {
 			if (!parsedTeamIdentifier) throw new Error("Team not found");
 			const res = await client.team.getTeamByIdentifier.$get({
 				identifier: parsedTeamIdentifier,
-				workspaceId: organization.id,
 			});
 			const team = await res.json();
 			if (!team) throw new Error("Team not found");
