@@ -40,8 +40,8 @@ const AssigneeCombobox = () => {
 	const assignee = users?.find((u) => u.userId === currentTask?.assigneeId);
 
 	const updateAssigneeMutation = useMutation({
-		mutationFn: async (assigneeId?: string) => {
-			if (!currentTask || !assigneeId)
+		mutationFn: async (assigneeId?: string | null) => {
+			if (!currentTask || assigneeId === undefined)
 				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId: currentTask.id,
@@ -77,7 +77,7 @@ const AssigneeCombobox = () => {
 
 	if (!currentTask) return null;
 
-	const handleSelectAssignee = (userId?: string) => {
+	const handleSelectAssignee = (userId?: string | null) => {
 		updateAssigneeMutation.mutate(userId);
 		setOpen(false);
 	};
@@ -118,7 +118,7 @@ const AssigneeCombobox = () => {
 						<ScrollArea className="h-80 pr-2">
 							<CommandEmpty>No user found.</CommandEmpty>
 							<CommandGroup>
-								<CommandItem onSelect={() => handleSelectAssignee()}>
+								<CommandItem onSelect={() => handleSelectAssignee(null)}>
 									<UserSearch className="mx-1 size-4" />
 									<span className="ml-2 w-2/3 truncate">Unassigned</span>
 									<Check
@@ -133,7 +133,7 @@ const AssigneeCombobox = () => {
 									.map((user) => (
 										<CommandItem
 											key={user.userId}
-											onSelect={() => handleSelectAssignee(user.userId)}
+											onSelect={() => handleSelectAssignee(user?.userId)}
 											className="w-full"
 										>
 											<Avatar className="size-6 text-xxs">
