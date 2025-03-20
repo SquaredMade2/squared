@@ -21,6 +21,7 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
 import {
+	Box,
 	Clipboard,
 	Inbox,
 	Moon,
@@ -125,6 +126,11 @@ function SidebarContent() {
 						label="Inbox"
 						onClick={() => navigateTo("inbox")}
 						notificationCount={notifications.length}
+					/>
+					<IconButton
+						icon={Box}
+						label="Projects"
+						onClick={() => navigateTo("projects")}
 					/>
 					<IconButton
 						icon={Clipboard}
