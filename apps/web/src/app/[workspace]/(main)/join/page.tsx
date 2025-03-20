@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useOrganization } from "@clerk/nextjs";
+import { useOrganization, useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -14,13 +14,18 @@ export default function JoinWorkspace() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const { organization, membership, isLoaded } = useOrganization();
+	const { user } = useUser();
 
 	const { mutate: handleJoin, isPending } = useMutation({
 		mutationKey: ["workspace", "joinWorkspace", organization?.id],
 		mutationFn: async () => {
 			if (!organization || !membership?.role) return;
 			await client.workspace.joinWorkspace.$post({
-				workspaceId: organization?.id,
+				userEmail: user?.emailAddresses[0].emailAddress || "",
+				userName:
+					user?.fullName ??
+					(user?.emailAddresses[0].emailAddress.split("@")[0] || ""),
+				workspaceId: organization.id,
 			});
 		},
 		onSuccess: () => {
