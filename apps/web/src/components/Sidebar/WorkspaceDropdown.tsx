@@ -10,9 +10,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useModalStore, useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { ChevronDown, Plus, Settings } from "lucide-react";
+import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
+import { ChevronDown, Plus, Settings, UserRoundPlus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -24,6 +25,13 @@ export function WorkspaceDropdown() {
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
+	const { user } = useUser();
+	const { workspace } = useWorkspaceStore((state) => state);
+	const { setShowInvite } = useModalStore((state) => state);
+
+	const isUserWorkspaceAdmin = workspace?.admins.filter(
+		(admin) => admin === user?.id,
+	);
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -108,6 +116,19 @@ export function WorkspaceDropdown() {
 					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
+				{/* This should only show for workspace owners and admins */}
+				{isUserWorkspaceAdmin && (
+					<DropdownMenuItem asChild>
+						<Button
+							onClick={() => setShowInvite(true)}
+							variant="ghost"
+							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-none: focus-visible:ring-offset-0"
+						>
+							<UserRoundPlus className="mr-2 h-4 w-4" />
+							<span>Invite People</span>
+						</Button>
+					</DropdownMenuItem>
+				)}
 				<DropdownMenuItem
 					onSelect={() => {
 						router.push(`/${organization?.slug}/settings`);
