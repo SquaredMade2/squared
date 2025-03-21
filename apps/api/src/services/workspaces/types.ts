@@ -15,10 +15,10 @@ export type CreateWorkspaceParams = {
 };
 
 export type JoinWorkspaceParams = {
-	token: string | undefined;
+	token: string;
 	isLink: boolean;
 	user: { id: string; name: string; email: string };
-	workspace: { id: string; name: string | undefined };
+	workspace: { id: string; name?: string };
 };
 
 export interface WorkspaceRpc {

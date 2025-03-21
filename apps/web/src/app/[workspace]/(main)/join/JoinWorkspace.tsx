@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useOrganization } from "@clerk/nextjs";
+import { useOrganization, useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -15,6 +15,7 @@ export default function JoinWorkspace() {
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
 	const { organization, membership, isLoaded } = useOrganization();
+	const { user } = useUser();
 
 	const token = searchParams.get("token") || "";
 	const isLink = searchParams.has("link");
@@ -26,18 +27,21 @@ export default function JoinWorkspace() {
 		mutationKey: ["workspace", "joinWorkspace", organization?.id],
 		mutationFn: async () => {
 			if (!organization || !membership?.role) return;
-			const workspace = await client.workspace.joinWorkspace
-				.$post({
-					token,
-					isLink,
-					workspace: {
-						id: organization?.id,
-						name: workspaceName ? workspaceName[1] : undefined,
-					},
-				})
-				.then((res) => res.json());
-
-			return workspace;
+			await client.workspace.joinWorkspace.$post({
+				token,
+				isLink,
+				user: {
+					id: user?.id || "",
+					name:
+						user?.fullName ??
+						(user?.emailAddresses[0].emailAddress.split("@")[0] || ""),
+					email: user?.emailAddresses[0].emailAddress || "",
+				},
+				workspace: {
+					id: organization?.id,
+					name: workspaceName ? workspaceName[1] : undefined,
+				},
+			});
 		},
 		onSuccess: () => {
 			toast({ title: "Workspace joined successfully" });

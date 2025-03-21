@@ -49,7 +49,6 @@ export const InviteModal = () => {
 		mutationFn: async () => {
 			const inviteLink = await client.workspace.generateWorkspaceInviteLink
 				.$post({
-					workspaceId: workspace?.id || "",
 					expiration:
 						expirationPeriod === "never" ? undefined : expirationPeriod,
 					uses: numberUses,
