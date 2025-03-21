@@ -10,12 +10,12 @@ concurrency:
 jobs:
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     outputs:
       api-changed: ${{ steps.check-changes.outputs.api }}
       web-changed: ${{ steps.check-changes.outputs.web }}
       www-changed: ${{ steps.check-changes.outputs.www }}
-      logs-changed: ${{ steps.check-changes.outputs.logs }}
+      webhooks-changed: ${{ steps.check-changes.outputs.webhooks }}
       run-all: ${{ steps.check-label.outputs.run-all }}
       packages-changed: ${{ steps.check-changes.outputs.packages }}
       only-go-changed: ${{ steps.check-changes.outputs.only-go-changed }}
@@ -31,12 +31,12 @@ jobs:
           echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "logs=$(git diff --name-only origin/develop HEAD | grep -q '^apps/logs/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT      
+          echo "webhooks=$(git diff --name-only origin/develop HEAD | grep -q '^apps/webhooks/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT      
 
       - name: Check if only Go-related changes were made
         run: |
-          go_related_changes=$(git diff --name-only origin/develop HEAD | grep -E '^(apps/logs|packages/cli)/' | wc -l)
-          other_changes=$(git diff --name-only origin/develop HEAD | grep -vE '^(apps/logs|packages/cli)/' | wc -l)
+          go_related_changes=$(git diff --name-only origin/develop HEAD | grep -E '^(apps/webhooks|packages/cli)/' | wc -l)
+          other_changes=$(git diff --name-only origin/develop HEAD | grep -vE '^(apps/webhooks|packages/cli)/' | wc -l)
 
           if [[ "$go_related_changes" -gt 0 && "$other_changes" -eq 0 ]]; then
             echo "only-go-changed=true" >> $GITHUB_OUTPUT
@@ -63,13 +63,15 @@ jobs:
 
   setup:
     name: Setup
-    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.only-go-changed == 'true' }}
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -78,7 +80,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -91,14 +93,14 @@ jobs:
   lint-and-type-check:
     name: Lint and Type Check
     needs: [setup, detect-changes]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -107,7 +109,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -123,14 +125,14 @@ jobs:
   test-packages:
     name: Test Packages
     needs: [setup, detect-changes]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ !needs.detect-changes.outputs.only-go-changed == 'false' && needs.detect-changes.outputs.packages-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -139,7 +141,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -155,7 +157,7 @@ jobs:
   test-api:
     name: Test API
     needs: [detect-changes, setup]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
@@ -164,7 +166,7 @@ jobs:
         with:
           version: 9.15.4
 
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -175,7 +177,7 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -200,12 +202,9 @@ jobs:
         run: pnpm run --filter=api test:ci
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           CLERK_SECRET: ${{ secrets.CLERK_SECRET_KEY }}
-          EMAIL_USERNAME: info@squaredmade.com
-          EMAIL_PASSWORD: H=3x=_uhQa
           POSTGRES_PORT: 5434
           NODE_ENV: test
           LOCAL_DB: true
@@ -218,14 +217,14 @@ jobs:
   test-web:
     name: Test Web
     needs: [detect-changes, setup]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -234,7 +233,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -250,39 +249,48 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
         run: pnpm --filter=web build
 
-  test-logs:
-    name: Test Logs
+  test-webhooks:
+    name: Test Webhooks
     needs: [detect-changes]
-    runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.logs-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
+    runs-on: blacksmith-4vcpu-ubuntu-2204
+    if: ${{ needs.detect-changes.outputs.webhooks-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: useblacksmith/setup-go@v6
         with:
           go-version: "1.23"
 
       - name: Get dependencies
-        working-directory: apps/logs
-        run: pwd && go mod download
+        working-directory: apps/webhooks
+        run: go mod download
 
       - name: Run tests
-        working-directory: apps/logs
+        working-directory: apps/webhooks
+        env:
+          GITHUB_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          GITHUB_BOT_ID: ${{ secrets.GH_BOT_ID }}
+          SERVER_URL: http://localhost:5173
+          BASE_URL: http://localhost:8081
+          PORT: 3131
+          WEBHOOK_SECRET: squared
+          APP_URL: https://app.squaredmade.com
+          PAPERTRAIL_URL: logs.papertrailapp.com:35736
         run: go test -v ./...
 
   test-www:
     name: Test WWW
     needs: [detect-changes, setup]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.15.4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: 23.3.0
           cache: 'pnpm'
@@ -291,7 +299,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v4
+      - uses: useblacksmith/cache@v5
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -304,8 +312,8 @@ jobs:
 
   ci-status:
     name: CI Pipeline
-    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-logs]
-    runs-on: ubuntu-latest
+    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks]
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     if: always()
     steps:
       - name: Check CI status
@@ -314,7 +322,7 @@ jobs:
             echo "Lint and type check failed"
             exit 1
           fi
-          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" || "${{ needs.test-logs.result}}" == "failure" ]]; then
+          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" || "${{ needs.test-webhooks.result}}" == "failure" ]]; then
             echo "One or more tests failed"
             exit 1
           fi

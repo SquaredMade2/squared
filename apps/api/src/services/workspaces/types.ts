@@ -1,4 +1,4 @@
-import type { Label, Workspace, WorkspaceRole } from "@squared/db";
+import type { Label, Workspace } from "@squared/db";
 
 export type WorkspaceParams = {
 	url: string;
@@ -35,20 +35,16 @@ export interface WorkspaceRpc {
 	}) => Promise<Workspace>;
 	deleteWorkspace: (args: { workspaceId: string }) => Promise<void>;
 	getUserWorkspaces: (args: { userId: string }) => Promise<Workspace[]>;
-	joinWorkspace: (args: {
-		token: string;
-		isLink: boolean;
-		userId: string;
-		workspaceName?: string;
-		role?: WorkspaceRole;
-	}) => Promise<Workspace | null>;
+	joinWorkspace: (args: JoinWorkspaceParams) => Promise<Workspace | null>;
 	removeUserFromWorkspace: (args: {
 		workspaceId: string;
 		userId: string;
 	}) => Promise<{ success: boolean }>;
 	inviteToWorkspace: (args: {
 		workspaceId: string;
-		email: string | string[];
+		email: string[];
+		userId: string;
+		slug: string;
 	}) => Promise<{ success: boolean }>;
 	generateWorkspaceInviteLink: (args: {
 		workspaceId: string;
@@ -70,4 +66,9 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		labelName: string;
 	}) => Promise<{ success: boolean }>;
+	updateWorkspaceRole: (args: {
+		userId: string;
+		workspaceId: string;
+		role: "org:admin" | "org:member" | "org:owner";
+	}) => Promise<void>;
 }

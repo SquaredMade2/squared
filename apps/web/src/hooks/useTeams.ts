@@ -2,22 +2,24 @@ import { client } from "@/lib/client";
 import { useTeamStore, useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
+import { useOrganization } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useWorkspaces } from "./useWorkspaces";
 
 export function useTeams() {
-	const { workspace, loading: workspaceLoading } = useWorkspaces();
+	const { organization, isLoaded } = useOrganization();
 	const { team, teams, setTeam, setTeams } = useTeamStore((state) => state);
 	const { setUsers } = useUserStore((state) => state);
 
 	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier);
+	const teamIdentifier =
+		parseParams(params.identifier) ||
+		parseParams(params.taskIdentifier)?.split("-")[0];
 
 	const { data: authorized = true, isLoading: authLoading } = useQuery({
-		queryKey: ["teamAuthorization", teamIdentifier],
+		queryKey: ["team", "teamAuthorization", teamIdentifier],
 		queryFn: async () => {
-			if (!workspace || !teamIdentifier) return false;
+			if (!organization || !teamIdentifier) return false;
 			const authorized = await client.user.isUserAuthorized
 				.$get({
 					teamIdentifier,
@@ -26,7 +28,7 @@ export function useTeams() {
 
 			return authorized;
 		},
-		enabled: !!teamIdentifier && !workspaceLoading,
+		enabled: !!teamIdentifier && isLoaded,
 	});
 
 	const {
@@ -34,11 +36,11 @@ export function useTeams() {
 		isLoading: teamsLoading,
 		error,
 	} = useQuery({
-		queryKey: ["teams", workspace?.id, teamIdentifier],
+		queryKey: ["team", organization?.id, teamIdentifier],
 		queryFn: async () => {
-			if (!workspace) return { teams: [], team: null };
+			if (!organization) return { teams: [], team: null };
 			const res = await client.team.getUserTeams.$get({
-				workspaceId: workspace.externalId,
+				workspaceId: organization.id,
 			});
 			const allTeams = await res.json();
 			setTeams(allTeams);
@@ -54,11 +56,12 @@ export function useTeams() {
 			}
 			return { teams: allTeams, team: currentTeam || null };
 		},
-		enabled: authorized && !!workspace && team?.identifier !== teamIdentifier,
+		enabled:
+			authorized && !!organization && team?.identifier !== teamIdentifier,
 	});
 
 	return {
-		loading: workspaceLoading || authLoading || teamsLoading,
+		loading: !isLoaded || authLoading || teamsLoading,
 		team: teamsData?.team || team,
 		authorized,
 		teams: teamsData?.teams || teams,

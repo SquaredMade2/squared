@@ -8,31 +8,25 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { Check, UserSearch } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Check, UserSearch } from "lucide-react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
-	const { user } = useUser();
+	const { user, users } = useUsers();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
+	const assignedUser = users?.find((u) => u.userId === task.assigneeId);
 
 	const { mutate: updateAssignee } = useMutation({
-		mutationKey: ["updateTaskAssignee", taskId],
-		mutationFn: async (userId: string | null) => {
+		mutationKey: ["task", "updateAssignee", taskId],
+		mutationFn: async (userId?: string | null) => {
+			if (!taskId || userId === undefined)
+				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId,
 				assigneeId: userId,
@@ -43,7 +37,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		},
 	});
 
-	const handleSelectAssignee = (userId: string | null) => {
+	const handleSelectAssignee = (userId?: string | null) => {
 		updateAssignee(userId);
 	};
 
@@ -55,7 +49,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						<UserSearch className="size-5 text-[#9597AD]" />
 					) : (
 						<Avatar className="mr-2 flex size-4 text-xxs">
-							<AvatarImage src={user?.imageUrl ?? ""} />
+							<AvatarImage src={assignedUser?.imageUrl ?? ""} />
 							<AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
 						</Avatar>
 					)}
@@ -79,8 +73,8 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						.map((user) => {
 							return (
 								<ContextMenuItem
-									key={user.identifier}
-									onClick={() => handleSelectAssignee(user.identifier)}
+									key={user.userId}
+									onClick={() => handleSelectAssignee(user.userId)}
 									className="flex justify-between"
 								>
 									<div className="flex">
@@ -92,7 +86,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 										</Avatar>
 										{formatName(user)}
 									</div>
-									{task.assigneeId === user.identifier && (
+									{task.assigneeId === user.userId && (
 										<Check className="ml-2 h-4 w-4" />
 									)}
 								</ContextMenuItem>

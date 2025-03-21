@@ -16,21 +16,22 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { useModalStore, useWorkspaceStore } from "@/store";
+import { useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
-import { Check, PlusCircle } from "lucide-react";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { Check, CirclePlus } from "@squared/icons";
 import { useRouter } from "next/navigation";
 import WorkspaceInitials from "../WorkspaceImage";
 
 export function WorkspaceSwitcher() {
 	const { showSwitchWorkspace: open, setShowSwitchWorkspace: setOpen } =
 		useModalStore((state) => state);
-	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { organization, memberships } = useOrganization({ memberships: true });
+	const { setActive } = useOrganizationList();
+	const organizations = memberships?.data?.map((m) => m.organization);
 	const router = useRouter();
 
-	if (!workspace) return null;
+	if (!organization || !organizations || !setActive) return null;
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -47,11 +48,11 @@ export function WorkspaceSwitcher() {
 						<CommandList>
 							<CommandEmpty>No workspaces found.</CommandEmpty>
 							<CommandGroup heading="Workspaces">
-								{workspaces.map((wk) => (
+								{organizations.map((org) => (
 									<CommandItem
-										key={wk?.id}
+										key={org?.id}
 										onSelect={() => {
-											setWorkspace(wk);
+											setActive({ organization: org });
 											setOpen(false);
 										}}
 										className="cursor-pointer"
@@ -59,17 +60,19 @@ export function WorkspaceSwitcher() {
 										<Check
 											className={cn(
 												"mr-2 size-4",
-												workspace?.id === wk.id ? "opacity-100" : "opacity-0",
+												organization?.id === org.id
+													? "opacity-100"
+													: "opacity-0",
 											)}
 										/>
 										<WorkspaceInitials
-											workspaceName={wk.name}
-											backgroundColor={workspaces.findIndex(
-												(item) => item?.id === wk.id,
+											workspaceName={org.name}
+											backgroundColor={organizations.findIndex(
+												(item) => item?.id === org.id,
 											)}
 											location="workspaceMenu"
 										/>
-										{wk.name}
+										{org.name}
 									</CommandItem>
 								))}
 							</CommandGroup>
@@ -77,12 +80,12 @@ export function WorkspaceSwitcher() {
 							<CommandGroup>
 								<CommandItem
 									onSelect={() => {
-										router.push("/join");
+										router.push("/create");
 										setOpen(false);
 									}}
 									className="cursor-pointer"
 								>
-									<PlusCircle className="mr-2 h-4 w-4" />
+									<CirclePlus className="mr-2 h-4 w-4" />
 									Create New Workspace
 								</CommandItem>
 							</CommandGroup>

@@ -76,7 +76,6 @@ export const LabelModal = () => {
 			if (!workspace) throw new Error("Workspace not found");
 			if (!labelData.name) throw new Error("Label name not found");
 			const res = await client.workspace.updateWorkspaceLabel.$post({
-				workspaceId: workspace.id,
 				labelName: labelData.name,
 				updatedLabel: values,
 			});
@@ -88,7 +87,7 @@ export const LabelModal = () => {
 				description: `Label "${variables.name}" has been updated`,
 			});
 			queryClient.invalidateQueries({
-				queryKey: ["workspaceLabels", workspace?.id],
+				queryKey: ["workspace", "workspaceLabels", workspace?.id],
 			});
 			handleResetForm();
 		},
@@ -106,7 +105,6 @@ export const LabelModal = () => {
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!workspace) throw new Error("Workspace not found");
 			const res = await client.workspace.createWorkspaceLabel.$post({
-				workspaceId: workspace.id,
 				label: values,
 			});
 			return res.json();
@@ -117,7 +115,7 @@ export const LabelModal = () => {
 				description: `Label "${variables.name}" has been created`,
 			});
 			queryClient.invalidateQueries({
-				queryKey: ["workspaceLabels", workspace?.id],
+				queryKey: ["workspace", "workspaceLabels", workspace?.id],
 			});
 			handleResetForm();
 		},

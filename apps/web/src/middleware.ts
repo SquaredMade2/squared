@@ -26,6 +26,9 @@ export default clerkMiddleware(
 	() => ({
 		signInUrl: `${deploymentUrl}/sign-in`,
 		signUpUrl: `${deploymentUrl}/sign-up`,
+		organizationSyncOptions: {
+			organizationPatterns: ["/:slug", "/:slug/(.*)"],
+		},
 	}),
 );
 

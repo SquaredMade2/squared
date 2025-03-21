@@ -1,20 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { useViewStore, useWorkspaceStore } from "@/store";
-import { ChevronLeft, PanelLeft } from "lucide-react";
+import { useViewStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
+import { ChevronLeft, PanelLeft } from "@squared/icons";
 import { useRouter } from "next/navigation";
 
 const SettingsTopNavBar = () => {
 	const router = useRouter();
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 	const handleBackClick = () => {
-		if (workspace) {
-			router.push(`/${workspace.url}`);
+		if (organization) {
+			router.push(`/${organization.slug}`);
 		}
 	};
 
 	return (
-		<div className="fixed top-0 flex h-12 min-w-[100vw] items-center justify-between border-b px-4 shadow md:hidden">
+		<div className="fixed top-0 flex h-12 min-w-[100vw] items-center justify-between border-b px-4 shadow-sm md:hidden">
 			<Button
 				variant="ghost"
 				size="icon"

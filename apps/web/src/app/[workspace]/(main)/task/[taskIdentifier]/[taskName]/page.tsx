@@ -1,4 +1,5 @@
 "use client";
+
 import { NewTaskCollapsible } from "@/components/Modals";
 import {
 	EventTabs,
@@ -11,45 +12,46 @@ import {
 import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { userService } from "@/lib/services";
-import { useUserStore } from "@/store";
-import { TODO } from "@squared/context";
-
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
-	const { isLoading, error, subtasks, currentTaskBlockedBy } = useTaskPage();
+	const { isLoading, subtasks, currentTaskBlockedBy } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
-	const user = useUserStore((state) => state.user);
-	useEffect(() => {
-		if (currentTask && user?.externalId) {
-			userService
-				.setLastViewedTask(TODO, {
-					userId: user.externalId,
-					taskId: currentTask.id,
-				})
-				.catch((error) => {
-					toast({
-						title: error,
-						variant: "destructive",
-					});
-				});
-		}
-	}, [currentTask, user]);
 
 	useEffect(() => {
-		if (error) {
+		if (!currentTask) return;
+		client.task.setLastViewedTask.$post({
+			taskId: currentTask.id,
+		});
+	}, [currentTask]);
+
+	const lastViewedTaskMutation = useMutation({
+		mutationFn: async () => {
+			await client.task.setLastViewedTask.$post({
+				taskId: currentTask?.id || "",
+			});
+		},
+		onError: (error) => {
+			console.error(error);
 			toast({
-				title: error,
+				title: "Error updating task",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		}
-	}, [error]);
+		},
+	});
+
+	useEffect(() => {
+		currentTask && lastViewedTaskMutation.mutate();
+	}, [currentTask]);
 
 	return (
 		<div className="flex h-screen w-full overflow-hidden bg-background">

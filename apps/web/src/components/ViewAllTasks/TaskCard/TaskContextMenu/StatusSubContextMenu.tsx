@@ -21,7 +21,7 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updateStatus } = useMutation({
-		mutationKey: ["updateTaskStatus", task.id],
+		mutationKey: ["task", "updateStatus", task.id],
 		mutationFn: async (status: Status) => {
 			const res = await client.task.updateStatus.$post({
 				taskId: task.id,

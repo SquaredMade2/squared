@@ -6,10 +6,11 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useUserStore } from "@/store";
+import { useUsers } from "@/hooks/useUsers";
+import { formatName } from "@/utils/formatting";
 import { Draggable } from "@hello-pangea/dnd";
+import { ThumbsUp } from "@squared/icons";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
-import { ThumbsUp } from "lucide-react";
 
 export const RetroItemCard = ({
 	item,
@@ -20,12 +21,12 @@ export const RetroItemCard = ({
 	index: number;
 	onLikeItem: (itemId: string) => void;
 }) => {
-	const { users } = useUserStore((state) => state);
-	const author = users.find((u) => u.externalId === item.authorId);
+	const { users } = useUsers();
+	const author = users?.find((u) => u.userId === item.authorId);
 
 	const likedByUsers = item.likes
-		.map((id) => users.find((u) => u.externalId === id))
-		.map((u) => u?.name)
+		.map((id) => users?.find((u) => u.userId === id))
+		.map((u) => formatName(u))
 		.join(", ");
 
 	return (
@@ -41,7 +42,9 @@ export const RetroItemCard = ({
 							<div className="flex flex-col">
 								<div>{item.content}</div>
 								{author && (
-									<div className="text-muted-foreground">{author.name}</div>
+									<div className="text-muted-foreground">
+										{formatName(author)}
+									</div>
 								)}
 							</div>
 							{author && (

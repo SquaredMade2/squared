@@ -5,6 +5,7 @@ import { authRouter } from "./routers/auth-router";
 import { commentRouter } from "./routers/comment-router";
 import { eventRouter } from "./routers/event-router";
 import { filterRouter } from "./routers/filter-router";
+import { githubRouter } from "./routers/github-router";
 import { notificationRouter } from "./routers/notification-router";
 import { sprintRouter } from "./routers/sprint-router";
 import { taskRouter } from "./routers/task-router";
@@ -24,6 +25,7 @@ const appRouter = app
 	.route("/comment", commentRouter)
 	.route("/event", eventRouter)
 	.route("/filter", filterRouter)
+	.route("/github", githubRouter)
 	.route("/notification", notificationRouter)
 	.route("/sprint", sprintRouter)
 	.route("/team", teamRouter)

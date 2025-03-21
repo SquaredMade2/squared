@@ -1,0 +1,9 @@
+{
+	"name": "webhooks",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"dev:go": "ENVIRONMENT=development go run main.go",
+		"test": "go test -v ./..."
+	}
+}

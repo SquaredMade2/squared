@@ -17,14 +17,14 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatName, getInitials } from "@/utils/formatting";
-import { useOrganization } from "@clerk/nextjs";
 import type { TaskEvent } from "@squared/db";
+import { Check, ChevronsUpDown, UserSearch } from "@squared/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";
 
 const AssigneeCombobox = () => {
@@ -32,24 +32,17 @@ const AssigneeCombobox = () => {
 	const { toast } = useToast();
 	const { setEvents } = useEventStore((state) => state);
 	const queryClient = useQueryClient();
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const { users } = useUsers();
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
 
-	const assignee = users?.find((u) => u.identifier === currentTask?.assigneeId);
+	const assignee = users?.find((u) => u.userId === currentTask?.assigneeId);
 
 	const updateAssigneeMutation = useMutation({
-		mutationFn: async (assigneeId: string | null) => {
-			if (!currentTask) throw new Error("Task or user not found");
+		mutationFn: async (assigneeId?: string | null) => {
+			if (!currentTask || assigneeId === undefined)
+				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId: currentTask.id,
 				assigneeId,
@@ -65,7 +58,7 @@ const AssigneeCombobox = () => {
 			const updatedEvents = await eventRes.json();
 			setEvents(updatedEvents as TaskEvent[]);
 			queryClient.invalidateQueries({
-				queryKey: ["taskEvents", currentTask?.id],
+				queryKey: ["event", currentTask?.id],
 			});
 			toast({
 				title: "Success",
@@ -84,7 +77,7 @@ const AssigneeCombobox = () => {
 
 	if (!currentTask) return null;
 
-	const handleSelectAssignee = (userId: string | null) => {
+	const handleSelectAssignee = (userId?: string | null) => {
 		updateAssigneeMutation.mutate(userId);
 		setOpen(false);
 	};
@@ -139,8 +132,8 @@ const AssigneeCombobox = () => {
 									?.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
 										<CommandItem
-											key={user.identifier}
-											onSelect={() => handleSelectAssignee(user.identifier)}
+											key={user.userId}
+											onSelect={() => handleSelectAssignee(user?.userId)}
 											className="w-full"
 										>
 											<Avatar className="size-6 text-xxs">
@@ -155,7 +148,7 @@ const AssigneeCombobox = () => {
 											<Check
 												className={cn(
 													"ml-auto h-4 w-4",
-													currentTask.assigneeId === user.identifier
+													currentTask.assigneeId === user.userId
 														? "opacity-100"
 														: "opacity-0",
 												)}

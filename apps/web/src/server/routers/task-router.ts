@@ -1,8 +1,7 @@
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 const statusEnum = z.enum([
 	"backlog",
@@ -24,11 +23,11 @@ const labelSchema = z.object({
 });
 
 export const taskRouter = router({
-	getTaskByIdentifier: privateProcedure
-		.input(z.object({ identifier: z.string(), workspaceId: z.string() }))
+	getTaskByIdentifier: workspaceProcedure
+		.input(z.object({ identifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { identifier, workspaceId } = input;
+			const { taskService, workspaceId } = ctx;
+			const { identifier } = input;
 			return c.superjson(
 				await taskService.getTaskByIdentifier(TODO, {
 					identifier,
@@ -36,14 +35,14 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	getSubtasks: privateProcedure
+	getSubtasks: workspaceProcedure
 		.input(z.object({ parentId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
 			const { parentId } = input;
 			return c.superjson(await taskService.getSubtasks(TODO, { parentId }));
 		}),
-	getAllTasks: privateProcedure
+	getAllTasks: workspaceProcedure
 		.input(
 			z.object({
 				teamId: z.string(),
@@ -54,7 +53,7 @@ export const taskRouter = router({
 			const { teamId } = input;
 			return c.superjson(await taskService.getTeamTasks(TODO, { teamId }));
 		}),
-	getTaskBlockedByAndBlocking: privateProcedure
+	getTaskBlockedByAndBlocking: workspaceProcedure
 		.input(z.object({ taskId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
@@ -63,7 +62,7 @@ export const taskRouter = router({
 				await taskService.getTaskBlockedByAndBlocking(TODO, { taskId }),
 			);
 		}),
-	getAllBlockedTaskIds: privateProcedure
+	getAllBlockedTaskIds: workspaceProcedure
 		.input(z.object({ teamId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
@@ -72,7 +71,7 @@ export const taskRouter = router({
 				await taskService.getAllBlockedTaskIds(TODO, { teamId }),
 			);
 		}),
-	updateBlockedOrBlockingTasks: privateProcedure
+	updateBlockedOrBlockingTasks: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -91,7 +90,7 @@ export const taskRouter = router({
 				}),
 			);
 		}),
-	updateStatus: privateProcedure
+	updateStatus: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -99,17 +98,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, status } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: userId,
 					status,
 				}),
 			);
 		}),
-	updatePriority: privateProcedure
+	updatePriority: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -117,17 +116,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, priority } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: userId,
 					priority,
 				}),
 			);
 		}),
-	updateEffort: privateProcedure
+	updateEffort: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -135,17 +134,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, effortEstimate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: userId,
 					effortEstimate,
 				}),
 			);
 		}),
-	createTask: privateProcedure
+	createTask: workspaceProcedure
 		.input(
 			z.object({
 				title: z.string(),
@@ -158,27 +157,15 @@ export const taskRouter = router({
 				teamId: z.string(),
 				workspaceId: z.string(),
 				sprintId: z.string().optional().nullable(),
+				parentId: z.string().optional().nullable(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
-
-			const { transformedInput: transformedTitle } = transformingMentionInputs(
-				input.title,
-			);
-			const { transformedInput: transformedDescription } =
-				transformingMentionInputs(input.description || "");
+			const { taskService, userId } = ctx;
 
 			const newTask = {
 				...input,
-				authorId: user.id,
-				title: transformedTitle,
-				description: transformedDescription,
-				status: input.status || "backlog",
-				priority: input.priority || "noPriority",
-				labels: input.labels || [],
-				dueDate: input.dueDate || null,
-				effortEstimate: input.effortEstimate || null,
+				authorId: userId,
 			};
 
 			const task = await taskService.createTask(TODO, newTask);
@@ -189,7 +176,7 @@ export const taskRouter = router({
 
 			return c.superjson(task);
 		}),
-	updateParent: privateProcedure
+	updateParent: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -197,17 +184,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, parentId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					parentId,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
-	updateSprint: privateProcedure
+	updateSprint: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -215,18 +202,18 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, sprintId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					sprintId,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
 
-	updateDueDate: privateProcedure
+	updateDueDate: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -234,17 +221,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, dueDate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					dueDate,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
-	updateAssignee: privateProcedure
+	updateAssignee: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -252,17 +239,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, assigneeId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					assigneeId,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
-	updateLabels: privateProcedure
+	updateLabels: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -270,17 +257,17 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, labels } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					labels: labels,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
-	updateMetadata: privateProcedure
+	updateMetadata: workspaceProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
@@ -289,36 +276,48 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService, user } = ctx;
+			const { taskService, userId } = ctx;
 			const { taskId, title, description } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					title,
 					description,
-					updaterId: user.id,
+					updaterId: userId,
 				}),
 			);
 		}),
-	updateSubtaskOrder: privateProcedure
+	updateSubtaskOrder: workspaceProcedure
 		.input(
 			z.object({
 				parentId: z.string(),
 				newOrder: z.string().array(),
-				teamId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
 			const { taskService } = ctx;
-			const { parentId, newOrder, teamId } = input;
-			await taskService.reorderSubtasks(TODO, {
-				parentId,
-				newOrder,
-			});
+			const { parentId, newOrder } = input;
 			return c.superjson(
-				await taskService.getTeamTasks(TODO, {
-					teamId,
+				await taskService.reorderSubtasks(TODO, {
+					parentId,
+					newOrder,
 				}),
 			);
+		}),
+	setLastViewedTask: workspaceProcedure
+		.input(z.object({ taskId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { userService, userId } = ctx;
+			const { taskId } = input;
+			return c.superjson(
+				await userService.setLastViewedTask(TODO, { userId, taskId }),
+			);
+		}),
+	deleteTask: workspaceProcedure
+		.input(z.object({ taskId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId } = input;
+			return c.superjson(await taskService.deleteTask(TODO, { taskId }));
 		}),
 });

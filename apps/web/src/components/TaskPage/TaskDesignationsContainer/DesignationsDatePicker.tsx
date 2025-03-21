@@ -38,7 +38,9 @@ const DesignationsDatePicker = () => {
 		onSuccess: (updatedTask) => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
-			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
+			queryClient.invalidateQueries({
+				queryKey: ["event", "taskEvents", taskId],
+			});
 			toast({
 				title: "Success",
 				description: "Due date updated successfully",

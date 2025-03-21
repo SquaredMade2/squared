@@ -24,7 +24,7 @@ export default function FilterViewPage() {
 	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const { data: filter, isPending } = useQuery({
-		queryKey: ["filters", { teamId: team?.id }],
+		queryKey: ["filter", { teamId: team?.id }],
 		queryFn: async () => {
 			if (!team) throw new Error("No team found");
 			const filters = await client.filter.getFilters
@@ -78,7 +78,7 @@ export default function FilterViewPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}
 		>
-			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+			<div className={`flex grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&

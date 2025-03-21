@@ -3,7 +3,9 @@ import type { Status, Task } from "@squared/db";
 export type GroupedColumn = {
 	group: string;
 	tasks: Task[];
+	rowGroups?: { group: string; tasks: Task[] }[];
 };
+
 export interface ViewAllTasksProps {
 	getGroupedColumns: () => GroupedColumn[];
 	allowedColumns?: Status[];
@@ -13,6 +15,7 @@ export interface ViewAllTasksProps {
 export interface GroupColumnProps {
 	group: string;
 	tasks: Task[];
+	rowGroups?: { group: string; tasks: Task[] }[];
 	currentView: "list" | "grid";
 	showTasks: boolean;
 }

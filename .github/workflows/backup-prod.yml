@@ -2,15 +2,16 @@ name: squared-prod
 
 on:
   schedule:
-    - cron: '0 0 * * 1' 
+    - cron: '0 0 * * 1' # runs monday at midnight UTC
   workflow_dispatch:
 
 jobs:
   prod-backup:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2204
 
     permissions:
       id-token: write
+      contents: read
 
     env:
       S3_BUCKET_NAME: 'squared-prod-backup'
@@ -18,23 +19,19 @@ jobs:
       PG_VERSION: '16'
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup PostgreSQL
         uses: tj-actions/install-postgresql@v3
         with:
           postgresql-version: ${{env.PG_VERSION}}
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt install -y awscli
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
           aws-region: ${{ env.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       - name: Run Backup and insert into s3 bucket
         run: |
           BACKUP_FILE_NAME="$(date +%Y%m%d | tr -d '-')"

@@ -1,7 +1,7 @@
 "use client";
 
-import { useWorkspaceStore } from "@/store";
-import { ArrowLeft } from "lucide-react";
+import { useOrganization } from "@clerk/nextjs";
+import { ArrowLeft } from "@squared/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Button } from "../ui/button";
@@ -16,15 +16,15 @@ type MyTasksPaths = (typeof tabs)[number]["id"];
 const MyTasksNavbar = () => {
 	const router = useRouter();
 	const pathname = usePathname();
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { organization } = useOrganization();
 
 	const activeTab = pathname.split("/").pop() as MyTasksPaths;
 
 	const navigate = useCallback(
 		(path: MyTasksPaths) => {
-			router.push(`/${workspace?.url}/my-tasks/${path}`);
+			router.push(`/${organization?.slug}/my-tasks/${path}`);
 		},
-		[router, workspace?.url],
+		[router, organization?.slug],
 	);
 	return (
 		<div className="my-4 flex items-center justify-start space-x-4">

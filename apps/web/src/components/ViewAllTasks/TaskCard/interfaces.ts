@@ -1,8 +1,9 @@
-import type { Label, Task, User } from "@squared/db";
+import type { PublicUserData } from "@clerk/types";
+import type { Label, Task } from "@squared/db";
 
 export interface TaskGridProps {
 	task: Task;
-	user: User | null;
+	user?: PublicUserData;
 	taskLabels: Label[];
 	currentWorkspaceUrl?: string;
 	isSubtask?: boolean;
@@ -13,7 +14,7 @@ export interface TaskListProps {
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
 	task: Task;
-	user: User | null;
+	user?: PublicUserData;
 	taskLabels: Label[];
 	currentWorkspaceUrl?: string;
 }
@@ -29,4 +30,8 @@ export interface TaskCardProps {
 
 export interface TaskCardLabelsProps {
 	labels: Label[];
+}
+
+export interface AssigneeBoxProps {
+	task: Task;
 }

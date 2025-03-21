@@ -32,7 +32,7 @@ const StatusDropdown = () => {
 	};
 
 	const { mutate: updateItem } = useMutation({
-		mutationKey: ["updateTask", taskId],
+		mutationKey: ["task", "updateStatus", taskId],
 		mutationFn: async (newStatus: Status) => {
 			const res = await client.task.updateStatus
 				.$post({

@@ -1,5 +1,5 @@
 import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useViewStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
@@ -24,6 +24,8 @@ export function useTaskDashboard() {
 	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
 		(state) => state,
 	);
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupRowsBy } = displayOptions;
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier) ?? "";
@@ -35,7 +37,7 @@ export function useTaskDashboard() {
 		isLoading,
 		error: tasksError,
 	} = useQuery<Task[], Error>({
-		queryKey: ["tasks", team?.id],
+		queryKey: ["task", "getAllTasks", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllTasks.$get({
@@ -49,7 +51,7 @@ export function useTaskDashboard() {
 	});
 
 	const allBlockedTaskIdsQuery = useQuery({
-		queryKey: ["allBlockedTasksIds", team?.id],
+		queryKey: ["task", "allBlockedTasksIds", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllBlockedTaskIds.$get({
@@ -76,7 +78,7 @@ export function useTaskDashboard() {
 			return updatedTask;
 		},
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ["tasks", team?.id] });
+			await queryClient.invalidateQueries({ queryKey: ["task", team?.id] });
 		},
 	});
 
@@ -89,7 +91,8 @@ export function useTaskDashboard() {
 
 		const draggedTask = tasks.find((task) => task.id === draggableId);
 		if (!draggedTask) return;
-		/// If the dragged task is in the same column and its a subtask, reorder the subtask
+
+		// If the dragged task is in the same droppableId and its a subtask, reorder the subtask
 		if (
 			destination.droppableId === source.droppableId &&
 			draggedTask.parentId &&
@@ -104,18 +107,33 @@ export function useTaskDashboard() {
 				.$post({
 					parentId: draggedTask.parentId,
 					newOrder: items.map((item) => item.id),
-					teamId: team.id,
 				})
 				.then((res) => res.json());
 			setTasks(teamTasks);
 			return;
 		}
+
+		// Handle row grouping - extract the status from composite droppableId
+		let targetStatus: Status;
+
+		// Check if row grouping is active and we have a composite droppableId
+		if (groupRowsBy !== "None" && destination.droppableId.includes("-")) {
+			// Extract just the status part (before the first dash)
+			const [statusPart] = destination.droppableId.split("-");
+			targetStatus = statusPart as Status;
+		} else {
+			// Normal case - the droppableId is directly the status
+			targetStatus = destination.droppableId as Status;
+		}
+
+		// Update the task status
 		updateTaskMutation.mutate({
 			taskId: draggedTask.id,
-			status: destination.droppableId as Status,
+			status: targetStatus,
 		});
+
 		await queryClient.invalidateQueries({
-			queryKey: ["allBlockedTasksIds", team?.id],
+			queryKey: ["task", team?.id],
 		});
 	};
 

@@ -17,6 +17,7 @@ const Group = ({
 	const { displayOptions } = useViewStore((state) => state);
 
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
+	const { showSubTasks } = displayOptions;
 	const { tasks: allTasks, allBlockedTaskIds } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
 	const pathname = usePathname();
@@ -34,6 +35,7 @@ const Group = ({
 			})[0]
 		: null;
 
+	// Get parent task IDs for this group
 	const getParentTaskIds = () => {
 		const taskIdsForGroup = tasks.map((t) => t.id);
 		return tasks
@@ -72,7 +74,7 @@ const Group = ({
 				location={"dashboard"}
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
 			/>
-			{subtasks.length > 0 && displayOptions.showSubTasks && (
+			{subtasks.length > 0 && showSubTasks && (
 				<Droppable droppableId={`${task.identifier}Subtasks`}>
 					{(provided) => (
 						<div
@@ -118,57 +120,66 @@ const Group = ({
 			>
 				{parentTask?.identifier}: {parentTask?.title}
 			</span>
-			{subtasks.map((subtask, index) => (
-				<TaskCard
-					key={subtask.id}
-					task={subtask}
-					index={index}
-					location={"dashboard"}
-					isSubtask={true}
-					isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
-				/>
-			))}
+			{showSubTasks &&
+				subtasks.map((subtask, index) => (
+					<TaskCard
+						key={subtask.id}
+						task={subtask}
+						index={index}
+						location={"dashboard"}
+						isSubtask={true}
+						isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
+					/>
+				))}
 		</div>
 	);
+
 	const parentIdsForGroup = getParentTaskIds();
 	const subtaskParentIds = new Set(
 		tasks.filter((t) => t.parentId).map((t) => t.parentId),
 	);
 
-	const renderableItems = tasks
-		.map((task) => {
-			if (!task.parentId) {
-				const isParentTask = parentIdsForGroup.includes(task.id);
-				if (isParentTask) {
-					const subtasks = tasks.filter((t) => t.parentId === task.id);
-					return {
-						task,
-						render: (index: number) =>
-							renderTaskWithSubtasks(task, index, subtasks),
-					};
-				}
-				return {
-					task,
-					render: (index: number) => renderTask(task, index),
-				};
-			}
-			return null;
-		})
-		.filter(Boolean);
+	// Separate parent tasks and subtasks
+	const parentTasks = tasks.filter((task) => !task.parentId);
+	const subtasks = tasks.filter((task) => task.parentId);
 
-	const orphanedSubtaskGroups = Array.from(subtaskParentIds)
-		.map((id) => {
-			if (parentIdsForGroup.includes(id)) return null;
-			const parentTask = allTasks.find((t) => t.id === id);
-			const subtasks = tasks.filter((t) => t.parentId === id);
+	const renderableItems = parentTasks.map((task) => {
+		const isParentTask = parentIdsForGroup.includes(task.id);
+		if (isParentTask) {
+			const taskSubtasks = subtasks.filter((t) => t.parentId === task.id);
 			return {
-				task: parentTask,
-				render: () => renderSubtasks(parentTask, subtasks),
+				task,
+				render: (index: number) =>
+					renderTaskWithSubtasks(task, index, taskSubtasks),
 			};
-		})
-		.filter(Boolean);
+		}
+		return {
+			task,
+			render: (index: number) => renderTask(task, index),
+		};
+	});
 
-	const allItems = [...renderableItems, ...orphanedSubtaskGroups];
+	// Handle orphaned subtasks (those without a parent in the current group)
+	const orphanedSubtaskGroups = displayOptions.showSubTasks
+		? Array.from(subtaskParentIds)
+				.map((id) => {
+					if (parentIdsForGroup.includes(id)) return null;
+					const parentTask = allTasks.find((t) => t.id === id);
+					const taskSubtasks = subtasks.filter((t) => t.parentId === id);
+					return {
+						task: parentTask,
+						render: () => renderSubtasks(parentTask, taskSubtasks),
+					};
+				})
+				.filter(Boolean)
+		: [];
+
+	// If showSubTasks is false, only include parent tasks for rendering
+	const allItems = showSubTasks
+		? [...renderableItems, ...orphanedSubtaskGroups]
+		: [...renderableItems];
+
+	// Sort all items by the requested order
 	const sortedItems = orderTasks(
 		allItems
 			.map((item) => item?.task)
@@ -178,6 +189,7 @@ const Group = ({
 		orderAscending,
 	);
 
+	// Filter by sprint if a saved filter with sprintId is active
 	if (currentSavedFilter) {
 		const sprintId = currentSavedFilter.sprintId;
 
@@ -201,6 +213,7 @@ const Group = ({
 		});
 	}
 
+	// Render the sorted items
 	return sortedItems.map((sortedTask, index) => {
 		const item = allItems.find((item) => {
 			return item?.task?.id === sortedTask.id;
