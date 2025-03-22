@@ -398,6 +398,9 @@ export class WorkspaceService implements WorkspaceRpc {
 		expiration?: string;
 		uses?: number;
 	}): Promise<string> {
+		this.logger.info(
+			`Generating workspace invite link ${workspaceId} ${expiration} ${uses}`,
+		);
 		function generateSecureRandomString(length = 8) {
 			const chars =
 				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
