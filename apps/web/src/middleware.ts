@@ -14,28 +14,28 @@ export default clerkMiddleware(
 	async (auth, request) => {
 		const url = new URL(request.url);
 		const pathSegments = url.pathname.split("/").filter(Boolean);
-
 		if (pathSegments[1] === "undefined" || pathSegments[3] === "undefined") {
 			return NextResponse.redirect(new URL("/", request.url));
 		}
-		if (!isPublicRoute(request)) {
-			await auth.protect();
-		}
+
 		if (
 			isAdminRoute(request) &&
 			!(await auth()).has({ role: "org:admin" }) &&
-			!(pathSegments.length >= 2)
+			pathSegments.length === 2
 		) {
 			return NextResponse.redirect(new URL(`${request.url}/profile`));
 		}
 		if (
 			isAdminRoute(request) &&
 			!(await auth()).has({ role: "org:admin" }) &&
-			pathSegments.length >= 2
+			pathSegments.length > 2
 		) {
 			return NextResponse.redirect(
-				new URL(request.url.replace(pathSegments[2], "/profile")),
+				new URL(`${request.url.replace(pathSegments[2], "/profile")}`),
 			);
+		}
+		if (!isPublicRoute(request)) {
+			await auth.protect();
 		}
 	},
 	() => ({
