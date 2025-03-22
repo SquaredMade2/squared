@@ -6,7 +6,6 @@ import { Trash } from "lucide-react";
 
 export const DeleteLabelButton = ({
 	labelName,
-	pageId,
 	refetch,
 }: {
 	labelName: string;
@@ -18,7 +17,7 @@ export const DeleteLabelButton = ({
 	const deleteLabelMutation = useMutation({
 		mutationFn: async () => {
 			await client.workspace.deleteWorkspaceLabel
-				.$post({ workspaceId: pageId, labelName: labelName })
+				.$post({ labelName: labelName })
 				.then((res) => res.json());
 		},
 		onSuccess: () => {

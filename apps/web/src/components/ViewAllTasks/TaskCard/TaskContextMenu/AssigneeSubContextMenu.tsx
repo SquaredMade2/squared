@@ -24,8 +24,9 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const { mutate: updateAssignee } = useMutation({
 		mutationKey: ["task", "updateAssignee", taskId],
-		mutationFn: async (userId?: string) => {
-			if (!taskId || !userId) throw new Error("Task or user not found");
+		mutationFn: async (userId?: string | null) => {
+			if (!taskId || userId === undefined)
+				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId,
 				assigneeId: userId,
@@ -36,7 +37,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		},
 	});
 
-	const handleSelectAssignee = (userId?: string) => {
+	const handleSelectAssignee = (userId?: string | null) => {
 		updateAssignee(userId);
 	};
 
@@ -59,7 +60,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
 						className="flex justify-between"
-						onClick={() => handleSelectAssignee()}
+						onClick={() => handleSelectAssignee(null)}
 					>
 						<div className="flex">
 							<UserSearch className="mx-1 mr-3 size-5" />
