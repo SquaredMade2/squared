@@ -37,7 +37,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -65,7 +65,7 @@ export default function WorkspaceSettings() {
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
-	const { membership, organization } = useOrganization();
+	const { organization } = useOrganization();
 	const { userMemberships } = useOrganizationList({ userMemberships: true });
 
 	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
@@ -115,10 +115,6 @@ export default function WorkspaceSettings() {
 
 	useEffect(() => {
 		if (!workspace) return;
-
-		if (membership?.role !== "org:admin") {
-			router.push(`/${organization?.slug}/settings/profile`);
-		}
 
 		//on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
 		if (
@@ -219,158 +215,155 @@ export default function WorkspaceSettings() {
 
 	return (
 		<div className="container mx-auto w-full py-10 md:w-3/4 ">
-			<Protect condition={(has) => has({ role: "org:admin" })}>
-				<h1 className="mb-2 font-bold text-3xl">Workspace</h1>
-				<p className="mb-6 text-muted-foreground">
-					Manage your workspace settings
-				</p>
+			<h1 className="mb-2 font-bold text-3xl">Workspace</h1>
+			<p className="mb-6 text-muted-foreground">
+				Manage your workspace settings
+			</p>
 
-				<div className="mb-6 flex items-center space-x-4">
-					<ImageUpload
-						alt="Workspace Logo"
-						fallbackText={organization.name[0]}
-						handleImageUpload={handleImageUpload}
-						imageUrl={organization.imageUrl}
-					/>
-					<div>
-						<h2 className="font-semibold text-xl">{organization.name}</h2>
-						<p className="text-muted-foreground">{organization.slug}</p>
-					</div>
+			<div className="mb-6 flex items-center space-x-4">
+				<ImageUpload
+					alt="Workspace Logo"
+					fallbackText={organization.name[0]}
+					handleImageUpload={handleImageUpload}
+					imageUrl={organization.imageUrl}
+				/>
+				<div>
+					<h2 className="font-semibold text-xl">{organization.name}</h2>
+					<p className="text-muted-foreground">{organization.slug}</p>
 				</div>
+			</div>
 
-				<Separator className="my-6" />
+			<Separator className="my-6" />
 
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit((values) => updateWorkspace(values))}
-						className="space-y-8"
-					>
-						<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit((values) => updateWorkspace(values))}
+					className="space-y-8"
+				>
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+						<FormField
+							control={form.control}
+							defaultValue={""}
+							name="name"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace Name</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							defaultValue={""}
+							name="url"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace URL</FormLabel>
+									<FormControl>
+										<div className="flex">
+											<span className="mr-0 inline-flex items-center rounded-l-md border border-input border-r-0 bg-transparent px-3 pr-0 text-muted-foreground text-sm">
+												https://app.squaredmade.com/
+											</span>
+											<Input
+												{...field}
+												className="ml-0 rounded-l-none border-l-0 pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+											/>
+										</div>
+									</FormControl>
+									<FormDescription>
+										This is your workspace's unique URL on our platform.
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
+						<div className="col-span-2">
 							<FormField
 								control={form.control}
-								defaultValue={""}
-								name="name"
+								name="viewPage"
 								render={({ field }) => (
-									<FormItem className="col-span-1">
-										<FormLabel>Workspace Name</FormLabel>
+									<FormItem className="col-span-1 mb-2">
+										<FormLabel>Set Workspace View</FormLabel>
 										<FormControl>
-											<Input {...field} />
+											<Select
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												value={field.value}
+												defaultValue={defaultSelect ? defaultSelect : ""}
+											>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a page" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{defaultPages.map((page: string) => {
+															return (
+																<SelectItem
+																	key={page}
+																	value={page}
+																>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+															);
+														})}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
 										</FormControl>
-										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<FormField
-								control={form.control}
-								defaultValue={""}
-								name="url"
-								render={({ field }) => (
-									<FormItem className="col-span-1">
-										<FormLabel>Workspace URL</FormLabel>
-										<FormControl>
-											<div className="flex">
-												<span className="mr-0 inline-flex items-center rounded-l-md border border-input border-r-0 bg-transparent px-3 pr-0 text-muted-foreground text-sm">
-													https://app.squaredmade.com/
-												</span>
-												<Input
-													{...field}
-													className="ml-0 rounded-l-none border-l-0 pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-												/>
-											</div>
-										</FormControl>
-										<FormDescription>
-											This is your workspace's unique URL on our platform.
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
-							<div className="col-span-2">
-								<FormField
-									control={form.control}
-									name="viewPage"
-									render={({ field }) => (
-										<FormItem className="col-span-1 mb-2">
-											<FormLabel>Set Workspace View</FormLabel>
-											<FormControl>
-												<Select
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-													value={field.value}
-													defaultValue={defaultSelect ? defaultSelect : ""}
-												>
-													<SelectTrigger className="w-[180px]">
-														<SelectValue placeholder="Select a page" />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectGroup>
-															{defaultPages.map((page: string) => {
-																return (
-																	<SelectItem
-																		key={page}
-																		value={page}
-																	>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
-																);
-															})}
-														</SelectGroup>
-													</SelectContent>
-												</Select>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormDescription>
-									Set the default page users of a workspace will load into{" "}
-									<br />
-									<small className="text-xs">
-										*If Sprints is disabled, default view will fall back to{" "}
-										<strong>All Tasks</strong>
-									</small>
-								</FormDescription>
-							</div>
+							<FormDescription>
+								Set the default page users of a workspace will load into <br />
+								<small className="text-xs">
+									*If Sprints is disabled, default view will fall back to{" "}
+									<strong>All Tasks</strong>
+								</small>
+							</FormDescription>
 						</div>
-						<Button type="submit" disabled={!isFormChanged}>
-							Update
-						</Button>
-					</form>
-				</Form>
+					</div>
+					<Button type="submit" disabled={!isFormChanged}>
+						Update
+					</Button>
+				</form>
+			</Form>
 
-				<Separator className="my-6" />
+			<Separator className="my-6" />
 
-				<div className="rounded-lg bg-destructive/10 p-6">
-					<h2 className="mb-4 font-semibold text-xl">Delete Workspace</h2>
-					<p className="mb-4 text-muted-foreground">
-						Permanently delete your workspace and all of its contents from the
-						platform. This action is not reversible, so please continue with
-						caution.
-					</p>
-					<AlertDialog>
-						<AlertDialogTrigger asChild>
-							<Button variant="destructive">Delete Workspace</Button>
-						</AlertDialogTrigger>
-						<AlertDialogContent>
-							<AlertDialogHeader>
-								<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-								<AlertDialogDescription>
-									This action cannot be undone. This will permanently delete
-									your workspace and remove your data from our servers.
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-							<AlertDialogFooter>
-								<AlertDialogCancel>Cancel</AlertDialogCancel>
-								<AlertDialogAction
-									className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-									onClick={() => deleteWorkspace()}
-								>
-									{isDeleting ? "Deleting..." : "Yes, delete workspace"}
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
-				</div>
-			</Protect>
+			<div className="rounded-lg bg-destructive/10 p-6">
+				<h2 className="mb-4 font-semibold text-xl">Delete Workspace</h2>
+				<p className="mb-4 text-muted-foreground">
+					Permanently delete your workspace and all of its contents from the
+					platform. This action is not reversible, so please continue with
+					caution.
+				</p>
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
+						<Button variant="destructive">Delete Workspace</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+							<AlertDialogDescription>
+								This action cannot be undone. This will permanently delete your
+								workspace and remove your data from our servers.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction
+								className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+								onClick={() => deleteWorkspace()}
+							>
+								{isDeleting ? "Deleting..." : "Yes, delete workspace"}
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</div>
 		</div>
 	);
 }
