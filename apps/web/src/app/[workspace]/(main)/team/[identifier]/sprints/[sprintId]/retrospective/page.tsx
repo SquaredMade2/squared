@@ -26,8 +26,6 @@ export default function SprintRetrospectivePage() {
 
 	const { identifier, workspace } = params;
 
-	console.log(identifier, sprintId, workspace);
-
 	const {
 		data = { actionItems: [], toImprove: [], wentWell: [] },
 		refetch: fetchData,
