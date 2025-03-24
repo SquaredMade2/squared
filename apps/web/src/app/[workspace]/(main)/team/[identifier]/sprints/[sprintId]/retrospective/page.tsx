@@ -1,6 +1,7 @@
 "use client";
 
 import { RetroColumn } from "@/components/Sprints";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
@@ -8,7 +9,7 @@ import { parseParams } from "@/utils/parseParams";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { type Socket, io } from "socket.io-client";
 
@@ -18,9 +19,14 @@ export type RetroItem = Pick<
 >;
 
 export default function SprintRetrospectivePage() {
+	const router = useRouter();
 	const params = useParams();
 	const sprintId = parseParams(params.sprintId) ?? "";
 	const [socket, setSocket] = useState<Socket | null>(null);
+
+	const { identifier, workspace } = params;
+
+	console.log(identifier, sprintId, workspace);
 
 	const {
 		data = { actionItems: [], toImprove: [], wentWell: [] },
@@ -192,11 +198,18 @@ export default function SprintRetrospectivePage() {
 		[sprintId, socket],
 	);
 
+	const handleReturn = () => {
+		router.push(`/${workspace}/team/${identifier}/sprints/${sprintId}`);
+	};
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<div className="container mx-auto py-10">
 				<div className="flex h-screen w-full flex-col overflow-hidden">
 					<div className="mb-4 w-full border-border border-b py-4">
+						<Button className="mb-5 w-1/6" onClick={handleReturn}>
+							Return
+						</Button>
 						<h1 className="font-bold text-xl">Sprint Retrospective</h1>
 					</div>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
