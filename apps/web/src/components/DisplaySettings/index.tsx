@@ -116,6 +116,7 @@ const TopNavBarDisplay = () => {
 		);
 		setOptions({
 			viewOptions: {
+				...displayOptions.viewOptions,
 				[`${view}Options`]: {
 					...currentOptions,
 					displayProperties: updatedProperties,
@@ -135,7 +136,7 @@ const TopNavBarDisplay = () => {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<div className="relative flex h-10 flex-col items-end gap-2 ">
+			<div className="relative flex h-10 flex-col items-end gap-2">
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button variant="ghost" className="gap-2">
@@ -375,6 +376,7 @@ const TopNavBarDisplay = () => {
 										onCheckedChange={(checked) =>
 											setOptions({
 												viewOptions: {
+													...displayOptions.viewOptions,
 													[`${view}Options`]: {
 														...currentOptions,
 														showEmptyGroups: checked,
