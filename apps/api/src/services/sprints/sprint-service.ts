@@ -147,6 +147,9 @@ export class SprintService implements SprintRpc {
 						and(
 							eq(tasksTable.sprintId, currentSprint.id),
 							ne(tasksTable.status, "done"),
+							ne(tasksTable.status, "canceled"),
+							ne(tasksTable.status, "duplicated"),
+							ne(tasksTable.status, "archived"),
 						),
 					);
 			}
