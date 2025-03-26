@@ -153,11 +153,7 @@ export type GetUserWorkspacesResponse = {
 export type JoinWorkspaceRequest = {
 	isLink: boolean;
 	token: string;
-	user: {
-		email: string;
-		id: string;
-		name: string;
-	};
+	userId: string;
 	workspace: {
 		id: string;
 		name?: string;
@@ -214,6 +210,8 @@ export type GenerateWorkspaceInviteLinkRequest = {
 };
 
 export type GenerateWorkspaceInviteLinkResponse = string;
+
+export type GetTakenWorkspaceUrlsRequest = unknown;
 
 export type GetTakenWorkspaceUrlsResponse = string[];
 
@@ -387,8 +385,11 @@ export class WorkspaceService extends RPCContextClient {
 	/**
 	 * getTakenWorkspaceUrls method
 	 */
-	getTakenWorkspaceUrls(ctx: Context): Promise<GetTakenWorkspaceUrlsResponse> {
-		return this.request(ctx, "getTakenWorkspaceUrls");
+	getTakenWorkspaceUrls(
+		ctx: Context,
+		req: GetTakenWorkspaceUrlsRequest,
+	): Promise<GetTakenWorkspaceUrlsResponse> {
+		return this.request(ctx, "getTakenWorkspaceUrls", req);
 	}
 
 	/**
