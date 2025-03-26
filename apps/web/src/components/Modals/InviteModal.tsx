@@ -62,7 +62,7 @@ export const InviteModal = () => {
 				description: error.message,
 				variant: "destructive",
 			});
-			setLink("Failed to generate link");
+			if (link) setLink("");
 		},
 	});
 
@@ -164,7 +164,6 @@ export const InviteModal = () => {
 							) : (
 								<p>
 									{(!link && "Create Invite Link") ||
-										(link.includes("Failed") && link) ||
 										`${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`}
 								</p>
 							)}

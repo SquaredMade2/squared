@@ -77,7 +77,7 @@ export const workspaceRouter = router({
 				token: z.string(),
 				isLink: z.boolean(),
 				workspace: z.object({
-					id: z.string(),
+					id: z.string().optional(),
 					name: z.string().optional(),
 				}),
 			}),

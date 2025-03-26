@@ -218,62 +218,61 @@ export class WorkspaceService implements WorkspaceRpc {
 	async joinWorkspace({
 		token,
 		isLink,
-		user: { id: userId },
+		userId,
 		workspace: { id: workspaceId, name: workspaceName },
 	}: JoinWorkspaceParams): Promise<Workspace | null> {
 		this.logger.info(
 			`User attempting to join workspace ${workspaceId ? workspaceId : workspaceName}`,
 		);
 
-		if (isLink && token && workspaceName) {
-			const { inviteLinks } = await this.verifyToken(token, workspaceName);
+		try {
+			if (isLink && token && workspaceName) {
+				const { workspaceId, inviteLinks } = await this.verifyToken(
+					token,
+					workspaceName,
+				);
 
-			if (inviteLinks) {
-				// reduce link uses if new member and uses is finite
+				if (inviteLinks) {
+					// reduce link uses if new member and uses is finite
 
-				const inviteLink = inviteLinks.find((data) => data.link === token);
+					const inviteLink = inviteLinks.find((data) => data.link === token);
 
-				if (inviteLink?.uses) {
-					const filteredLinks = inviteLinks.filter(
-						(data) => data.link !== token,
-					);
-					// reduce uses by 1
-					this.logger.info("Reducing InviteLink uses by 1");
-					const inviteLinksUpdate = [
-						...filteredLinks,
-						{
-							link: inviteLink.link,
-							expiration: inviteLink.expiration,
-							uses: inviteLink.uses - 1,
-						},
-					];
-					await this.db
-						.update(workspacesTable)
-						.set({
-							inviteLinks: inviteLinksUpdate,
-						})
-						.where(eq(workspacesTable.externalId, workspaceId));
+					if (inviteLink?.uses) {
+						const filteredLinks = inviteLinks.filter(
+							(data) => data.link !== token,
+						);
+						// reduce uses by 1
+						this.logger.info("Reducing InviteLink uses by 1");
+						const inviteLinksUpdate = [
+							...filteredLinks,
+							{
+								link: inviteLink.link,
+								expiration: inviteLink.expiration,
+								uses: inviteLink.uses - 1,
+							},
+						];
+						await this.db
+							.update(workspacesTable)
+							.set({
+								inviteLinks: inviteLinksUpdate,
+							})
+							.where(eq(workspacesTable.externalId, workspaceId));
+					}
 				}
+
+				return await this.addUserToWorkspace(userId, workspaceId);
 			}
+
+			if (workspaceId) {
+				return await this.addUserToWorkspace(userId, workspaceId);
+			}
+
+			return null;
+		} catch (error) {
+			if (error instanceof Error)
+				throw new Error(`Failed to join workspace. ${error.message}`);
+			return null;
 		}
-
-		const [workspace] = await this.db.transaction(async (tx) => {
-			await tx
-				.insert(userWorkspacesTable)
-				.values({
-					userId,
-					workspaceId,
-				})
-				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
-				.returning();
-
-			return await tx
-				.select()
-				.from(workspacesTable)
-				.where(eq(workspacesTable.externalId, workspaceId));
-		});
-
-		return workspace;
 	}
 
 	async removeUserFromWorkspace({
@@ -556,10 +555,12 @@ export class WorkspaceService implements WorkspaceRpc {
 		workspaceName: string,
 	): Promise<{
 		inviteLinks?: WorkspaceInviteLink[];
+		workspaceId: string;
 	}> {
-		const { inviteLinks } = await this.db
+		const { inviteLinks, workspaceId } = await this.db
 			.select({
 				inviteLinks: workspacesTable.inviteLinks,
+				workspaceId: workspacesTable.externalId,
 			})
 			.from(workspacesTable)
 			.where(eq(workspacesTable.name, workspaceName))
@@ -583,8 +584,29 @@ export class WorkspaceService implements WorkspaceRpc {
 			);
 		}
 
-		return { inviteLinks };
+		return { inviteLinks, workspaceId };
 	}
+
+	private async addUserToWorkspace(
+		userId: string,
+		workspaceId: string,
+	): Promise<Workspace | null> {
+		const [workspace] = await this.db.transaction(async (tx) => {
+			await tx
+				.insert(userWorkspacesTable)
+				.values({ userId, workspaceId })
+				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
+				.returning();
+
+			return await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId));
+		});
+
+		return workspace;
+	}
+
 	private throwError(message: string): never {
 		this.logger.error(message);
 		throw new Error(message);

@@ -10,9 +10,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useModalStore, useWorkspaceStore } from "@/store";
+import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
+import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squared/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -25,13 +25,7 @@ export function WorkspaceDropdown() {
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
-	const { user } = useUser();
-	const { workspace } = useWorkspaceStore((state) => state);
 	const { setShowInvite } = useModalStore((state) => state);
-
-	const isUserWorkspaceAdmin = workspace?.admins.filter(
-		(admin) => admin === user?.id,
-	);
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -117,7 +111,11 @@ export function WorkspaceDropdown() {
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
 				{/* This should only show for workspace owners and admins */}
-				{isUserWorkspaceAdmin && (
+				<Protect
+					condition={(has) =>
+						has({ role: "org:admin" }) || has({ role: "org:owner" })
+					}
+				>
 					<DropdownMenuItem asChild>
 						<Button
 							onClick={() => setShowInvite(true)}
@@ -128,7 +126,7 @@ export function WorkspaceDropdown() {
 							<span className="ml-2">Invite People</span>
 						</Button>
 					</DropdownMenuItem>
-				)}
+				</Protect>
 				<DropdownMenuItem
 					onSelect={() => {
 						router.push(`/${organization?.slug}/settings`);

@@ -18,7 +18,7 @@ export type JoinWorkspaceParams = {
 	token: string;
 	isLink: boolean;
 	userId: string;
-	workspace: { id: string; name?: string };
+	workspace: { id?: string; name?: string };
 };
 
 export interface WorkspaceRpc {

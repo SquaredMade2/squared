@@ -14,7 +14,7 @@ export default function JoinWorkspace() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
-	const { organization, membership, isLoaded } = useOrganization();
+	const { organization, isLoaded } = useOrganization();
 
 	const token = searchParams.get("token") || "";
 	const isLink = searchParams.has("link");
@@ -25,8 +25,7 @@ export default function JoinWorkspace() {
 	const { mutate: joinWorkspaceMutation, isPending } = useMutation({
 		mutationKey: ["workspace", "joinWorkspace", organization?.id],
 		mutationFn: async () => {
-			if (!organization || !membership?.role) return;
-			if (token && isLoaded) {
+			if (isLoaded) {
 				await client.workspace.joinWorkspace.$post({
 					token,
 					isLink,
@@ -52,9 +51,15 @@ export default function JoinWorkspace() {
 
 	if (isPending || !isLoaded) {
 		return (
-			<div className="flex h-screen w-full flex-col items-center justify-center gap-4">
-				<div className="font-bold text-3xl">Loading Workspace Invite...</div>
-				<SquaredLoader />
+			<div className="h-screen w-full">
+				<div className="flex h-full items-center justify-center">
+					<div className="flex flex-col items-center gap-4">
+						<div className="font-bold text-3xl">
+							Loading Workspace Invite...
+						</div>
+						<SquaredLoader />
+					</div>
+				</div>
 			</div>
 		);
 	}
