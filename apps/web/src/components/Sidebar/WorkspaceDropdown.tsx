@@ -86,8 +86,9 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={org.id}
 						onSelect={() => {
-							setActive?.({ organization: org });
-							updatePathWithWorkspace(org.slug);
+							setActive?.({ organization: org }).then(() => {
+								updatePathWithWorkspace(org.slug);
+							});
 						}}
 						className="hover:cursor-pointer"
 					>
