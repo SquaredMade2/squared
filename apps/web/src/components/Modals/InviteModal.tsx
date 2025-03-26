@@ -3,6 +3,7 @@
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { LINK_EXPIRATION_TIMES } from "@/utils/constantValues";
+import { Copy } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -170,8 +171,10 @@ export const InviteModal = () => {
 							<Button
 								className="h-8"
 								disabled={!link || link.includes("Failed")}
+								aria-label="Copy invite link"
 								onClick={handleCopy}
 							>
+								<Copy className="mr-2 size-4" />
 								Copy
 							</Button>
 						</div>

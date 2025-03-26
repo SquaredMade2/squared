@@ -2,6 +2,7 @@ export * from "./X";
 export * from "./Users";
 export * from "./User";
 export * from "./UserSearch";
+export * from "./UserRoundPlus";
 export * from "./UserCog";
 export * from "./TriangleAlert";
 export * from "./Trash";

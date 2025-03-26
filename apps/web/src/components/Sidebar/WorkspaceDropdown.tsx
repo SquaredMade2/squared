@@ -13,7 +13,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs";
-import { ChevronDown, Plus, Settings, UserRoundPlus } from "lucide-react";
+import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squared/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
