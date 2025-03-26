@@ -10,9 +10,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useToast } from "@/components/ui/use-toast";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
 import { ChevronDown, Plus, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -25,7 +25,6 @@ export function WorkspaceDropdown() {
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
-	const { toast } = useToast();
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -41,10 +40,21 @@ export function WorkspaceDropdown() {
 		}
 	};
 
+	const updateActiveWorkspace = (
+		org: OrganizationResource,
+		url: string | null,
+	) => {
+		setActive?.({ organization: org }).then(() => {
+			updatePathWithWorkspace(url);
+		});
+	};
+
 	useEffect(() => {
 		if (!organization && userMemberships.data?.length) {
-			setActive?.({ organization: userMemberships.data[0].organization });
-			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
+			updateActiveWorkspace(
+				userMemberships.data[0].organization,
+				userMemberships.data[0].organization.slug,
+			);
 		}
 	}, [userMemberships.data, organization]);
 
@@ -88,16 +98,7 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={org.id}
 						onSelect={() => {
-							try {
-								setActive?.({ organization: org }).then(() => {
-									updatePathWithWorkspace(org.slug);
-								});
-							} catch {
-								toast({
-									title: "Error swapping workspaces.",
-									variant: "destructive",
-								});
-							}
+							updateActiveWorkspace(org, org.slug);
 						}}
 						className="hover:cursor-pointer"
 					>
