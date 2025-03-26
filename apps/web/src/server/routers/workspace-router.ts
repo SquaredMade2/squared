@@ -76,11 +76,6 @@ export const workspaceRouter = router({
 			z.object({
 				token: z.string(),
 				isLink: z.boolean(),
-				user: z.object({
-					id: z.string(),
-					name: z.string(),
-					email: z.string(),
-				}),
 				workspace: z.object({
 					id: z.string(),
 					name: z.string().optional(),
@@ -88,13 +83,13 @@ export const workspaceRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService } = ctx;
-			const { token, isLink, user, workspace } = input;
+			const { workspaceService, userId } = ctx;
+			const { token, isLink, workspace } = input;
 			return c.superjson(
 				await workspaceService.joinWorkspace(TODO, {
 					token,
 					isLink,
-					user,
+					userId,
 					workspace,
 				}),
 			);

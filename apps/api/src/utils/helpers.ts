@@ -1,30 +1,32 @@
+import { getRandomValues } from "node:crypto";
+
 export const expirationTimeFormat = (expiration: string) => {
-	const msInHour = 3600000;
-	let expirationInMs: number;
+	const msInHour = 60 * 60 * 1000;
+	const now = Date.now();
 
 	switch (expiration) {
 		case "30m":
-			expirationInMs = msInHour / 2;
-			break;
+			return msInHour / 2 + now;
 		case "1h":
-			expirationInMs = msInHour;
-			break;
+			return msInHour + now;
 		case "6h":
-			expirationInMs = msInHour * 6;
-			break;
+			return msInHour * 6 + now;
 		case "12h":
-			expirationInMs = msInHour * 12;
-			break;
+			return msInHour * 12 + now;
 		case "1d":
-			expirationInMs = msInHour * 24;
-			break;
+			return msInHour * 24 + now;
 		case "7d":
-			expirationInMs = msInHour * 24 * 7;
-			break;
+			return msInHour * 24 * 7 + now;
 		default:
-			expirationInMs = 1;
-			break;
+			return now;
 	}
+};
 
-	return Date.now() + expirationInMs;
+export const generateSecureRandomString = (length = 8) => {
+	const chars =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const array = new Uint8Array(length);
+	getRandomValues(array);
+
+	return Array.from(array, (byte) => chars[byte % chars.length]).join("");
 };

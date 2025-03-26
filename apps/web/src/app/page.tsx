@@ -29,7 +29,9 @@ const HomePage = () => {
 				.$get()
 				.then((res) => res.json());
 
-			setActive && res?.id ? setActive({ organization: res.id }) : "";
+			setActive && res?.externalId
+				? setActive({ organization: res.externalId })
+				: "";
 
 			return res;
 		},

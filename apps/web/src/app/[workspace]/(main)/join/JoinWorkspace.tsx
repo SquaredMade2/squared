@@ -8,7 +8,7 @@ import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function JoinWorkspace() {
 	const router = useRouter();
@@ -19,7 +19,7 @@ export default function JoinWorkspace() {
 
 	const token = searchParams.get("token") || "";
 	const isLink = searchParams.has("link");
-	const currentURL = window.location.href;
+	const currentURL = usePathname();
 	// First non-capturing group matches up to "/" 3 times. Second capture matches up to next "/"
 	const workspaceName = currentURL.match(/^(?:[^\/]*\/){3}([^\/]+)/);
 

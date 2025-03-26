@@ -1,5 +1,7 @@
-import { getRandomValues } from "node:crypto";
-import { expirationTimeFormat } from "@/utils/helpers";
+import {
+	expirationTimeFormat,
+	generateSecureRandomString,
+} from "@/utils/helpers";
 import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
@@ -19,6 +21,7 @@ import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type {
 	CreateWorkspaceParams,
+	JoinWorkspaceParams,
 	WorkspaceParams,
 	WorkspaceRpc,
 } from "./types";
@@ -215,16 +218,11 @@ export class WorkspaceService implements WorkspaceRpc {
 	async joinWorkspace({
 		token,
 		isLink,
-		user: { id: userId, name: userName, email },
+		user: { id: userId },
 		workspace: { id: workspaceId, name: workspaceName },
-	}: {
-		token: string | undefined;
-		isLink: boolean;
-		user: { id: string; name: string; email: string };
-		workspace: { id: string; name?: string };
-	}): Promise<Workspace | null> {
+	}: JoinWorkspaceParams): Promise<Workspace | null> {
 		this.logger.info(
-			`User ${userName} attempting to join workspace ${workspaceId ? workspaceId : workspaceName}`,
+			`User attempting to join workspace ${workspaceId ? workspaceId : workspaceName}`,
 		);
 
 		if (isLink && token && workspaceName) {
@@ -239,46 +237,31 @@ export class WorkspaceService implements WorkspaceRpc {
 					const filteredLinks = inviteLinks.filter(
 						(data) => data.link !== token,
 					);
-					// reduce uses by 1 or remove link if out of uses
-					this.logger.info(
-						"Reducing InviteLink uses by 1 or removing link if it has run out of uses",
-					);
-					const inviteLinksUpdate =
-						inviteLink.uses - 1 <= 0
-							? [...filteredLinks]
-							: [
-									...filteredLinks,
-									{
-										link: inviteLink.link,
-										expiration: inviteLink.expiration,
-										uses: inviteLink.uses - 1,
-									},
-								];
+					// reduce uses by 1
+					this.logger.info("Reducing InviteLink uses by 1");
+					const inviteLinksUpdate = [
+						...filteredLinks,
+						{
+							link: inviteLink.link,
+							expiration: inviteLink.expiration,
+							uses: inviteLink.uses - 1,
+						},
+					];
 					await this.db
 						.update(workspacesTable)
 						.set({
 							inviteLinks: inviteLinksUpdate,
 						})
-						.where(eq(workspacesTable.id, workspaceId));
+						.where(eq(workspacesTable.externalId, workspaceId));
 				}
 			}
 		}
 
 		const [workspace] = await this.db.transaction(async (tx) => {
-			const [user] = await tx
-				.insert(usersTable)
-				.values({
-					externalId: userId,
-					name: userName,
-					email,
-				})
-				.onConflictDoNothing({ target: [usersTable.externalId] })
-				.returning();
-
 			await tx
 				.insert(userWorkspacesTable)
 				.values({
-					userId: user.externalId,
+					userId,
 					workspaceId,
 				})
 				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
@@ -401,14 +384,6 @@ export class WorkspaceService implements WorkspaceRpc {
 		this.logger.info(
 			`Generating workspace invite link ${workspaceId} ${expiration} ${uses}`,
 		);
-		function generateSecureRandomString(length = 8) {
-			const chars =
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-			const array = new Uint8Array(length);
-			getRandomValues(array);
-
-			return Array.from(array, (byte) => chars[byte % chars.length]).join("");
-		}
 
 		const link = generateSecureRandomString();
 
@@ -590,9 +565,13 @@ export class WorkspaceService implements WorkspaceRpc {
 			.where(eq(workspacesTable.name, workspaceName))
 			.then((results) => results[0]);
 
-		const inviteLink = inviteLinks.find(
-			(data: WorkspaceInviteLink) => data.link === token,
-		);
+		const inviteLink = inviteLinks.find((data) => data.link === token);
+
+		if (!inviteLink) {
+			this.throwError(
+				"Invite Link is either no longer valid or does not exist",
+			);
+		}
 
 		// Check link hasn't expired or exceeded number of uses
 		if (
