@@ -10,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useToast } from "@/components/ui/use-toast";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { ChevronDown, Plus, Settings } from "lucide-react";
@@ -24,6 +25,7 @@ export function WorkspaceDropdown() {
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
+	const { toast } = useToast();
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -86,9 +88,16 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={org.id}
 						onSelect={() => {
-							setActive?.({ organization: org }).then(() => {
-								updatePathWithWorkspace(org.slug);
-							});
+							try {
+								setActive?.({ organization: org }).then(() => {
+									updatePathWithWorkspace(org.slug);
+								});
+							} catch {
+								toast({
+									title: "Error swapping workspaces.",
+									variant: "destructive",
+								});
+							}
 						}}
 						className="hover:cursor-pointer"
 					>
