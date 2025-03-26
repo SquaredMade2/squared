@@ -23,11 +23,7 @@ const joinWorkspaceParamsSchema = createSchema<JoinWorkspaceParams>()(
 	z.object({
 		token: z.string(),
 		isLink: z.boolean(),
-		user: z.object({
-			id: z.string(),
-			name: z.string(),
-			email: z.string(),
-		}),
+		userId: z.string(),
 		workspace: z.object({
 			id: z.string(),
 			name: z.string().optional(),

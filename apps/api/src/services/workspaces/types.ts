@@ -17,7 +17,7 @@ export type CreateWorkspaceParams = {
 export type JoinWorkspaceParams = {
 	token: string;
 	isLink: boolean;
-	user: { id: string; name: string; email: string };
+	userId: string;
 	workspace: { id: string; name?: string };
 };
 

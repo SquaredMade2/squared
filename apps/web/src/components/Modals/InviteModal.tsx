@@ -2,6 +2,7 @@
 
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
+import { LINK_EXPIRATION_TIMES } from "@/utils/constantValues";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -33,8 +34,6 @@ export const InviteModal = () => {
 	const { showInvite, setShowInvite } = useModalStore((state) => state);
 	const { workspace } = useWorkspaceStore((state) => state);
 
-	const expirationTimes = ["15m", "30m", "1h", "6h", "12h", "1d", "7d"];
-
 	// This counter-acts some known funny business when a dialog is opened from another dialog.
 	// A delay is necessary to properly reset the pointer-events on the body.
 	useEffect(() => {
@@ -45,25 +44,21 @@ export const InviteModal = () => {
 		return () => clearTimeout(timer);
 	}, [showInvite]);
 
-	const createWorkspaceLinkMutation = useMutation({
+	const { mutate: createWorkspaceLinkMutation, isPending } = useMutation({
 		mutationFn: async () => {
-			const inviteLink = await client.workspace.generateWorkspaceInviteLink
+			return await client.workspace.generateWorkspaceInviteLink
 				.$post({
 					expiration:
 						expirationPeriod === "never" ? undefined : expirationPeriod,
 					uses: numberUses,
 				})
 				.then((res) => res.text());
-
-			return inviteLink;
 		},
-		onSuccess: (inviteLink) => {
-			setLink(inviteLink);
-		},
+		onSuccess: (inviteLink) => setLink(inviteLink),
 		onError: (error) => {
 			toast({
 				title: "Error creating link",
-				description: error instanceof Error && error.message,
+				description: error.message,
 				variant: "destructive",
 			});
 			setLink("Failed to generate link");
@@ -83,10 +78,6 @@ export const InviteModal = () => {
 			setNumberUses(uses);
 		}, 1000);
 	}, []);
-
-	const generateLink = () => {
-		workspace && createWorkspaceLinkMutation.mutate();
-	};
 
 	const handleCopy = async () => {
 		const url = `${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`;
@@ -117,7 +108,7 @@ export const InviteModal = () => {
 								</SelectTrigger>
 								<SelectContent>
 									<SelectGroup>
-										{expirationTimes.map((time: string) => {
+										{LINK_EXPIRATION_TIMES.map((time: string) => {
 											return (
 												<SelectItem key={time} value={time}>
 													{time.replace(
@@ -157,16 +148,25 @@ export const InviteModal = () => {
 								<Label>Unlimited Uses</Label>
 							</div>
 						</div>
-						<Button onClick={generateLink}>Generate Link</Button>
+						<Button
+							onClick={() => createWorkspaceLinkMutation()}
+							disabled={!workspace}
+						>
+							Generate Link
+						</Button>
 					</div>
 					<hr className="w-full border border-border" />
 					<DialogFooter>
 						<div className="flex w-full items-center justify-between gap-2 rounded-lg border border-border p-2">
-							<p>
-								{(!link && "Create Invite Link") ||
-									(link.includes("Failed") && link) ||
-									`${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`}
-							</p>
+							{isPending ? (
+								<p>Generating link...</p>
+							) : (
+								<p>
+									{(!link && "Create Invite Link") ||
+										(link.includes("Failed") && link) ||
+										`${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`}
+								</p>
+							)}
 							<Button
 								className="h-8"
 								disabled={!link || link.includes("Failed")}
