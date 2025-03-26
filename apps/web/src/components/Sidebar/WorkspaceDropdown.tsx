@@ -40,21 +40,15 @@ export function WorkspaceDropdown() {
 		}
 	};
 
-	const updateActiveWorkspace = (
-		org: OrganizationResource,
-		url: string | null,
-	) => {
+	const updateActiveWorkspace = (org: OrganizationResource) => {
 		setActive?.({ organization: org }).then(() => {
-			updatePathWithWorkspace(url);
+			updatePathWithWorkspace(org.slug);
 		});
 	};
 
 	useEffect(() => {
 		if (!organization && userMemberships.data?.length) {
-			updateActiveWorkspace(
-				userMemberships.data[0].organization,
-				userMemberships.data[0].organization.slug,
-			);
+			updateActiveWorkspace(userMemberships.data[0].organization);
 		}
 	}, [userMemberships.data, organization]);
 
@@ -98,7 +92,7 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={org.id}
 						onSelect={() => {
-							updateActiveWorkspace(org, org.slug);
+							updateActiveWorkspace(org);
 						}}
 						className="hover:cursor-pointer"
 					>
