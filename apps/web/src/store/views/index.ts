@@ -2,8 +2,10 @@ import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import {
 	CompletedTaskPeriod,
+	type DisplayOptions,
 	type LastVisitedPathOption,
 	type View,
+	type ViewOptions,
 	type ViewState,
 	type ViewStore,
 } from "./interfaces";
@@ -59,13 +61,24 @@ export const createViewStore = (
 				setShowNavbar: (input: boolean) => set({ showNavbar: input }),
 				setShowMobileNavbar: (input: boolean) =>
 					set({ showMobileNavbar: input }),
-				setListViewOptions: (input: Partial<ViewState["displayOptions"]>) => {
-					const { displayOptions } = get();
-					set({ displayOptions: { ...displayOptions, ...input } });
+				setViewOptions: (input: ViewOptions.Common) => {
+					set(({ displayOptions, view }) => ({
+						displayOptions: {
+							...displayOptions,
+							viewOptions: {
+								...displayOptions.viewOptions,
+								[`${view}Options`]: input,
+							},
+						},
+					}));
 				},
-				setGridViewOptions: (input: Partial<ViewState["displayOptions"]>) => {
-					const { displayOptions } = get();
-					set({ displayOptions: { ...displayOptions, ...input } });
+				setDisplayOptions: (input: Partial<DisplayOptions>) => {
+					set(({ displayOptions }) => ({
+						displayOptions: {
+							...displayOptions,
+							input,
+						},
+					}));
 				},
 				setLastVisitedPage: (input: LastVisitedPathOption) =>
 					set({ lastVisitedPage: input }),
