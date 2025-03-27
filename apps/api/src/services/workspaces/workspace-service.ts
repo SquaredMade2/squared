@@ -611,7 +611,9 @@ export class WorkspaceService implements WorkspaceRpc {
 			const userWorkspaceRow = await tx
 				.insert(userWorkspacesTable)
 				.values({ userId, workspaceId })
-				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
+				.onConflictDoNothing({
+					target: [userWorkspacesTable.workspaceId, userWorkspacesTable.userId],
+				})
 				.returning();
 
 			if (userWorkspaceRow.length === 0) {
