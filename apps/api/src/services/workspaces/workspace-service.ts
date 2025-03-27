@@ -9,6 +9,7 @@ import {
 	type Workspace,
 	type WorkspaceInviteLink,
 	and,
+	arrayContains,
 	eq,
 	sql,
 	teamsTable,
@@ -563,7 +564,12 @@ export class WorkspaceService implements WorkspaceRpc {
 				workspaceId: workspacesTable.externalId,
 			})
 			.from(workspacesTable)
-			.where(eq(workspacesTable.name, workspaceName))
+			.where(
+				and(
+					eq(workspacesTable.name, workspaceName),
+					arrayContains(workspacesTable.inviteLinks, [{ link: token }]),
+				),
+			)
 			.then((results) => results[0]);
 
 		const inviteLink = inviteLinks.find((data) => data.link === token);
