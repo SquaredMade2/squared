@@ -41,13 +41,9 @@ export function WorkspaceDropdown() {
 	};
 
 	const updateActiveWorkspace = (org: OrganizationResource) => {
-		setActive?.({ organization: org })
-			.then(() => {
-				updatePathWithWorkspace(org.slug);
-			})
-			.catch(() => {
-				return;
-			});
+		setActive?.({ organization: org }).then(() => {
+			updatePathWithWorkspace(org.slug);
+		});
 	};
 
 	useEffect(() => {
