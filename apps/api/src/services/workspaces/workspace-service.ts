@@ -233,7 +233,12 @@ export class WorkspaceService implements WorkspaceRpc {
 					workspaceName,
 				);
 
-				if (inviteLinks) {
+				const { workspace, isAlreadyJoined } = await this.addUserToWorkspace(
+					userId,
+					workspaceId,
+				);
+
+				if (inviteLinks && !isAlreadyJoined) {
 					// reduce link uses if new member and uses is finite
 
 					const inviteLink = inviteLinks.find((data) => data.link === token);
@@ -261,11 +266,15 @@ export class WorkspaceService implements WorkspaceRpc {
 					}
 				}
 
-				return await this.addUserToWorkspace(userId, workspaceId);
+				return workspace;
 			}
 
 			if (workspaceId) {
-				return await this.addUserToWorkspace(userId, workspaceId);
+				const { workspace } = await this.addUserToWorkspace(
+					userId,
+					workspaceId,
+				);
+				return workspace;
 			}
 
 			return null;
@@ -391,7 +400,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			const currentLinks = await tx
 				.select({ inviteLinks: workspacesTable.inviteLinks })
 				.from(workspacesTable)
-				.where(eq(workspacesTable.id, workspaceId))
+				.where(eq(workspacesTable.externalId, workspaceId))
 				.then((results) => results[0].inviteLinks);
 
 			await tx
@@ -408,7 +417,7 @@ export class WorkspaceService implements WorkspaceRpc {
 						},
 					],
 				})
-				.where(eq(workspacesTable.id, workspaceId));
+				.where(eq(workspacesTable.externalId, workspaceId));
 		});
 
 		return link;
@@ -596,13 +605,18 @@ export class WorkspaceService implements WorkspaceRpc {
 	private async addUserToWorkspace(
 		userId: string,
 		workspaceId: string,
-	): Promise<Workspace | null> {
+	): Promise<{ workspace: Workspace | null; isAlreadyJoined: boolean }> {
+		let isAlreadyJoined = false;
 		const [workspace] = await this.db.transaction(async (tx) => {
-			await tx
+			const userWorkspaceRow = await tx
 				.insert(userWorkspacesTable)
 				.values({ userId, workspaceId })
 				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
 				.returning();
+
+			if (userWorkspaceRow.length === 0) {
+				isAlreadyJoined = true;
+			}
 
 			return await tx
 				.select()
@@ -610,7 +624,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				.where(eq(workspacesTable.externalId, workspaceId));
 		});
 
-		return workspace;
+		return { workspace, isAlreadyJoined };
 	}
 
 	private throwError(message: string): never {
