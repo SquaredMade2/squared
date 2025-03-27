@@ -1,8 +1,9 @@
 "use client";
 
 import { client } from "@/lib/client";
-import { useModalStore, useWorkspaceStore } from "@/store";
-import { LINK_EXPIRATION_TIMES } from "@/utils/constantValues";
+import { LINK_EXPIRATION_TIMES } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import { Copy } from "@squared/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -33,7 +34,7 @@ export const InviteModal = () => {
 	const [isUnlimitedUses, setIsUnlimitedUses] = useState<boolean>(false);
 	const [link, setLink] = useState<string>("");
 	const { showInvite, setShowInvite } = useModalStore((state) => state);
-	const { workspace } = useWorkspaceStore((state) => state);
+	const { organization } = useOrganization();
 
 	// This counter-acts some known funny business when a dialog is opened from another dialog.
 	// A delay is necessary to properly reset the pointer-events on the body.
@@ -81,9 +82,17 @@ export const InviteModal = () => {
 	}, []);
 
 	const handleCopy = async () => {
-		const url = `${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`;
-		await window.navigator.clipboard.writeText(url);
-		toast({ title: "URL copied to clipboard" });
+		const url = `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`;
+		try {
+			await window.navigator.clipboard.writeText(url);
+			toast({ title: "URL copied to clipboard" });
+		} catch (_) {
+			toast({
+				title: "Failed to copy URL",
+				description: "Please try again or copy manually",
+				variant: "destructive",
+			});
+		}
 	};
 
 	return (
@@ -151,7 +160,7 @@ export const InviteModal = () => {
 						</div>
 						<Button
 							onClick={() => createWorkspaceLinkMutation()}
-							disabled={!workspace}
+							disabled={!organization}
 						>
 							Generate Link
 						</Button>
@@ -164,7 +173,7 @@ export const InviteModal = () => {
 							) : (
 								<p>
 									{(!link && "Create Invite Link") ||
-										`${process.env.NEXT_PUBLIC_URL}/${workspace?.name}/join?link=true&token=${link}`}
+										`${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`}
 								</p>
 							)}
 							<Button

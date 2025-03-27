@@ -279,9 +279,10 @@ export class WorkspaceService implements WorkspaceRpc {
 
 			return null;
 		} catch (error) {
-			if (error instanceof Error)
-				throw new Error(`Failed to join workspace. ${error.message}`);
-			return null;
+			this.logger.error(
+				`Failed to join workspace. ${error instanceof Error && error.message}`,
+			);
+			throw error;
 		}
 	}
 

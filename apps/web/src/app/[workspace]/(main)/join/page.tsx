@@ -4,7 +4,7 @@ export const metadata = {
 	openGraph: {
 		title: "Squared",
 		description: "You've been invited to join Squared!",
-		siteName: "Squred",
+		siteName: "Squared",
 		images: [
 			{
 				url: "/logo.png",

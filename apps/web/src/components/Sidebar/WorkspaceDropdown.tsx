@@ -120,7 +120,7 @@ export function WorkspaceDropdown() {
 						<Button
 							onClick={() => setShowInvite(true)}
 							variant="ghost"
-							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-none: focus-visible:ring-offset-0"
+							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
 						>
 							<UserRoundPlus className="text-muted-foreground" />
 							<span className="ml-2">Invite People</span>
