@@ -145,7 +145,7 @@ export const InviteModal = () => {
 								Number of Uses
 							</Label>
 							<Input
-								id="usues"
+								id="uses"
 								type="number"
 								min={1}
 								disabled={isUnlimitedUses}
@@ -172,8 +172,9 @@ export const InviteModal = () => {
 								<p>Generating link...</p>
 							) : (
 								<p>
-									{(!link && "Create Invite Link") ||
-										`${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`}
+									{link
+										? `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`
+										: "Create Invite Link"}
 								</p>
 							)}
 							<Button

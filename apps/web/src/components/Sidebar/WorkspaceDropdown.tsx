@@ -110,7 +110,6 @@ export function WorkspaceDropdown() {
 					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
-				{/* This should only show for workspace owners and admins */}
 				<Protect
 					condition={(has) =>
 						has({ role: "org:admin" }) || has({ role: "org:owner" })
