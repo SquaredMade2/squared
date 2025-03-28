@@ -22,7 +22,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"copy-anything": "^3.0.5"
+		"copy-anything": "^4.0.0"
 	},
 	"devDependencies": {
 		"@squaredmade/builder": "workspace:*",
