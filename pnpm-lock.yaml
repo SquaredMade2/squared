@@ -26,7 +26,7 @@ importers:
         version: 9.1.7
       knip:
         specifier: ^5.29.1
-        version: 5.42.1(@types/node@22.13.14)(typescript@5.8.2)
+        version: 5.46.2(@types/node@22.13.14)(typescript@5.8.2)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -4698,10 +4698,6 @@ packages:
     resolution: {integrity: sha512-gmNvsYi9C8iErnZdVcJnvCpSKbWTt1E8+JZo8b+daLninywUWi5NQ5STSHZ9rFjFO7imNcvb8Pc5pe/wMR5xEw==}
     engines: {node: '>=10.2.0'}
 
-  enhanced-resolve@5.18.0:
-    resolution: {integrity: sha512-0/r0MySGYG8YqlayBZ6MuCfECmHFdJ5qyPh8s8wa5Hnm6SaFLSK1VYCbj+NKp090Nm1caZhD+QTnmxO7esYGyQ==}
-    engines: {node: '>=10.13.0'}
-
   enhanced-resolve@5.18.1:
     resolution: {integrity: sha512-ZSW3ma5GkcQBIpwZTSRAI8N71Uuwgs93IezB7mf7R60tC8ZbJideoDNKjHn2O9KIlx6rkGTTEk1xUCK2E1Y2Yg==}
     engines: {node: '>=10.13.0'}
@@ -4910,8 +4906,8 @@ packages:
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
 
-  fastq@1.18.0:
-    resolution: {integrity: sha512-QKHXPW0hD8g4UET03SdOdunzSouc9N4AuHdsX8XNcTsuz+yYFILVNIX4l9yHABMhiEI9Db0JTTIpu0wB+Y1QQw==}
+  fastq@1.19.1:
+    resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
   fb-watchman@2.0.2:
     resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
@@ -5810,8 +5806,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@5.42.1:
-    resolution: {integrity: sha512-xTnwo0I5TLAEU1BNqi8EwnvxI/5yJUJmBiXJdnS0+2FDE6WQII3upoImuUbx1GxrftHmY+prqfL6XuO6JEtYBw==}
+  knip@5.46.2:
+    resolution: {integrity: sha512-QGVkUVUwNv1zDOmb9ob4jraWNZu06O5xPa5cl97wzHmGGqJHkLfuvAzGTpuVxgujq+FKOXTbD8vv1TfimKTPAQ==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -7245,6 +7241,10 @@ packages:
 
   reusify@1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
+    engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+
+  reusify@1.1.0:
+    resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
   rimraf@3.0.2:
@@ -9864,7 +9864,7 @@ snapshots:
   '@nodelib/fs.walk@3.0.1':
     dependencies:
       '@nodelib/fs.scandir': 4.0.1
-      fastq: 1.18.0
+      fastq: 1.19.1
 
   '@opentelemetry/api@1.9.0':
     optional: true
@@ -12439,11 +12439,6 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  enhanced-resolve@5.18.0:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.2.1
-
   enhanced-resolve@5.18.1:
     dependencies:
       graceful-fs: 4.2.11
@@ -12819,9 +12814,9 @@ snapshots:
     dependencies:
       reusify: 1.0.4
 
-  fastq@1.18.0:
+  fastq@1.19.1:
     dependencies:
-      reusify: 1.0.4
+      reusify: 1.1.0
 
   fb-watchman@2.0.2:
     dependencies:
@@ -14132,13 +14127,13 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@5.42.1(@types/node@22.13.14)(typescript@5.8.2):
+  knip@5.46.2(@types/node@22.13.14)(typescript@5.8.2):
     dependencies:
       '@nodelib/fs.walk': 3.0.1
       '@snyk/github-codeowners': 1.1.0
       '@types/node': 22.13.14
       easy-table: 1.2.0
-      enhanced-resolve: 5.18.0
+      enhanced-resolve: 5.18.1
       fast-glob: 3.3.3
       jiti: 2.4.2
       js-yaml: 4.1.0
@@ -15733,6 +15728,8 @@ snapshots:
       supports-preserve-symlinks-flag: 1.0.0
 
   reusify@1.0.4: {}
+
+  reusify@1.1.0: {}
 
   rimraf@3.0.2:
     dependencies:
