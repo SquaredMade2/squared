@@ -120,7 +120,7 @@ importers:
         version: 6.0.4
       '@types/swagger-ui-express':
         specifier: ^4.1.6
-        version: 4.1.7
+        version: 4.1.8
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.7)(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.15))(@types/node@22.10.7)(typescript@5.7.3))
@@ -3471,8 +3471,8 @@ packages:
   '@types/swagger-jsdoc@6.0.4':
     resolution: {integrity: sha512-W+Xw5epcOZrF/AooUM/PccNMSAFOKWZA5dasNyMujTwsBkU74njSJBpvCCJhHAJ95XRMzQrrW844Btu0uoetwQ==}
 
-  '@types/swagger-ui-express@4.1.7':
-    resolution: {integrity: sha512-ovLM9dNincXkzH4YwyYpll75vhzPBlWx6La89wwvYH7mHjVpf0X0K/vR/aUM7SRxmr5tt9z7E5XJcjQ46q+S3g==}
+  '@types/swagger-ui-express@4.1.8':
+    resolution: {integrity: sha512-AhZV8/EIreHFmBV5wAs0gzJUNq9JbbSXgJLQubCC0jtIo6prnI9MIRRxnU4MZX9RB9yXxF1V4R7jtLl/Wcj31g==}
 
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
@@ -11180,7 +11180,7 @@ snapshots:
 
   '@types/swagger-jsdoc@6.0.4': {}
 
-  '@types/swagger-ui-express@4.1.7':
+  '@types/swagger-ui-express@4.1.8':
     dependencies:
       '@types/express': 5.0.1
       '@types/serve-static': 1.15.7
