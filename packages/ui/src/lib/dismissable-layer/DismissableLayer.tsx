@@ -330,6 +330,7 @@ function usePointerDownOutside(
 
 	return {
 		// ensures we check React component tree (not just DOM tree)
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
 		onPointerDownCapture: () => (isPointerInsideReactTreeRef.current = true),
 	};
 }
@@ -364,7 +365,9 @@ function useFocusOutside(
 	}, [ownerDocument, handleFocusOutside]);
 
 	return {
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
 		onFocusCapture: () => (isFocusInsideReactTreeRef.current = true),
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
 		onBlurCapture: () => (isFocusInsideReactTreeRef.current = false),
 	};
 }

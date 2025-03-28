@@ -3,7 +3,7 @@ import {
 	AlertTriangle,
 	CheckCircle,
 	Info,
-} from "@squaredmade/ui/icons";
+} from "@squaredmade/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Alert, AlertDescription, AlertTitle } from "./Alert";
 
@@ -175,6 +175,7 @@ export const WithCloseButton: Story = {
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Close</title>
 					<line x1="18" y1="6" x2="6" y2="18" />
 					<line x1="6" y1="6" x2="18" y2="18" />
 				</svg>

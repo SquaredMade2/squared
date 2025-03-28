@@ -1,4 +1,4 @@
-import { User } from "@squaredmade/ui/icons";
+import { User } from "@squaredmade/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar, AvatarFallback, AvatarImage } from "./Avatar";
 

@@ -1,9 +1,9 @@
+import { X } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import { createCollection } from "@squaredmade/ui/collection";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import { type Scope, createContextScope } from "@squaredmade/ui/context";
-import { Close } from "@squaredmade/ui/icons";
 import { Portal } from "@squaredmade/ui/portal";
 import { Presence } from "@squaredmade/ui/presence";
 import {
@@ -352,6 +352,7 @@ const ToastViewportPrimitive = React.forwardRef<
 	return (
 		<DismissableLayerBranch
 			ref={wrapperRef}
+			// biome-ignore lint/a11y/useSemanticElements: This is a region for screen reader users
 			role="region"
 			aria-label={label.replace("{hotkey}", hotkeyLabel)}
 			// Ensure virtual cursor from landmarks menus triggers focus/blur for pause/resume
@@ -679,7 +680,7 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 				{announceTextContent && (
 					<ToastAnnounce
 						__scopeToast={__scopeToast}
-						// Toasts are always role=status to avoid stuttering issues with role=alert in SRs.
+						// biome-ignore lint/a11y/useSemanticElements: This is a status element for screen reader users
 						role="status"
 						aria-live={type === "foreground" ? "assertive" : "polite"}
 						aria-atomic
@@ -1043,7 +1044,7 @@ function getAnnounceTextContent(container: HTMLElement) {
 	const textContent: string[] = [];
 	const childNodes = Array.from(container.childNodes);
 
-	childNodes.forEach((node) => {
+	for (const node of childNodes) {
 		if (node.nodeType === node.TEXT_NODE && node.textContent) {
 			textContent.push(node.textContent);
 		}
@@ -1063,7 +1064,7 @@ function getAnnounceTextContent(container: HTMLElement) {
 				}
 			}
 		}
-	});
+	}
 
 	// We return a collection of text rather than a single concatenated string.
 	// This allows SR VO to naturally pause break between nodes while announcing.
@@ -1122,6 +1123,7 @@ function useNextFrame(callback = () => {}) {
 		let raf1 = 0;
 		let raf2 = 0;
 		raf1 = window.requestAnimationFrame(
+			// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
 			() => (raf2 = window.requestAnimationFrame(fn)),
 		);
 		return () => {
@@ -1287,7 +1289,7 @@ const ToastClose = React.forwardRef<
 		toast-close=""
 		{...props}
 	>
-		<Close className="size-4" />
+		<X className="size-4" />
 	</ToastClosePrimitive>
 ));
 ToastClose.displayName = ToastClosePrimitive.displayName;

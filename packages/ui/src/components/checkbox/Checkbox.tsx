@@ -8,8 +8,8 @@ import { usePrevious } from "@squaredmade/ui/use-previous";
 import { useSize } from "@squaredmade/ui/use-size";
 import * as React from "react";
 
+import { Check } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
-import { Check } from "@squaredmade/ui/icons";
 
 /* -------------------------------------------------------------------------------------------------
  * Checkbox

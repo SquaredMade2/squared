@@ -17,6 +17,7 @@ type LabelProps = PrimitiveLabelProps;
 const LabelPrimitive = React.forwardRef<LabelElement, LabelProps>(
 	(props, forwardedRef) => {
 		return (
+			// biome-ignore lint/a11y/noLabelWithoutControl: This is a valid use case
 			<Primitive.label
 				{...props}
 				ref={forwardedRef}

@@ -1,5 +1,5 @@
+import { X } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
-import { Close } from "@squaredmade/ui/icons";
 import { Input } from "@squaredmade/ui/input";
 import { Label } from "@squaredmade/ui/label";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -160,7 +160,7 @@ export const WithCloseButton: Story = {
 					<div className="flex items-center justify-between">
 						<h4 className="font-medium">Popover Title</h4>
 						<PopoverClose className="inline-flex h-6 w-6 items-center justify-center rounded-full outline-hidden hover:bg-slate-100 focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
-							<Close className="h-4 w-4" />
+							<X className="h-4 w-4" />
 							<span className="sr-only">Close</span>
 						</PopoverClose>
 					</div>

@@ -1,4 +1,4 @@
-import { ArrowRight, Plus, Trash } from "@squaredmade/ui/icons";
+import { ArrowRight, Plus, Trash } from "@squaredmade/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
 
@@ -173,15 +173,6 @@ export const DisabledStates: Story = {
 			<Button variant="ghost" disabled>
 				Disabled Ghost
 			</Button>
-		</div>
-	),
-};
-
-export const Width: Story = {
-	render: () => (
-		<div className="flex max-w-xl flex-col space-y-4">
-			<Button width="full">Full Width</Button>
-			<Button width="fit">Fit Width</Button>
 		</div>
 	),
 };

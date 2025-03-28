@@ -1,3 +1,4 @@
+import { LoaderCircle, Plus, Trash } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
@@ -11,7 +12,6 @@ import {
 	useFieldArray,
 	useForm,
 } from "@squaredmade/ui/form";
-import { LoaderCircle, Plus, Trash } from "@squaredmade/ui/icons";
 import { Input } from "@squaredmade/ui/input";
 import { RadioGroup, RadioGroupItem } from "@squaredmade/ui/radio-group";
 import {
@@ -865,7 +865,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "@squaredmade/ui/form";
 import * as z from "zod";
-import { LoaderCircle } from "@squaredmade/ui/icons";
+import { LoaderCircle } from "@squaredmade/icons";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -2812,12 +2812,12 @@ export const DeepNestedForm: Story = {
 		};
 
 		const enableAllNotifications = () => {
-			OrderingNotificationStatuses.forEach((status) => {
+			for (const status of OrderingNotificationStatuses) {
 				form.setValue(
 					`config.orderingNotificationMessages.${status}.disabled`,
 					false,
 				);
-			});
+			}
 		};
 
 		const setDefaultNotificationTitles = () => {

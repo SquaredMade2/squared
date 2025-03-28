@@ -163,6 +163,7 @@ function composeContextScopes(...scopes: CreateScope[]) {
 					// eslint-disable-next-line react-hooks/rules-of-hooks
 					const scopeProps = useScope(overrideScopes);
 					const currentScope = scopeProps[`__scope${scopeName}`];
+					// biome-ignore lint/performance/noAccumulatingSpread: This is a valid use case
 					return { ...nextScopes, ...currentScope };
 				},
 				{},

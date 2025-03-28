@@ -1,6 +1,6 @@
+import { ChevronLeft, ChevronRight, Ellipsis } from "@squaredmade/icons";
 import { type ButtonProps, buttonVariants } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
-import { ChevronLeft, ChevronRight, Ellipsis } from "@squaredmade/ui/icons";
 import * as React from "react";
 
 /**

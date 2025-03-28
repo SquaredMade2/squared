@@ -320,7 +320,7 @@ function isHidden(node: HTMLElement, { upTo }: { upTo?: HTMLElement }) {
 		// we stop at `upTo` (excluding it)
 		if (upTo !== undefined && node === upTo) return false;
 		if (getComputedStyle(node).display === "none") return true;
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: This is a valid use case
 		node = node.parentElement as HTMLElement;
 	}
 	return false;

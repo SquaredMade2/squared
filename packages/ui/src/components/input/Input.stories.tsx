@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { useState } from "react";
 import { Input, type InputProps } from "./Input";
 
 const meta: Meta<typeof Input> = {
@@ -52,6 +51,7 @@ export const Password: StoryObj<InputProps> = {
 	},
 };
 
+// biome-ignore lint/suspicious/noShadowRestrictedNames: This is a valid use case
 export const Number: StoryObj<InputProps> = {
 	args: {
 		type: "number",
@@ -104,25 +104,5 @@ export const CustomStyling: StoryObj<InputProps> = {
 		type: "text",
 		placeholder: "Custom styled input",
 		className: "border-blue-500 focus:ring-blue-500",
-	},
-};
-
-export const WithIcon: StoryObj<InputProps> = {
-	render: (args) => {
-		const [value, setValue] = useState("");
-		const handleClear = () => setValue("");
-		return (
-			<Input
-				icon="Search"
-				onChange={(e) => setValue(e.target.value)}
-				onClear={handleClear}
-				value={value}
-				{...args}
-			/>
-		);
-	},
-	args: {
-		type: "text",
-		placeholder: "Search...",
 	},
 };

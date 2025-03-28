@@ -209,6 +209,7 @@ const CollapsibleContentImpl = React.forwardRef<
 
 	React.useEffect(() => {
 		const rAF = requestAnimationFrame(
+			// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
 			() => (isMountAnimationPreventedRef.current = false),
 		);
 		return () => cancelAnimationFrame(rAF);

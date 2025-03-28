@@ -1,3 +1,4 @@
+import { ChevronDown } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import {
 	Collapsible,
@@ -9,7 +10,6 @@ import { createCollection } from "@squaredmade/ui/collection";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import { type Scope, createContextScope } from "@squaredmade/ui/context";
-import { ChevronDown } from "@squaredmade/ui/icons";
 import { Primitive } from "@squaredmade/ui/primitive";
 import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useDirection } from "@squaredmade/ui/use-direction";

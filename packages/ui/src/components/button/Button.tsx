@@ -24,15 +24,10 @@ export const buttonVariants = cva(
 				lg: "h-11 rounded-md px-8",
 				icon: "h-10 w-10",
 			},
-			width: {
-				full: "w-full",
-				fit: "w-fit",
-			},
 		},
 		defaultVariants: {
 			variant: "default",
 			size: "default",
-			width: "fit",
 		},
 	},
 );
@@ -65,11 +60,11 @@ export interface ButtonProps
  * The Button component is designed to be flexible and can be used in various contexts such as forms, dialogs, navigation menus, or as standalone call-to-action elements.
  */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-	({ className, variant, size, width, asChild = false, ...props }, ref) => {
+	({ className, variant, size, asChild = false, ...props }, ref) => {
 		const Comp = asChild ? Slot : "button";
 		return (
 			<Comp
-				className={cn(buttonVariants({ variant, size, width, className }))}
+				className={cn(buttonVariants({ variant, size, className }))}
 				ref={ref}
 				{...props}
 			/>

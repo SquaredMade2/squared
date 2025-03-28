@@ -1,3 +1,4 @@
+import { Check, ChevronDown, ChevronUp } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import { createCollection } from "@squaredmade/ui/collection";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
@@ -5,7 +6,6 @@ import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import { type Scope, createContextScope } from "@squaredmade/ui/context";
 import { useFocusGuards } from "@squaredmade/ui/focus-guards";
 import { FocusScope } from "@squaredmade/ui/focus-scope";
-import { Check, ChevronDown, ChevronUp } from "@squaredmade/ui/icons";
 import { clamp } from "@squaredmade/ui/number";
 import {
 	Popper,
@@ -1173,6 +1173,7 @@ const SelectItemAlignedPosition = React.forwardRef<
 
 			// we don't want the initial scroll position adjustment to trigger "expand on scroll"
 			// so we explicitly turn it on only after they've registered.
+			// biome-ignore lint/suspicious/noAssignInExpressions: This is a workaround for a bug in React
 			requestAnimationFrame(() => (shouldExpandOnScrollRef.current = true));
 		}
 	}, [
@@ -1349,6 +1350,7 @@ const SelectViewport = React.forwardRef<
 		<>
 			{/* Hide scrollbars cross-browser and enable momentum scroll for touch devices */}
 			<style
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: This is a workaround for a bug in React
 				dangerouslySetInnerHTML={{
 					__html:
 						"[data-squared-select-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-squared-select-viewport]::-webkit-scrollbar{display:none}",

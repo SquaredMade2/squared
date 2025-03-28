@@ -67,7 +67,7 @@
 			"@squaredmade/ui/form": ["./src/components/form"],
 			"@squaredmade/ui/form/resolvers": ["./src/components/form/resolvers"],
 			"@squaredmade/ui/heading": ["./src/components/heading"],
-			"@squaredmade/ui/icons": ["./src/icons"],
+			"@squaredmade/icons": ["./src/icons"],
 			"@squaredmade/ui/input": ["./src/components/input"],
 			"@squaredmade/ui/label": ["src/components/label"],
 			"@squaredmade/ui/loader": ["./src/components/loader"],
@@ -107,7 +107,7 @@
 			"@squaredmade/ui/use-layout-effect": ["./src/hooks/use-layout-effect"],
 			"@squaredmade/ui/use-previous": ["./src/hooks/use-previous"],
 			"@squaredmade/ui/use-size": ["./src/hooks/use-size"],
-			"@squaredmade/ui/visually-hidden": ["./src/layout/visually-hidden"]
+			"@squaredmade/ui/visually-hidden": ["./src/components/visually-hidden"]
 		}
 	}
 }

@@ -603,12 +603,12 @@
 		},
 		"./visually-hidden": {
 			"import": {
-				"types": "./dist/layout/visually-hidden/index.d.mts",
-				"default": "./dist/layout/visually-hidden/index.mjs"
+				"types": "./dist/components/visually-hidden/index.d.mts",
+				"default": "./dist/components/visually-hidden/index.mjs"
 			},
 			"require": {
-				"types": "./dist/layout/visually-hidden/index.d.ts",
-				"default": "./dist/layout/visually-hidden/index.js"
+				"types": "./dist/components/visually-hidden/index.d.ts",
+				"default": "./dist/components/visually-hidden/index.js"
 			}
 		}
 	},

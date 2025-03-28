@@ -27,9 +27,11 @@ function useFocusGuards() {
 
 		return () => {
 			if (count === 1) {
-				document
-					.querySelectorAll("[data-squared-focus-guard]")
-					.forEach((node) => node.remove());
+				for (const node of document.querySelectorAll(
+					"[data-squared-focus-guard]",
+				)) {
+					node.remove();
+				}
 			}
 			count--;
 		};

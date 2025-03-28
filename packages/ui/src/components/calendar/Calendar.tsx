@@ -1,6 +1,6 @@
+import { ChevronLeft, ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
-import { ChevronLeft, ChevronRight } from "@squaredmade/ui/icons";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------
@@ -719,6 +719,7 @@ const Day: React.FC<DayProps> = ({
 			data-range-end={isRangeEnd || undefined}
 			{...Object.entries(modifiers || {}).reduce(
 				(acc, [name, enabled]) => ({
+					// biome-ignore lint/performance/noAccumulatingSpread: This is a workaround for a bug in React
 					...acc,
 					[`data-${name}`]: enabled || undefined,
 				}),

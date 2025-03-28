@@ -25,8 +25,8 @@ import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useId } from "@squaredmade/ui/use-id";
 import * as React from "react";
 
+import { Check, ChevronRight, Circle } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
-import { Check, ChevronRight, Circle } from "@squaredmade/ui/icons";
 
 type Direction = "ltr" | "rtl";
 

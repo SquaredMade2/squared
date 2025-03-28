@@ -45,13 +45,13 @@ importers:
       '@clerk/backend':
         specifier: ^1.24.0
         version: 1.24.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@squared/db':
+      '@squaredmade/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@squared/logger':
+      '@squaredmade/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@squared/rpc':
+      '@squaredmade/rpc':
         specifier: workspace:*
         version: link:../../packages/rpc
       axios:
@@ -94,7 +94,7 @@ importers:
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
-      '@squared/superjson':
+      '@squaredmade/superjson':
         specifier: workspace:*
         version: link:../../packages/superjson
       '@types/cors':
@@ -163,19 +163,19 @@ importers:
       '@next/mdx':
         specifier: 15.1.6
         version: 15.1.6(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1))(@mdx-js/react@3.1.0(@types/react@19.0.8)(react@19.0.0))
-      '@squared/context':
+      '@squaredmade/context':
         specifier: workspace:*
         version: link:../../packages/context
-      '@squared/fonts':
+      '@squaredmade/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
-      '@squared/icons':
+      '@squaredmade/icons':
         specifier: workspace:*
         version: link:../../packages/icons
-      '@squared/logger':
+      '@squaredmade/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@squared/rpc-client':
+      '@squaredmade/rpc-client':
         specifier: workspace:*
         version: link:../../packages/rpc-client
       '@squaredmade/ui':
@@ -275,10 +275,10 @@ importers:
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
-      '@squared/db':
+      '@squaredmade/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
@@ -343,10 +343,10 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.1.2(@types/react@19.0.8)(react@19.0.0)
-      '@squared/fonts':
+      '@squaredmade/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
-      '@squared/icons':
+      '@squaredmade/icons':
         specifier: workspace:*
         version: link:../../packages/icons
       '@squaredmade/ui':
@@ -410,7 +410,7 @@ importers:
       '@slicemachine/adapter-next':
         specifier: ^0.3.66
         version: 0.3.66(@prismicio/types@0.2.9)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
@@ -453,10 +453,10 @@ importers:
         specifier: ^8.0.2
         version: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.1)(typescript@5.8.2)(yaml@2.7.0)
     devDependencies:
-      '@squared/logger':
+      '@squaredmade/logger':
         specifier: workspace:*
         version: link:../logger
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -473,10 +473,10 @@ importers:
 
   packages/context:
     devDependencies:
-      '@squared/builder':
+      '@squaredmade/builder':
         specifier: workspace:*
         version: link:../builder
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -501,7 +501,7 @@ importers:
         specifier: ^8.18.0
         version: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     devDependencies:
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -522,7 +522,7 @@ importers:
 
   packages/fonts:
     devDependencies:
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -575,7 +575,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -596,13 +596,13 @@ importers:
 
   packages/rpc:
     dependencies:
-      '@squared/context':
+      '@squaredmade/context':
         specifier: workspace:*
         version: link:../context
-      '@squared/logger':
+      '@squaredmade/logger':
         specifier: workspace:*
         version: link:../logger
-      '@squared/superjson':
+      '@squaredmade/superjson':
         specifier: workspace:*
         version: link:../superjson
       express:
@@ -612,10 +612,10 @@ importers:
         specifier: ^3.23.8
         version: 3.24.2
     devDependencies:
-      '@squared/builder':
+      '@squaredmade/builder':
         specifier: workspace:*
         version: link:../builder
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/express':
@@ -639,17 +639,17 @@ importers:
 
   packages/rpc-client:
     dependencies:
-      '@squared/context':
+      '@squaredmade/context':
         specifier: workspace:*
         version: link:../context
-      '@squared/superjson':
+      '@squaredmade/superjson':
         specifier: workspace:*
         version: link:../superjson
     devDependencies:
-      '@squared/builder':
+      '@squaredmade/builder':
         specifier: workspace:*
         version: link:../builder
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -667,7 +667,7 @@ importers:
 
   packages/seed:
     dependencies:
-      '@squared/logger':
+      '@squaredmade/logger':
         specifier: workspace:*
         version: link:../logger
       cross-env:
@@ -699,10 +699,10 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
     devDependencies:
-      '@squared/builder':
+      '@squaredmade/builder':
         specifier: workspace:*
         version: link:../builder
-      '@squared/typescript-config':
+      '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/debug':
@@ -731,7 +731,7 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.1.2
         version: 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@squared/icons':
+      '@squaredmade/icons':
         specifier: workspace:*
         version: link:../icons
       '@tailwindcss/postcss':
@@ -13342,7 +13342,7 @@ snapshots:
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@22.13.14)(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.15))(@types/node@22.5.4)(typescript@5.8.2))
+      jest-config: 29.7.0(@types/node@22.13.14)(ts-node@10.9.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(@types/node@22.10.7)(typescript@5.7.3))
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -15042,14 +15042,14 @@ snapshots:
 
   jest-cli@29.7.0(@types/node@22.13.14):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.15))(@types/node@22.5.4)(typescript@5.8.2))
+      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(@types/node@22.10.7)(typescript@5.7.3))
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
       create-jest: 29.7.0(@types/node@22.13.14)
       exit: 0.1.2
       import-local: 3.2.0
-      jest-config: 29.7.0(@types/node@22.13.14)(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.15))(@types/node@22.5.4)(typescript@5.8.2))
+      jest-config: 29.7.0(@types/node@22.13.14)(ts-node@10.9.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(@types/node@22.10.7)(typescript@5.7.3))
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -15513,7 +15513,7 @@ snapshots:
 
   jest@29.7.0(@types/node@22.13.14):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.15))(@types/node@22.5.4)(typescript@5.8.2))
+      '@jest/core': 29.7.0(ts-node@10.9.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(@types/node@22.10.7)(typescript@5.7.3))
       '@jest/types': 29.6.3
       import-local: 3.2.0
       jest-cli: 29.7.0(@types/node@22.13.14)

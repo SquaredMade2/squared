@@ -13,6 +13,7 @@ function composeEventHandlers<E>(
 			checkForDefaultPrevented === false ||
 			!(event as unknown as Event).defaultPrevented
 		) {
+			// biome-ignore lint/correctness/noVoidTypeReturn: This is a valid use case
 			return ourEventHandler?.(event);
 		}
 	};

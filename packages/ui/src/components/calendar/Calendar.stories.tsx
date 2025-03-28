@@ -1,6 +1,6 @@
+import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
-import { Calendar as CalendarIcon } from "@squaredmade/ui/icons";
 import {
 	Popover,
 	PopoverContent,

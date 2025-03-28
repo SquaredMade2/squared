@@ -1,3 +1,5 @@
+import { Circle } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import { type Scope, createContextScope } from "@squaredmade/ui/context";
@@ -11,9 +13,6 @@ import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useDirection } from "@squaredmade/ui/use-direction";
 import * as React from "react";
 import { Radio, RadioIndicator, createRadioScope } from "./Radio";
-
-import { cn } from "@squaredmade/ui/cn";
-import { Circle } from "@squaredmade/ui/icons";
 
 const ARROW_KEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 
@@ -188,6 +187,7 @@ const RadioGroupItemPrimitive = React.forwardRef<
 				isArrowKeyPressedRef.current = true;
 			}
 		};
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a workaround for a bug in React
 		const handleKeyUp = () => (isArrowKeyPressedRef.current = false);
 		document.addEventListener("keydown", handleKeyDown);
 		document.addEventListener("keyup", handleKeyUp);
@@ -304,10 +304,10 @@ const RadioGroupItem = React.forwardRef<
 RadioGroupItem.displayName = RadioGroupItemPrimitive.displayName;
 
 export {
-	createRadioGroupScope,
 	//
 	RadioGroup,
-	RadioGroupItem,
 	RadioGroupIndicator,
+	RadioGroupItem,
+	createRadioGroupScope,
 };
-export type { RadioGroupProps, RadioGroupItemProps, RadioGroupIndicatorProps };
+export type { RadioGroupIndicatorProps, RadioGroupItemProps, RadioGroupProps };

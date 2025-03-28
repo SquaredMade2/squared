@@ -26,6 +26,7 @@ const Arrow = React.forwardRef<ArrowElement, ArrowProps>(
 				viewBox="0 0 30 10"
 				preserveAspectRatio="none"
 			>
+				<title>Arrow</title>
 				{/* We use their children if they're slotting to replace the whole svg */}
 				{props.asChild ? children : <polygon points="0,0 30,0 15,10" />}
 			</Primitive.svg>

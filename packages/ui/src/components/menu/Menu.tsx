@@ -1,3 +1,4 @@
+import { Check, ChevronRight, Circle } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import { createCollection } from "@squaredmade/ui/collection";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
@@ -6,7 +7,6 @@ import { type Scope, createContextScope } from "@squaredmade/ui/context";
 import { DismissableLayer } from "@squaredmade/ui/dismissable-layer";
 import { useFocusGuards } from "@squaredmade/ui/focus-guards";
 import { FocusScope } from "@squaredmade/ui/focus-scope";
-import { Check, ChevronRight, Circle } from "@squaredmade/ui/icons";
 import {
 	Popper,
 	PopperAnchor,
@@ -126,6 +126,7 @@ const Menu: React.FC<MenuProps> = (props: ScopedProps<MenuProps>) => {
 				once: true,
 			});
 		};
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a workaround for a bug in React
 		const handlePointer = () => (isUsingKeyboardRef.current = false);
 		document.addEventListener("keydown", handleKeyDown, { capture: true });
 		return () => {

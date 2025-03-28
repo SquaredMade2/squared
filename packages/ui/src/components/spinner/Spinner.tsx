@@ -1,13 +1,13 @@
+import { LoaderCircle } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
-import { LoaderCircle } from "@squaredmade/ui/icons";
 import React from "react";
 
-interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SpinnerProps extends React.HTMLAttributes<HTMLOutputElement> {
 	size?: "sm" | "md" | "lg" | "xl";
 	color?: "primary" | "secondary" | "accent";
 }
 
-const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
+const Spinner = React.forwardRef<HTMLOutputElement, SpinnerProps>(
 	({ size = "md", color = "primary", className, ...props }, ref) => {
 		const sizeClasses = {
 			sm: "w-4 h-4",
@@ -23,10 +23,9 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
 		};
 
 		return (
-			<div
+			<output
 				ref={ref}
 				className={cn("inline-flex items-center justify-center", className)}
-				role="status"
 				aria-label="Loading"
 				{...props}
 			>
@@ -34,7 +33,7 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
 					className={cn("animate-spin", sizeClasses[size], colorClasses[color])}
 				/>
 				<span className="sr-only">Loading...</span>
-			</div>
+			</output>
 		);
 	},
 );

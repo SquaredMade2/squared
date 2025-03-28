@@ -20,6 +20,7 @@ import { DismissableLayer } from "src/lib/dismissable-layer";
 
 import { cn } from "@squaredmade/ui/cn";
 
+// biome-ignore lint/complexity/noBannedTypes: This is a valid use case
 type ScopedProps<P = {}> = P & { __scopeTooltip?: Scope };
 const [createTooltipContext, createTooltipScope] = createContextScope(
 	"Tooltip",
@@ -329,6 +330,7 @@ const TooltipTrigger = React.forwardRef<
 	const isPointerDownRef = React.useRef(false);
 	const hasPointerMoveOpenedRef = React.useRef(false);
 	const handlePointerUp = React.useCallback(
+		// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
 		() => (isPointerDownRef.current = false),
 		[],
 	);
