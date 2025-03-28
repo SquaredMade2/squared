@@ -12,6 +12,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { getInitials } from "@/utils/formatting";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
 import { ChevronDown, Plus, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -39,10 +40,15 @@ export function WorkspaceDropdown() {
 		}
 	};
 
+	const updateActiveWorkspace = (org: OrganizationResource) => {
+		setActive?.({ organization: org }).then(() => {
+			updatePathWithWorkspace(org.slug);
+		});
+	};
+
 	useEffect(() => {
 		if (!organization && userMemberships.data?.length) {
-			setActive?.({ organization: userMemberships.data[0].organization });
-			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
+			updateActiveWorkspace(userMemberships.data[0].organization);
 		}
 	}, [userMemberships.data, organization]);
 
@@ -86,8 +92,7 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={org.id}
 						onSelect={() => {
-							setActive?.({ organization: org });
-							updatePathWithWorkspace(org.slug);
+							updateActiveWorkspace(org);
 						}}
 						className="hover:cursor-pointer"
 					>
