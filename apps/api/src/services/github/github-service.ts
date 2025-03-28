@@ -206,7 +206,7 @@ export class GithubService implements GithubRpc {
 		name: string;
 		description: string;
 		workspaceId: string;
-	}) {
+	}): Promise<{ slug: string }> {
 		this.logger.info(`Uploading organization with id: ${id}`);
 		return await this.db.transaction(async (tx) => {
 			await tx
@@ -218,6 +218,11 @@ export class GithubService implements GithubRpc {
 					workspaceId,
 				})
 				.onConflictDoNothing();
+			return await tx
+				.select({ slug: workspacesTable.url })
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId))
+				.then(([workspace]) => ({ slug: workspace.slug }));
 		});
 	}
 

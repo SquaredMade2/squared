@@ -63,7 +63,9 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 			description: z.string(),
 			workspaceId: z.string(),
 		}),
-		output: z.void(),
+		output: z.object({
+			slug: z.string(),
+		}),
 	},
 });
 

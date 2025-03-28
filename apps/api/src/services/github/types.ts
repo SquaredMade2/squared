@@ -40,5 +40,5 @@ export interface GithubRpc {
 		name: string;
 		description: string;
 		workspaceId: string;
-	}) => Promise<void>;
+	}) => Promise<{ slug: string }>;
 }

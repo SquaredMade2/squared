@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
@@ -43,13 +44,16 @@ func handleInstallEvent(githubService *rpc.GithubService, r *http.Request, w htt
 		WorkspaceId: workspaceId,
 	}
 
-	if _, err := githubService.UploadOrg(context.TODO(), request); err != nil {
-		log.Printf("Error uploading commit: %v", err)
-		http.Error(w, "Error uploading commit", http.StatusInternalServerError)
+	result, err := githubService.UploadOrg(context.TODO(), request)
+	if err != nil {
+		log.Printf("Error uploading organization: %v", err)
+		http.Error(w, "Error uploading organization", http.StatusInternalServerError)
 		return
 	}
-
+	orgSlug := result.Slug
 	log.Printf("Organization Info: %+v", org)
+	http.Redirect(w, r, fmt.Sprintf("%s/%s/settings/integrations/github", os.Getenv("APP_URL"), orgSlug), http.StatusFound)
+
 }
 
 func GetOrgInstallationInfo(installationId int64) (*OrgInstallationInfo, error) {
