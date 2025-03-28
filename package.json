@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"api:gen": "pnpm run --filter=api gen",
-		"build": "turbo run build",
+		"build": "turbo run build && pnpm format:write",
 		"build:icons": "pnpm --filter=@squaredmade/icons run build",
 		"build:rpc": "pnpm --filter=@squaredmade/rpc run build && pnpm --filter=@squaredmade/rpc-client run build",
 		"build:ui": "pnpm --filter=@squaredmade/ui run build",

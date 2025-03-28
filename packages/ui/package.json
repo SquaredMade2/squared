@@ -613,7 +613,7 @@
 		}
 	},
 	"scripts": {
-		"build": "pnpm build:icons && node build.mjs && pnpm build:css",
+		"build": "node build.mjs && pnpm build:css",
 		"build:css": "postcss styles/tailwind.css -o dist/styles/index.css --minify && cp styles/tailwind.css dist/styles/tailwind.css",
 		"build-storybook": "storybook build",
 		"check-types": "tsc --noEmit",
@@ -697,6 +697,7 @@
 		"clsx": "^2.1.1",
 		"commander": "^13.1.0",
 		"inquirer": "^12.4.2",
+		"lucide-react": "^0.471.0",
 		"react-remove-scroll": "^2.6.0",
 		"tailwind-merge": "^3.0.2"
 	}

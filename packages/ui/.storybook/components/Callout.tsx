@@ -1,5 +1,6 @@
-import { AlertTriangle, CheckCircle, CircleX, Info } from "@squaredmade/icons";
+import { CircleX, Info } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
+import { AlertTriangle, CheckCircle } from "lucide-react";
 import type React from "react";
 
 type CalloutType = "default" | "info" | "warning" | "success" | "error";

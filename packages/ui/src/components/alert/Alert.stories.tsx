@@ -1,10 +1,6 @@
-import {
-	AlertCircle,
-	AlertTriangle,
-	CheckCircle,
-	Info,
-} from "@squaredmade/icons";
+import { Info } from "@squaredmade/icons";
 import type { Meta, StoryObj } from "@storybook/react";
+import { AlertCircle, AlertTriangle, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "./Alert";
 
 const meta: Meta<typeof Alert> = {
