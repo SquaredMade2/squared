@@ -13,8 +13,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squared/icons";
 import type { OrganizationResource } from "@clerk/types";
+import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squared/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
