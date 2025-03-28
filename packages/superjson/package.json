@@ -21,9 +21,6 @@
 		"prepare": "pnpm run build",
 		"test": "vitest run"
 	},
-	"dependencies": {
-		"copy-anything": "^4.0.0"
-	},
 	"devDependencies": {
 		"@squared/builder": "workspace:*",
 		"@squared/typescript-config": "workspace:*",
