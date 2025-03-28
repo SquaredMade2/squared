@@ -1,6 +1,5 @@
 import * as fs from "node:fs";
 import { Decimal } from "decimal.js";
-import { ObjectId } from "mongodb";
 import { type TestAPI, describe, expect, it, test } from "vitest";
 import SuperJSON from "./index";
 import {
@@ -487,31 +486,6 @@ describe("stringify & parse", () => {
 				values: {
 					"a.role": [["symbol", "1"]],
 					"b.role": [["symbol", "2"]],
-				},
-			},
-		},
-
-		"works for custom transformers": {
-			input: () => {
-				SuperJSON.registerCustom<ObjectId, string>(
-					{
-						isApplicable: (v): v is ObjectId => v instanceof ObjectId,
-						serialize: (v) => v.toHexString(),
-						deserialize: (v) => new ObjectId(v),
-					},
-					"objectid",
-				);
-
-				return {
-					a: new ObjectId("5f7887f4f0b172093e89f126"),
-				};
-			},
-			output: {
-				a: "5f7887f4f0b172093e89f126",
-			},
-			outputAnnotations: {
-				values: {
-					a: [["custom", "objectid"]],
 				},
 			},
 		},

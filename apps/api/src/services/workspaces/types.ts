@@ -15,8 +15,10 @@ export type CreateWorkspaceParams = {
 };
 
 export type JoinWorkspaceParams = {
-	user: { id: string; name: string; email: string };
-	workspaceId: string;
+	token: string;
+	isLink: boolean;
+	userId: string;
+	workspace: { id?: string; name?: string };
 };
 
 export interface WorkspaceRpc {
@@ -44,6 +46,11 @@ export interface WorkspaceRpc {
 		userId: string;
 		slug: string;
 	}) => Promise<{ success: boolean }>;
+	generateWorkspaceInviteLink: (args: {
+		workspaceId: string;
+		expiration?: string;
+		uses?: number;
+	}) => Promise<string>;
 	getTakenWorkspaceUrls: () => Promise<string[]>;
 	getWorkspaceLabels: (args: { workspaceId: string }) => Promise<Label[]>;
 	createWorkspaceLabel: (args: {
