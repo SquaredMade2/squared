@@ -4,7 +4,7 @@ import { client } from "@/lib/client";
 import { LINK_EXPIRATION_TIMES } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import { Copy } from "@squared/icons";
+import { Copy } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
