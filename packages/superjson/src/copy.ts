@@ -59,7 +59,13 @@ export function copy<T>(target: T, options: Options<T> = {}): T {
 		}
 		const val = (target as any)[key];
 		const newVal = copy(val, options);
-		assignProp(carry, key, newVal, target, options.nonenumerable);
+		assignProp(
+			carry,
+			key,
+			newVal,
+			target as PlainObject,
+			options.nonenumerable,
+		);
 		return carry;
 	}, {} as T);
 }
