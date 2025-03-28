@@ -11,6 +11,9 @@
 	"files": {
 		"maxSize": 10000000
 	},
+	"formatter": {
+		"formatWithErrors": true
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
