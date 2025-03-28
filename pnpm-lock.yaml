@@ -728,7 +728,7 @@ importers:
         specifier: workspace:*
         version: link:../icons
       '@tailwindcss/postcss':
-        specifier: ^4.0
+        specifier: ^4
         version: 4.0.13
       aria-hidden:
         specifier: ^1.2.4
@@ -761,13 +761,13 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       tailwindcss:
-        specifier: ^4.0
+        specifier: ^4
         version: 4.0.13
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.0.13)
       zod:
-        specifier: ^3.24.2
+        specifier: ^3
         version: 3.24.2
     devDependencies:
       '@storybook/addon-essentials':
@@ -824,9 +824,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.7
         version: 10.4.21(postcss@8.5.3)
-      chromatic:
-        specifier: ^11.25.2
-        version: 11.27.0
       esbuild:
         specifier: ^0.24.0
         version: 0.24.2
@@ -4205,18 +4202,6 @@ packages:
   chokidar@4.0.1:
     resolution: {integrity: sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==}
     engines: {node: '>= 14.16.0'}
-
-  chromatic@11.27.0:
-    resolution: {integrity: sha512-jQ2ufjS+ePpg+NtcPI9B2eOi+pAzlRd2nhd1LgNMsVCC9Bzf5t8mJtyd8v2AUuJS0LdX0QVBgkOnlNv9xviHzA==}
-    hasBin: true
-    peerDependencies:
-      '@chromatic-com/cypress': ^0.*.* || ^1.0.0
-      '@chromatic-com/playwright': ^0.*.* || ^1.0.0
-    peerDependenciesMeta:
-      '@chromatic-com/cypress':
-        optional: true
-      '@chromatic-com/playwright':
-        optional: true
 
   chrome-trace-event@1.0.4:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
@@ -12629,8 +12614,6 @@ snapshots:
   chokidar@4.0.1:
     dependencies:
       readdirp: 4.0.2
-
-  chromatic@11.27.0: {}
 
   chrome-trace-event@1.0.4: {}
 
