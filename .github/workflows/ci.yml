@@ -352,7 +352,7 @@ jobs:
 
   ci-status:
     name: CI Pipeline
-    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks]
+    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks, test-ui]
     runs-on: blacksmith-4vcpu-ubuntu-2204
     if: always()
     steps:
@@ -362,7 +362,7 @@ jobs:
             echo "Lint and type check failed"
             exit 1
           fi
-          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" || "${{ needs.test-webhooks.result}}" == "failure" ]]; then
+          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" || "${{ needs.test-webhooks.result}}" == "failure" || "${{ needs.test-ui.result }}" == "failure" ]]; then
             echo "One or more tests failed"
             exit 1
           fi
