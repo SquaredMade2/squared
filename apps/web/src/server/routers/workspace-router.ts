@@ -74,22 +74,41 @@ export const workspaceRouter = router({
 	joinWorkspace: privateProcedure
 		.input(
 			z.object({
-				userEmail: z.string(),
-				userName: z.string(),
-				workspaceId: z.string(),
+				token: z.string(),
+				isLink: z.boolean(),
+				workspace: z.object({
+					id: z.string().optional(),
+					name: z.string().optional(),
+				}),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
 			const { workspaceService, userId } = ctx;
-			const { userEmail, userName, workspaceId } = input;
+			const { token, isLink, workspace } = input;
 			return c.superjson(
 				await workspaceService.joinWorkspace(TODO, {
-					user: {
-						id: userId,
-						name: userName,
-						email: userEmail,
-					},
+					token,
+					isLink,
+					userId,
+					workspace,
+				}),
+			);
+		}),
+	generateWorkspaceInviteLink: workspaceProcedure
+		.input(
+			z.object({
+				expiration: z.string().optional(),
+				uses: z.number().optional(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService, workspaceId } = ctx;
+			const { expiration, uses } = input;
+			return c.text(
+				await workspaceService.generateWorkspaceInviteLink(TODO, {
 					workspaceId,
+					expiration,
+					uses,
 				}),
 			);
 		}),
