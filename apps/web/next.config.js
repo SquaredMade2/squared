@@ -1,5 +1,7 @@
 const withMDX = require("@next/mdx")();
 
+const million = require("@million/lint");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
@@ -15,7 +17,13 @@ const nextConfig = {
 			"utfs.io",
 		],
 	},
+	webpack: (config, { isServer }) => {
+		// Direct Million.js integration
+		if (!isServer) {
+			config.plugins.push(million.webpack({ auto: true }));
+		}
+		return config;
+	},
 };
 
-// Export the final configuration
 module.exports = withMDX(nextConfig);
