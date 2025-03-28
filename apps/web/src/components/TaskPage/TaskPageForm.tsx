@@ -139,7 +139,6 @@ export const TaskPageForm = () => {
 				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
 				onFocus={() => setIsDescriptionFocused(true)}
 			/>
-			{/* <RichText addText={addText}/> */}
 		</form>
 	);
 };
