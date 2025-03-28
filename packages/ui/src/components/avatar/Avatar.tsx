@@ -1,8 +1,8 @@
-import { cn } from "@squared/ui/cn";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Primitive } from "@squared/ui/primitive";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
+import { cn } from "@squaredmade/ui/cn";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------

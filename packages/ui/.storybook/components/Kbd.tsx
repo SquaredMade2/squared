@@ -1,4 +1,4 @@
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 import type React from "react";
 
 interface KbdProps extends React.HTMLAttributes<HTMLElement> {

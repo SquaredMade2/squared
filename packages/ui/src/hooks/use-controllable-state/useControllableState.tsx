@@ -1,4 +1,4 @@
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
 import * as React from "react";
 
 /**

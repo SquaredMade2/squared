@@ -20,4 +20,4 @@ export type {
 	DialogTitleProps as SheetTitleProps,
 	DialogDescriptionProps as SheetDescriptionProps,
 	DialogCloseProps as SheetCloseProps,
-} from "@squared/ui/dialog";
+} from "@squaredmade/ui/dialog";

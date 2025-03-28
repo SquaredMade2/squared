@@ -1,8 +1,11 @@
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { Primitive, dispatchDiscreteCustomEvent } from "@squared/ui/primitive";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
-import { useEscapeKeydown } from "@squared/ui/use-escape-keydown";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import {
+	Primitive,
+	dispatchDiscreteCustomEvent,
+} from "@squaredmade/ui/primitive";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
+import { useEscapeKeydown } from "@squaredmade/ui/use-escape-keydown";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------

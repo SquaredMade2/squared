@@ -15,7 +15,7 @@ The Popover component displays floating content that appears when a user interac
 ## Installation
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ npm install @squared/ui
 ### Basic Example
 
 ```tsx
-import { Popover, PopoverTrigger, PopoverContent } from '@squared/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@squaredmade/ui/popover';
 
 export function PopoverDemo() {
   return (
@@ -45,7 +45,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverArrow,
-} from '@squared/ui/popover';
+} from '@squaredmade/ui/popover';
 
 export function PopoverWithArrowDemo() {
   return (
@@ -68,8 +68,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverClose,
-} from '@squared/ui/popover';
-import { Close } from '@squared/ui/icons';
+} from '@squaredmade/ui/popover';
+import { Close } from '@squaredmade/ui/icons';
 
 export function PopoverWithCloseDemo() {
   return (
@@ -93,7 +93,7 @@ export function PopoverWithCloseDemo() {
 
 ```tsx
 import { useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent } from '@squared/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@squaredmade/ui/popover';
 
 export function ControlledPopoverDemo() {
   const [open, setOpen] = useState(false);
@@ -115,7 +115,7 @@ export function ControlledPopoverDemo() {
 ### Modal Popover
 
 ```tsx
-import { Popover, PopoverTrigger, PopoverContent } from '@squared/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@squaredmade/ui/popover';
 
 export function ModalPopoverDemo() {
   return (
@@ -153,9 +153,9 @@ The Popover component follows accessibility best practices:
 The Popover is designed to be composed with other components:
 
 ```tsx
-import { Popover, PopoverTrigger, PopoverContent } from '@squared/ui/popover';
-import { Button } from '@squared/ui/button';
-import { Input } from '@squared/ui/input';
+import { Popover, PopoverTrigger, PopoverContent } from '@squaredmade/ui/popover';
+import { Button } from '@squaredmade/ui/button';
+import { Input } from '@squaredmade/ui/input';
 
 export function ComposedPopoverDemo() {
   return (

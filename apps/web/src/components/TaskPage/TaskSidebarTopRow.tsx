@@ -2,7 +2,7 @@ import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
 import { useTaskStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
-import { Copy, GitPullRequestArrow, Link } from "@squared/icons";
+import { Copy, GitPullRequestArrow, Link } from "@squaredmade/icons";
 import { useCallback, useEffect } from "react";
 import { Button } from "../ui/button";
 import {

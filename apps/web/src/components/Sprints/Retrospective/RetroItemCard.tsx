@@ -9,7 +9,7 @@ import {
 import { useUsers } from "@/hooks/useUsers";
 import { formatName } from "@/utils/formatting";
 import { Draggable } from "@hello-pangea/dnd";
-import { ThumbsUp } from "@squared/icons";
+import { ThumbsUp } from "@squaredmade/icons";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
 
 export const RetroItemCard = ({

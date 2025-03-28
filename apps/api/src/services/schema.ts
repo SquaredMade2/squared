@@ -10,8 +10,8 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
-} from "@squared/db";
-import { createEnumSchema, createSchema } from "@squared/rpc";
+} from "@squaredmade/db";
+import { createEnumSchema, createSchema } from "@squaredmade/rpc";
 import z from "zod";
 
 export const statusEnum = createEnumSchema<Task["status"]>()(

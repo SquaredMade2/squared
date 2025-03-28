@@ -12,13 +12,13 @@ The `usePrevious` hook is a utility for accessing the previous value of a state 
 ## Installation
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Usage
 
 ```tsx
-import { usePrevious } from '@squared/ui/use-previous';
+import { usePrevious } from '@squaredmade/ui/use-previous';
 
 function Counter() {
   const [count, setCount] = React.useState(0);
@@ -53,7 +53,7 @@ function usePrevious<T>(value: T): T;
 ### Tracking State Changes
 
 ```tsx
-import { usePrevious } from '@squared/ui/use-previous';
+import { usePrevious } from '@squaredmade/ui/use-previous';
 
 function StatusTracker() {
   const [status, setStatus] = React.useState('idle');
@@ -82,7 +82,7 @@ function StatusTracker() {
 ### Animating on Prop Changes
 
 ```tsx
-import { usePrevious } from '@squared/ui/use-previous';
+import { usePrevious } from '@squaredmade/ui/use-previous';
 
 function AnimatedValue({ value }) {
   const previousValue = usePrevious(value);

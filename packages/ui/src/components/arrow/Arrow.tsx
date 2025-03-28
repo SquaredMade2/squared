@@ -1,4 +1,4 @@
-import { Primitive } from "@squared/ui/primitive";
+import { Primitive } from "@squaredmade/ui/primitive";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------

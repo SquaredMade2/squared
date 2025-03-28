@@ -1,6 +1,6 @@
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { composeRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { composeRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
 import {
 	Menu,
 	MenuAnchor,
@@ -19,14 +19,14 @@ import {
 	MenuSubContentPrimitive,
 	MenuSubTriggerPrimitive,
 	createMenuScope,
-} from "@squared/ui/menu";
-import { Primitive } from "@squared/ui/primitive";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useId } from "@squared/ui/use-id";
+} from "@squaredmade/ui/menu";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useId } from "@squaredmade/ui/use-id";
 import * as React from "react";
 
-import { cn } from "@squared/ui/cn";
-import { Check, ChevronRight, Circle } from "@squared/ui/icons";
+import { cn } from "@squaredmade/ui/cn";
+import { Check, ChevronRight, Circle } from "@squaredmade/ui/icons";
 
 type Direction = "ltr" | "rtl";
 

@@ -1,12 +1,12 @@
-import { cn } from "@squared/ui/cn";
-import type { NODES } from "@squared/ui/primitive";
+import { cn } from "@squaredmade/ui/cn";
+import type { NODES } from "@squaredmade/ui/primitive";
 import {
 	type ResponsiveProps,
 	createResponsiveComponent,
 	getColorVariants,
 	getDimensionVariants,
 	getSizeVariants,
-} from "@squared/ui/responsive";
+} from "@squaredmade/ui/responsive";
 import { type VariantProps, cva } from "class-variance-authority";
 import React from "react";
 

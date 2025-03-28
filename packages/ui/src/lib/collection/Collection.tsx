@@ -1,6 +1,6 @@
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Slot } from "@squared/ui/slot";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Slot } from "@squaredmade/ui/slot";
 import React from "react";
 
 type SlotProps = React.ComponentPropsWithoutRef<typeof Slot>;

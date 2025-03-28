@@ -1,16 +1,19 @@
-import { cn } from "@squared/ui/cn";
-import { createCollection } from "@squared/ui/collection";
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Close } from "@squared/ui/icons";
-import { Portal } from "@squared/ui/portal";
-import { Presence } from "@squared/ui/presence";
-import { Primitive, dispatchDiscreteCustomEvent } from "@squared/ui/primitive";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+import { cn } from "@squaredmade/ui/cn";
+import { createCollection } from "@squaredmade/ui/collection";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Close } from "@squaredmade/ui/icons";
+import { Portal } from "@squaredmade/ui/portal";
+import { Presence } from "@squaredmade/ui/presence";
+import {
+	Primitive,
+	dispatchDiscreteCustomEvent,
+} from "@squaredmade/ui/primitive";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 import * as ReactDOM from "react-dom";

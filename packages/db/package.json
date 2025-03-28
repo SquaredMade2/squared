@@ -1,5 +1,5 @@
 {
-	"name": "@squared/db",
+	"name": "@squaredmade/db",
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
@@ -20,7 +20,7 @@
 		"ws": "^8.18.0"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
 		"@types/node": "^22.10.10",
 		"@types/ws": "^8.5.13",
 		"dotenv": "^16.4.1",

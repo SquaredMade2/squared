@@ -1,4 +1,4 @@
-import { createRpcHandler, createServiceSchema } from "@squared/rpc";
+import { createRpcHandler, createServiceSchema } from "@squaredmade/rpc";
 import z from "zod";
 import { commentSchema } from "../schema";
 import type { CommentRpc } from "./types";

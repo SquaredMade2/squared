@@ -1,5 +1,5 @@
 import { useFilterStore, useViewStore } from "@/store";
-import { Status } from "@squared/db";
+import { Status } from "@squaredmade/db";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { RenameModal } from "../Modals";

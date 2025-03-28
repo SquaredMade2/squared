@@ -1,4 +1,4 @@
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 
 export default { title: "Layout/VisuallyHidden" };
 

@@ -1,5 +1,5 @@
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import type { GithubCommit, TaskEvent } from "@squared/db";
+import type { GithubCommit, TaskEvent } from "@squaredmade/db";
 
 export type EventState = {
 	events: (TaskEvent | GithubCommit)[];

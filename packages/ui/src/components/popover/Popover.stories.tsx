@@ -1,7 +1,7 @@
-import { Button } from "@squared/ui/button";
-import { Close } from "@squared/ui/icons";
-import { Input } from "@squared/ui/input";
-import { Label } from "@squared/ui/label";
+import { Button } from "@squaredmade/ui/button";
+import { Close } from "@squaredmade/ui/icons";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import {

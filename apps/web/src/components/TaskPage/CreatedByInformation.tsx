@@ -2,7 +2,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { useEventStore, useTaskStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
-import type { GithubCommit, TaskEvent } from "@squared/db";
+import type { GithubCommit, TaskEvent } from "@squaredmade/db";
 import { formatDate } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 

@@ -1,4 +1,4 @@
-import { TODO } from "@squared/context";
+import { TODO } from "@squaredmade/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure, workspaceProcedure } from "../procedures";

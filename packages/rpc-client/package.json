@@ -1,5 +1,5 @@
 {
-	"name": "@squared/rpc-client",
+	"name": "@squaredmade/rpc-client",
 	"version": "0.0.0",
 	"private": true,
 	"main": "dist/index.js",
@@ -26,12 +26,12 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@squared/context": "workspace:*",
-		"@squared/superjson": "workspace:*"
+		"@squaredmade/context": "workspace:*",
+		"@squaredmade/superjson": "workspace:*"
 	},
 	"devDependencies": {
-		"@squared/builder": "workspace:*",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/builder": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
 		"@types/node": "^22.10.10",
 		"@vitest/coverage-v8": "^3.0.7",
 		"typescript": "^5.2.2",

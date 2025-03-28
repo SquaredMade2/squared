@@ -2,7 +2,7 @@ import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
-} from "@squared/rpc";
+} from "@squaredmade/rpc";
 import z from "zod";
 import { userSchema } from "../schema";
 import type { AuthRpc, Register } from "./types";

@@ -1,5 +1,5 @@
-import { Primitive } from "@squared/ui/primitive";
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
 import * as React from "react";
 import ReactDOM from "react-dom";
 

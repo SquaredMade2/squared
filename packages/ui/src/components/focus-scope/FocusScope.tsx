@@ -1,6 +1,6 @@
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { Primitive } from "@squared/ui/primitive";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
 import * as React from "react";
 
 const AUTOFOCUS_ON_MOUNT = "focusScope.autoFocusOnMount";

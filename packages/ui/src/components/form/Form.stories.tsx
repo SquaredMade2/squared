@@ -1,5 +1,5 @@
-import { Button } from "@squared/ui/button";
-import { Checkbox } from "@squared/ui/checkbox";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
 	Form,
 	FormControl,
@@ -10,20 +10,20 @@ import {
 	FormMessage,
 	useFieldArray,
 	useForm,
-} from "@squared/ui/form";
-import { LoaderCircle, Plus, Trash } from "@squared/ui/icons";
-import { Input } from "@squared/ui/input";
-import { RadioGroup, RadioGroupItem } from "@squared/ui/radio-group";
+} from "@squaredmade/ui/form";
+import { LoaderCircle, Plus, Trash } from "@squaredmade/ui/icons";
+import { Input } from "@squaredmade/ui/input";
+import { RadioGroup, RadioGroupItem } from "@squaredmade/ui/radio-group";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
-import { Switch } from "@squared/ui/switch";
-import { Textarea } from "@squared/ui/textarea";
-import { toast } from "@squared/ui/toast";
+} from "@squaredmade/ui/select";
+import { Switch } from "@squaredmade/ui/switch";
+import { Textarea } from "@squaredmade/ui/textarea";
+import { toast } from "@squaredmade/ui/toast";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import * as z from "zod";
@@ -57,7 +57,7 @@ export const BasicForm: Story = {
 			source: {
 				code: `
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "@squared/ui/form";
+import { useForm } from "@squaredmade/ui/form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -69,7 +69,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 
@@ -236,7 +236,7 @@ export const ProfileForm: Story = {
 			source: {
 				code: `
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "@squared/ui/form";
+import { useForm } from "@squaredmade/ui/form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -249,7 +249,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -590,7 +590,7 @@ export const RadioGroupForm: Story = {
 			source: {
 				code: `
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "@squared/ui/form";
+import { useForm } from "@squaredmade/ui/form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -602,7 +602,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/use-toast";
 
@@ -863,9 +863,9 @@ export const AsyncSubmissionForm: Story = {
 				code: `
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "@squared/ui/form";
+import { useForm } from "@squaredmade/ui/form";
 import * as z from "zod";
-import { LoaderCircle } from "@squared/ui/icons";
+import { LoaderCircle } from "@squaredmade/ui/icons";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -876,7 +876,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 
@@ -1139,7 +1139,7 @@ export const DynamicFieldsForm: Story = {
 			source: {
 				code: `
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "@squared/ui/form";
+import { useFieldArray, useForm } from "@squaredmade/ui/form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -1151,7 +1151,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 
@@ -1498,7 +1498,7 @@ export const ConditionalFieldsForm: Story = {
 			source: {
 				code: `
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "@squared/ui/form";
+import { useForm } from "@squaredmade/ui/form";
 import { useEffect, useState } from "react";
 import * as z from "zod";
 
@@ -1511,7 +1511,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";

@@ -11,9 +11,9 @@ import {
 	inArray,
 	tasksTable,
 	workspacesTable,
-} from "@squared/db";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
+} from "@squaredmade/db";
+import type { Logger } from "@squaredmade/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { GithubRpc, UpsertPullRequestResponse } from "./types";
 
 export class GithubService implements GithubRpc {

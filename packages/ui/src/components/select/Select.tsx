@@ -1,29 +1,29 @@
-import { cn } from "@squared/ui/cn";
-import { createCollection } from "@squared/ui/collection";
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { useFocusGuards } from "@squared/ui/focus-guards";
-import { FocusScope } from "@squared/ui/focus-scope";
-import { Check, ChevronDown, ChevronUp } from "@squared/ui/icons";
-import { clamp } from "@squared/ui/number";
+import { cn } from "@squaredmade/ui/cn";
+import { createCollection } from "@squaredmade/ui/collection";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { useFocusGuards } from "@squaredmade/ui/focus-guards";
+import { FocusScope } from "@squaredmade/ui/focus-scope";
+import { Check, ChevronDown, ChevronUp } from "@squaredmade/ui/icons";
+import { clamp } from "@squaredmade/ui/number";
 import {
 	Popper,
 	PopperAnchor,
 	PopperArrow,
 	PopperContent,
 	createPopperScope,
-} from "@squared/ui/popper";
-import { Portal as PortalPrimitive } from "@squared/ui/portal";
-import { Primitive } from "@squared/ui/primitive";
-import { Slot } from "@squared/ui/slot";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useDirection } from "@squared/ui/use-direction";
-import { useId } from "@squared/ui/use-id";
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
-import { usePrevious } from "@squared/ui/use-previous";
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+} from "@squaredmade/ui/popper";
+import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { Slot } from "@squaredmade/ui/slot";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useDirection } from "@squaredmade/ui/use-direction";
+import { useId } from "@squaredmade/ui/use-id";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
+import { usePrevious } from "@squaredmade/ui/use-previous";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { hideOthers } from "aria-hidden";
 import * as React from "react";
 import * as ReactDOM from "react-dom";

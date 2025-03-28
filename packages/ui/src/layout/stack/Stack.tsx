@@ -1,10 +1,10 @@
-import type { BoxVariants } from "@squared/ui/box";
-import { cn } from "@squared/ui/cn";
+import type { BoxVariants } from "@squaredmade/ui/box";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	type ResponsiveProps,
 	createResponsiveComponent,
 	getSizeVariants,
-} from "@squared/ui/responsive";
+} from "@squaredmade/ui/responsive";
 import { type VariantProps, cva } from "class-variance-authority";
 
 const stackVariants = cva("flex flex-col", {

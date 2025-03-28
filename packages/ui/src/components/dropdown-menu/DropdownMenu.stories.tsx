@@ -1,5 +1,5 @@
-import { Button } from "@squared/ui/button";
-import { Input } from "@squared/ui/input";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import {

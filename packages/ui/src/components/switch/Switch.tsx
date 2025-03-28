@@ -1,13 +1,13 @@
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Primitive } from "@squared/ui/primitive";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { usePrevious } from "@squared/ui/use-previous";
-import { useSize } from "@squared/ui/use-size";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { usePrevious } from "@squaredmade/ui/use-previous";
+import { useSize } from "@squaredmade/ui/use-size";
 import * as React from "react";
 
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 
 /* -------------------------------------------------------------------------------------------------
  * Switch

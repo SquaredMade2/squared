@@ -7,7 +7,7 @@ import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
-import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
+import type { RetrospectiveItem, RetrospectiveItemType } from "@squaredmade/db";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";

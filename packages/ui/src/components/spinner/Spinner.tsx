@@ -1,5 +1,5 @@
-import { cn } from "@squared/ui/cn";
-import { LoaderCircle } from "@squared/ui/icons";
+import { cn } from "@squaredmade/ui/cn";
+import { LoaderCircle } from "@squaredmade/ui/icons";
 import React from "react";
 
 interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {

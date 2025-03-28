@@ -1,5 +1,5 @@
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
 import * as React from "react";
 import { useStateMachine } from "./useStateMachine";
 

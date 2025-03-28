@@ -1,19 +1,19 @@
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
 	createCollapsibleScope,
-} from "@squared/ui/collapsible";
-import { createCollection } from "@squared/ui/collection";
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { ChevronDown } from "@squared/ui/icons";
-import { Primitive } from "@squared/ui/primitive";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useDirection } from "@squared/ui/use-direction";
-import { useId } from "@squared/ui/use-id";
+} from "@squaredmade/ui/collapsible";
+import { createCollection } from "@squaredmade/ui/collection";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { ChevronDown } from "@squaredmade/ui/icons";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useDirection } from "@squaredmade/ui/use-direction";
+import { useId } from "@squaredmade/ui/use-id";
 import React from "react";
 
 type Direction = "ltr" | "rtl";

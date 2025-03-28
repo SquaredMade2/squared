@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
 import * as React from "react";
 
 // We spaces with `.trim().toString()` to prevent bundlers from trying to `import { useId } from 'react';`

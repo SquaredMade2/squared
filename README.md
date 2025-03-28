@@ -19,9 +19,9 @@ This Turborepo includes the following:
 - `web`: a [Next.js](https://nextjs.org/) app
 - `api`: an [Express](https://expressjs.com/) server
 - `@squaredmade/ui`: a React component library
-- `@squared/logger`: Isomorphic logger (a small wrapper around console.log)
-- `@squared/eslint-config`: ESLint presets
-- `@squared/typescript-config`: tsconfig.json's used throughout the monorepo
+- `@squaredmade/logger`: Isomorphic logger (a small wrapper around console.log)
+- `@squaredmade/eslint-config`: ESLint presets
+- `@squaredmade/typescript-config`: tsconfig.json's used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 

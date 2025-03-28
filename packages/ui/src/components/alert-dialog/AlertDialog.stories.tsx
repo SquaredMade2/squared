@@ -1,4 +1,4 @@
-import { buttonVariants } from "@squared/ui/button";
+import { buttonVariants } from "@squaredmade/ui/button";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
 	AlertDialog,

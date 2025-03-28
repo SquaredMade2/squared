@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Dialog,
 	DialogClose,
@@ -10,8 +10,8 @@ import {
 	DialogPortal,
 	DialogTitlePrimitive as DialogTitle,
 	DialogTrigger,
-} from "@squared/ui/dialog";
-import { Close } from "@squared/ui/icons";
+} from "@squaredmade/ui/dialog";
+import { Close } from "@squaredmade/ui/icons";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 

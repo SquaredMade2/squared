@@ -1,10 +1,10 @@
 "use client";
 
-import { cn } from "@squared/ui/cn";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Label } from "@squared/ui/label";
-import { Slot } from "@squared/ui/slot";
-import { useId } from "@squared/ui/use-id";
+import { cn } from "@squaredmade/ui/cn";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Label } from "@squaredmade/ui/label";
+import { Slot } from "@squaredmade/ui/slot";
+import { useId } from "@squaredmade/ui/use-id";
 import * as React from "react";
 
 // ------------------------------------------------------------------------------------------------

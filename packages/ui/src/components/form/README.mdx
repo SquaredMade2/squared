@@ -16,7 +16,7 @@ The Form component is a comprehensive form management system inspired by React H
 ## Installation
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Basic Usage
@@ -30,7 +30,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@squared/ui/form';
+} from '@squaredmade/ui/form';
 
 // Define your form values type
 interface LoginFormValues {
@@ -116,7 +116,7 @@ function LoginForm() {
 You can validate your forms using a custom resolver function:
 
 ```tsx
-import { useForm } from '@squared/ui/form';
+import { useForm } from '@squaredmade/ui/form';
 
 interface SignupFormValues {
   username: string;
@@ -175,7 +175,7 @@ function SignupForm() {
 For dynamic forms with repeating sections:
 
 ```tsx
-import { useForm, useFieldArray } from '@squared/ui/form';
+import { useForm, useFieldArray } from '@squaredmade/ui/form';
 
 interface OrderFormValues {
   customer: {

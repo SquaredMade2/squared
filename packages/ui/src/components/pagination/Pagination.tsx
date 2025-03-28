@@ -1,6 +1,6 @@
-import { type ButtonProps, buttonVariants } from "@squared/ui/button";
-import { cn } from "@squared/ui/cn";
-import { ChevronLeft, ChevronRight, Ellipsis } from "@squared/ui/icons";
+import { type ButtonProps, buttonVariants } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { ChevronLeft, ChevronRight, Ellipsis } from "@squaredmade/ui/icons";
 import * as React from "react";
 
 /**

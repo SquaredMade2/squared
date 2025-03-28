@@ -1,24 +1,24 @@
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
 import {
 	Popper,
 	PopperAnchor,
 	PopperArrow,
 	PopperContent,
 	createPopperScope,
-} from "@squared/ui/popper";
-import { Portal as PortalPrimitive } from "@squared/ui/portal";
-import { Presence } from "@squared/ui/presence";
-import { Primitive } from "@squared/ui/primitive";
-import { Slottable } from "@squared/ui/slot";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useId } from "@squared/ui/use-id";
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+} from "@squaredmade/ui/popper";
+import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
+import { Presence } from "@squaredmade/ui/presence";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { Slottable } from "@squaredmade/ui/slot";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useId } from "@squaredmade/ui/use-id";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import * as React from "react";
 import { DismissableLayer } from "src/lib/dismissable-layer";
 
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 
 type ScopedProps<P = {}> = P & { __scopeTooltip?: Scope };
 const [createTooltipContext, createTooltipScope] = createContextScope(

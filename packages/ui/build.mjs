@@ -20,7 +20,7 @@ async function buildFile(filePath) {
 
 	const esbuildConfig = {
 		entryPoints: [file],
-		external: ["class-variance-authority", "@squared/ui/*"],
+		external: ["class-variance-authority", "@squaredmade/ui/*"],
 		packages: "external",
 		bundle: true,
 		sourcemap: true,
@@ -109,7 +109,7 @@ async function buildCli() {
 		bundle: true,
 		platform: "node",
 		target: "node18",
-		external: ["inquirer", "commander", "@squared/ui/*"],
+		external: ["inquirer", "commander", "@squaredmade/ui/*"],
 		outfile: "dist/cli/index.js",
 		format: "cjs",
 		banner: {

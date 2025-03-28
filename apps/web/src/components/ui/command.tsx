@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/utils/cn";
-import { Search } from "@squared/icons";
+import { Search } from "@squaredmade/icons";
 import type { DialogProps } from "@squaredmade/ui/dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";

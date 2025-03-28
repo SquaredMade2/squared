@@ -1,5 +1,5 @@
 {
-	"extends": "@squared/typescript-config/nextjs.json",
+	"extends": "@squaredmade/typescript-config/nextjs.json",
 	"compilerOptions": {
 		"outDir": "dist/",
 		"baseUrl": "src",

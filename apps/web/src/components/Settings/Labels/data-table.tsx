@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useModalStore } from "@/store";
-import type { Label } from "@squared/db";
+import type { Label } from "@squaredmade/db";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,

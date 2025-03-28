@@ -1,5 +1,5 @@
-import { cn } from "@squared/ui/cn";
-import { Primitive } from "@squared/ui/primitive";
+import { cn } from "@squaredmade/ui/cn";
+import { Primitive } from "@squaredmade/ui/primitive";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------

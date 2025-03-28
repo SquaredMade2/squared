@@ -12,7 +12,7 @@ The Direction utility is a set of React components and hooks that provide a way 
 ## Installation
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ npm install @squared/ui
 Wrap your application or a part of it with the `DirectionProvider`:
 
 ```tsx
-import { DirectionProvider } from '@squared/ui/direction';
+import { DirectionProvider } from '@squaredmade/ui/direction';
 
 function App() {
   return <DirectionProvider dir="rtl">{/* Your app components */}</DirectionProvider>;
@@ -34,7 +34,7 @@ function App() {
 In your components, use the `useDirection` hook to access the current direction:
 
 ```tsx
-import { useDirection } from '@squared/ui/direction';
+import { useDirection } from '@squaredmade/ui/direction';
 
 function MyComponent() {
   const direction = useDirection();
@@ -79,7 +79,7 @@ function useDirection(localDir?: 'ltr' | 'rtl'): 'ltr' | 'rtl';
 ### Global Direction Setting
 
 ```tsx
-import { DirectionProvider } from '@squared/ui/direction';
+import { DirectionProvider } from '@squaredmade/ui/direction';
 
 function App() {
   return (
@@ -95,7 +95,7 @@ function App() {
 ### Using Direction in a Component
 
 ```tsx
-import { useDirection } from '@squared/ui/direction';
+import { useDirection } from '@squaredmade/ui/direction';
 
 function TextInput({ label, value, onChange }) {
   const dir = useDirection();
@@ -117,7 +117,7 @@ function TextInput({ label, value, onChange }) {
 ### Overriding Direction Locally
 
 ```tsx
-import { useDirection } from '@squared/ui/direction';
+import { useDirection } from '@squaredmade/ui/direction';
 
 function LocalizedComponent() {
   const globalDir = useDirection();

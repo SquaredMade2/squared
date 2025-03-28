@@ -1,4 +1,4 @@
-# @squared/ui
+# @squaredmade/ui
 
 A design system with individually importable components, inspired by Radix with shadcn styling.
 
@@ -7,13 +7,13 @@ A design system with individually importable components, inspired by Radix with 
 To install the design system, run the following command:
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 or if you're using yarn:
 
 ```bash
-yarn add @squared/ui
+yarn add @squaredmade/ui
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ yarn add @squared/ui
 This design system provides a wide range of components and utilities that can be imported individually. Here's a basic example of how to use a component:
 
 ```jsx
-import { Button } from '@squared/ui/button';
+import { Button } from '@squaredmade/ui/button';
 
 function MyComponent() {
   return <Button variant="default">Click me</Button>;
@@ -60,8 +60,8 @@ The design system includes the following components:
 Each component can be imported from its respective path. For example:
 
 ```jsx
-import { Alert } from '@squared/ui/alert';
-import { Card } from '@squared/ui/card';
+import { Alert } from '@squaredmade/ui/alert';
+import { Card } from '@squaredmade/ui/card';
 ```
 
 ## Utilities
@@ -81,8 +81,8 @@ The design system also provides several utility functions and hooks:
 These can be imported similarly to components:
 
 ```jsx
-import { cn } from '@squared/ui/cn';
-import { useId } from '@squared/ui/use-id';
+import { cn } from '@squaredmade/ui/cn';
+import { useId } from '@squaredmade/ui/use-id';
 ```
 
 ## Styling
@@ -90,7 +90,7 @@ import { useId } from '@squared/ui/use-id';
 This design system uses Tailwind CSS for styling. The styles are included in the package and can be imported in your project:
 
 ```jsx
-import '@squared/ui/styles';
+import '@squaredmade/ui/styles';
 ```
 
 ## Development

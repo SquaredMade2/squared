@@ -1,4 +1,4 @@
-import { createRpcHandler, createServiceSchema } from "@squared/rpc";
+import { createRpcHandler, createServiceSchema } from "@squaredmade/rpc";
 import z from "zod";
 import { githubRepoSchema } from "../schema";
 import type { GithubService } from "./github-service";

@@ -7,7 +7,7 @@ import {
 	formatStatus,
 	getInitials,
 } from "@/utils/formatting";
-import type { Priority, Status } from "@squared/db";
+import type { Priority, Status } from "@squaredmade/db";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { UserSearch } from "lucide-react";
 

@@ -3,8 +3,8 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@squared/ui/accordion";
-import { cn } from "@squared/ui/cn";
+} from "@squaredmade/ui/accordion";
+import { cn } from "@squaredmade/ui/cn";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 

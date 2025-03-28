@@ -1,6 +1,6 @@
 /// <reference types="resize-observer-browser" />
 
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
 import * as React from "react";
 
 function useSize(element: HTMLElement | null) {

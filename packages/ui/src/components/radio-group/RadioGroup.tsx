@@ -1,19 +1,19 @@
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Primitive } from "@squared/ui/primitive";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Primitive } from "@squaredmade/ui/primitive";
 import {
 	RovingFocusGroup,
 	RovingFocusGroupItem,
 	createRovingFocusGroupScope,
-} from "@squared/ui/roving-focus";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useDirection } from "@squared/ui/use-direction";
+} from "@squaredmade/ui/roving-focus";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useDirection } from "@squaredmade/ui/use-direction";
 import * as React from "react";
 import { Radio, RadioIndicator, createRadioScope } from "./Radio";
 
-import { cn } from "@squared/ui/cn";
-import { Circle } from "@squared/ui/icons";
+import { cn } from "@squaredmade/ui/cn";
+import { Circle } from "@squaredmade/ui/icons";
 
 const ARROW_KEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 

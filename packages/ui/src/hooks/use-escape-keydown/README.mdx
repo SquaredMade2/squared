@@ -13,13 +13,13 @@ The `useEscapeKeydown` hook is a utility for listening to the Escape key press e
 ## Installation
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Usage
 
 ```tsx
-import { useEscapeKeydown } from '@squared/ui/use-escape-keydown';
+import { useEscapeKeydown } from '@squaredmade/ui/use-escape-keydown';
 
 function Modal({ onClose }) {
   useEscapeKeydown(onClose);
@@ -52,7 +52,7 @@ function useEscapeKeydown(
 ### Basic Usage
 
 ```tsx
-import { useEscapeKeydown } from '@squared/ui/use-escape-keydown';
+import { useEscapeKeydown } from '@squaredmade/ui/use-escape-keydown';
 
 function Popover({ onClose }) {
   useEscapeKeydown(onClose);
@@ -68,7 +68,7 @@ function Popover({ onClose }) {
 ### Using with Custom Document (e.g., in an iframe)
 
 ```tsx
-import { useEscapeKeydown } from '@squared/ui/use-escape-keydown';
+import { useEscapeKeydown } from '@squaredmade/ui/use-escape-keydown';
 
 function IframeContent({ onExit, iframeDocument }) {
   useEscapeKeydown(onExit, iframeDocument);
@@ -84,7 +84,7 @@ function IframeContent({ onExit, iframeDocument }) {
 ### Conditional Usage
 
 ```tsx
-import { useEscapeKeydown } from '@squared/ui/use-escape-keydown';
+import { useEscapeKeydown } from '@squaredmade/ui/use-escape-keydown';
 
 function ConditionalEscapeHandler({ isActive, onEscape }) {
   useEscapeKeydown(isActive ? onEscape : undefined);

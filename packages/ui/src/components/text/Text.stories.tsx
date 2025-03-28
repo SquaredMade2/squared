@@ -1,4 +1,4 @@
-import { Trash } from "@squared/ui/icons";
+import { Trash } from "@squaredmade/ui/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Text } from "./Text";
 

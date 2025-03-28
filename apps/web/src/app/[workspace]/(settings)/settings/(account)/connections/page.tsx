@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
-import { Github } from "@squared/icons";
+import { Github } from "@squaredmade/icons";
 import { useRouter } from "next/navigation";
 
 const Page = () => {

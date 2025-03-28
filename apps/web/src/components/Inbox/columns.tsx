@@ -1,14 +1,14 @@
 import { client } from "@/lib/client";
 import { useEventStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import type { Notification, Task, Workspace } from "@squared/db";
+import type { Notification, Task, Workspace } from "@squaredmade/db";
 import {
 	BellOff,
 	Bookmark,
 	BookmarkMinus,
 	Check,
 	Trash2,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { useMutation } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";

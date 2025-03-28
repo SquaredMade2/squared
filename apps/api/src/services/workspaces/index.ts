@@ -2,7 +2,7 @@ import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
-} from "@squared/rpc";
+} from "@squaredmade/rpc";
 import { z } from "zod";
 import { labelSchema, workspaceRoleEnum, workspaceSchema } from "../schema";
 import type {

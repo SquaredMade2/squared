@@ -1,18 +1,18 @@
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Presence } from "@squared/ui/presence";
-import { Primitive } from "@squared/ui/primitive";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Presence } from "@squaredmade/ui/presence";
+import { Primitive } from "@squaredmade/ui/primitive";
 import {
 	RovingFocusGroup,
 	RovingFocusGroupItem,
 	createRovingFocusGroupScope,
-} from "@squared/ui/roving-focus";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useDirection } from "@squared/ui/use-direction";
-import { useId } from "@squared/ui/use-id";
+} from "@squaredmade/ui/roving-focus";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useDirection } from "@squaredmade/ui/use-direction";
+import { useId } from "@squaredmade/ui/use-id";
 import * as React from "react";
 
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 
 /* -------------------------------------------------------------------------------------------------
  * Tabs

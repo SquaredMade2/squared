@@ -1,5 +1,10 @@
-import { cn } from "@squared/ui/cn";
-import { AlertTriangle, CheckCircle, CircleX, Info } from "@squared/ui/icons";
+import { cn } from "@squaredmade/ui/cn";
+import {
+	AlertTriangle,
+	CheckCircle,
+	CircleX,
+	Info,
+} from "@squaredmade/ui/icons";
 import type React from "react";
 
 type CalloutType = "default" | "info" | "warning" | "success" | "error";

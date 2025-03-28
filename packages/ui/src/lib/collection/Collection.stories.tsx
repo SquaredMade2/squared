@@ -1,4 +1,4 @@
-import { createCollection } from "@squared/ui/collection";
+import { createCollection } from "@squaredmade/ui/collection";
 import * as React from "react";
 
 export default { title: "Utilities/Collection" };

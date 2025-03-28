@@ -3,7 +3,7 @@ import {
 	AlertTriangle,
 	CheckCircle,
 	Info,
-} from "@squared/ui/icons";
+} from "@squaredmade/ui/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Alert, AlertDescription, AlertTitle } from "./Alert";
 

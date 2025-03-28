@@ -1,6 +1,6 @@
-import { Button } from "@squared/ui/button";
-import { cn } from "@squared/ui/cn";
-import { Close, type IconName, LokeIcon } from "@squared/ui/icons";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { Close, type IconName, LokeIcon } from "@squaredmade/ui/icons";
 import * as React from "react";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {

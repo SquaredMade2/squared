@@ -1,4 +1,4 @@
-import { DirectionProvider } from "@squared/ui/use-direction";
+import { DirectionProvider } from "@squaredmade/ui/use-direction";
 import * as React from "react";
 import {
 	Menu,

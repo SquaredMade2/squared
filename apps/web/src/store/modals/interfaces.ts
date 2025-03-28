@@ -1,4 +1,4 @@
-import type { Label, Task } from "@squared/db";
+import type { Label, Task } from "@squaredmade/db";
 
 export type ModalState = {
 	showNewTask: boolean;

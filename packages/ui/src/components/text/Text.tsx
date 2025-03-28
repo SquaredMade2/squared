@@ -1,8 +1,8 @@
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	type ResponsiveProps,
 	createResponsiveComponent,
-} from "@squared/ui/responsive";
+} from "@squaredmade/ui/responsive";
 import { type VariantProps, cva } from "class-variance-authority";
 import type * as React from "react";
 

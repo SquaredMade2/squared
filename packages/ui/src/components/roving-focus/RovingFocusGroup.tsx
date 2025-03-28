@@ -1,12 +1,12 @@
-import { createCollection } from "@squared/ui/collection";
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Primitive } from "@squared/ui/primitive";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
-import { useControllableState } from "@squared/ui/use-controllable-state";
-import { useDirection } from "@squared/ui/use-direction";
-import { useId } from "@squared/ui/use-id";
+import { createCollection } from "@squaredmade/ui/collection";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
+import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useDirection } from "@squaredmade/ui/use-direction";
+import { useId } from "@squaredmade/ui/use-id";
 import * as React from "react";
 
 const ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";

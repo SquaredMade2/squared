@@ -1,7 +1,11 @@
-import { Button } from "@squared/ui/button";
-import { cn } from "@squared/ui/cn";
-import { Calendar as CalendarIcon } from "@squared/ui/icons";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { Calendar as CalendarIcon } from "@squaredmade/ui/icons";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import type { Meta, StoryObj } from "@storybook/react";
 import React, { useState } from "react";
 import { Calendar, type DateRange } from "./Calendar";

@@ -22,8 +22,8 @@ export async function init(options: InitOptions = {}): Promise<void> {
 
 	// Check if the design system is installed as a dependency
 	if (!(await isInstalledAsDependency())) {
-		console.error("Error: @squared/ui is not installed in this project.");
-		console.log("Please install it first with: npm install @squared/ui");
+		console.error("Error: @squaredmade/ui is not installed in this project.");
+		console.log("Please install it first with: npm install @squaredmade/ui");
 		process.exit(1);
 	}
 
@@ -79,10 +79,10 @@ export async function init(options: InitOptions = {}): Promise<void> {
 	console.log("");
 	console.log("Next steps:");
 	console.log("  1. Import the CSS in your app:");
-	console.log('     import "@squared/ui/styles";');
+	console.log('     import "@squaredmade/ui/styles";');
 	console.log("");
 	console.log("  2. Start using components:");
-	console.log('     import { Button } from "@squared/ui/button";');
+	console.log('     import { Button } from "@squaredmade/ui/button";');
 	console.log("");
 	console.log("  3. Check out the README for more information.");
 	console.log("");

@@ -3,14 +3,14 @@
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamStore } from "@/store";
-import type { Team } from "@squared/db";
+import type { Team } from "@squaredmade/db";
 import {
 	Calendar as CalendarIcon,
 	ChevronDown,
 	ChevronRight,
 	Maximize2,
 	X,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";

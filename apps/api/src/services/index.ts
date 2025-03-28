@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { createDb } from "@squared/db";
+import { createDb } from "@squaredmade/db";
 import { createAuthRpcHandler } from "./auth";
 import { AuthService } from "./auth/auth-service";
 import { createCommentRpcHandler } from "./comments";

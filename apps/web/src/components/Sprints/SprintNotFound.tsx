@@ -1,4 +1,4 @@
-import { CircleAlert } from "@squared/icons";
+import { CircleAlert } from "@squaredmade/icons";
 import Link from "next/link";
 import { Button } from "../ui/button";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon } from "@squared/icons";
+import { Moon } from "@squaredmade/icons";
 import { IconSunLow } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";

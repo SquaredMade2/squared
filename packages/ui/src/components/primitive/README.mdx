@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Primitive component is a foundational building block in the @squared/ui library. It provides a set of basic HTML elements with enhanced functionality, including the ability to render as a child component and forward refs.
+The Primitive component is a foundational building block in the @squaredmade/ui library. It provides a set of basic HTML elements with enhanced functionality, including the ability to render as a child component and forward refs.
 
 ## Features
 
@@ -17,7 +17,7 @@ The Primitive component is a foundational building block in the @squared/ui libr
 To use the Primitive component, ensure you have the necessary dependencies installed in your project:
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ npm install @squared/ui
 Here's a basic example of how to use the Primitive component:
 
 ```jsx
-import { Primitive } from '@squared/ui/primitive';
+import { Primitive } from '@squaredmade/ui/primitive';
 
 function MyComponent() {
   return (
@@ -70,7 +70,7 @@ function dispatchDiscreteCustomEvent<E extends CustomEvent>(target: E['target'],
 ### Using asChild prop
 
 ```jsx
-import { Primitive } from '@squared/ui/primitive';
+import { Primitive } from '@squaredmade/ui/primitive';
 
 function CustomButton({ asChild, ...props }) {
   const Comp = asChild ? Slot : Primitive.button;
@@ -90,7 +90,7 @@ function MyComponent() {
 
 ```jsx
 import React from 'react';
-import { Primitive } from '@squared/ui/primitive';
+import { Primitive } from '@squaredmade/ui/primitive';
 
 const TextInput = React.forwardRef((props, forwardedRef) => {
   return <Primitive.input type="text" {...props} ref={forwardedRef} />;
@@ -112,7 +112,7 @@ function MyForm() {
 ### Using dispatchDiscreteCustomEvent
 
 ```jsx
-import { Primitive, dispatchDiscreteCustomEvent } from '@squared/ui/primitive';
+import { Primitive, dispatchDiscreteCustomEvent } from '@squaredmade/ui/primitive';
 
 function MyComponent() {
   const handlePointerDown = (event) => {

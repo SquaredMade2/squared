@@ -11,16 +11,16 @@ import {
 	size,
 	useFloating,
 } from "@floating-ui/react-dom";
-import * as ArrowPrimitive from "@squared/ui/arrow";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
-import { Primitive } from "@squared/ui/primitive";
-import { useCallbackRef } from "@squared/ui/use-callback-ref";
-import { useLayoutEffect } from "@squared/ui/use-layout-effect";
-import { useSize } from "@squared/ui/use-size";
+import * as ArrowPrimitive from "@squaredmade/ui/arrow";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { Primitive } from "@squaredmade/ui/primitive";
+import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
+import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
+import { useSize } from "@squaredmade/ui/use-size";
 import * as React from "react";
 
-import type { Measurable } from "@squared/ui/rect";
+import type { Measurable } from "@squaredmade/ui/rect";
 
 const SIDE_OPTIONS = ["top", "right", "bottom", "left"] as const;
 const ALIGN_OPTIONS = ["start", "center", "end"] as const;

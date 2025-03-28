@@ -1,8 +1,8 @@
-import { buttonVariants } from "@squared/ui/button";
-import { cn } from "@squared/ui/cn";
-import { composeEventHandlers } from "@squared/ui/compose-events";
-import { useComposedRefs } from "@squared/ui/compose-refs";
-import { type Scope, createContextScope } from "@squared/ui/context";
+import { buttonVariants } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { composeEventHandlers } from "@squaredmade/ui/compose-events";
+import { useComposedRefs } from "@squaredmade/ui/compose-refs";
+import { type Scope, createContextScope } from "@squaredmade/ui/context";
 import {
 	Dialog,
 	DialogClose,
@@ -14,8 +14,8 @@ import {
 	DialogTrigger,
 	WarningProvider,
 	createDialogScope,
-} from "@squared/ui/dialog";
-import { Slottable } from "@squared/ui/slot";
+} from "@squaredmade/ui/dialog";
+import { Slottable } from "@squaredmade/ui/slot";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------
@@ -328,7 +328,7 @@ const DescriptionWarning: React.FC<DescriptionWarningProps> = ({
 
 You can add a description to the \`${CONTENT_NAME}\` by passing a \`${DESCRIPTION_NAME}\` component as a child, which also benefits sighted users by adding visible context to the dialog.
 
-Alternatively, you can use your own component as a description by assigning it an \`id\` and passing the same value to the \`aria-describedby\` prop in \`${CONTENT_NAME}\`. If the description is confusing or duplicative for sighted users, you can use the \`@squared/ui/visually-hidden\` primitive as a wrapper around your description component.
+Alternatively, you can use your own component as a description by assigning it an \`id\` and passing the same value to the \`aria-describedby\` prop in \`${CONTENT_NAME}\`. If the description is confusing or duplicative for sighted users, you can use the \`@squaredmade/ui/visually-hidden\` primitive as a wrapper around your description component.
 
 For more information, see https://squared-docs-link.com/components/alert-dialog`;
 

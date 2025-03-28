@@ -1,5 +1,5 @@
-import { cn } from "@squared/ui/cn";
-import { Slot } from "@squared/ui/slot";
+import { cn } from "@squaredmade/ui/cn";
+import { Slot } from "@squaredmade/ui/slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 

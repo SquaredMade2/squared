@@ -1,4 +1,4 @@
-import { Slot } from "@squared/ui/slot";
+import { Slot } from "@squaredmade/ui/slot";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 

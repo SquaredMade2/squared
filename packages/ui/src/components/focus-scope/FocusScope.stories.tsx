@@ -1,4 +1,4 @@
-import { FocusScope } from "@squared/ui/focus-scope";
+import { FocusScope } from "@squaredmade/ui/focus-scope";
 import type { Meta } from "@storybook/react";
 import React from "react";
 

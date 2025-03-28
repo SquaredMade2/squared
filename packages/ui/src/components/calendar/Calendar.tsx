@@ -1,6 +1,6 @@
-import { Button } from "@squared/ui/button";
-import { cn } from "@squared/ui/cn";
-import { ChevronLeft, ChevronRight } from "@squared/ui/icons";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { ChevronLeft, ChevronRight } from "@squaredmade/ui/icons";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------

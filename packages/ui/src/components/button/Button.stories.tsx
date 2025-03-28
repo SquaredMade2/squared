@@ -1,4 +1,4 @@
-import { ArrowRight, Plus, Trash } from "@squared/ui/icons";
+import { ArrowRight, Plus, Trash } from "@squaredmade/ui/icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
 

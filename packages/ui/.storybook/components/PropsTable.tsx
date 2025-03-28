@@ -5,7 +5,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@squared/ui/table";
+} from "@squaredmade/ui/table";
 import type React from "react";
 
 /**

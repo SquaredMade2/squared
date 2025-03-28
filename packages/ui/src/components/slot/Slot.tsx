@@ -1,4 +1,4 @@
-import { composeRefs } from "@squared/ui/compose-refs";
+import { composeRefs } from "@squaredmade/ui/compose-refs";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------

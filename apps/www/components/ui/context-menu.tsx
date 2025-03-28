@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Check, ChevronRight, Circle } from "@squared/icons";
+import { Check, ChevronRight, Circle } from "@squaredmade/icons";
 import * as ContextMenuPrimitive from "@squaredmade/ui/context-menu";
 import * as React from "react";
 

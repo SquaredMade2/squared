@@ -1,4 +1,4 @@
-import type { Label, Priority, Status, Task } from "@squared/db";
+import type { Label, Priority, Status, Task } from "@squaredmade/db";
 
 export type CreateTaskParams = {
 	authorId: string;

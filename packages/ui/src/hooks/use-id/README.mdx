@@ -13,13 +13,13 @@ The `useId` hook is a utility for generating unique identifiers in React compone
 ## Installation
 
 ```bash
-npm install @squared/ui
+npm install @squaredmade/ui
 ```
 
 ## Usage
 
 ```tsx
-import { useId } from '@squared/ui/use-id';
+import { useId } from '@squaredmade/ui/use-id';
 
 function LabeledInput({ label }) {
   const id = useId();
@@ -52,7 +52,7 @@ function useId(deterministicId?: string): string;
 ### Basic Usage
 
 ```tsx
-import { useId } from '@squared/ui/use-id';
+import { useId } from '@squaredmade/ui/use-id';
 
 function Checkbox({ label }) {
   const id = useId();
@@ -69,7 +69,7 @@ function Checkbox({ label }) {
 ### Using Deterministic IDs
 
 ```tsx
-import { useId } from '@squared/ui/use-id';
+import { useId } from '@squaredmade/ui/use-id';
 
 function Form() {
   const nameId = useId('name-input');
@@ -90,7 +90,7 @@ function Form() {
 ### Multiple IDs in a Component
 
 ```tsx
-import { useId } from '@squared/ui/use-id';
+import { useId } from '@squaredmade/ui/use-id';
 
 function PasswordInput() {
   const inputId = useId();

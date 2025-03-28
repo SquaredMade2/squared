@@ -1,4 +1,4 @@
-import type { Team } from "@squared/db";
+import type { Team } from "@squaredmade/db";
 
 export type TeamState = {
 	teams: Team[];

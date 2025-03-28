@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const PACKAGE_NAME = "@squared/ui";
+const PACKAGE_NAME = "@squaredmade/ui";
 
 /**
  * Finds a file by recursively searching directories

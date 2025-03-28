@@ -12,8 +12,8 @@ import {
 	sprintsTable,
 	tasksTable,
 	teamsTable,
-} from "@squared/db";
-import createCustomLogger from "@squared/logger";
+} from "@squaredmade/db";
+import createCustomLogger from "@squaredmade/logger";
 import { addWeeks } from "date-fns";
 import type {
 	AddRetrospectivePayload,

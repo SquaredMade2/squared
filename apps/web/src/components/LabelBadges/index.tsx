@@ -1,5 +1,5 @@
 import { cn } from "@/utils/cn";
-import type { Label } from "@squared/db";
+import type { Label } from "@squaredmade/db";
 import { useTheme } from "next-themes";
 import {
 	Tooltip,

@@ -1,4 +1,4 @@
-import { cn } from "@squared/ui/cn";
+import { cn } from "@squaredmade/ui/cn";
 import * as React from "react";
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;

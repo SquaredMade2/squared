@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/ui",
-	"version": "3.0.0",
+	"version": "2.0.0-rc.2",
 	"description": "A design system with individually importable components",
 	"exports": {
 		"./accordion": {
@@ -691,7 +691,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.2",
-		"@squared/icons": "workspace:*",
+		"@squaredmade/icons": "workspace:*",
 		"aria-hidden": "^1.2.4",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",

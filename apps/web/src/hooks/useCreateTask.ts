@@ -1,6 +1,6 @@
 import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
-import type { Label, Priority, Status } from "@squared/db";
+import type { Label, Priority, Status } from "@squaredmade/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type CreateTaskInput = {
