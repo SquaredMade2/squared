@@ -330,7 +330,7 @@ importers:
         version: 7.17.0
       '@prismicio/next':
         specifier: ^2.0.0
-        version: 2.0.0(@prismicio/client@7.17.0)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+        version: 2.0.1(@prismicio/client@7.17.0)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       '@prismicio/react':
         specifier: ^3.0.0
         version: 3.0.0(@prismicio/client@7.17.0)(react@19.0.0)
@@ -2278,8 +2278,8 @@ packages:
     resolution: {integrity: sha512-rCB5f415We4+A22D8KZdCjtA5cibJvfTSaElAbwYuGm/HEM2Ma0rf5VzQm3mfvM6uxpheMEA0d43BrZRM0PUaw==}
     engines: {node: '>=12.7.0'}
 
-  '@prismicio/next@2.0.0':
-    resolution: {integrity: sha512-pSobip5Cq6eqNzB7v8OHIU22O/LyJde9NsIwl6CySqm70cpeR4V7UtPKV1MohNiskYFpVV8xv8WdkxsDyhlPtw==}
+  '@prismicio/next@2.0.1':
+    resolution: {integrity: sha512-wIC7pNd6nmdK3ZzlF1U+XGPRER7vL1zQdasvU3USdxWO1cxjdaK3LgFrpU28YZYH2RaGHmC5Wa303faILH86HQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@prismicio/client': ^7
@@ -9937,10 +9937,9 @@ snapshots:
       tslib: 2.8.1
       uuid: 9.0.1
 
-  '@prismicio/next@2.0.0(@prismicio/client@7.17.0)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)':
+  '@prismicio/next@2.0.1(@prismicio/client@7.17.0)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@prismicio/client': 7.17.0
-      esm-env: 1.2.2
       imgix-url-builder: 0.0.5
       next: 15.1.6(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
