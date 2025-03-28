@@ -60,8 +60,8 @@
 			"cpu": ["x64", "arm64"]
 		},
 		"overrides": {
-			"@types/react": "19.0.8",
-			"@types/react-dom": "19.0.3"
+			"@types/react": "19.0.12",
+			"@types/react-dom": "19.0.4"
 		}
 	},
 	"packageManager": "pnpm@9.15.9"
