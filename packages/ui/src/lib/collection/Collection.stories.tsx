@@ -1,7 +1,7 @@
 import { createCollection } from "@squaredmade/ui/collection";
 import * as React from "react";
 
-export default { title: "Utilities/Collection" };
+export default { title: "Lib/Collection" };
 
 export const Basic = () => (
 	<List>

@@ -16,6 +16,7 @@ jobs:
       web-changed: ${{ steps.check-changes.outputs.web }}
       www-changed: ${{ steps.check-changes.outputs.www }}
       webhooks-changed: ${{ steps.check-changes.outputs.webhooks }}
+      ui-changed: ${{ steps.check-changes.outputs.ui }}
       run-all: ${{ steps.check-label.outputs.run-all }}
       packages-changed: ${{ steps.check-changes.outputs.packages }}
       only-go-changed: ${{ steps.check-changes.outputs.only-go-changed }}
@@ -32,6 +33,7 @@ jobs:
           echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "webhooks=$(git diff --name-only origin/develop HEAD | grep -q '^apps/webhooks/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT      
+          echo "ui=$(git diff --name-only origin/develop HEAD | grep -q '^packages/ui/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT          
 
       - name: Check if only Go-related changes were made
         run: |
@@ -279,6 +281,44 @@ jobs:
           APP_URL: https://app.squaredmade.com
           PAPERTRAIL_URL: logs.papertrailapp.com:35736
         run: go test -v ./...
+
+  test-ui:
+    name: Test UI
+    needs: [detect-changes, setup]
+    runs-on: blacksmith-4vcpu-ubuntu-2204
+    if: ${{ needs.detect-changes.outputs.ui-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+      - uses: useblacksmith/setup-node@v5
+        with:
+          node-version: 23.3.0
+          cache: 'pnpm'
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: useblacksmith/cache@v5
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:css
+      - name: Install Playwright
+        run: pnpm dlx playwright install --with-deps
+      - name: Build Storybook
+        run: pnpm build-storybook --quiet
+      - name: Serve Storybook and run tests
+        run: |
+          pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "pnpm dlx http-server storybook-static --port 6006 --silent" \
+            "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm test-storybook"
 
   test-www:
     name: Test WWW

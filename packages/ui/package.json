@@ -631,30 +631,13 @@
 		"squared-design": "./dist/cli/index.js"
 	},
 	"peerDependencies": {
-		"@tailwindcss/postcss": "^4.0",
+		"@tailwindcss/postcss": "^4",
 		"postcss": "^8",
 		"react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
 		"react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
-		"tailwindcss": "^4.0",
+		"tailwindcss": "^4",
 		"tailwindcss-animate": "^1.0.7",
-		"zod": "^3.24.2"
-	},
-	"peerDependenciesMeta": {
-		"@tailwindcss/postcss": {
-			"optional": true
-		},
-		"postcss": {
-			"optional": true
-		},
-		"tailwindcss": {
-			"optional": true
-		},
-		"tailwindcss-animate": {
-			"optional": true
-		},
-		"zod": {
-			"optional": true
-		}
+		"zod": "^3"
 	},
 	"devDependencies": {
 		"@storybook/addon-essentials": "^8.6.7",
@@ -675,7 +658,6 @@
 		"@types/react-dom": "^19.0.2",
 		"@types/resize-observer-browser": "^0.1.11",
 		"autoprefixer": "^10.4.7",
-		"chromatic": "^11.25.2",
 		"esbuild": "^0.24.0",
 		"fs-extra": "^11.3.0",
 		"glob": "^11.0.0",
