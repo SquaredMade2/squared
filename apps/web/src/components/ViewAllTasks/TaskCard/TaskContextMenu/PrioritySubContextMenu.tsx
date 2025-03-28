@@ -12,7 +12,7 @@ import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import type { Priority } from "@squared/db";
+import type { Priority } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 

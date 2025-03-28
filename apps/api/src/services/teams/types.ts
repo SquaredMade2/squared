@@ -1,4 +1,4 @@
-import type { Effort, Team } from "@squared/db";
+import type { Effort, Team } from "@squaredmade/db";
 
 export type CreateTeamParams = {
 	name: string;

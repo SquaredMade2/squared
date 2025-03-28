@@ -1,5 +1,5 @@
 import { cn } from "@/utils/cn";
-import { Priority, Status } from "@squared/db";
+import { Priority, Status } from "@squaredmade/db";
 import {
 	Archive,
 	ArrowDown,
@@ -14,7 +14,7 @@ import {
 	Hourglass,
 	Inbox,
 	TriangleAlert,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 
 export const PriorityIcon = ({
 	priority,

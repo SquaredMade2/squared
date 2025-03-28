@@ -1,4 +1,8 @@
-import pkg from "@squared/builder";
+import pkg from "@squaredmade/builder";
 const { build } = pkg;
 
-build("src/index.ts", ["axios", "@squared/context", "@squared/superjson"]);
+build("src/index.ts", [
+	"axios",
+	"@squaredmade/context",
+	"@squaredmade/superjson",
+]);

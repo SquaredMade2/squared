@@ -1,8 +1,8 @@
-# @squared/context
+# @squaredmade/context
 
 ## Introduction
 
-`@squared/context` is a TypeScript package that provides a lightweight, Go-inspired context implementation for managing request-scoped data, cancellation signals, and deadlines in JavaScript/TypeScript applications. This package is particularly useful for handling asynchronous operations, timeouts, and propagating request-specific information throughout your application.
+`@squaredmade/context` is a TypeScript package that provides a lightweight, Go-inspired context implementation for managing request-scoped data, cancellation signals, and deadlines in JavaScript/TypeScript applications. This package is particularly useful for handling asynchronous operations, timeouts, and propagating request-specific information throughout your application.
 
 ## Concepts
 
@@ -51,7 +51,7 @@ import {
   withValues,
   withTimeout,
   getRequestId,
-} from "@squared/context";
+} from "@squaredmade/context";
 
 // Create a context with a request ID
 const ctx1 = withValues(background, { [requestIdKey]: "req-001" });
@@ -87,7 +87,7 @@ fetchData(ctx2);
 ### Using Contexts with Deadlines
 
 ```typescript
-import { background, withDeadline } from "@squared/context";
+import { background, withDeadline } from "@squaredmade/context";
 
 const deadline = Date.now() + 10000; // 10 seconds from now
 const { ctx, abort } = withDeadline(background, deadline);

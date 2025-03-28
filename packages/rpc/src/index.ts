@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
-import * as context from "@squared/context";
-import type { Logger } from "@squared/logger";
-import superjson from "@squared/superjson";
+import * as context from "@squaredmade/context";
+import type { Logger } from "@squaredmade/logger";
+import superjson from "@squaredmade/superjson";
 import type { ErrorRequestHandler, RequestHandler } from "express";
 import "tslib";
 import { z } from "zod";
@@ -180,7 +180,7 @@ export function createErrorHandler(
 					code: err.inner.code || "unknown_error",
 					type:
 						err.inner.type ||
-						"https://errors.squared.global/@squared/rpc/unknown-error",
+						"https://errors.squared.global/@squaredmade/rpc/unknown-error",
 				});
 			}
 		} else {

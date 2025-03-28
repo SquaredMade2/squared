@@ -1,5 +1,5 @@
 {
-	"name": "@squared/rpc",
+	"name": "@squaredmade/rpc",
 	"version": "0.0.0",
 	"private": true,
 	"main": "dist/index.js",
@@ -27,14 +27,14 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@squared/context": "workspace:*",
-		"@squared/logger": "workspace:*",
-		"@squared/superjson": "workspace:*",
+		"@squaredmade/context": "workspace:*",
+		"@squaredmade/logger": "workspace:*",
+		"@squaredmade/superjson": "workspace:*",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@squared/builder": "workspace:*",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/builder": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.0.0",
 		"@vitest/coverage-v8": "^3.0.7",

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { X } from "@squared/icons";
+import { X } from "@squaredmade/icons";
 import * as DialogPrimitive from "@squaredmade/ui/dialog";
 import * as React from "react";
 

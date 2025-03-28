@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
-import type { Notification } from "@squared/db";
+import type { Notification } from "@squaredmade/db";
 import {
 	BadgePlus,
 	Bookmark,
@@ -13,7 +13,7 @@ import {
 	MapPin,
 	MessageCircleMore,
 	type SquaredIcon,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { Label } from "@squaredmade/ui/label";
 
 type SidebarProps = {

@@ -5,7 +5,7 @@ import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
-import type { Team } from "@squared/db";
+import type { Team } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,

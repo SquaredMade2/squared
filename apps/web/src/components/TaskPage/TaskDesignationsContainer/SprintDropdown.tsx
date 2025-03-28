@@ -3,7 +3,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
-import type { Sprint, TaskEvent } from "@squared/db";
+import type { Sprint, TaskEvent } from "@squaredmade/db";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";

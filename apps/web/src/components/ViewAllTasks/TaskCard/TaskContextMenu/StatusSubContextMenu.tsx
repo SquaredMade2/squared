@@ -12,7 +12,7 @@ import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@squared/db";
+import type { Status } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 

@@ -1,5 +1,5 @@
 {
-	"name": "@squared/builder",
+	"name": "@squaredmade/builder",
 	"version": "0.0.0",
 	"private": true,
 	"main": "dist/index.js",
@@ -24,8 +24,8 @@
 		"prebuild": "rimraf ./dist"
 	},
 	"devDependencies": {
-		"@squared/logger": "workspace:*",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/logger": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
 		"@types/node": "^22.10.10",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.2"

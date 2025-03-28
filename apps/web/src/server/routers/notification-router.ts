@@ -1,6 +1,6 @@
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
-import { TODO } from "@squared/context";
-import { NotificationType } from "@squared/db";
+import { TODO } from "@squaredmade/context";
+import { NotificationType } from "@squaredmade/db";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { workspaceProcedure } from "../procedures";

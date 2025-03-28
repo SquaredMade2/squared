@@ -4,7 +4,7 @@ import { client } from "@/lib/client";
 import { useModalStore, useTaskStore } from "@/store";
 import type { InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
-import { Pencil } from "@squared/icons";
+import { Pencil } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";

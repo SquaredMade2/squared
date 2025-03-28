@@ -1,4 +1,4 @@
-import type { GithubOrg, GithubRepo } from "@squared/db";
+import type { GithubOrg, GithubRepo } from "@squaredmade/db";
 
 export interface UpsertPullRequestResponse {
 	tasks: {

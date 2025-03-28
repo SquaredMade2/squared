@@ -1,5 +1,5 @@
 {
-	"name": "@squared/logger",
+	"name": "@squaredmade/logger",
 	"version": "0.1.0",
 	"private": true,
 	"types": "./dist/index.d.ts",
@@ -23,7 +23,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
 		"@types/node": "^22.5.1",
 		"@types/winston": "^2.4.4",
 		"tsup": "^8.0.2",

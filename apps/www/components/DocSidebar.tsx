@@ -18,7 +18,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ChevronDown } from "@squared/icons";
+import { ChevronDown } from "@squaredmade/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";

@@ -1,5 +1,5 @@
 import type { TaskOrder } from "@/store/views";
-import { Priority, Status, type Task, type User } from "@squared/db";
+import { Priority, Status, type Task, type User } from "@squaredmade/db";
 
 const compareNullableStrings = (a: string | null, b: string | null): number => {
 	if (!a && !b) return 0;

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useViewStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import { ChevronLeft, PanelLeft } from "@squared/icons";
+import { ChevronLeft, PanelLeft } from "@squaredmade/icons";
 import { useRouter } from "next/navigation";
 
 const SettingsTopNavBar = () => {

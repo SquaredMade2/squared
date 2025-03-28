@@ -7,7 +7,7 @@ import {
 	Moon,
 	Sun,
 	Users,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
@@ -33,7 +33,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import type { Team } from "@squared/db";
+import type { Team } from "@squaredmade/db";
 
 function SettingsNavbarContent() {
 	const router = useRouter();

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronDown } from "@squared/icons";
+import { ChevronDown } from "@squaredmade/icons";
 import * as AccordionPrimitive from "@squaredmade/ui/accordion";
 import * as React from "react";
 

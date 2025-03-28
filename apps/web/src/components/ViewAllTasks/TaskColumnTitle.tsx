@@ -8,8 +8,8 @@ import {
 import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
-import type { Priority, Status } from "@squared/db";
-import { CirclePlus, EllipsisVertical } from "@squared/icons";
+import type { Priority, Status } from "@squaredmade/db";
+import { CirclePlus, EllipsisVertical } from "@squaredmade/icons";
 import { usePathname } from "next/navigation";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";

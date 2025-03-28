@@ -1,5 +1,5 @@
 {
-	"name": "@squared/seed",
+	"name": "@squaredmade/seed",
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
@@ -13,7 +13,7 @@
 		"docker:db:down": "docker compose -f docker-compose.yml down --volumes"
 	},
 	"dependencies": {
-		"@squared/logger": "workspace:*",
+		"@squaredmade/logger": "workspace:*",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.4.1",
 		"pg": "^8.13.1"

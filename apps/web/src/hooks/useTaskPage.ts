@@ -3,7 +3,7 @@ import { useCommentStore, useEventStore, useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
-import type { TaskEvent } from "@squared/db";
+import type { TaskEvent } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTasks } from "./useTasks";

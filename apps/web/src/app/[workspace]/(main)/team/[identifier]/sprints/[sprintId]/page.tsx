@@ -33,7 +33,7 @@ import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
-import type { Sprint, Status, Task } from "@squared/db";
+import type { Sprint, Status, Task } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";

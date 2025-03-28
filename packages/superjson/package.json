@@ -1,5 +1,5 @@
 {
-	"name": "@squared/superjson",
+	"name": "@squaredmade/superjson",
 	"version": "0.0.0",
 	"private": true,
 	"exports": {
@@ -22,8 +22,8 @@
 		"test": "vitest run"
 	},
 	"devDependencies": {
-		"@squared/builder": "workspace:*",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/builder": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
 		"@types/debug": "^4.1.12",
 		"@types/node": "^22.0.0",
 		"decimal.js": "^10.5.0",

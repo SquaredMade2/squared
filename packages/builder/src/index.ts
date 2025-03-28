@@ -1,6 +1,6 @@
 import "tslib";
 import { join, sep } from "node:path";
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { BuildOptions, SameShape } from "esbuild";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";

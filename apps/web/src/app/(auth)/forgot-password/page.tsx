@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth, useSignIn } from "@clerk/nextjs";
-import { Eye, EyeOff } from "@squared/icons";
+import { Eye, EyeOff } from "@squaredmade/icons";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 

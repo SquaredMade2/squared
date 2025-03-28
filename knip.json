@@ -39,6 +39,6 @@
 		"turbo-ignore",
 		"husky",
 		"pg",
-		"@squared/typescript-config"
+		"@squaredmade/typescript-config"
 	]
 }

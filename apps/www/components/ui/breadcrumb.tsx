@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ChevronRight, Ellipsis } from "@squared/icons";
+import { ChevronRight, Ellipsis } from "@squaredmade/icons";
 import { Slot } from "@squaredmade/ui/slot";
 import * as React from "react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "@squared/icons";
+import { X } from "@squaredmade/icons";
 import * as SheetPrimitive from "@squaredmade/ui/dialog";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";

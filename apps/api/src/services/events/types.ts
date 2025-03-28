@@ -5,7 +5,7 @@ import type {
 	Task,
 	TaskEvent,
 	Workspace,
-} from "@squared/db";
+} from "@squaredmade/db";
 
 export type TaskValue = string | number | boolean | Date | string[] | null;
 

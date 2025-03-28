@@ -4,7 +4,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { useViewStore, useWorkspaceStore } from "@/store";
 import type { DraggableProvided } from "@hello-pangea/dnd";
 import { Draggable } from "@hello-pangea/dnd";
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import TaskContextMenu from "./TaskContextMenu";
 import TaskGrid from "./TaskGrid";
 import TaskList from "./TaskList";

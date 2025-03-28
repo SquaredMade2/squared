@@ -1,7 +1,7 @@
 import type { UserAvatar } from "@/store/users";
 import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
-import type { Comment } from "@squared/db";
+import type { Comment } from "@squaredmade/db";
 import { formatDate } from "date-fns/format";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";

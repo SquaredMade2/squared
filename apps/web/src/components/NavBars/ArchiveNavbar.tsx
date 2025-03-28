@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useOrganization } from "@clerk/nextjs";
-import { ArrowLeft } from "@squared/icons";
+import { ArrowLeft } from "@squaredmade/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 
