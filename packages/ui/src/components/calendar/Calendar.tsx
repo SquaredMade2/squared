@@ -882,7 +882,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 		const currentMonth = controlledMonth || internalMonth;
 
 		// Create a ref to track the day element that should receive initial focus
-		// eslint-disable-next-line react-hooks/rules-of-hooks -- Ref is used in a forwardRef component
+
 		const focusableDay = React.useRef<HTMLButtonElement>(null);
 
 		// Handle month change
@@ -935,7 +935,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 		};
 
 		// Apply initial focus effect when component mounts
-		// eslint-disable-next-line react-hooks/rules-of-hooks -- Ref is used in a forwardRef component
+
 		React.useEffect(() => {
 			if (initialFocus && focusableDay.current) {
 				focusableDay.current.focus();

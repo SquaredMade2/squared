@@ -55,7 +55,7 @@ export const WithFragment = () => {
 
 export const DynamicInsertion = () => {
 	const [hasTomato, setHasTomato] = React.useState(false);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	const [, forceUpdate] = React.useState<any>();
 	return (
 		<>

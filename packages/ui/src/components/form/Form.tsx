@@ -241,11 +241,11 @@ function createGetValues<TFieldValues extends FieldValues>(
 	): FieldPathValue<TFieldValues, TFieldName>;
 } {
 	function getValues(): TFieldValues;
-	// eslint-disable-next-line no-redeclare
+
 	function getValues<TFieldName extends FieldPath<TFieldValues>>(
 		name: TFieldName,
 	): FieldPathValue<TFieldValues, TFieldName>;
-	// eslint-disable-next-line no-redeclare
+
 	function getValues<TFieldName extends FieldPath<TFieldValues>>(
 		name?: TFieldName,
 	): TFieldValues | FieldPathValue<TFieldValues, TFieldName> {
@@ -277,15 +277,15 @@ function createWatcher<TFieldValues extends FieldValues>(
 	(callback: (values: TFieldValues) => void): { unsubscribe: () => void };
 } {
 	function watch(): TFieldValues;
-	// eslint-disable-next-line no-redeclare
+
 	function watch<TFieldName extends FieldPath<TFieldValues>>(
 		name: TFieldName,
 	): FieldPathValue<TFieldValues, TFieldName>;
-	// eslint-disable-next-line no-redeclare
+
 	function watch(callback: (values: TFieldValues) => void): {
 		unsubscribe: () => void;
 	};
-	// eslint-disable-next-line no-redeclare
+
 	function watch<TFieldName extends FieldPath<TFieldValues>>(
 		nameOrCallback?: TFieldName | ((values: TFieldValues) => void),
 	):

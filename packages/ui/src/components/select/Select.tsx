@@ -954,7 +954,7 @@ const SelectContentImpl = React.forwardRef<
 										["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)
 									) {
 										const items = getItems().filter((item) => !item.disabled);
-										// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
 										let candidateNodes = items.map((item) => item.ref.current!);
 
 										if (["ArrowUp", "End"].includes(event.key)) {
@@ -1817,7 +1817,6 @@ const SelectScrollUpButtonPrimitive = React.forwardRef<
 			viewport.addEventListener("scroll", handleScroll);
 			return () => viewport.removeEventListener("scroll", handleScroll);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contentContext.viewport, contentContext.isPositioned]);
 
 	return canScrollUp ? (
@@ -1880,7 +1879,6 @@ const SelectScrollDownButtonPrimitive = React.forwardRef<
 			viewport.addEventListener("scroll", handleScroll);
 			return () => viewport.removeEventListener("scroll", handleScroll);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [contentContext.viewport, contentContext.isPositioned]);
 
 	return canScrollDown ? (
@@ -2036,7 +2034,6 @@ const BubbleSelect = React.forwardRef<
 
 	// Bubble value change to parents (e.g form change event)
 	React.useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const select = ref.current!;
 		const selectProto = window.HTMLSelectElement.prototype;
 		const descriptor = Object.getOwnPropertyDescriptor(

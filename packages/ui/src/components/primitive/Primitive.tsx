@@ -45,7 +45,6 @@ const Primitive = NODES.reduce((primitive, node) => {
 		const Comp: React.ElementType = asChild ? Slot : node;
 
 		if (typeof window !== "undefined") {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Ignoring the type for forwardedRef because it can be of any type depending on the component
 			(window as any)[Symbol.for("squared")] = true;
 		}
 

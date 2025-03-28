@@ -334,11 +334,9 @@ For more information, see https://squared-docs-link.com/components/alert-dialog`
 
 	React.useEffect(() => {
 		const hasDescription = document.getElementById(
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			contentRef.current?.getAttribute("aria-describedby")!,
 		);
 		if (!hasDescription) {
-			// eslint-disable-next-line no-console
 			console.warn(MESSAGE);
 		}
 	}, [MESSAGE, contentRef]);

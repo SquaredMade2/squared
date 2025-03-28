@@ -594,7 +594,7 @@ const MenuContentImpl = React.forwardRef<
 										if (!FIRST_LAST_KEYS.includes(event.key)) return;
 										event.preventDefault();
 										const items = getItems().filter((item) => !item.disabled);
-										// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we know content is not null
+
 										const candidateNodes = items.map(
 											(item) => item.ref.current!,
 										);

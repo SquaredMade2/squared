@@ -13,4 +13,3 @@ public/dist
 storybook-static/
 .rollup.cache
 *storybook.log
-.eslintcache

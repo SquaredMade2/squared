@@ -1,5 +1,4 @@
 import { dirname, join, resolve } from "node:path";
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { StorybookConfig } from "@storybook/react-webpack5";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 

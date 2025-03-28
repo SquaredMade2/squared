@@ -176,7 +176,6 @@ const BubbleInput = (props: BubbleInputProps) => {
 
 	// Bubble checked change to parents (e.g form change event)
 	React.useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const input = ref.current!;
 		const inputProto = window.HTMLInputElement.prototype;
 		const descriptor = Object.getOwnPropertyDescriptor(

@@ -20,7 +20,6 @@ This Turborepo includes the following:
 - `api`: an [Express](https://expressjs.com/) server
 - `@squaredmade/ui`: a React component library
 - `@squaredmade/logger`: Isomorphic logger (a small wrapper around console.log)
-- `@squaredmade/eslint-config`: ESLint presets
 - `@squaredmade/typescript-config`: tsconfig.json's used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
@@ -63,6 +62,5 @@ You can test this behavior using a command like:
 This Turborepo has some additional tools already setup for you:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
 - [Jest](https://jestjs.io) test runner for all things JavaScript
 - [Prettier](https://prettier.io) for code formatting

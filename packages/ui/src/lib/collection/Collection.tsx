@@ -6,7 +6,6 @@ import React from "react";
 type SlotProps = React.ComponentPropsWithoutRef<typeof Slot>;
 type CollectionElement = HTMLElement;
 interface CollectionProps extends SlotProps {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- The type is defined by the context in which it's used in which case the type is known.
 	scope: any;
 }
 
@@ -117,7 +116,6 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 	 * useCollection
 	 * ---------------------------------------------------------------------------------------------*/
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function useCollection(scope: any) {
 		const context = useCollectionContext(`${name}CollectionConsumer`, scope);
 
@@ -129,7 +127,6 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 			);
 			const items = Array.from(context.itemMap.values());
 			const orderedItems = items.sort(
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				(a, b) =>
 					orderedNodes.indexOf(a.ref.current!) -
 					orderedNodes.indexOf(b.ref.current!),

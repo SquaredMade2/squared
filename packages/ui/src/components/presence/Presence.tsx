@@ -188,7 +188,6 @@ function getElementRef(
 	let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
 	let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
 	if (mayWarn) {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return (element as any).ref;
 	}
 
@@ -200,7 +199,7 @@ function getElementRef(
 	}
 
 	// Not DEV
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	return element.props.ref || (element as any).ref;
 }
 

@@ -16,7 +16,7 @@ function createContext<ContextValueType extends object | null>(
 	) => {
 		const { children, ...context } = props;
 		// Only re-memoize when prop values change
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+
 		const value = React.useMemo(
 			() => context,
 			Object.values(context),
@@ -43,7 +43,6 @@ function createContext<ContextValueType extends object | null>(
  * createContextScope
  * -----------------------------------------------------------------------------------------------*/
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Type is inferred by usage
 type Scope<C = any> =
 	| { [scopeName: string]: Array<React.Context<C>> }
 	| undefined;
@@ -85,7 +84,7 @@ function createContextScope(
 			const { scope, children, ...context } = props;
 			const Context = scope?.[scopeName]?.[index] || BaseContext;
 			// Only re-memoize when prop values change
-			// eslint-disable-next-line react-hooks/exhaustive-deps
+
 			const value = React.useMemo(
 				() => context,
 				Object.values(context),
@@ -160,7 +159,7 @@ function composeContextScopes(...scopes: CreateScope[]) {
 				(nextScopes, { useScope, scopeName }) => {
 					// We are calling a hook inside a callback which React warns against to avoid inconsistent
 					// renders, however, scoping doesn't have render side effects so we ignore the rule.
-					// eslint-disable-next-line react-hooks/rules-of-hooks
+
 					const scopeProps = useScope(overrideScopes);
 					const currentScope = scopeProps[`__scope${scopeName}`];
 					// biome-ignore lint/performance/noAccumulatingSpread: This is a valid use case

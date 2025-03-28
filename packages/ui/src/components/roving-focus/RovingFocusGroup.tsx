@@ -183,7 +183,7 @@ const RovingFocusGroupImpl = React.forwardRef<
 							const candidateItems = [activeItem, currentItem, ...items].filter(
 								Boolean,
 							) as typeof items;
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
 							const candidateNodes = candidateItems.map(
 								(item) => item.ref.current!,
 							);
@@ -294,7 +294,7 @@ const RovingFocusGroupItem = React.forwardRef<
 						}
 						event.preventDefault();
 						const items = getItems().filter((item) => item.focusable);
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
 						let candidateNodes = items.map((item) => item.ref.current!);
 
 						if (focusIntent === "last") {

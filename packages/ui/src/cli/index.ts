@@ -21,7 +21,6 @@ program
 		try {
 			await init(options);
 		} catch (error) {
-			// eslint-disable-next-line no-console
 			console.error("Error during initialization:", error);
 			process.exit(1);
 		}

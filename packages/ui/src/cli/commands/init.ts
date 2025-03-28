@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import inquirer from "inquirer";
 import { updateGlobalsCss } from "../utils/css-setup";
 import { detectPackageManager } from "../utils/detect-package-manager";

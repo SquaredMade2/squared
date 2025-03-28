@@ -24,7 +24,7 @@ function composeRefs<T>(...refs: Array<PossibleRef<T>>): React.RefCallback<T> {
 		let hasCleanup = false;
 		const cleanups = refs.map((ref) => {
 			const cleanup = setRef(ref, node);
-			// eslint-disable-next-line eqeqeq
+
 			if (!hasCleanup && typeof cleanup === "function") {
 				hasCleanup = true;
 			}
@@ -39,7 +39,7 @@ function composeRefs<T>(...refs: Array<PossibleRef<T>>): React.RefCallback<T> {
 			return () => {
 				for (let i = 0; i < cleanups.length; i++) {
 					const cleanup = cleanups[i];
-					// eslint-disable-next-line eqeqeq
+
 					if (typeof cleanup === "function") {
 						cleanup();
 					} else {
@@ -58,7 +58,6 @@ function composeRefs<T>(...refs: Array<PossibleRef<T>>): React.RefCallback<T> {
 function useComposedRefs<T>(
 	...refs: Array<PossibleRef<T>>
 ): React.RefCallback<T> {
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	return React.useCallback(composeRefs(...refs), refs);
 }
 

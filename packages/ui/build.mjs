@@ -2,7 +2,6 @@ import fs from "node:fs";
 import { cpus } from "node:os";
 import path from "node:path";
 import * as esbuild from "esbuild";
-/* eslint-disable */
 import { globSync } from "glob";
 import * as tsup from "tsup";
 

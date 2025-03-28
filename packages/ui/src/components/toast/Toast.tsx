@@ -114,7 +114,6 @@ const ToastProvider: React.FC<ToastProviderProps> = (
 	const isClosePausedRef = React.useRef(false);
 
 	if (!label.trim()) {
-		// eslint-disable-next-line no-console
 		console.error(
 			`Invalid prop \`label\` supplied to \`${PROVIDER_NAME}\`. Expected non-empty \`string\`.`,
 		);
@@ -279,7 +278,6 @@ const ToastViewportPrimitive = React.forwardRef<
 		({ tabbingDirection }: { tabbingDirection: "forwards" | "backwards" }) => {
 			const toastItems = getItems();
 			const tabbableCandidates = toastItems.map((toastItem) => {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const toastNode = toastItem.ref.current!;
 				const toastTabbableCandidates = [
 					toastNode,
@@ -335,7 +333,7 @@ const ToastViewportPrimitive = React.forwardRef<
 						// If we can't focus that means we're at the edges so we
 						// proxy to the corresponding exit point and let the browser handle
 						// tab/shift+tab keypress and implicitly pass focus to the next valid element in the document
-						// eslint-disable-next-line no-unused-expressions
+
 						isTabbingBackwards
 							? headFocusProxyRef.current?.focus()
 							: tailFocusProxyRef.current?.focus();
@@ -650,7 +648,6 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 					viewport.removeEventListener(VIEWPORT_RESUME, handleResume);
 				};
 			}
-			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [context.viewport, duration, onPause, onResume, startTimer]);
 
 		// start timer when toast opens or duration changes.
@@ -962,7 +959,6 @@ const ToastActionPrimitive = React.forwardRef<
 	const { altText, ...actionProps } = props;
 
 	if (!altText.trim()) {
-		// eslint-disable-next-line no-console
 		console.error(
 			`Invalid prop \`altText\` supplied to \`${ACTION_NAME}\`. Expected non-empty \`string\`.`,
 		);

@@ -628,7 +628,6 @@ For more information, see https://squared-ds-url.com/components/${titleWarningCo
 		if (titleId) {
 			const hasTitle = document.getElementById(titleId);
 			if (!hasTitle) {
-				// eslint-disable-next-line no-console
 				console.error(MESSAGE);
 			}
 		}
@@ -657,7 +656,6 @@ const DescriptionWarning: React.FC<DescriptionWarningProps> = ({
 		if (descriptionId && describedById) {
 			const hasDescription = document.getElementById(descriptionId);
 			if (!hasDescription) {
-				// eslint-disable-next-line no-console
 				console.warn(MESSAGE);
 			}
 		}
