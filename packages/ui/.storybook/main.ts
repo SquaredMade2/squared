@@ -1,67 +1,48 @@
-import path from "node:path";
+import { dirname, join, resolve } from "node:path";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { StorybookConfig } from "@storybook/react-webpack5";
+import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 
+/**
+ * This function is used to resolve the absolute path of a package.
+ * It is needed in projects that use Yarn PnP or are set up within a monorepo.
+ */
+function getAbsolutePath(value: string): string {
+	return dirname(require.resolve(join(value, "package.json")));
+}
 const config: StorybookConfig = {
-	stories: ["../src/**/*.stories.tsx"],
+	stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
 	addons: [
+		getAbsolutePath("@storybook/addon-webpack5-compiler-swc"),
+		getAbsolutePath("@storybook/addon-onboarding"),
+		getAbsolutePath("@storybook/addon-links"),
 		getAbsolutePath("@storybook/addon-essentials"),
-		getAbsolutePath("@storybook/addon-storysource"),
+		getAbsolutePath("@storybook/addon-interactions"),
 	],
 	framework: {
 		name: getAbsolutePath("@storybook/react-webpack5"),
-		options: {
-			builder: {
-				useSWC: true,
-			},
-			// enable React strict mode
-			strictMode: true,
-		},
+		options: {},
 	},
 	swc: () => ({
 		jsc: {
 			transform: {
 				react: {
-					// Do not require importing React into scope to use JSX
 					runtime: "automatic",
 				},
 			},
 		},
 	}),
+	webpackFinal: async (webpackConfig) => {
+		webpackConfig.resolve!.plugins = [
+			...(webpackConfig.resolve!.plugins || []),
+			new TsconfigPathsPlugin(),
+		];
+		webpackConfig.resolve!.alias = {
+			...(webpackConfig.resolve!.alias || {}),
+			"@/storybook": resolve(__dirname, "."),
+		};
 
-	// we need to add aliases to webpack so it knows how to follow
-	// to the source of the packages rather than the built version (dist)
-	webpackFinal: async (config) => ({
-		...config,
-		resolve: {
-			...config.resolve,
-			alias: {
-				...config.resolve?.alias,
-				...convertTsConfigPathsToWebpackAliases(),
-			},
-		},
-	}),
+		return webpackConfig;
+	},
 };
-
 export default config;
-
-/**
- * This function is used to resolve the absolute path of a package.
- * It is needed in projects that use pnpm PnP or are set up within a monorepo.
- */
-
-function getAbsolutePath(value: string): any {
-	return path.dirname(require.resolve(path.join(value, "package.json")));
-}
-
-function convertTsConfigPathsToWebpackAliases() {
-	const rootDir = path.resolve(__dirname, "../");
-	const tsconfig = require("../tsconfig.json");
-	const tsconfigPaths: Array<string | string[]> = Object.entries(
-		tsconfig.compilerOptions.paths,
-	);
-
-	return tsconfigPaths.reduce((aliases, [realPath, mappedPath]) => {
-		aliases[realPath] = path.join(rootDir, mappedPath[0]);
-		return aliases;
-	}, {});
-}

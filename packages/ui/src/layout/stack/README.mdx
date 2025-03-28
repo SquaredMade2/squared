@@ -1,0 +1,69 @@
+# Stack Component
+
+The Stack component is a layout primitive that arranges its children in a vertical stack. It provides an easy way to create consistently spaced vertical layouts.
+
+## Features
+
+- Vertical stacking of child elements
+- Customizable gap between elements
+- Responsive gap sizes
+
+## Usage
+
+```jsx
+import { Stack } from '@squared/ui/stack';
+
+function MyComponent() {
+  return (
+    <Stack gap={4}>
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+    </Stack>
+  );
+}
+```
+
+## Props
+
+- `gap`: number | [number, number] | [number, number, number] | [number, number, number, number]
+  - Specifies the space between child elements. Can be a single value or an array for responsive gaps.
+- `className`: string (optional)
+  - Additional CSS classes to apply to the Stack component.
+
+## Examples
+
+- Basic Usage:
+
+```jsx
+<Stack gap={4}>
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
+  <p>Paragraph 3</p>
+</Stack>
+```
+
+- Responsive Gap:
+
+```jsx
+<Stack gap={[2, 4, 6, 8]}>
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</Stack>
+```
+
+- Nested Stacks:
+
+```jsx
+<Stack gap={4}>
+  <h2>Section Title</h2>
+  <Stack gap={2}>
+    <p>Nested item 1</p>
+    <p>Nested item 2</p>
+  </Stack>
+  <button>Action Button</button>
+</Stack>
+```
+
+The Stack component simplifies the creation of vertical layouts with consistent spacing, making it easier to maintain rhythm in your UI design.

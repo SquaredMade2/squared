@@ -1,0 +1,65 @@
+# Responsive Utility
+
+The Responsive Utility is a set of functions and types designed to help create responsive components in our design system. It provides tools for generating responsive classes, handling color and size variants, and creating responsive components using the `class-variance-authority` (cva) library.
+
+## Key Features
+
+1. **Responsive Classes**: Generate classes that change based on breakpoints.
+2. **Size Variants**: Create size-based classes for padding, margin, etc.
+3. **Color Variants**: Generate color-based classes for backgrounds, text, etc.
+4. **Dimension Variants**: Create classes for width, height, and other dimensions.
+5. **Responsive Component Creation**: Easily create components with responsive props.
+
+## Usage
+
+### Creating Responsive Classes
+
+Use the `createResponsiveClasses` function to generate responsive classes:
+
+```typescript
+const classes = createResponsiveClasses('p', [2, 4, 6, 8]);
+// Result: ['p-2', 'sm:p-4', 'md:p-6', 'lg:p-8']
+```
+
+### Getting Size Variants
+
+Use `getSizeVariants` to generate size-based classes:
+
+```typescript
+const paddingVariants = getSizeVariants('p');
+// Result: { 0: 'p-0', 1: 'p-1', 2: 'p-2', ... }
+```
+
+### Getting Color Variants
+
+Use `getColorVariants` to generate color-based classes:
+
+```typescript
+const backgroundVariants = getColorVariants('bg');
+// Result: { primary: 'bg-primary', 'zinc-100': 'bg-zinc-100', ... }
+```
+
+### Creating a Responsive Component
+
+Use `createResponsiveComponent` to create a component with responsive props:
+
+```typescript
+const myVariants = cva('base-class', {
+  variants: {
+    color: { red: 'text-red-500', blue: 'text-blue-500' },
+    size: { small: 'text-sm', large: 'text-lg' },
+  },
+});
+
+const { createResponsive } = createResponsiveComponent(myVariants);
+
+function MyComponent(props: ResponsiveProps<VariantProps<typeof myVariants>>) {
+  const classes = createResponsive(props);
+  return <div className={classes}>{/* ... */}</div>;
+}
+
+// Usage:
+<MyComponent color={['red', 'blue']} size={['small', 'large']} />;
+```
+
+This utility provides a powerful foundation for creating responsive components in our design system. By leveraging these functions and types, we can ensure consistent and flexible responsive behavior across our components.

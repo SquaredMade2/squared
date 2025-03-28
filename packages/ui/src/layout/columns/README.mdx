@@ -1,0 +1,152 @@
+# Columns and Column Components
+
+The Columns and Column components are layout primitives that work together to create flexible and responsive grid-based layouts.
+
+## Columns Component
+
+The Columns component arranges its children in a horizontal grid layout, providing an easy way to create responsive column-based layouts.
+
+### Columns Features
+
+- Horizontal arrangement of child elements in columns
+- Customizable number of columns
+- Responsive column counts
+- Adjustable gap between columns and rows
+
+### Columns Usage
+
+```jsx
+import { Columns } from '@squared/ui/columns';
+
+function MyComponent() {
+  return (
+    <Columns columns={3} gap={4}>
+      <div>Column 1</div>
+      <div>Column 2</div>
+      <div>Column 3</div>
+    </Columns>
+  );
+}
+```
+
+### Columns Props
+
+- `columns`: number | [number, number] | [number, number, number] | [number, number, number, number]
+
+- Specifies the number of columns. Can be a single value or an array for responsive column counts.
+
+- `gap`: number | [number, number] | [number, number, number] | [number, number, number, number]
+
+- Specifies the space between columns and rows. Can be a single value or an array for responsive gaps.
+
+- `className`: string (optional)
+
+- Additional CSS classes to apply to the Columns component.
+
+### Columns Examples
+
+- Basic Usage:
+
+```tsx
+<Columns columns={3} gap={4}>
+  <div>Column 1</div>
+  <div>Column 2</div>
+  <div>Column 3</div>
+  <div>Column 4</div>
+  <div>Column 5</div>
+  <div>Column 6</div>
+</Columns>
+```
+
+- Responsive Columns:
+
+```tsx
+<Columns columns={[1, 2, 3, 4]} gap={4}>
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+  <div>Item 4</div>
+</Columns>
+```
+
+- Responsive Columns and Gap:
+
+```tsx
+<Columns columns={[1, 2, 3, 4]} gap={[2, 4, 6, 8]}>
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+  <div>Item 4</div>
+</Columns>
+```
+
+## Column Component
+
+The Column component is used in conjunction with the Columns component to control the span of individual columns within a grid layout.
+
+### Column Features
+
+- Control the span of a column within a Columns layout
+- Responsive column spans
+
+### Column Usage
+
+```tsx
+import { Columns, Column } from '@squared/ui/columns';
+
+function MyComponent() {
+  return (
+    <Columns columns={12} gap={4}>
+      <Column colSpan={6}>Half width</Column>
+      <Column colSpan={3}>Quarter width</Column>
+      <Column colSpan={3}>Quarter width</Column>
+    </Columns>
+  );
+}
+```
+
+### Column Props
+
+- `colSpan`: number | [number, number] | [number, number, number] | [number, number, number, number]
+
+- Specifies how many columns this item should span. Can be a single value or an array for responsive spans.
+
+- `className`: string (optional)
+
+- Additional CSS classes to apply to the Column component.
+
+### Column Examples
+
+- Basic Usage:
+
+```tsx
+<Columns columns={12} gap={4}>
+  <Column colSpan={6}>Half width</Column>
+  <Column colSpan={4}>One-third width</Column>
+  <Column colSpan={2}>One-sixth width</Column>
+</Columns>
+```
+
+- Responsive Column Spans:
+
+```tsx
+<Columns columns={12} gap={4}>
+  <Column colSpan={[12, 6, 4, 3]}>Responsive column</Column>
+  <Column colSpan={[12, 6, 4, 3]}>Responsive column</Column>
+  <Column colSpan={[12, 12, 4, 6]}>Responsive column</Column>
+</Columns>
+```
+
+- Mixed Fixed and Responsive Spans:
+
+```tsx
+<Columns columns={12} gap={4}>
+  <Column colSpan={6}>Half width always</Column>
+  <Column colSpan={[6, 3, 3, 2]}>Responsive column</Column>
+  <Column colSpan={[12, 3, 3, 4]}>Responsive column</Column>
+</Columns>
+```
+
+## Conclusion
+
+The Columns and Column components work together to simplify the creation of responsive grid layouts. The Columns component provides the overall structure, while the Column component allows for fine-grained control over individual column spans. This combination makes it easier to create complex, multi-column designs that adapt to different screen sizes.
