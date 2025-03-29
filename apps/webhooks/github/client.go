@@ -1,10 +1,10 @@
 package github
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/google/go-github/v69/github"
@@ -15,11 +15,16 @@ func createGitHubClient(installationId int64) (*github.Client, error) {
 	var itr *ghinstallation.Transport
 	var err error
 
-	privateKeyEnv := os.Getenv("GITHUB_APP_PRIVATE_KEY")
-	if privateKeyEnv != "" {
-		// Replace escaped newlines with actual newlines
-		privateKeyEnv = strings.ReplaceAll(privateKeyEnv, "\\n", "\n")
-		itr, err = ghinstallation.New(http.DefaultTransport, appID, installationId, []byte(privateKeyEnv))
+	// Get base64 encoded private key from environment
+	encodedKey := os.Getenv("GITHUB_APP_PRIVATE_KEY")
+	if encodedKey != "" {
+		// Decode the base64 encoded key
+		privateKey, err := base64.StdEncoding.DecodeString(encodedKey)
+		if err != nil {
+			return nil, fmt.Errorf("failed to decode private key: %w", err)
+		}
+
+		itr, err = ghinstallation.New(http.DefaultTransport, appID, installationId, privateKey)
 	} else {
 		// Fall back to file
 		privateKeyPath := os.Getenv("PRIVATE_KEY_PATH")
