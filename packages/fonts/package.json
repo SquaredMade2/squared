@@ -1,6 +1,9 @@
 {
 	"name": "@squaredmade/fonts",
-	"version": "1.0.1",
+	"version": "1.0.3",
+	"publishConfig": {
+		"access": "public"
+	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": ["dist", "src/fonts", "tailwind-plugin.js"],
@@ -16,7 +19,7 @@
 		"tailwindcss": "^3.0.0"
 	},
 	"devDependencies": {
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.7.5",
 		"tailwindcss": "^3.0.0",
 		"typescript": "^4.5.0"

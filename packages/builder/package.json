@@ -1,9 +1,11 @@
 {
 	"name": "@squaredmade/builder",
 	"version": "1.0.0",
-	"private": true,
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
 	"bin": {
 		"squared-build": "./dist/cli.js"
 	},
@@ -25,7 +27,7 @@
 	},
 	"devDependencies": {
 		"@squaredmade/logger": "workspace:*",
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.10.10",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.2"

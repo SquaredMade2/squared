@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/cli",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"build-cli": "go build -o bin/squared",
 		"lint": "golangci-lint run"

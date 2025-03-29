@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/superjson",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"exports": {
 		".": {
 			"import": {
@@ -22,8 +24,8 @@
 		"test": "vitest run"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "workspace:*",
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/builder": "^1.0.0",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/debug": "^4.1.12",
 		"@types/node": "^22.0.0",
 		"decimal.js": "^10.5.0",

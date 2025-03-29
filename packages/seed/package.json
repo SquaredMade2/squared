@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/seed",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"exports": {
 		".": "./src/index.ts"
 	},

@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/logger",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -23,7 +25,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.5.1",
 		"@types/winston": "^2.4.4",
 		"tsup": "^8.0.2",

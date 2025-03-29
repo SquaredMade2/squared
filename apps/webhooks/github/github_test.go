@@ -314,7 +314,7 @@ func init() {
                 "node_id": "R_kgDOMZUqaw",
                 "name": "squared",
                 "full_name": "SquaredMade2/squared",
-                "private": true,
+                
                 "description": null
             }
         },
@@ -327,7 +327,7 @@ func init() {
                 "node_id": "R_kgDOMZUqaw",
                 "name": "squared",
                 "full_name": "SquaredMade2/squared",
-                "private": true,
+                
                 "description": null
             }
         }
@@ -363,7 +363,7 @@ func init() {
         "node_id": "R_kgDOMZUqaw",
         "name": "squared",
         "full_name": "SquaredMade2/squared",
-        "private": true,
+        
         "created_at": 1721593293
     },
     "pusher": {

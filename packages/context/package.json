@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/context",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"exports": {
@@ -26,8 +28,8 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "workspace:*",
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/builder": "^1.0.0",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.8.1",
 		"typescript": "^5.8.2",
 		"vitest": "^0.34.6"

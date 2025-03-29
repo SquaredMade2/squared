@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/db",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"exports": {
 		".": "./src/index.ts"
 	},
@@ -20,7 +22,7 @@
 		"ws": "^8.18.0"
 	},
 	"devDependencies": {
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.10.10",
 		"@types/ws": "^8.5.13",
 		"dotenv": "^16.4.1",
