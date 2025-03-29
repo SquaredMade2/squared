@@ -1,5 +1,11 @@
 # @squaredmade/logger
 
+## 1.1.0
+
+### Minor Changes
+
+- 0b67448: Updated to use squared builder package
+
 ## 1.0.0
 
 ### Major Changes
