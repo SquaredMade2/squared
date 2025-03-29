@@ -621,7 +621,6 @@
 		"build-storybook": "storybook build",
 		"check-types": "tsc --noEmit",
 		"clean": "find . -type d -name 'dist' -exec rm -rf {} +",
-		"dev": "pnpm storybook",
 		"knip": "knip",
 		"prebuild": "rm -rf dist",
 		"release": "pnpm build && changeset publish",
