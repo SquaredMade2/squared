@@ -31,7 +31,7 @@
 		"@squaredmade/context": "1.0.0",
 		"@squaredmade/fonts": "^1.0.4",
 		"@squaredmade/icons": "1.0.2",
-		"@squaredmade/logger": "1.0.0",
+		"@squaredmade/logger": "1.1.0",
 		"@squaredmade/rpc-client": "1.0.0",
 		"@squaredmade/ui": "2.0.0-rc.2",
 		"@tanstack/react-query": "^5.62.7",
@@ -67,7 +67,7 @@
 	"devDependencies": {
 		"@clerk/types": "^4.40.3",
 		"@jest/globals": "^29.7.0",
-		"@squaredmade/db": "^1.0.0",
+		"@squaredmade/db": "^1.1.0",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@tailwindcss/postcss": "^4.0.13",
 		"@testing-library/jest-dom": "^6.5.0",
