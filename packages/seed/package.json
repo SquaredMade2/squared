@@ -1,7 +1,9 @@
 {
-	"name": "@squared/seed",
-	"version": "0.0.0",
-	"private": true,
+	"name": "@squaredmade/seed",
+	"version": "1.0.1",
+	"publishConfig": {
+		"access": "public"
+	},
 	"exports": {
 		".": "./src/index.ts"
 	},
@@ -13,7 +15,7 @@
 		"docker:db:down": "docker compose -f docker-compose.yml down --volumes"
 	},
 	"dependencies": {
-		"@squared/logger": "workspace:*",
+		"@squaredmade/logger": "1.1.0",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.4.1",
 		"pg": "^8.13.1"

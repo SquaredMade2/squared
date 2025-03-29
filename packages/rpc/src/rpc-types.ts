@@ -1,5 +1,5 @@
-import type { Context } from "@squared/context";
-import type { Logger } from "@squared/logger";
+import type { Context } from "@squaredmade/context";
+import type { Logger } from "@squaredmade/logger";
 import { z } from "zod";
 
 export const requestContexts = new WeakMap<object, Context>();
@@ -61,7 +61,7 @@ export class ResponseValidationError extends ValidationError {
 	) {
 		super(
 			"response-validation",
-			"https://errors.squared.global/@squared/rpc/response-validation",
+			"https://errors.squared.global/@squaredmade/rpc/response-validation",
 			message,
 			params,
 		);
@@ -163,7 +163,7 @@ export function serviceWithSchema<S extends Service>(
 					}
 					throw new ValidationError(
 						"validation",
-						"https://errors.squared.global/@squared/rpc/validation",
+						"https://errors.squared.global/@squaredmade/rpc/validation",
 						`${params.instancePath} ${firstError.message}`,
 						params,
 					);

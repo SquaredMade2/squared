@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/context-menu";
 import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@squared/db";
-import { Tag } from "@squared/icons";
+import type { Label } from "@squaredmade/db";
+import { Tag } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { LabelColor } from "../TaskCardLabels";

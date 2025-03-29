@@ -3,7 +3,7 @@
 import { client } from "@/lib/client";
 import { useTaskStore, useTeamStore, useViewStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";

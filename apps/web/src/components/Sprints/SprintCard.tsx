@@ -1,5 +1,5 @@
-import type { Sprint, Task } from "@squared/db";
-import { ChevronRight } from "@squared/icons";
+import type { Sprint, Task } from "@squaredmade/db";
+import { ChevronRight } from "@squaredmade/icons";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "../ui/button";

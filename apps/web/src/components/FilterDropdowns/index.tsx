@@ -6,7 +6,7 @@ import {
 	Tag,
 	User,
 	X,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 
 import { useFilterStore } from "@/store";
 import { PriorityIcon } from "../Icons";

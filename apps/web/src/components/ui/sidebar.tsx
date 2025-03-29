@@ -1,6 +1,6 @@
 "use client";
 
-import { PanelLeft } from "@squared/icons";
+import { PanelLeft } from "@squaredmade/icons";
 import { Slot } from "@squaredmade/ui/slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";

@@ -1,4 +1,4 @@
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 
 export type TaskState = {
 	tasks: Task[];

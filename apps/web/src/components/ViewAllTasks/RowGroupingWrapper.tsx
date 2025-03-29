@@ -1,7 +1,7 @@
 import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { Droppable } from "@hello-pangea/dnd";
-import { ChevronDown, ChevronRight } from "@squared/icons";
+import { ChevronDown, ChevronRight } from "@squaredmade/icons";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";

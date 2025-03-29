@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
@@ -43,23 +44,26 @@ func handleInstallEvent(githubService *rpc.GithubService, r *http.Request, w htt
 		WorkspaceId: workspaceId,
 	}
 
-	if _, err := githubService.UploadOrg(context.TODO(), request); err != nil {
-		log.Printf("Error uploading commit: %v", err)
-		http.Error(w, "Error uploading commit", http.StatusInternalServerError)
+	result, err := githubService.UploadOrg(context.TODO(), request)
+	if err != nil {
+		log.Printf("Error uploading organization: %v", err)
+		http.Error(w, "Error uploading organization", http.StatusInternalServerError)
 		return
 	}
-
+	orgSlug := result.Slug
 	log.Printf("Organization Info: %+v", org)
+	http.Redirect(w, r, fmt.Sprintf("%s/%s/settings/integrations/github", os.Getenv("APP_URL"), orgSlug), http.StatusFound)
+
 }
 
 func GetOrgInstallationInfo(installationId int64) (*OrgInstallationInfo, error) {
-	client, err := createGitHubClient(installationId)
+	appClient, err := createGitHubAppClient()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create GitHub client: %w", err)
 	}
 
 	ctx := context.Background()
-	installation, _, err := client.Apps.GetInstallation(ctx, installationId)
+	installation, _, err := appClient.Apps.GetInstallation(ctx, installationId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get installation: %w", err)
 	}
@@ -71,8 +75,13 @@ func GetOrgInstallationInfo(installationId int64) (*OrgInstallationInfo, error) 
 
 	orgName := installation.GetAccount().GetLogin()
 
+	installClient, err := createGitHubInstallationClient(installationId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GitHub client: %w", err)
+	}
+
 	// Fetch additional organization details
-	org, _, err := client.Organizations.Get(ctx, orgName)
+	org, _, err := installClient.Organizations.Get(ctx, orgName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get organization details: %w", err)
 	}

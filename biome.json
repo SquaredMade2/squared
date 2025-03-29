@@ -12,7 +12,8 @@
 		"maxSize": 10000000
 	},
 	"formatter": {
-		"formatWithErrors": true
+		"formatWithErrors": true,
+		"ignore": ["dist/**", "node_modules/**", "pnpm-lock.yaml"]
 	},
 	"linter": {
 		"enabled": true,

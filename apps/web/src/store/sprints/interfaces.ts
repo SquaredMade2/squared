@@ -1,4 +1,4 @@
-import type { Sprint } from "@squared/db";
+import type { Sprint } from "@squaredmade/db";
 
 export type SprintState = {
 	sprints: Sprint[];

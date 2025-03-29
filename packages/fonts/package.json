@@ -1,11 +1,30 @@
 {
-	"name": "@squared/fonts",
-	"version": "1.0.0",
+	"name": "@squaredmade/fonts",
+	"version": "1.0.4",
+	"publishConfig": {
+		"access": "public"
+	},
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		},
+		"./styles": {
+			"import": "./dist/index.css",
+			"require": "./dist/index.css"
+		}
+	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": ["dist", "src/fonts", "tailwind-plugin.js"],
 	"scripts": {
-		"build": "tsc && node scripts/build-css.js",
+		"build": "node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf dist"
 	},
@@ -16,7 +35,8 @@
 		"tailwindcss": "^3.0.0"
 	},
 	"devDependencies": {
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/builder": "1.0.1",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.7.5",
 		"tailwindcss": "^3.0.0",
 		"typescript": "^4.5.0"

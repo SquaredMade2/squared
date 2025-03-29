@@ -3,7 +3,7 @@ import { useTaskStore, useViewStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status, Task } from "@squared/db";
+import type { Status, Task } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTeams } from "./useTeams";

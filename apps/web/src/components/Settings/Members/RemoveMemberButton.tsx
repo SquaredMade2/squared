@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { Ellipsis } from "@squared/icons";
+import { Ellipsis } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import type { MemberWithRole } from "./data-table";
 

@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore, useSprintStore, useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
-import type { Status } from "@squared/db";
-import { CirclePlus, SquarePen } from "@squared/icons";
+import type { Status } from "@squaredmade/db";
+import { CirclePlus, SquarePen } from "@squaredmade/icons";
 import { usePathname } from "next/navigation";
 
 export const NewTaskButton = () => {

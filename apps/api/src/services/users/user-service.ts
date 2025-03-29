@@ -10,9 +10,9 @@ import {
 	userWorkspacesTable,
 	usersTable,
 	workspacesTable,
-} from "@squared/db";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
+} from "@squaredmade/db";
+import type { Logger } from "@squaredmade/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { UserRpc } from "./types";
 
 export class UserService implements UserRpc {

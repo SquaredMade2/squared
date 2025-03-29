@@ -1,9 +1,9 @@
-import type { TaskEvent } from "@squared/db";
+import type { TaskEvent } from "@squaredmade/db";
 import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
-} from "@squared/rpc";
+} from "@squaredmade/rpc";
 import { z } from "zod";
 import {
 	commitSchema,

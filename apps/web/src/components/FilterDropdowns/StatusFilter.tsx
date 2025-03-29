@@ -5,7 +5,7 @@ import {
 	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
-import { Status } from "@squared/db";
+import { Status } from "@squaredmade/db";
 import { useEffect, useState } from "react";
 import { StatusIcon } from "../Icons";
 import type { FilterOption } from "./interfaces";

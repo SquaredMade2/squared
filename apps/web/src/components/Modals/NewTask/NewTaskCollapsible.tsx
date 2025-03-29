@@ -25,7 +25,7 @@ import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CirclePlus } from "@squared/icons";
+import { CirclePlus } from "@squaredmade/icons";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";

@@ -1,7 +1,9 @@
 {
-	"name": "@squared/context",
-	"version": "0.0.0",
-	"private": true,
+	"name": "@squaredmade/context",
+	"version": "1.0.0",
+	"publishConfig": {
+		"access": "public"
+	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"exports": {
@@ -21,13 +23,12 @@
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist",
-		"prepare": "pnpm run build",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@squared/builder": "workspace:*",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.8.1",
 		"typescript": "^5.8.2",
 		"vitest": "^0.34.6"

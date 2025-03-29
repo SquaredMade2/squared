@@ -27,7 +27,7 @@ import {
 	Search,
 	type SquaredIcon,
 	Sun,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";

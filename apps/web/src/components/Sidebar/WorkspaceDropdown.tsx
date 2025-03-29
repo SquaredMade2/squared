@@ -14,7 +14,7 @@ import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
-import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squared/icons";
+import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squaredmade/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 

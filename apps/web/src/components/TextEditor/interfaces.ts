@@ -1,5 +1,5 @@
 import type { PublicUserData } from "@clerk/types";
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
 import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 

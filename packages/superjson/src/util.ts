@@ -21,7 +21,6 @@ export function find<T>(
 ): T | undefined {
 	const values = valuesOfObj(record);
 	if ("find" in values) {
-		// eslint-disable-next-line es5/no-es6-methods
 		return values.find(predicate);
 	}
 

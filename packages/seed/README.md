@@ -1,4 +1,4 @@
-# @squared/seed
+# @squaredmade/seed
 
 A database seeding package built to populate a PostgreSQL database with random test data using **Prisma**, **Faker.js**, and **bcrypt.js**. This package is useful for generating test data in development and test environments.
 
@@ -119,7 +119,7 @@ Creates a notification related to a task for a specific user.
 
 ### Dependencies
 
-- **`@squared/db`**: Provides the Prisma client and database models.
+- **`@squaredmade/db`**: Provides the Prisma client and database models.
 - **`dotenv`**: Loads environment variables from a `.env` file.
 - **`@faker-js/faker`**: Generates random data for seeding the database.
 - **`bcryptjs`**: Used for hashing passwords for users.

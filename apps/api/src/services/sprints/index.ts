@@ -1,9 +1,9 @@
-import type { Sprint } from "@squared/db";
+import type { Sprint } from "@squaredmade/db";
 import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
-} from "@squared/rpc";
+} from "@squaredmade/rpc";
 import { z } from "zod";
 import { sprintSchema, taskSchema } from "../schema";
 import type {

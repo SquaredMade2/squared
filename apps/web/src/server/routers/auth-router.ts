@@ -1,4 +1,4 @@
-import { TODO } from "@squared/context";
+import { TODO } from "@squaredmade/context";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import { router } from "../__internals/router";

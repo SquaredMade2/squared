@@ -1,5 +1,5 @@
 import { useOrganization } from "@clerk/nextjs";
-import type { Team } from "@squared/db";
+import type { Team } from "@squaredmade/db";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable, type MemberWithRole } from "./data-table";
 

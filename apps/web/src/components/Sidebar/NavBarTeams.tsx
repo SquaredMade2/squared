@@ -1,6 +1,6 @@
 import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import { Activity, Copy, Layers3 } from "@squared/icons";
+import { Activity, Copy, Layers3 } from "@squaredmade/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";

@@ -12,8 +12,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
-import type { TaskEvent } from "@squared/db";
-import { ChevronDown } from "@squared/icons";
+import type { TaskEvent } from "@squaredmade/db";
+import { ChevronDown } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { type JSX, useState } from "react";
 

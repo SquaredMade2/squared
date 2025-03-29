@@ -1,4 +1,4 @@
-import type { Label, Workspace } from "@squared/db";
+import type { Label, Workspace } from "@squaredmade/db";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./data-table";

@@ -1,13 +1,13 @@
-# @squared/rpc
+# @squaredmade/rpc
 
 ## Introduction
 
-`@squared/rpc` is a lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) implementation designed for modern Node.js applications. It provides a simple and efficient way to create and consume RPC services over HTTP, with built-in support for context management, error handling, and schema validation.
+`@squaredmade/rpc` is a lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) implementation designed for modern Node.js applications. It provides a simple and efficient way to create and consume RPC services over HTTP, with built-in support for context management, error handling, and schema validation.
 
 ## Features
 
 - TypeScript-first implementation
-- Context management using `@squared/context`
+- Context management using `@squaredmade/context`
 - Built-in error handling
 - Support for schema validation using Zod
 - Easy-to-use API for creating and consuming RPC services
@@ -21,7 +21,7 @@
 To define an RPC service, create a new TypeScript file and define your service interface and implementation:
 
 ```typescript
-import { Context } from "@squared/context";
+import { Context } from "@squaredmade/context";
 import { z } from "zod";
 
 // Define your service interface
@@ -73,7 +73,7 @@ To create an RPC server using Express.js:
 
 ```typescript
 import express from "express";
-import { createRpcHandler } from "@squared/rpc";
+import { createRpcHandler } from "@squaredmade/rpc";
 import { UserServiceImpl, userServiceSchema } from "./user-service";
 
 const app = express();
@@ -93,7 +93,7 @@ app.listen(3000, () => {
 To create an RPC client:
 
 ```typescript
-import { createRpcClient } from "@squared/rpc";
+import { createRpcClient } from "@squaredmade/rpc";
 import { UserService } from "./user-service";
 
 const userClient = createRpcClient<UserService>(
@@ -126,11 +126,11 @@ Creates an RPC client for consuming a remote service.
 
 ## Error Handling
 
-`@squared/rpc` provides built-in error handling. Errors thrown in your service methods will be automatically caught and returned as appropriate HTTP responses.
+`@squaredmade/rpc` provides built-in error handling. Errors thrown in your service methods will be automatically caught and returned as appropriate HTTP responses.
 
 ## Context Management
 
-The package uses `@squared/context` for context management. Each RPC method receives a `Context` object as its first argument, which can be used to pass request-scoped data and manage timeouts.
+The package uses `@squaredmade/context` for context management. Each RPC method receives a `Context` object as its first argument, which can be used to pass request-scoped data and manage timeouts.
 
 ## Contributing
 
