@@ -1,66 +1,35 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { client } from "@/lib/client";
-import { useClerk, useOrganizationList, useUser } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
-	const { setActive } = useOrganizationList();
-	const { signOut, organization } = useClerk();
+	const { organization } = useClerk();
+	const [error, setError] = useState<string | null>(null);
 
-	const {
-		data: workspace,
-		isLoading: workspaceLoading,
-		error: workspaceError,
-	} = useQuery({
-		queryKey: ["user", "defaultWorkspace"],
-		queryFn: async () => {
-			if (isLoaded && !user) {
-				await signOut();
-				return null;
-			}
-
-			const res = await client.user.getDefaultWorkpace
-				.$get()
-				.then((res) => res.json());
-
-			setActive && res?.externalId
-				? setActive({ organization: res.externalId })
-				: "";
-
-			return res;
-		},
-		enabled: isLoaded && !!user,
-	});
-
-	// Handle navigation effects outside of the query function
 	useEffect(() => {
-		if (!workspaceLoading && organization) {
-			router.push(`/${organization.slug}`);
+		if (!isLoaded) return;
+		if (isLoaded && !organization) {
+			setError(
+				"There was an error loading the organization list. Please try again.",
+			);
 			return;
 		}
-		if (!workspaceLoading && workspace) {
-			if (!workspace || !workspace.url || workspace.url === "undefined") {
-				router.push("/create");
-			} else {
-				// Set the active organization first if needed
-				if (workspace.externalId && organization) {
-					setActive?.({ organization: workspace.externalId }).then(() => {
-						router.push(`/${workspace.url}`);
-					});
-				} else {
-					router.push(`/${workspace.url}`);
-				}
-			}
+		if (!user) {
+			router.push("/sign-in");
 		}
-	}, [workspace, workspaceLoading, router, organization]);
+		if (organization) {
+			router.push(`/${organization.slug}`);
+		} else {
+			router.push("/create");
+		}
+	}, [isLoaded]);
 
-	if (workspaceLoading) {
+	if (!isLoaded) {
 		return (
 			<div className="h-screen w-full">
 				<div className="flex h-full items-center justify-center">
@@ -73,8 +42,8 @@ const HomePage = () => {
 		);
 	}
 
-	if (workspaceError) {
-		return <div>Error: {workspaceError?.message}</div>;
+	if (error) {
+		return <div>Error: {error}</div>;
 	}
 
 	// Fallback UI instead of returning null
