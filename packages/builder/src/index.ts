@@ -21,6 +21,16 @@ export async function build(path: string, external?: string[]) {
 		format: "cjs",
 		target: "es2022",
 		outdir: dist,
+		loader: {
+			// Add loaders for font files
+			".woff": "file",
+			".woff2": "file",
+			".eot": "file",
+			".ttf": "file",
+			".otf": "file",
+		},
+		// Make sure assets are copied to the output directory
+		assetNames: "assets/[name]-[hash]",
 	};
 
 	await esbuild.build(esbuildConfig);
@@ -33,13 +43,6 @@ export async function build(path: string, external?: string[]) {
 	});
 	logger.info(`Built ${path}/dist/index.mjs`);
 
-	// tsup is used to emit d.ts files only (esbuild can't do that).
-	//
-	// Notes:
-	// 1. Emitting d.ts files is super slow for whatever reason.
-	// 2. It could have fully replaced esbuild (as it uses that internally),
-	//    but at the moment its esbuild version is somewhat outdated.
-	//    It’s also harder to configure and esbuild docs are more thorough.
 	await tsup.build({
 		entry: [file],
 		format: ["cjs", "esm"],
@@ -50,5 +53,3 @@ export async function build(path: string, external?: string[]) {
 	});
 	logger.info(`Built ${path}/dist/index.d.ts`);
 }
-
-export default build;

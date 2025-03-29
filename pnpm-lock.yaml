@@ -46,14 +46,14 @@ importers:
         specifier: ^1.24.0
         version: 1.25.8(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@squaredmade/db':
-        specifier: workspace:*
-        version: link:../../packages/db
+        specifier: ^1.0.0
+        version: 1.0.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(pg@8.13.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
       '@squaredmade/logger':
-        specifier: workspace:*
-        version: link:../../packages/logger
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/rpc':
-        specifier: workspace:*
-        version: link:../../packages/rpc
+        specifier: 1.0.0
+        version: 1.0.0(express@4.21.2)
       axios:
         specifier: ^1.7.5
         version: 1.7.9
@@ -95,8 +95,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/superjson':
-        specifier: workspace:*
-        version: link:../../packages/superjson
+        specifier: 1.0.0
+        version: 1.0.0
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
@@ -153,7 +153,7 @@ importers:
         version: 4.1.3(react-hook-form@7.54.2(react@19.0.0))
       '@mdx-js/loader':
         specifier: ^3.0.1
-        version: 3.1.0(acorn@8.14.0)(webpack@5.97.1)
+        version: 3.1.0(acorn@8.14.0)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))
       '@mdx-js/mdx':
         specifier: ^3.0.1
         version: 3.1.0(acorn@8.14.0)
@@ -162,22 +162,22 @@ importers:
         version: 3.1.0(@types/react@19.0.12)(react@19.0.0)
       '@next/mdx':
         specifier: 15.1.6
-        version: 15.1.6(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.0.0))
+        version: 15.1.6(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.0.0))
       '@squaredmade/context':
-        specifier: workspace:*
-        version: link:../../packages/context
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/fonts':
-        specifier: workspace:*
-        version: link:../../packages/fonts
+        specifier: ^1.0.4
+        version: 1.0.4(tailwindcss@4.0.13)
       '@squaredmade/icons':
-        specifier: workspace:*
-        version: link:../../packages/icons
+        specifier: 1.0.2
+        version: 1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
       '@squaredmade/logger':
-        specifier: workspace:*
-        version: link:../../packages/logger
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/rpc-client':
-        specifier: workspace:*
-        version: link:../../packages/rpc-client
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/ui':
         specifier: 2.0.0-rc.2
         version: 2.0.0-rc.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -276,11 +276,11 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/db':
-        specifier: workspace:*
-        version: link:../../packages/db
+        specifier: ^1.0.0
+        version: 1.0.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(pg@8.13.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@tailwindcss/postcss':
         specifier: ^4.0.13
         version: 4.0.13
@@ -344,11 +344,11 @@ importers:
         specifier: ^1.0.2
         version: 1.1.2(@types/react@19.0.12)(react@19.0.0)
       '@squaredmade/fonts':
-        specifier: workspace:*
-        version: link:../../packages/fonts
+        specifier: ^1.0.4
+        version: 1.0.4(tailwindcss@4.0.13)
       '@squaredmade/icons':
-        specifier: workspace:*
-        version: link:../../packages/icons
+        specifier: 1.0.0
+        version: 1.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@squaredmade/ui':
         specifier: 2.0.0-rc.2
         version: 2.0.0-rc.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -411,8 +411,8 @@ importers:
         specifier: ^0.3.66
         version: 0.3.66(@prismicio/types@0.2.9)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@tailwindcss/postcss':
         specifier: ^4.0.13
         version: 4.0.13
@@ -454,11 +454,11 @@ importers:
         version: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
     devDependencies:
       '@squaredmade/logger':
-        specifier: workspace:*
-        version: link:../logger
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
@@ -474,11 +474,11 @@ importers:
   packages/context:
     devDependencies:
       '@squaredmade/builder':
-        specifier: workspace:*
-        version: link:../builder
+        specifier: ^1.0.1
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^22.8.1
         version: 22.10.7
@@ -502,8 +502,8 @@ importers:
         version: 8.18.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     devDependencies:
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
@@ -522,9 +522,12 @@ importers:
 
   packages/fonts:
     devDependencies:
+      '@squaredmade/builder':
+        specifier: 1.0.1
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@4.9.5)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^22.7.5
         version: 22.10.7
@@ -544,6 +547,9 @@ importers:
         specifier: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
         version: 18.3.1(react@18.3.1)
     devDependencies:
+      '@squaredmade/builder':
+        specifier: ^1.0.1
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
@@ -576,8 +582,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^22.5.1
         version: 22.10.7
@@ -597,14 +603,14 @@ importers:
   packages/rpc:
     dependencies:
       '@squaredmade/context':
-        specifier: workspace:*
-        version: link:../context
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/logger':
-        specifier: workspace:*
-        version: link:../logger
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/superjson':
-        specifier: workspace:*
-        version: link:../superjson
+        specifier: 1.0.0
+        version: 1.0.0
       express:
         specifier: ^4.18.2
         version: 4.21.0
@@ -613,11 +619,11 @@ importers:
         version: 3.24.2
     devDependencies:
       '@squaredmade/builder':
-        specifier: workspace:*
-        version: link:../builder
+        specifier: ^1.0.1
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.1
@@ -640,18 +646,18 @@ importers:
   packages/rpc-client:
     dependencies:
       '@squaredmade/context':
-        specifier: workspace:*
-        version: link:../context
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/superjson':
-        specifier: workspace:*
-        version: link:../superjson
+        specifier: 1.0.0
+        version: 1.0.0
     devDependencies:
       '@squaredmade/builder':
-        specifier: workspace:*
-        version: link:../builder
+        specifier: ^1.0.1
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
@@ -668,8 +674,8 @@ importers:
   packages/seed:
     dependencies:
       '@squaredmade/logger':
-        specifier: workspace:*
-        version: link:../logger
+        specifier: 1.0.0
+        version: 1.0.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -696,11 +702,11 @@ importers:
   packages/superjson:
     devDependencies:
       '@squaredmade/builder':
-        specifier: workspace:*
-        version: link:../builder
+        specifier: ^1.0.1
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)
       '@squaredmade/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
@@ -725,8 +731,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@squaredmade/icons':
-        specifier: workspace:*
-        version: link:../icons
+        specifier: 1.0.0
+        version: 1.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.13
@@ -2927,6 +2933,54 @@ packages:
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
+
+  '@squaredmade/builder@1.0.0':
+    resolution: {integrity: sha512-4w1qu5IEB4fx9QcZdWWoRzUl0DeleKWNo3h+IUp3hohZbqc5MbxPXwZoDoYXlEZEmuKPSP7Xa9+wJoUfawHKBQ==}
+    hasBin: true
+
+  '@squaredmade/builder@1.0.1':
+    resolution: {integrity: sha512-F5UUXUExkYAHhdg5yEy7ZQ9HMY+klR5GR1zt5PGS3gLsopAiBBb7MJD9TPDLXBHHHAklXzse4hp88ysFfgiKrw==}
+    hasBin: true
+
+  '@squaredmade/context@1.0.0':
+    resolution: {integrity: sha512-Pr6Ph+e2Sney58ktzcNOqVsy/ci8TohMtPDFr99JK1K0ppisXV1cTL6mAuzaow698xqaeeg80JE+cOKOY139Gg==}
+
+  '@squaredmade/db@1.0.0':
+    resolution: {integrity: sha512-MdzzxlGvZRKgXwqkl4mr+cC6F/3+FbLJzkOgwCT14WrVq12yP11JuBZNCRtNTS0FS+7fJGUzcozvUjf+wwy/gQ==}
+
+  '@squaredmade/fonts@1.0.4':
+    resolution: {integrity: sha512-O4lBkirAz+f1B6qAfIhYdG5toCmpLhuvD3k9LSnQO4fE2j8omX9IfWWpLtpWz/lcRYOMfZOez/uBUc4pTzHSiA==}
+    peerDependencies:
+      tailwindcss: ^3.0.0
+
+  '@squaredmade/icons@1.0.0':
+    resolution: {integrity: sha512-LFt1cyFNfMlv6HPNK4z8WuEUwjc9Z62MuXFWy9Fa0vAbf0t+puP8Xp/j+nS9fZWCJZNmbcGAM/2bDf1fPkwQSQ==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+
+  '@squaredmade/icons@1.0.2':
+    resolution: {integrity: sha512-jrxlV6cFY2V0g5+yd/TP5Lzch2KDKwxL8DLWbr8eKFnj8jVde6iU+Km3josTUfDfpdNmEF06pO25uqU21gavLA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+
+  '@squaredmade/logger@1.0.0':
+    resolution: {integrity: sha512-Fw6m4atxXrE1WfOJeFqASGiDNscZekyHUTJTjQVSB0nWmC5kZRlm721Y5RdANYE2WPjzVcXWqE9dN46e/nY0eQ==}
+
+  '@squaredmade/rpc-client@1.0.0':
+    resolution: {integrity: sha512-UN/P1hPUQ9cXiUwc/aLWuKJU6nFdfpK9WE8zgbY05w2JUcf4HG3R4eBoxdfAj5Jb5lnI9n1ILivLDPxQHfQPDQ==}
+
+  '@squaredmade/rpc@1.0.0':
+    resolution: {integrity: sha512-Iv9ST5xFp0tS65E36iVZJwAQ8gVu9xHKg/ppd5ClTQHaAZPTiEh90hIDajHa4kp+AW/53d9jAtCn5me3vlwyJA==}
+    peerDependencies:
+      express: ^4.18.2
+
+  '@squaredmade/superjson@1.0.0':
+    resolution: {integrity: sha512-n/bFIMUWT8Tm8RS6YMUzPQAMF76Tbe+GFSu6+zVZXUrXBeDrzl2kqS6tUvo+MVJ+VvCK3GVxIZbNR87a7/GLTg==}
+
+  '@squaredmade/typescript-config@1.0.0':
+    resolution: {integrity: sha512-+cYRcw/uvVL+qFMb9wBgK23NpEwsmR4QbjohtCvc6aebooNIi4iwauyRS/S/TkFHBcA3IAVw5F85xea3pNZ65A==}
 
   '@squaredmade/ui@2.0.0-rc.2':
     resolution: {integrity: sha512-fxLfjpHzCo4Qe2uvwGRyoQGfPf6617GJhFUPPyLFSLDMRdXQNDjdORGHJtVQiY+LR+SlygRydjtS4kQI4ODuGg==}
@@ -10468,12 +10522,12 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
-  '@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1)':
+  '@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       source-map: 0.7.4
     optionalDependencies:
-      webpack: 5.97.1
+      webpack: 5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))
     transitivePeerDependencies:
       - acorn
       - supports-color
@@ -10523,11 +10577,11 @@ snapshots:
 
   '@next/env@15.1.6': {}
 
-  '@next/mdx@15.1.6(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.0.0))':
+  '@next/mdx@15.1.6(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.0.0))':
     dependencies:
       source-map: 0.7.4
     optionalDependencies:
-      '@mdx-js/loader': 3.1.0(acorn@8.14.0)(webpack@5.97.1)
+      '@mdx-js/loader': 3.1.0(acorn@8.14.0)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))
       '@mdx-js/react': 3.1.0(@types/react@19.0.12)(react@19.0.0)
 
   '@next/swc-darwin-arm64@15.1.6':
@@ -11100,6 +11154,154 @@ snapshots:
       p-map: 4.0.0
 
   '@socket.io/component-emitter@3.1.2': {}
+
+  '@squaredmade/builder@1.0.0(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)':
+    dependencies:
+      esbuild: 0.24.2
+      tslib: 2.8.1
+      tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.7.3)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@4.9.5)':
+    dependencies:
+      esbuild: 0.24.2
+      tslib: 2.8.1
+      tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@4.9.5)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)':
+    dependencies:
+      esbuild: 0.24.2
+      tslib: 2.8.1
+      tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.7.3)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)':
+    dependencies:
+      esbuild: 0.24.2
+      tslib: 2.8.1
+      tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/context@1.0.0': {}
+
+  '@squaredmade/db@1.0.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(pg@8.13.1)(prisma@6.2.1)(utf-8-validate@6.0.4)':
+    dependencies:
+      '@neondatabase/serverless': 1.0.0
+      drizzle-orm: 0.41.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(pg@8.13.1)(prisma@6.2.1)
+      ws: 8.18.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@prisma/client'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - utf-8-validate
+
+  '@squaredmade/fonts@1.0.4(tailwindcss@4.0.13)':
+    dependencies:
+      tailwindcss: 4.0.13
+
+  '@squaredmade/icons@1.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@squaredmade/icons@1.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+
+  '@squaredmade/icons@1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)':
+    dependencies:
+      '@squaredmade/builder': 1.0.0(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/logger@1.0.0':
+    dependencies:
+      winston: 3.17.0
+
+  '@squaredmade/rpc-client@1.0.0':
+    dependencies:
+      '@squaredmade/context': 1.0.0
+      '@squaredmade/superjson': 1.0.0
+
+  '@squaredmade/rpc@1.0.0(express@4.21.2)':
+    dependencies:
+      '@squaredmade/context': 1.0.0
+      '@squaredmade/logger': 1.0.0
+      '@squaredmade/superjson': 1.0.0
+      express: 4.21.2
+      zod: 3.24.2
+
+  '@squaredmade/superjson@1.0.0': {}
+
+  '@squaredmade/typescript-config@1.0.0': {}
 
   '@squaredmade/ui@2.0.0-rc.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
@@ -17529,14 +17731,16 @@ snapshots:
       '@swc/core': 1.11.13(@swc/helpers@0.5.15)
       esbuild: 0.24.2
 
-  terser-webpack-plugin@5.3.11(webpack@5.97.1):
+  terser-webpack-plugin@5.3.11(@swc/core@1.11.13(@swc/helpers@0.5.15))(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       terser: 5.37.0
-      webpack: 5.97.1
+      webpack: 5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))
+    optionalDependencies:
+      '@swc/core': 1.11.13(@swc/helpers@0.5.15)
     optional: true
 
   terser@5.37.0:
@@ -17843,6 +18047,34 @@ snapshots:
       '@swc/core': 1.11.13(@swc/helpers@0.5.15)
       postcss: 8.5.3
       typescript: 5.8.2
+    transitivePeerDependencies:
+      - jiti
+      - supports-color
+      - tsx
+      - yaml
+
+  tsup@8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@4.9.5):
+    dependencies:
+      bundle-require: 5.0.0(esbuild@0.24.2)
+      cac: 6.7.14
+      chokidar: 4.0.1
+      consola: 3.2.3
+      debug: 4.3.7
+      esbuild: 0.24.2
+      joycon: 3.1.1
+      picocolors: 1.1.1
+      postcss-load-config: 6.0.1(jiti@2.4.2)(postcss@8.5.3)(yaml@2.7.0)
+      resolve-from: 5.0.0
+      rollup: 4.24.3
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tinyexec: 0.3.1
+      tinyglobby: 0.2.10
+      tree-kill: 1.2.2
+    optionalDependencies:
+      '@swc/core': 1.11.13(@swc/helpers@0.5.15)
+      postcss: 8.5.3
+      typescript: 4.9.5
     transitivePeerDependencies:
       - jiti
       - supports-color
@@ -18249,7 +18481,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.97.1:
+  webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -18271,7 +18503,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.11(webpack@5.97.1)
+      terser-webpack-plugin: 5.3.11(@swc/core@1.11.13(@swc/helpers@0.5.15))(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:

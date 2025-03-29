@@ -2,6 +2,9 @@
 	"name": "@squaredmade/ui",
 	"version": "2.0.0",
 	"description": "A design system with individually importable components",
+	"publishConfig": {
+		"access": "public"
+	},
 	"exports": {
 		"./accordion": {
 			"import": {
@@ -673,7 +676,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.2",
-		"@squaredmade/icons": "workspace:*",
+		"@squaredmade/icons": "1.0.0",
 		"aria-hidden": "^1.2.4",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",

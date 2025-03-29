@@ -1,7 +1,9 @@
 {
 	"name": "@squaredmade/rpc",
 	"version": "1.0.0",
-	"private": true,
+	"publishConfig": {
+		"access": "public"
+	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"exports": {
@@ -19,7 +21,6 @@
 	"scripts": {
 		"build": "node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules",
-		"prepare": "pnpm run build",
 		"prebuild": "rimraf dist",
 		"prepublishOnly": "pnpm run build",
 		"test": "vitest run",
@@ -27,14 +28,14 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@squaredmade/context": "workspace:*",
-		"@squaredmade/logger": "workspace:*",
-		"@squaredmade/superjson": "workspace:*",
+		"@squaredmade/context": "1.0.0",
+		"@squaredmade/logger": "1.0.0",
+		"@squaredmade/superjson": "1.0.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "workspace:*",
-		"@squaredmade/typescript-config": "workspace:*",
+		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.0.0",
 		"@vitest/coverage-v8": "^3.0.7",
