@@ -18,22 +18,6 @@ export default clerkMiddleware(
 			return NextResponse.redirect(new URL("/", request.url));
 		}
 
-		if (
-			isAdminRoute(request) &&
-			!(await auth()).has({ role: "org:admin" }) &&
-			pathSegments.length === 2
-		) {
-			return NextResponse.redirect(new URL(`${request.url}/profile`));
-		}
-		if (
-			isAdminRoute(request) &&
-			!(await auth()).has({ role: "org:admin" }) &&
-			pathSegments.length > 2
-		) {
-			return NextResponse.redirect(
-				new URL(`${request.url.replace(pathSegments[2], "/profile")}`),
-			);
-		}
 		if (!isPublicRoute(request)) {
 			await auth.protect();
 		}
@@ -53,13 +37,6 @@ const isPublicRoute = createRouteMatcher([
 	"/sign-up(.*)",
 	"/forgot-password(.*)",
 	"/api(.*)",
-]);
-
-const isAdminRoute = createRouteMatcher([
-	"/:workspace/settings",
-	"/:workspace/settings/integrations",
-	"/:workspace/settings/labels",
-	"/:workspace/settings/members",
 ]);
 
 // export default clerkMiddleware();
