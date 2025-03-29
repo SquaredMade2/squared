@@ -23,7 +23,6 @@
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist",
-		"prepare": "pnpm run build",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},

@@ -21,7 +21,6 @@
 	"scripts": {
 		"build": "node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules",
-		"prepare": "pnpm run build",
 		"prebuild": "rimraf dist",
 		"prepublishOnly": "pnpm run build",
 		"test": "vitest run",
@@ -29,9 +28,9 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@squaredmade/context": "workspace:*",
-		"@squaredmade/logger": "workspace:*",
-		"@squaredmade/superjson": "workspace:*",
+		"@squaredmade/context": "1.0.0",
+		"@squaredmade/logger": "1.0.0",
+		"@squaredmade/superjson": "1.0.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

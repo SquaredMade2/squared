@@ -1,7 +1,7 @@
 {
 	"name": "www",
 	"version": "0.1.0",
-
+	"private": true,
 	"scripts": {
 		"check-types": "tsc --noEmit",
 		"dev": "next dev --turbopack -p 4000",
@@ -17,8 +17,8 @@
 		"@prismicio/react": "^3.0.0",
 		"@radix-ui/react-label": "^2.0.2",
 		"@radix-ui/react-slot": "^1.0.2",
-		"@squaredmade/fonts": "^1.0.0",
-		"@squaredmade/icons": "workspace:*",
+		"@squaredmade/fonts": "^1.0.3",
+		"@squaredmade/icons": "1.0.0",
 		"@squaredmade/ui": "2.0.0-rc.2",
 		"@tabler/icons-react": "^3.5.0",
 		"@tailwindcss/typography": "^0.5.13",

@@ -19,7 +19,6 @@
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"lint": "biome lint --error-on-warnings ./src",
-		"prepare": "tsup src/index.ts --format cjs,esm --dts",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
