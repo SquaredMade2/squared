@@ -33,7 +33,7 @@
 		"@squaredmade/icons": "workspace:*",
 		"@squaredmade/logger": "workspace:*",
 		"@squaredmade/rpc-client": "workspace:*",
-		"@squaredmade/ui": "2.0.0-rc.2",
+		"@squaredmade/ui": "2.0.0",
 		"@tanstack/react-query": "^5.62.7",
 		"@tanstack/react-table": "^8.20.5",
 		"@types/mdx": "^2.0.13",
