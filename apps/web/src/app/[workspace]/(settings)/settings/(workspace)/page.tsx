@@ -65,7 +65,7 @@ export default function WorkspaceSettings() {
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
-	const { organization } = useOrganization();
+	const { membership, organization } = useOrganization();
 	const { userMemberships } = useOrganizationList({ userMemberships: true });
 
 	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
@@ -80,6 +80,7 @@ export default function WorkspaceSettings() {
 			name: organization?.name,
 			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
+		disabled: membership?.role !== "org:admin" ? true : false,
 	});
 
 	const { watch, setValue } = form;
@@ -342,7 +343,12 @@ export default function WorkspaceSettings() {
 				</p>
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
-						<Button variant="destructive">Delete Workspace</Button>
+						<Button
+							disabled={membership?.role !== "org:admin" ? true : false}
+							variant="destructive"
+						>
+							Delete Workspace
+						</Button>
 					</AlertDialogTrigger>
 					<AlertDialogContent>
 						<AlertDialogHeader>
