@@ -23,7 +23,7 @@
 		"test": "vitest run"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "^1.0.0",
+		"@squaredmade/builder": "^1.0.1",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/debug": "^4.1.12",
 		"@types/node": "^22.0.0",

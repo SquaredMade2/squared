@@ -2,7 +2,6 @@
 	"name": "web",
 	"version": "0.1.0",
 	"private": true,
-
 	"scripts": {
 		"build": "next build",
 		"build:digitalocean": "pnpm install --production=false && pnpm run build && rimraf node_modules && pnpm install --production --frozen-lockfile",
@@ -30,8 +29,8 @@
 		"@mdx-js/react": "^3.0.1",
 		"@next/mdx": "15.1.6",
 		"@squaredmade/context": "1.0.0",
-		"@squaredmade/fonts": "^1.0.3",
-		"@squaredmade/icons": "1.0.0",
+		"@squaredmade/fonts": "^1.0.4",
+		"@squaredmade/icons": "1.0.2",
 		"@squaredmade/logger": "1.0.0",
 		"@squaredmade/rpc-client": "1.0.0",
 		"@squaredmade/ui": "2.0.0-rc.2",

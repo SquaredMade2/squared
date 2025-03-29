@@ -34,7 +34,7 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "^1.0.0",
+		"@squaredmade/builder": "^1.0.1",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.0.0",

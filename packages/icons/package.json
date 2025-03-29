@@ -1,23 +1,30 @@
 {
 	"name": "@squaredmade/icons",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"exports": {
 		".": {
-			"import": "./components/index.ts",
-			"require": "./components/index.ts"
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
 		}
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"build": "ts-node generateIcons.ts",
+		"build": "ts-node generateIcons.ts && node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules"
 	},
 	"devDependencies": {
+		"@squaredmade/builder": "^1.0.1",
 		"@types/fs-extra": "^11.0.4",
-		"@types/react": "19.0.12",
 		"@types/node": "^22.10.10",
+		"@types/react": "19.0.12",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.0.0",
 		"ts-node": "^10.9.2",

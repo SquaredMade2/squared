@@ -27,7 +27,7 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "^1.0.0",
+		"@squaredmade/builder": "^1.0.1",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.8.1",
 		"typescript": "^5.8.2",

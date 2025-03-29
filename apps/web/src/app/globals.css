@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
-@plugin "@squaredmade/fonts/tailwind-plugin";
 
 @custom-variant dark (&:is(.dark *));
 
