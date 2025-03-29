@@ -18,7 +18,7 @@ import {
 	LayoutGrid,
 	Menu,
 	SlidersVertical,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import {

@@ -8,7 +8,7 @@ import {
 	savedFiltersTable,
 	teamsTable,
 	userTeamsTable,
-} from "@squared/db";
+} from "@squaredmade/db";
 import request from "./request";
 
 describe("API Tests", () => {

@@ -10,9 +10,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { ChevronDown, Plus, Settings } from "lucide-react";
+import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
+import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squaredmade/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -24,6 +26,7 @@ export function WorkspaceDropdown() {
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
+	const { setShowInvite } = useModalStore((state) => state);
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -39,10 +42,15 @@ export function WorkspaceDropdown() {
 		}
 	};
 
+	const updateActiveWorkspace = (org: OrganizationResource) => {
+		setActive?.({ organization: org }).then(() => {
+			updatePathWithWorkspace(org.slug);
+		});
+	};
+
 	useEffect(() => {
 		if (!organization && userMemberships.data?.length) {
-			setActive?.({ organization: userMemberships.data[0].organization });
-			updatePathWithWorkspace(userMemberships.data[0].organization.slug);
+			updateActiveWorkspace(userMemberships.data[0].organization);
 		}
 	}, [userMemberships.data, organization]);
 
@@ -86,8 +94,7 @@ export function WorkspaceDropdown() {
 					<DropdownMenuItem
 						key={org.id}
 						onSelect={() => {
-							setActive?.({ organization: org });
-							updatePathWithWorkspace(org.slug);
+							updateActiveWorkspace(org);
 						}}
 						className="hover:cursor-pointer"
 					>
@@ -108,6 +115,22 @@ export function WorkspaceDropdown() {
 					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
+				<Protect
+					condition={(has) =>
+						has({ role: "org:admin" }) || has({ role: "org:owner" })
+					}
+				>
+					<DropdownMenuItem asChild>
+						<Button
+							onClick={() => setShowInvite(true)}
+							variant="ghost"
+							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+						>
+							<UserRoundPlus className="text-muted-foreground" />
+							<span className="ml-2">Invite People</span>
+						</Button>
+					</DropdownMenuItem>
+				</Protect>
 				<DropdownMenuItem
 					onSelect={() => {
 						router.push(`/${organization?.slug}/settings`);

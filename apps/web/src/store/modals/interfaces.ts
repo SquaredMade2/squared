@@ -1,4 +1,4 @@
-import type { Label, Task } from "@squared/db";
+import type { Label, Task } from "@squaredmade/db";
 
 export type ModalState = {
 	showNewTask: boolean;
@@ -10,6 +10,7 @@ export type ModalState = {
 	showSwitchWorkspace: boolean;
 	showLinkForm: boolean;
 	showTaskSelector: boolean;
+	showInvite: boolean;
 	showLabelModal: boolean;
 	labelData: Partial<Label>;
 };
@@ -24,6 +25,7 @@ type ModalActions = {
 	setShowSwitchWorkspace: (input: boolean) => void;
 	setShowTaskSelector: (input: boolean) => void;
 	setShowLinkForm: (input: boolean) => void;
+	setShowInvite: (input: boolean) => void;
 	setShowLabelModal: (input: boolean) => void;
 	setLabelData: (input: Partial<Label>) => void;
 };

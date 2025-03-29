@@ -19,7 +19,7 @@ import {
 	getInitials,
 	truncateString,
 } from "@/utils/formatting";
-import { Calendar, UserSearch } from "@squared/icons";
+import { Calendar, UserSearch } from "@squaredmade/icons";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";

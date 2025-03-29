@@ -10,7 +10,7 @@ import {
 	withValues,
 } from "../src/index";
 
-describe("@squared/context", () => {
+describe("@squaredmade/context", () => {
 	describe("root contexts", () => {
 		it("should create background context", () => {
 			expect(background).toBeDefined();

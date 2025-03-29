@@ -1,9 +1,15 @@
+import {
+	expirationTimeFormat,
+	generateSecureRandomString,
+} from "@/utils/helpers";
 import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
 	type Label,
 	type Workspace,
+	type WorkspaceInviteLink,
 	and,
+	arrayContains,
 	eq,
 	sql,
 	teamsTable,
@@ -11,11 +17,12 @@ import {
 	userWorkspacesTable,
 	usersTable,
 	workspacesTable,
-} from "@squared/db";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
+} from "@squaredmade/db";
+import type { Logger } from "@squaredmade/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type {
 	CreateWorkspaceParams,
+	JoinWorkspaceParams,
 	WorkspaceParams,
 	WorkspaceRpc,
 } from "./types";
@@ -202,7 +209,6 @@ export class WorkspaceService implements WorkspaceRpc {
 			workspaceId,
 			role,
 		);
-
 		await this.clerkClient.organizations.updateOrganizationMembership({
 			organizationId: workspaceId,
 			userId,
@@ -211,43 +217,75 @@ export class WorkspaceService implements WorkspaceRpc {
 	}
 
 	async joinWorkspace({
-		user: { id, name, email },
-		workspaceId,
-	}: {
-		user: { id: string; name: string; email: string };
-		workspaceId: string;
-	}): Promise<Workspace | null> {
+		token,
+		isLink,
+		userId,
+		workspace: { id: workspaceId, name: workspaceName },
+	}: JoinWorkspaceParams): Promise<Workspace | null> {
 		this.logger.info(
-			`User ${name} attempting to join workspace ${workspaceId}`,
+			`User attempting to join workspace ${workspaceId ? workspaceId : workspaceName}`,
 		);
-		const [workspace] = await this.db.transaction(async (tx) => {
-			const [user] = await tx
-				.insert(usersTable)
-				.values({
-					externalId: id,
-					name,
-					email,
-				})
-				.onConflictDoNothing({ target: [usersTable.externalId] })
-				.returning();
 
-			await tx
-				.insert(userWorkspacesTable)
-				.values({
-					userId: user.externalId,
+		try {
+			if (isLink && token && workspaceName) {
+				const { workspaceId, inviteLinks } = await this.verifyToken(
+					token,
+					workspaceName,
+				);
+
+				const { workspace, isAlreadyJoined } = await this.addUserToWorkspace(
+					userId,
 					workspaceId,
-				})
-				.onConflictDoNothing({ target: [userWorkspacesTable.userId] })
-				.returning();
+				);
 
-			return await tx
-				.select()
-				.from(workspacesTable)
-				.where(eq(workspacesTable.externalId, workspaceId));
-		});
+				if (inviteLinks && !isAlreadyJoined) {
+					// reduce link uses if new member and uses is finite
 
-		return workspace;
+					const inviteLink = inviteLinks.find((data) => data.link === token);
+
+					if (inviteLink?.uses) {
+						const filteredLinks = inviteLinks.filter(
+							(data) => data.link !== token,
+						);
+						// reduce uses by 1
+						this.logger.info("Reducing InviteLink uses by 1");
+						const inviteLinksUpdate = [
+							...filteredLinks,
+							{
+								link: inviteLink.link,
+								expiration: inviteLink.expiration,
+								uses: inviteLink.uses - 1,
+							},
+						];
+						await this.db
+							.update(workspacesTable)
+							.set({
+								inviteLinks: inviteLinksUpdate,
+							})
+							.where(eq(workspacesTable.externalId, workspaceId));
+					}
+				}
+
+				return workspace;
+			}
+
+			if (workspaceId) {
+				const { workspace } = await this.addUserToWorkspace(
+					userId,
+					workspaceId,
+				);
+				return workspace;
+			}
+
+			return null;
+		} catch (error) {
+			this.logger.error(
+				`Failed to join workspace. ${error instanceof Error && error.message}`,
+			);
+			throw error;
+		}
 	}
+
 	async removeUserFromWorkspace({
 		workspaceId,
 		userId,
@@ -344,7 +382,47 @@ export class WorkspaceService implements WorkspaceRpc {
 			.from(workspacesTable)
 			.then((results) => results.map((result) => result.url));
 	}
+	async generateWorkspaceInviteLink({
+		workspaceId,
+		expiration,
+		uses,
+	}: {
+		workspaceId: string;
+		expiration?: string;
+		uses?: number;
+	}): Promise<string> {
+		this.logger.info(
+			`Generating workspace invite link ${workspaceId} ${expiration} ${uses}`,
+		);
 
+		const link = generateSecureRandomString();
+
+		await this.db.transaction(async (tx) => {
+			const currentLinks = await tx
+				.select({ inviteLinks: workspacesTable.inviteLinks })
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId))
+				.then((results) => results[0].inviteLinks);
+
+			await tx
+				.update(workspacesTable)
+				.set({
+					inviteLinks: [
+						...currentLinks,
+						{
+							link,
+							expiration: expiration
+								? expirationTimeFormat(expiration)
+								: undefined,
+							uses,
+						},
+					],
+				})
+				.where(eq(workspacesTable.externalId, workspaceId));
+		});
+
+		return link;
+	}
 	async getWorkspaceLabels({
 		workspaceId,
 	}: { workspaceId: string }): Promise<Label[]> {
@@ -481,6 +559,75 @@ export class WorkspaceService implements WorkspaceRpc {
 
 			return { success: true };
 		});
+	}
+
+	private async verifyToken(
+		token: string,
+		workspaceName: string,
+	): Promise<{
+		inviteLinks?: WorkspaceInviteLink[];
+		workspaceId: string;
+	}> {
+		const { inviteLinks, workspaceId } = await this.db
+			.select({
+				inviteLinks: workspacesTable.inviteLinks,
+				workspaceId: workspacesTable.externalId,
+			})
+			.from(workspacesTable)
+			.where(
+				and(
+					eq(workspacesTable.name, workspaceName),
+					arrayContains(workspacesTable.inviteLinks, [{ link: token }]),
+				),
+			)
+			.then((results) => results[0]);
+
+		const inviteLink = inviteLinks.find((data) => data.link === token);
+
+		if (!inviteLink) {
+			this.throwError(
+				"Invite Link is either no longer valid or does not exist",
+			);
+		}
+
+		// Check link hasn't expired or exceeded number of uses
+		if (
+			(inviteLink?.expiration && Date.now() > inviteLink.expiration) ||
+			inviteLink?.uses === 0
+		) {
+			this.throwError(
+				`Invite Link has ${inviteLink?.uses === 0 ? "run out of allotted uses" : "expired"}`,
+			);
+		}
+
+		return { inviteLinks, workspaceId };
+	}
+
+	private async addUserToWorkspace(
+		userId: string,
+		workspaceId: string,
+	): Promise<{ workspace: Workspace | null; isAlreadyJoined: boolean }> {
+		let isAlreadyJoined = false;
+		const [workspace] = await this.db.transaction(async (tx) => {
+			const userWorkspaceRow = await tx
+				.insert(userWorkspacesTable)
+				.values({ userId, workspaceId })
+				.onConflictDoNothing({
+					target: [userWorkspacesTable.workspaceId, userWorkspacesTable.userId],
+				})
+				.returning();
+
+			if (userWorkspaceRow.length === 0) {
+				isAlreadyJoined = true;
+			}
+
+			return await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.externalId, workspaceId));
+		});
+
+		return { workspace, isAlreadyJoined };
 	}
 
 	private throwError(message: string): never {

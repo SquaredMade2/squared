@@ -1,5 +1,5 @@
 import type { PublicUserData } from "@clerk/types";
-import type { Label, Task } from "@squared/db";
+import type { Label, Task } from "@squaredmade/db";
 
 export interface TaskGridProps {
 	task: Task;

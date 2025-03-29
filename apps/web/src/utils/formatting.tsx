@@ -2,7 +2,7 @@ import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import type { PublicUserData } from "@clerk/types";
-import { type Label, Priority, Status } from "@squared/db";
+import { type Label, Priority, Status } from "@squaredmade/db";
 import { format } from "date-fns";
 
 export const truncateString = (string: string, maxLength: number): string => {

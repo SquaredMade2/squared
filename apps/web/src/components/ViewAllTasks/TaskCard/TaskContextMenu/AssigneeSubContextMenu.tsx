@@ -12,7 +12,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
-import { Check, UserSearch } from "@squared/icons";
+import { Check, UserSearch } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 

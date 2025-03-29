@@ -1,0 +1,13 @@
+# @squaredmade/fonts
+
+## 1.0.4
+
+### Patch Changes
+
+- Fix Up Imports and Build
+
+## 1.0.1
+
+### Patch Changes
+
+- 82e8f7f: Major Release of Packages

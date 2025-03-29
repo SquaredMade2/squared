@@ -2,7 +2,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
-import type { Task, TaskEvent } from "@squared/db";
+import type { Task, TaskEvent } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";

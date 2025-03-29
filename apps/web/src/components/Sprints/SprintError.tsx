@@ -1,4 +1,4 @@
-import { TriangleAlert } from "@squared/icons";
+import { TriangleAlert } from "@squaredmade/icons";
 import Link from "next/link";
 import { Button } from "../ui/button";
 

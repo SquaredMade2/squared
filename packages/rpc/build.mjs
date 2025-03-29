@@ -1,10 +1,10 @@
-import pkg from "@squared/builder";
+import pkg from "@squaredmade/builder";
 const { build } = pkg;
 
 build("src/index.ts", [
 	"express",
-	"@squared/context",
-	"@squared/logger",
-	"@squared/superjson",
+	"@squaredmade/context",
+	"@squaredmade/logger",
+	"@squaredmade/superjson",
 	"zod",
 ]);

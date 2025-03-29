@@ -1,6 +1,6 @@
 import LabelBadge from "@/components/LabelBadges";
 import { useViewStore } from "@/store";
-import type { Label } from "@squared/db";
+import type { Label } from "@squaredmade/db";
 import { useEffect, useRef, useState } from "react";
 import type { TaskCardLabelsProps } from "./interfaces";
 

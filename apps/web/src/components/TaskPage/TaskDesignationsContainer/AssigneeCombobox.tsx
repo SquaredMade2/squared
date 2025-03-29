@@ -22,8 +22,8 @@ import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatName, getInitials } from "@/utils/formatting";
-import type { TaskEvent } from "@squared/db";
-import { Check, ChevronsUpDown, UserSearch } from "@squared/icons";
+import type { TaskEvent } from "@squaredmade/db";
+import { Check, ChevronsUpDown, UserSearch } from "@squaredmade/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 

@@ -1,4 +1,4 @@
-import type { Workspace } from "@squared/db";
+import type { Workspace } from "@squaredmade/db";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];

@@ -11,7 +11,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useFilterStore, useViewStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 

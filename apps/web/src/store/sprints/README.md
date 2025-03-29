@@ -69,8 +69,8 @@ Updates an existing sprint in the store based on the sprint ID.
 Here's an example of how to use the SprintStore:
 
 ```typescript
-import { createSprintStore } from "@squared/sprint-store";
-import { createSprintStore } from "@squared/sprint-store";
+import { createSprintStore } from "@squaredmade/sprint-store";
+import { createSprintStore } from "@squaredmade/sprint-store";
 
 // Create a new store instance
 const sprintStore = createSprintStore();
@@ -102,7 +102,7 @@ const allSprints = sprintStore.getState().sprints;
 To install the Sprint Store in your project, run:
 
 ```shellscript
- npm install @squared/sprint-storenpm install @squared/sprint-store
+ npm install @squaredmade/sprint-storenpm install @squaredmade/sprint-store
 
 ```
 
@@ -118,8 +118,8 @@ Make sure you have Zustand installed as a peer dependency:
 The SprintStore uses the following types:
 
 ```typescript
-import type { Sprint } from "@squared/db";
-import type { Sprint } from "@squared/db";
+import type { Sprint } from "@squaredmade/db";
+import type { Sprint } from "@squaredmade/db";
 
 type SprintState = {
   sprints: Sprint[];

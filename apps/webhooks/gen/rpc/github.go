@@ -307,7 +307,9 @@ type UploadOrgRequest struct {
 
 
 // UploadOrgResponse represents the response for uploadOrg method
-type UploadOrgResponse struct{}
+type UploadOrgResponse struct {
+	Slug string `json:"slug"`
+}
 
 
 // UploadOrg calls the uploadOrg RPC method

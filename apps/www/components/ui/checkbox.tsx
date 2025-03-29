@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "@squared/icons";
+import { Check } from "@squaredmade/icons";
 import * as CheckboxPrimitive from "@squaredmade/ui/checkbox";
 import * as React from "react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar as CalendarIcon } from "@squared/icons";
+import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { format } from "date-fns";
 import * as React from "react";
 

@@ -1,29 +1,36 @@
 {
-	"name": "@squared/logger",
-	"version": "0.1.0",
-	"private": true,
+	"name": "@squaredmade/logger",
+	"version": "1.1.0",
+	"publishConfig": {
+		"access": "public"
+	},
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"require": "./dist/index.js",
-			"import": "./dist/index.mjs"
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
 		}
 	},
 	"scripts": {
-		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"build": "node build.mjs",
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"lint": "biome lint --error-on-warnings ./src",
-		"prepare": "tsup src/index.ts --format cjs,esm --dts",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.5.1",
 		"@types/winston": "^2.4.4",
 		"tsup": "^8.0.2",

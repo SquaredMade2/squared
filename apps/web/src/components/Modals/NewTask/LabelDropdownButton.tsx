@@ -15,8 +15,8 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useModalStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@squared/db";
-import { Check, Tag } from "@squared/icons";
+import type { Label } from "@squaredmade/db";
+import { Check, Tag } from "@squaredmade/icons";
 import { useMemo, useState } from "react";
 
 export const LabelDropdownButton = () => {

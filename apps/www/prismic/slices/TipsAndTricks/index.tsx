@@ -1,6 +1,6 @@
 import type { Content } from "@prismicio/client";
 import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
-import { Lightbulb } from "@squared/icons";
+import { Lightbulb } from "@squaredmade/icons";
 import type { FC } from "react";
 
 /**

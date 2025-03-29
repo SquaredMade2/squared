@@ -1,4 +1,4 @@
-import type { User } from "@squared/db";
+import type { User } from "@squaredmade/db";
 
 export type Register = {
 	email: string;

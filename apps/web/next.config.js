@@ -3,7 +3,7 @@ const withMDX = require("@next/mdx")();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
-	transpilePackages: ["@squaredmade/ui", "@prisma/client"],
+	transpilePackages: ["@squaredmade/ui", "@squaredmade/db"],
 	productionBrowserSourceMaps: true,
 	output: "standalone",
 	pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],

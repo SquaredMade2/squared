@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store";
-import type { Label } from "@squared/db";
+import type { Label } from "@squaredmade/db";
 import { Pencil } from "lucide-react";
 
 export const EditLabelButton = ({ label }: { label: Label }) => {

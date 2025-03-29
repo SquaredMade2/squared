@@ -1,5 +1,5 @@
 {
-	"extends": "@squared/typescript-config/dependency.json",
+	"extends": "@squaredmade/typescript-config/dependency.json",
 	"compilerOptions": {
 		"rootDir": ".",
 		"types": ["node"],

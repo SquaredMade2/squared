@@ -1,5 +1,5 @@
 import type { PublicUserData } from "@clerk/types";
-import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
+import type { SavedFilter as SavedFilterType, Task } from "@squaredmade/db";
 import type { FilterCondition, SavedFilter } from "./interfaces";
 
 export function checkCondition(

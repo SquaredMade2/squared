@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import { X } from "@squared/icons";
+import { X } from "@squaredmade/icons";
 import * as ToastPrimitives from "@squaredmade/ui/toast";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";

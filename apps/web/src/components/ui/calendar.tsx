@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "@squared/icons";
+import { ChevronLeft, ChevronRight } from "@squaredmade/icons";
 import type * as React from "react";
 import { DayPicker } from "react-day-picker";
 
