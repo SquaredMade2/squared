@@ -17,7 +17,7 @@
 		"access": "public"
 	},
 	"scripts": {
-		"build": "ts-node generateIcons.ts && node build.mjs",
+		"build": "ts-node generateIcons.ts && biome format --write ./components && node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules"
 	},
 	"devDependencies": {
