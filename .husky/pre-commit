@@ -1,10 +1,17 @@
 echo "Running Formatting..."
 
+# Skip hooks in CI environment when run by github-actions bot
+if [ -n "$CI" ] && git config user.name | grep -q "github-actions"; then
+  echo "CI detected with github-actions user, skipping pre-commit hooks"
+  exit 0
+fi
+
+echo "Running Formatting..."
+
 # Format Project before committing
 pnpm format:write || true
 pnpm lint:fix || true
 git add .
-
 
 # Allow the commit to proceed
 exit 0
