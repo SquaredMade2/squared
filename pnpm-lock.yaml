@@ -336,7 +336,7 @@ importers:
         version: 2.0.1(@prismicio/client@7.17.0)(next@15.1.6(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       '@prismicio/react':
         specifier: ^3.0.0
-        version: 3.0.0(@prismicio/client@7.17.0)(react@19.1.0)
+        version: 3.2.0(@prismicio/client@7.17.0)(react@19.1.0)
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.1.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2620,8 +2620,8 @@ packages:
       next: ^13.4.5 || ^14 || ^15
       react: ^18 || ^19
 
-  '@prismicio/react@3.0.0':
-    resolution: {integrity: sha512-LJht0hijpfkVp/lXiX+pmU2ffoHWrwvhkoMe/Da6vwe9n37erwTtn0027Kz4eODfCGfoJ+1qgILyPb76+OgeKg==}
+  '@prismicio/react@3.2.0':
+    resolution: {integrity: sha512-oxn7EfJOhdYe2UNLymPQUNurhcV7zbeEHmG6pQ6IKI5FRqtyJB3xlqqW02Zq01YOYHVihnfNwfPXtAxAn/9E4Q==}
     engines: {node: '>=18'}
     peerDependencies:
       '@prismicio/client': ^7
@@ -10921,7 +10921,7 @@ snapshots:
       next: 15.1.6(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
-  '@prismicio/react@3.0.0(@prismicio/client@7.17.0)(react@19.1.0)':
+  '@prismicio/react@3.2.0(@prismicio/client@7.17.0)(react@19.1.0)':
     dependencies:
       '@prismicio/client': 7.17.0
       esm-env: 1.2.2
