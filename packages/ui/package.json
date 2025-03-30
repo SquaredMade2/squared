@@ -675,7 +675,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.2",
-		"@squaredmade/icons": "1.0.0",
+		"@squaredmade/icons": "1.0.2",
 		"aria-hidden": "^1.2.4",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
