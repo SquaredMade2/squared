@@ -1,4 +1,5 @@
 import { ProjectsBreadcrumbs } from "@/components/Projects/ProjectsBreadcrumbs";
+import { Button } from "@/components/ui/button";
 import {
 	Archive,
 	ChevronDown,
@@ -12,7 +13,6 @@ import {
 	Table2,
 	X,
 } from "@squared/icons";
-import { Button } from "../ui/button";
 
 const ProjectsPage = () => {
 	return (
