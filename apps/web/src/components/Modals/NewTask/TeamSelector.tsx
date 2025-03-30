@@ -8,7 +8,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTeamStore } from "@/store";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "@squaredmade/icons";
 
 export default function TeamSelector() {
 	const { team, setTeam, teams } = useTeamStore((state) => state);

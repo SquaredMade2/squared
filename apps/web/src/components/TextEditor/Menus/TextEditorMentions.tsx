@@ -9,9 +9,9 @@ import { formatName, getInitials, truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
+import { CornerDownLeft } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { CommandItem } from "cmdk";
-import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef } from "react";
 import type { TextEditorMentionsProps } from "../interfaces";
 

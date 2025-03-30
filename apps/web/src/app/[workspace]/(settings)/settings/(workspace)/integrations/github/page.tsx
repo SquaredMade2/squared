@@ -19,8 +19,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { client } from "@/lib/client";
 import { useOrganization, useUser } from "@clerk/nextjs";
+import { ChevronRight, MoveVertical, Plus } from "@squaredmade/icons";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, MoreVertical, Plus } from "lucide-react";
 import Link from "next/link";
 
 const GithubSettings: React.FC = () => {
@@ -88,7 +88,7 @@ const GithubSettings: React.FC = () => {
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button variant="ghost" size="sm">
-												<MoreVertical className="h-4 w-4" />
+												<MoveVertical className="h-4 w-4" />
 											</Button>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align="end">

@@ -15,8 +15,8 @@ import type {
 } from "@hello-pangea/dnd";
 import { Droppable } from "@hello-pangea/dnd";
 import type { Priority, Status } from "@squaredmade/db";
+import { UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { UserSearch } from "lucide-react";
 import { GridColumnNewTaskButton } from "../../Modals";
 import type { GroupColumnProps } from "../interfaces";
 import Group from "./Group";

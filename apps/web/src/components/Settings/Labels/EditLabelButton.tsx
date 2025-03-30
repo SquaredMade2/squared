@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store";
 import type { Label } from "@squaredmade/db";
-import { Pencil } from "lucide-react";
+import { Pencil } from "@squaredmade/icons";
 
 export const EditLabelButton = ({ label }: { label: Label }) => {
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);

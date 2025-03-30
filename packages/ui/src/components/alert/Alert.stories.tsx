@@ -1,6 +1,6 @@
 import { Info } from "@squaredmade/icons";
+import { CircleAlert, CircleCheck, TriangleAlert } from "@squaredmade/icons";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AlertCircle, AlertTriangle, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "./Alert";
 
 const meta: Meta<typeof Alert> = {
@@ -52,7 +52,7 @@ export const Destructive: Story = {
 export const WithIcon: Story = {
 	render: (args) => (
 		<Alert {...args}>
-			<AlertCircle className="h-4 w-4" />
+			<CircleAlert className="h-4 w-4" />
 			<AlertTitle>Information</AlertTitle>
 			<AlertDescription>
 				This is an informational alert with an icon.
@@ -92,7 +92,7 @@ export const CustomContent: Story = {
 	render: (args) => (
 		<Alert {...args}>
 			<AlertTitle className="flex items-center gap-2">
-				<CheckCircle className="h-4 w-4 text-green-500" />
+				<CircleCheck className="h-4 w-4 text-green-500" />
 				<span>Success</span>
 			</AlertTitle>
 			<AlertDescription>
@@ -115,12 +115,12 @@ export const MultipleAlerts: Story = {
 				<AlertDescription>This is an informational alert.</AlertDescription>
 			</Alert>
 			<Alert variant="destructive">
-				<AlertTriangle className="h-4 w-4" />
+				<TriangleAlert className="h-4 w-4" />
 				<AlertTitle>Warning</AlertTitle>
 				<AlertDescription>This action cannot be undone.</AlertDescription>
 			</Alert>
 			<Alert variant="default">
-				<CheckCircle className="h-4 w-4 text-green-500" />
+				<CircleCheck className="h-4 w-4 text-green-500" />
 				<AlertTitle>Success</AlertTitle>
 				<AlertDescription>Your profile has been updated.</AlertDescription>
 			</Alert>
@@ -154,7 +154,7 @@ export const LongContent: Story = {
 export const WithCloseButton: Story = {
 	render: (args) => (
 		<Alert {...args}>
-			<AlertCircle className="h-4 w-4" />
+			<CircleAlert className="h-4 w-4" />
 			<AlertTitle>Update Available</AlertTitle>
 			<AlertDescription>
 				A new software update is available. Would you like to install it now?

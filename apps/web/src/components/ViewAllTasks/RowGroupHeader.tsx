@@ -8,8 +8,8 @@ import {
 	getInitials,
 } from "@/utils/formatting";
 import type { Priority, Status } from "@squaredmade/db";
+import { UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { UserSearch } from "lucide-react";
 
 // Moved from GroupColumn/index.tsx to make it reusable
 export const RowGroupHeader = ({

@@ -1,6 +1,6 @@
 import { CircleX, Info } from "@squaredmade/icons";
+import { CircleCheck, TriangleAlert } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
-import { AlertTriangle, CheckCircle } from "lucide-react";
 import type React from "react";
 
 type CalloutType = "default" | "info" | "warning" | "success" | "error";
@@ -44,8 +44,8 @@ export function Callout({
 	const icons = {
 		default: <Info className="h-5 w-5" />,
 		info: <Info className="h-5 w-5" />,
-		warning: <AlertTriangle className="h-5 w-5" />,
-		success: <CheckCircle className="h-5 w-5" />,
+		warning: <TriangleAlert className="h-5 w-5" />,
+		success: <CircleCheck className="h-5 w-5" />,
 		error: <CircleX className="h-5 w-5" />,
 	};
 
