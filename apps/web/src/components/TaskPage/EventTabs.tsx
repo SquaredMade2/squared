@@ -30,6 +30,32 @@ export const EventTabs = () => {
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
 	);
+
+	function createMentions({
+		editorContent,
+	}: {
+		editorContent: CustomDescendant[];
+	}) {
+		if (!currentTask || !workspace) return;
+
+		const mentions = getMentionsFromSlate(editorContent);
+
+		for (const mention of mentions) {
+			const mentionedUser = users?.find((user) => user.firstName === mention);
+
+			if (!mentionedUser || !mentionedUser.userId) continue;
+
+			const mentionEvent: CreateNotificationRequest = {
+				description: "Task Comment Mention",
+				taskId: currentTask.id,
+				type: "MENTIONED",
+				userId: mentionedUser.userId,
+				workspaceId: workspace.id,
+			};
+			client.notification.createMention.$post(mentionEvent);
+		}
+	}
+
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", currentTask?.id],
 		mutationFn: async (editorContent: CustomDescendant[]) => {
@@ -39,41 +65,31 @@ export const EventTabs = () => {
 					date: new Date(),
 					taskId: currentTask.id,
 				};
-				const newCommentRes = await client.comment.addComment
-					.$post(newComment)
-					.then((res) => res.json());
-				setComments([...comments, newCommentRes]);
-				const mentions = getMentionsFromSlate(editorContent);
 
-				if (currentTask && workspace && users) {
-					for (let i = 0; i < mentions.length; i++) {
-						const currentMentionUser = mentions[i];
+				const response = await client.comment.addComment.$post(newComment);
+				const createdComment = await response.json();
 
-						const mentionedUser = users.find(
-							(user) => user.firstName === currentMentionUser,
-						);
-
-						if (!mentionedUser || !mentionedUser.userId) continue;
-
-						const mentionEvent: CreateNotificationRequest = {
-							description: "Task Comment Mention",
-							taskId: currentTask.id,
-							type: "MENTIONED",
-							userId: mentionedUser.userId,
-							workspaceId: workspace.id,
-						};
-						client.notification.createMention.$post(mentionEvent);
-					}
-				} else {
-					toast({
-						title: "Workspace, Task, or User not found.",
-						variant: "destructive",
-					});
-				}
+				setComments([...comments, createdComment]);
 			} else {
 				toast({
 					title: "Error getting comments",
 					description: "Could not find user data and current task",
+					variant: "destructive",
+				});
+				throw new Error("Could not find user data and current task");
+			}
+
+			if (users && workspace) {
+				createMentions({
+					editorContent,
+				});
+			} else {
+				if (!users) console.error("No users found", users);
+				if (!workspace) console.error("No workspace found", workspace);
+				toast({
+					title: "Mentions could not be processed",
+					description:
+						"Your comment was saved, but user mentions couldn't be processed",
 					variant: "destructive",
 				});
 			}
@@ -86,6 +102,7 @@ export const EventTabs = () => {
 			});
 		},
 	});
+
 	return (
 		<Tabs defaultValue="activity" className="mt-8 w-full">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
