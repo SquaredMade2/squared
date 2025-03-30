@@ -1,8 +1,6 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import { HiArrowRight } from "react-icons/hi2";
 import Balancer from "react-wrap-balancer";
 import { Badge } from "./badge";
 import { Button } from "./button";

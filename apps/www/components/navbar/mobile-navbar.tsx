@@ -3,8 +3,6 @@ import { cn } from "@/lib/utils";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { useState } from "react";
-import { IoIosMenu } from "react-icons/io";
-import { IoIosClose } from "react-icons/io";
 import { Logo } from "../Logo";
 import { Button } from "../button";
 import { ModeToggle } from "../mode-toggle";
