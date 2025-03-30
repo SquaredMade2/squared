@@ -347,8 +347,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.0.13)
       '@squaredmade/icons':
-        specifier: 1.0.0
-        version: 1.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 1.0.2
+        version: 1.0.2(jiti@2.4.2)(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(yaml@2.7.0)
       '@squaredmade/ui':
         specifier: 2.0.0-rc.2
         version: 2.0.0-rc.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -475,7 +475,7 @@ importers:
     devDependencies:
       '@squaredmade/builder':
         specifier: ^1.0.1
-        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -503,7 +503,7 @@ importers:
     devDependencies:
       '@squaredmade/builder':
         specifier: ^1.0.1
-        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)
+        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -740,8 +740,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@squaredmade/icons':
-        specifier: 1.0.0
-        version: 1.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 1.0.2
+        version: 1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)(yaml@2.7.0)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.13
@@ -2957,12 +2957,6 @@ packages:
     resolution: {integrity: sha512-O4lBkirAz+f1B6qAfIhYdG5toCmpLhuvD3k9LSnQO4fE2j8omX9IfWWpLtpWz/lcRYOMfZOez/uBUc4pTzHSiA==}
     peerDependencies:
       tailwindcss: ^3.0.0
-
-  '@squaredmade/icons@1.0.0':
-    resolution: {integrity: sha512-LFt1cyFNfMlv6HPNK4z8WuEUwjc9Z62MuXFWy9Fa0vAbf0t+puP8Xp/j+nS9fZWCJZNmbcGAM/2bDf1fPkwQSQ==}
-    peerDependencies:
-      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
-      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
 
   '@squaredmade/icons@1.0.2':
     resolution: {integrity: sha512-jrxlV6cFY2V0g5+yd/TP5Lzch2KDKwxL8DLWbr8eKFnj8jVde6iU+Km3josTUfDfpdNmEF06pO25uqU21gavLA==}
@@ -11172,6 +11166,21 @@ snapshots:
       - typescript
       - yaml
 
+  '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)':
+    dependencies:
+      esbuild: 0.24.2
+      tslib: 2.8.1
+      tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
   '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@4.9.5)':
     dependencies:
       esbuild: 0.24.2
@@ -11192,21 +11201,6 @@ snapshots:
       esbuild: 0.24.2
       tslib: 2.8.1
       tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.7.3)
-    transitivePeerDependencies:
-      - '@microsoft/api-extractor'
-      - '@swc/core'
-      - jiti
-      - postcss
-      - supports-color
-      - tsx
-      - typescript
-      - yaml
-
-  '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)':
-    dependencies:
-      esbuild: 0.24.2
-      tslib: 2.8.1
-      tsup: 8.3.5(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
     transitivePeerDependencies:
       - '@microsoft/api-extractor'
       - '@swc/core'
@@ -11259,10 +11253,35 @@ snapshots:
     dependencies:
       tailwindcss: 4.0.13
 
-  '@squaredmade/icons@1.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@squaredmade/icons@1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)(yaml@2.7.0)':
     dependencies:
+      '@squaredmade/builder': 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/icons@1.0.2(jiti@2.4.2)(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)(yaml@2.7.0)':
+    dependencies:
+      '@squaredmade/builder': 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.7.3)(yaml@2.7.0)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
 
   '@squaredmade/icons@1.0.2(postcss@8.5.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)':
     dependencies:
