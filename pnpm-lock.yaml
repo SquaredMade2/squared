@@ -455,7 +455,7 @@ importers:
     devDependencies:
       '@squaredmade/logger':
         specifier: ^1.0.0
-        version: 1.0.0
+        version: 1.1.0
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
