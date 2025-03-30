@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { Menu, X } from "@squaredmade/icons";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { useState } from "react";
@@ -35,7 +36,7 @@ export const MobileNavbar = ({
 			)}
 		>
 			<Logo />
-			<IoIosMenu
+			<Menu
 				className="h-6 w-6 text-black dark:text-white"
 				onClick={() => setOpen(!open)}
 			/>
@@ -45,7 +46,7 @@ export const MobileNavbar = ({
 						<Logo />
 						<div className="flex items-center space-x-2">
 							<ModeToggle />
-							<IoIosClose
+							<X
 								className="h-8 w-8 text-black dark:text-white"
 								onClick={() => setOpen(!open)}
 							/>

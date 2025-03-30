@@ -1,15 +1,15 @@
 "use client";
+import type { KeyTextField } from "@prismicio/client";
+import { ArrowRight } from "@squaredmade/icons";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import Balancer from "react-wrap-balancer";
-import { Badge } from "./badge";
-import { Button } from "./button";
-
-import type { KeyTextField } from "@prismicio/client";
 import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Balancer from "react-wrap-balancer";
+import { Badge } from "./badge";
+import { Button } from "./button";
 
 interface HeroProps {
 	title: KeyTextField;
@@ -112,7 +112,7 @@ export const Hero = ({ title, description, cta }: HeroProps) => {
 					className="group flex items-center space-x-2 font-semibold"
 				>
 					<span>Contact us</span>
-					<HiArrowRight className="h-3 w-3 stroke-[1px] text-foreground transition-transform duration-200 group-hover:translate-x-1 dark:text-muted-dark" />
+					<ArrowRight className="h-3 w-3 stroke-[1px] text-foreground transition-transform duration-200 group-hover:translate-x-1 dark:text-muted-dark" />
 				</Button>
 			</motion.div>
 			<div className="relative mt-20 rounded-[32px] border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
