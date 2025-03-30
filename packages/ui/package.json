@@ -660,7 +660,7 @@
 		"@types/react-dom": "^19.0.2",
 		"@types/resize-observer-browser": "^0.1.11",
 		"autoprefixer": "^10.4.7",
-		"esbuild": "^0.24.0",
+		"esbuild": "^0.25.0",
 		"fs-extra": "^11.3.0",
 		"glob": "^11.0.0",
 		"playwright": "^1.51.1",
