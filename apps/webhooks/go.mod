@@ -3,7 +3,7 @@ module github.com/SquaredMade2/squared/apps/webhooks
 go 1.23.4
 
 require (
-	github.com/google/go-github/v45 v45.2.0
+	github.com/google/go-github/v70 v70.0.0
 	github.com/google/go-github/v69 v69.0.0
 	github.com/joho/godotenv v1.5.1
 )
