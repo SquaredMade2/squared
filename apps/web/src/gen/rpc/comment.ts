@@ -14,7 +14,7 @@ export type AddCommentResponse = {
 	date: Date;
 	id: string;
 	taskId: string;
-}[];
+};
 
 export type DeleteCommentRequest = {
 	commentId: string;
