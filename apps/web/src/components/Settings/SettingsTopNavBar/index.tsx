@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useViewStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import { ChevronLeft, PanelLeft } from "@squared/icons";
+import { ChevronLeft, PanelLeft } from "@squaredmade/icons";
 import { useRouter } from "next/navigation";
 
 const SettingsTopNavBar = () => {
@@ -15,7 +15,7 @@ const SettingsTopNavBar = () => {
 	};
 
 	return (
-		<div className="fixed top-0 flex h-12 min-w-[100vw] items-center justify-between border-b px-4 shadow md:hidden">
+		<div className="fixed top-0 flex h-12 min-w-[100vw] items-center justify-between border-b px-4 shadow-sm md:hidden">
 			<Button
 				variant="ghost"
 				size="icon"

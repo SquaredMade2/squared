@@ -15,12 +15,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
-	const { isLoading, error, subtasks, currentTaskBlockedBy } = useTaskPage();
+	const { isLoading, subtasks, currentTaskBlockedBy } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
@@ -31,14 +33,25 @@ const TaskPage = () => {
 		});
 	}, [currentTask]);
 
-	useEffect(() => {
-		if (error) {
+	const lastViewedTaskMutation = useMutation({
+		mutationFn: async () => {
+			await client.task.setLastViewedTask.$post({
+				taskId: currentTask?.id || "",
+			});
+		},
+		onError: (error) => {
+			console.error(error);
 			toast({
-				title: error,
+				title: "Error updating task",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		}
-	}, [error]);
+		},
+	});
+
+	useEffect(() => {
+		currentTask && lastViewedTaskMutation.mutate();
+	}, [currentTask]);
 
 	return (
 		<div className="flex h-screen w-full overflow-hidden bg-background">

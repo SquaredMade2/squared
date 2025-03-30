@@ -3,7 +3,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
-import type { RetrospectiveItemType } from "@squared/db";
+import type { RetrospectiveItemType } from "@squaredmade/db";
 import AddRetroItemModal from "./AddRetroItemModal";
 import { RetroItemCard } from "./RetroItemCard";
 
@@ -27,13 +27,13 @@ export const RetroColumn = ({
 			<CardHeader>
 				<CardTitle>{title}</CardTitle>
 			</CardHeader>
-			<CardContent className="flex flex-grow flex-col">
+			<CardContent className="flex grow flex-col">
 				<Droppable droppableId={type}>
 					{(provided) => (
 						<div
 							{...provided.droppableProps}
 							ref={provided.innerRef}
-							className="mb-4 min-h-[200px] flex-grow space-y-2"
+							className="mb-4 min-h-[200px] grow space-y-2"
 						>
 							{items.map((item, index) => {
 								return (

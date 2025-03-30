@@ -1,4 +1,4 @@
-import type { Comment } from "@squared/db";
+import type { Comment } from "@squaredmade/db";
 
 export interface CommentRpc {
 	addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment>;

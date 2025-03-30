@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight } from "@squared/icons";
+import { ChevronRight } from "@squaredmade/icons";
 
 export const LoadingTask = () => {
 	return (
@@ -11,24 +11,24 @@ export const LoadingTask = () => {
 							<div>
 								<div className="mt-1 flex items-center gap-2">
 									<Skeleton className="size-6 rounded-full" />
-									<p className="blink text-muted-foreground blur-sm filter">
+									<p className="blink text-muted-foreground blur-xs filter">
 										It is a long
 									</p>
 									<span className="text-secondary">
 										<ChevronRight className="size-4 stroke-gray-500" />
 									</span>
-									<p className="blink text-muted-foreground blur-sm filter">
+									<p className="blink text-muted-foreground blur-xs filter">
 										consequuntur
 									</p>
 								</div>
 							</div>
 							<div className="mt-10 h-20 pt-2 pl-2">
-								<p className="blink text-muted-foreground blur-sm filter">
+								<p className="blink text-muted-foreground blur-xs filter">
 									consequuntur
 								</p>
 							</div>
 							<div className="h-24 w-full rounded-lg bg-popover p-2 ">
-								<p className="blink text-muted-foreground blur-sm filter">
+								<p className="blink text-muted-foreground blur-xs filter">
 									It is a long established fact that a reader will be distracted
 								</p>
 							</div>
@@ -48,26 +48,26 @@ export const LoadingTask = () => {
 								</div>
 								<div className="flex min-h-24 flex-col rounded-lg bg-popover p-2">
 									<div className="flex gap-5 border-b py-2">
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											25 Jun 2024
 										</p>
 										<Skeleton className="size-6 rounded-full" />
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											Pinak
 										</p>
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											letters as opposed to using Content
 										</p>
 									</div>
 									<div className="flex gap-5 py-2">
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											25 Jun 2024
 										</p>
 										<Skeleton className="size-6 rounded-full" />
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											John Doe
 										</p>
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											letters as opposed to using Content
 										</p>
 									</div>
@@ -77,7 +77,7 @@ export const LoadingTask = () => {
 						<div className="relative transition-all duration-300 ease-in-out max850:hidden">
 							<div className="h-12 rounded-lg bg-popover px-5">
 								<div className="flex h-full items-center justify-between">
-									<p className="blink text-muted-foreground blur-sm filter">
+									<p className="blink text-muted-foreground blur-xs filter">
 										SQU-19
 									</p>
 									<div className="flex gap-2">
@@ -95,7 +95,7 @@ export const LoadingTask = () => {
 									<span className=" w-24">Status</span>
 									<div className="flex gap-2">
 										<Skeleton className="size-4 rounded-full" />
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											Todo
 										</p>
 									</div>
@@ -104,23 +104,23 @@ export const LoadingTask = () => {
 									<span className="w-24">Priority</span>
 									<div className="flex gap-2">
 										<Skeleton className="size-4 rounded-full" />
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											No Priority
 										</p>
 									</div>
 								</div>
 								<div className="flex items-center">
 									<span className="w-24">Labels</span>
-									<div className="flex flex-grow flex-col gap-2">
+									<div className="flex grow flex-col gap-2">
 										<div className="flex w-20 gap-2 rounded-full border px-2 py-1">
 											<Skeleton className="size-4 rounded-full" />
-											<p className="blink text-muted-foreground blur-sm filter">
+											<p className="blink text-muted-foreground blur-xs filter">
 												Bug
 											</p>
 										</div>
 										<div className="flex gap-2 rounded-full border border-border px-2 py-1">
 											<Skeleton className="size-4 rounded-full" />
-											<p className="blink text-muted-foreground blur-sm filter">
+											<p className="blink text-muted-foreground blur-xs filter">
 												Improvement
 											</p>
 										</div>
@@ -129,7 +129,7 @@ export const LoadingTask = () => {
 								<div className="flex ">
 									<span className="w-24">Due Date</span>
 									<div className="flex items-center rounded-full border border-border px-2 py-1">
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											01/07/2023
 										</p>
 									</div>
@@ -138,7 +138,7 @@ export const LoadingTask = () => {
 									<span className="w-24">Effort</span>
 									<div className="flex gap-2">
 										<Skeleton className="size-4 rounded-full" />
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											Effort
 										</p>
 									</div>
@@ -147,7 +147,7 @@ export const LoadingTask = () => {
 									<span className="w-24">Assignee</span>
 									<div className="flex gap-2">
 										<Skeleton className="size-4 rounded-full" />
-										<p className="blink text-muted-foreground blur-sm filter">
+										<p className="blink text-muted-foreground blur-xs filter">
 											Unassigned
 										</p>
 									</div>

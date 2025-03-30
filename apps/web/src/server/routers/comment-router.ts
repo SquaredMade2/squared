@@ -1,10 +1,10 @@
-import { TODO } from "@squared/context";
+import { TODO } from "@squaredmade/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 export const commentRouter = router({
-	getComments: privateProcedure
+	getComments: workspaceProcedure
 		.input(z.object({ taskId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { commentService } = ctx;
@@ -13,16 +13,16 @@ export const commentRouter = router({
 				await commentService.getTaskComments(TODO, { taskId }),
 			);
 		}),
-	addComment: privateProcedure
+	addComment: workspaceProcedure
 		.input(z.object({ comment: z.string(), taskId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { commentService, user } = ctx;
+			const { commentService, userId } = ctx;
 			const { comment, taskId } = input;
 			return c.superjson(
 				await commentService.addComment(TODO, {
 					comment,
 					taskId,
-					authorId: user.id,
+					authorId: userId,
 				}),
 			);
 		}),

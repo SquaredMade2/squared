@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import type { Task } from "@squared/db";
-import { Trash } from "@squared/icons";
+import type { Task } from "@squaredmade/db";
+import { Trash } from "@squaredmade/icons";
 import { useState } from "react";
 import { DeleteTaskAlertDialog } from "../ViewAllTasks/DeleteTaskAlertDialog";
 

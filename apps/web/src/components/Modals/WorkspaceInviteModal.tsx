@@ -4,7 +4,7 @@ import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
-import { LoaderCircle } from "@squared/icons";
+import { LoaderCircle } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -39,7 +39,6 @@ export const WorkspaceInviteModal = () => {
 
 			await client.workspace.inviteToWorkspace.$post({
 				email: emailAddresses,
-				workspaceId: organization.id,
 				workspaceSlug: organization.slug,
 			});
 		},

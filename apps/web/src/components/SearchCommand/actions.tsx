@@ -1,7 +1,7 @@
 import { useTeamStore, useViewStore } from "@/store";
 import { useClerk, useOrganization } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
-import type { Team } from "@squared/db";
+import type { Team } from "@squaredmade/db";
 import {
 	ArrowLeftRight,
 	ArrowRight,
@@ -18,7 +18,7 @@ import {
 	Search,
 	Settings,
 	Trash2,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./interfaces";
 

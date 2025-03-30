@@ -103,6 +103,12 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	// Restore the body for further processing
 	r.Body = io.NopCloser(bytes.NewReader(body))
 
+	githubService := rpc.NewGithubService(os.Getenv("SERVER_URL") + "/rpc")
+	if r.URL.Query().Get("installation_id") != "" {
+		handleInstallEvent(githubService, r, w)
+		return
+	}
+
 	headers := getGitHubWebhookHeaders(r)
 	if !verifySignature256(r, webhookSecret, headers) {
 		log.Println("X-Hub-Signature-256 is incorrect")
@@ -110,18 +116,11 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	githubService := rpc.NewGithubService(os.Getenv("SERVER_URL") + "/rpc")
-
 	// Re-read body since it was consumed by signature verification
 	body, err = io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %v", err)
 		http.Error(w, fmt.Sprintf("Error reading request body: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	if r.URL.Query().Get("installation_id") != "" {
-		handleInstallEvent(githubService, r, w)
 		return
 	}
 

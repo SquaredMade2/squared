@@ -1,7 +1,7 @@
 import { exec } from "node:child_process";
 import fs from "node:fs";
 import util from "node:util";
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 import dotenv from "dotenv";
 
 dotenv.config();

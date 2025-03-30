@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Linkedin, Mail } from "@squared/icons";
+import { Linkedin, Mail } from "@squaredmade/icons";
 import Link from "next/link";
 import { Logo } from "./Logo";
 

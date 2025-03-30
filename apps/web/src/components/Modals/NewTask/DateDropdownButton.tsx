@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar as CalendarIcon } from "@squared/icons";
+import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { format } from "date-fns";
 import * as React from "react";
 
@@ -39,12 +39,7 @@ export function DateDropdownButton() {
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-auto p-0" side="left">
-				<Calendar
-					mode="single"
-					selected={date}
-					onSelect={setDate}
-					initialFocus
-				/>
+				<Calendar mode="single" selected={date} onSelect={setDate} />
 			</PopoverContent>
 		</Popover>
 	);

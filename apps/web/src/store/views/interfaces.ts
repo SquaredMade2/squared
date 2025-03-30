@@ -18,15 +18,15 @@ export const TaskOrderOptions = [
 
 export type TaskOrder = (typeof TaskOrderOptions)[number];
 
-export const TaskGroupOptions = [
+export const taskGroupOptions = [
 	"Status",
 	"Assignee",
 	"Priority",
 	"Label",
 	// "Parent Task",
-];
+] as const;
 
-export type TaskGroup = (typeof TaskGroupOptions)[number];
+export type TaskGroup = (typeof taskGroupOptions)[number];
 
 export enum CompletedTaskPeriod {
 	all = "All",
@@ -53,6 +53,7 @@ export interface DisplayOptions {
 		orderAscending: boolean;
 	};
 	groupTasksBy: TaskGroup;
+	groupRowsBy: TaskGroup | "None";
 	showCompletedTasks: {
 		show: boolean;
 		period: CompletedTaskPeriod;

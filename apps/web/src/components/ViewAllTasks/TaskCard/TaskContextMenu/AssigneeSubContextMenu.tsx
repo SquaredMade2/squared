@@ -12,7 +12,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
-import { Check, UserSearch } from "@squared/icons";
+import { Check, UserSearch } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
@@ -20,11 +20,13 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { user, users } = useUsers();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
+	const assignedUser = users?.find((u) => u.userId === task.assigneeId);
 
 	const { mutate: updateAssignee } = useMutation({
 		mutationKey: ["task", "updateAssignee", taskId],
-		mutationFn: async (userId?: string) => {
-			if (!taskId || !userId) throw new Error("Task or user not found");
+		mutationFn: async (userId?: string | null) => {
+			if (!taskId || userId === undefined)
+				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId,
 				assigneeId: userId,
@@ -35,7 +37,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		},
 	});
 
-	const handleSelectAssignee = (userId?: string) => {
+	const handleSelectAssignee = (userId?: string | null) => {
 		updateAssignee(userId);
 	};
 
@@ -47,7 +49,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						<UserSearch className="size-5 text-[#9597AD]" />
 					) : (
 						<Avatar className="mr-2 flex size-4 text-xxs">
-							<AvatarImage src={user?.imageUrl ?? ""} />
+							<AvatarImage src={assignedUser?.imageUrl ?? ""} />
 							<AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
 						</Avatar>
 					)}
@@ -58,7 +60,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
 						className="flex justify-between"
-						onClick={() => handleSelectAssignee()}
+						onClick={() => handleSelectAssignee(null)}
 					>
 						<div className="flex">
 							<UserSearch className="mx-1 mr-3 size-5" />

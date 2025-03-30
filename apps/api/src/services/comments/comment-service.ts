@@ -1,6 +1,11 @@
-import { type Comment, type DBClient, commentsTable, eq } from "@squared/db";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
+import {
+	type Comment,
+	type DBClient,
+	commentsTable,
+	eq,
+} from "@squaredmade/db";
+import type { Logger } from "@squaredmade/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { CommentRpc } from "./types";
 
 export class CommentService implements CommentRpc {

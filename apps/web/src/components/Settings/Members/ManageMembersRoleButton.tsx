@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
-import { UserCog } from "@squared/icons";
+import { UserCog } from "@squaredmade/icons";
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { MemberWithRole } from "./data-table";
@@ -33,12 +33,9 @@ const ManageMembersRoleButton = ({
 	const updateRoleMutation = useMutation({
 		mutationFn: async (newRole: ClerkAuthorization["role"]) => {
 			if (!pageId) throw new Error("Missing required data");
-			await client.workspace.updateUserRole.$post({
-				userId,
-				workspaceId: pageId,
+			return await client.workspace.updateUserRole.$post({
 				role: newRole,
 			});
-			return newRole;
 		},
 		onSuccess: (_, newRole) => {
 			queryClient.invalidateQueries({

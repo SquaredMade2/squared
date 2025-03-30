@@ -7,7 +7,7 @@ import EffortModal from "./EffortModal";
 import LabelCombobox from "./LabelCombobox";
 import ParentTaskCombobox from "./ParentTaskCombobox";
 import PriorityDropdown from "./PriorityDropdown";
-import SprintCombobox from "./SprintCombobox";
+import SprintDropdown from "./SprintDropdown";
 import StatusDropdown from "./StatusDropdown";
 
 export function TaskDesignationsContainer() {
@@ -24,7 +24,7 @@ export function TaskDesignationsContainer() {
 		},
 		{ name: "Assignee", component: <AssigneeCombobox /> },
 		{ name: "Parent Task", component: <ParentTaskCombobox /> },
-		{ name: "Sprint", component: <SprintCombobox /> },
+		{ name: "Sprint", component: <SprintDropdown /> },
 		{ name: "Blocked By", component: <BlockedByCombobox /> },
 	];
 

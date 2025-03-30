@@ -3,10 +3,11 @@
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTaskStore, useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Workspace } from "@squared/db";
-import { Clipboard } from "@squared/icons";
+import type { Workspace } from "@squaredmade/db";
+import { Clipboard } from "@squaredmade/icons";
 import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
 import { NoTasksNewTaskButton } from "../Modals";
@@ -30,9 +31,12 @@ export function TaskPageLayout({
 	pageTitle,
 	children,
 }: TaskPageLayoutProps) {
-	const { view } = useViewStore((state) => state);
+	const { view, displayOptions } = useViewStore((state) => state);
+	const { groupRowsBy } = displayOptions;
 	const { user } = useUser();
 	const { tasks } = useTaskStore((state) => state);
+
+	const isRowGroupingActive = groupRowsBy !== "None";
 
 	if (loading) {
 		return (
@@ -70,25 +74,33 @@ export function TaskPageLayout({
 					<NoTasksNewTaskButton />
 				</div>
 			) : currentWorkspace ? (
-				<div className="flex-grow overflow-hidden">
-					<ScrollArea
-						className={`${
-							view === "list"
-								? "h-[calc(100vh-145px)] overflow-y-auto"
-								: "h-[calc(100vh-55px)] overflow-x-auto"
-						} px-2`}
-					>
-						<div
-							className={`mx-2 flex ${
-								view === "grid" ? "flex-nowrap" : "flex-wrap"
-							}`}
-						>
+				<div className="grow overflow-hidden">
+					{/* When row grouping is active, don't use ScrollArea */}
+					{isRowGroupingActive ? (
+						<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">
 							<DragDropContext onDragEnd={handleDragEnd}>
 								{children}
 							</DragDropContext>
 						</div>
-						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</ScrollArea>
+					) : (
+						<ScrollArea
+							className={cn(
+								"px-2",
+								view === "list"
+									? "h-[calc(100vh-145px)] overflow-y-auto"
+									: "h-[calc(100vh-55px)] overflow-x-auto",
+							)}
+						>
+							<div
+								className={cn("mx-2", view === "grid" && "flex flex-nowrap")}
+							>
+								<DragDropContext onDragEnd={handleDragEnd}>
+									{children}
+								</DragDropContext>
+							</div>
+							{view === "grid" && <ScrollBar orientation="horizontal" />}
+						</ScrollArea>
+					)}
 				</div>
 			) : (
 				<div className="flex h-full w-screen flex-col items-center bg-background">

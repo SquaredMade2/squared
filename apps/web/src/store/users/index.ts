@@ -1,4 +1,4 @@
-import type { User } from "@squared/db";
+import type { User } from "@squaredmade/db";
 import { createStore } from "zustand/vanilla";
 import type { UserAvatar, UserState, UserStore } from "./interfaces";
 export * from "./interfaces";

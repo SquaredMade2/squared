@@ -9,8 +9,8 @@ import {
 import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
-import type { Task } from "@squared/db";
-import { Info, Trash } from "@squared/icons";
+import type { Task } from "@squaredmade/db";
+import { Info, Trash } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -131,7 +131,7 @@ const ViewsDetailSidebar = ({
 						<div className="flex items-center justify-between">
 							<span className="text-xs">Owner</span>
 							<div className="flex items-center gap-2">
-								<Avatar className="size-6 flex-shrink-0">
+								<Avatar className="size-6 shrink-0">
 									<AvatarImage src={author?.avatarUrl ?? ""} />
 									<AvatarFallback className="text-xxs">
 										{author && getInitials(author.name)}

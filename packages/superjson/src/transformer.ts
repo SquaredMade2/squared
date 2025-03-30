@@ -130,7 +130,7 @@ const simpleRules = [
 		isSet,
 		"set",
 		// (sets only exist in es6+)
-		// eslint-disable-next-line es5/no-es6-methods
+
 		(v) => [...v.values()],
 		(v) => new Set(v),
 	),

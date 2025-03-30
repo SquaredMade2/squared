@@ -1,4 +1,4 @@
-import superjson from "@squared/superjson";
+import superjson from "@squaredmade/superjson";
 import request from "supertest";
 
 // Override the `send` method globally on `Test.prototype`

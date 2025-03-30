@@ -1,4 +1,4 @@
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import { checkCondition } from "./helpers";

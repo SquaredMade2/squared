@@ -1,6 +1,6 @@
-import { type DBClient, eq, usersTable } from "@squared/db";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
+import { type DBClient, eq, usersTable } from "@squaredmade/db";
+import type { Logger } from "@squaredmade/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { AuthRpc, Register, RegisterReturn } from "./types";
 
 export class AuthService implements AuthRpc {

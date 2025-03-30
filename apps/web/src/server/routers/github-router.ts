@@ -1,10 +1,10 @@
-import { TODO } from "@squared/context";
+import { TODO } from "@squaredmade/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
-import { privateProcedure } from "../procedures";
+import { workspaceProcedure } from "../procedures";
 
 export const githubRouter = router({
-	getRepos: privateProcedure
+	getRepos: workspaceProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { githubService } = ctx;

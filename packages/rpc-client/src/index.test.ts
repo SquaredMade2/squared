@@ -1,9 +1,9 @@
-import * as context from "@squared/context";
-import superjson from "@squared/superjson";
+import * as context from "@squaredmade/context";
+import superjson from "@squaredmade/superjson";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RPCContextClient, RpcResponseError } from "../src/index";
 
-describe("@squared/rpc-client", () => {
+describe("@squaredmade/rpc-client", () => {
 	let mockFetch: ReturnType<typeof vi.fn>;
 
 	beforeEach(() => {
@@ -84,7 +84,7 @@ describe("@squared/rpc-client", () => {
 					Promise.resolve({
 						message: "Validation failed",
 						code: "validation_error",
-						type: "https://errors.squared.global/@squared/rpc/validation",
+						type: "https://errors.squared.global/@squaredmade/rpc/validation",
 					}),
 			});
 
@@ -199,7 +199,7 @@ describe("@squared/rpc-client", () => {
 			const responseBody = {
 				message: "Validation failed",
 				code: "validation_error",
-				type: "https://errors.squared.global/@squared/rpc/validation",
+				type: "https://errors.squared.global/@squaredmade/rpc/validation",
 			};
 			const status = 400;
 
@@ -209,7 +209,7 @@ describe("@squared/rpc-client", () => {
 			expect(error.message).toBe("Validation failed");
 			expect(error.code).toBe("validation_error");
 			expect(error.type).toBe(
-				"https://errors.squared.global/@squared/rpc/validation",
+				"https://errors.squared.global/@squaredmade/rpc/validation",
 			);
 			expect(error.source).toEqual([source]);
 			expect(error.status).toBe(status);

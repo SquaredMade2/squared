@@ -1,6 +1,6 @@
 import type { Content } from "@prismicio/client";
 import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
-import { Lightbulb } from "@squared/icons";
+import { Lightbulb } from "@squaredmade/icons";
 import type { FC } from "react";
 
 /**
@@ -20,7 +20,7 @@ const TipsAndTricks: FC<TipsAndTricksProps> = ({ slice }) => {
 				{slice.primary.tip.map((item, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: This is okay because the index is stable.
 					<li key={index} className="flex items-start">
-						<Lightbulb className="mt-1 mr-2 h-6 w-6 flex-shrink-0 text-yellow-500" />
+						<Lightbulb className="mt-1 mr-2 h-6 w-6 shrink-0 text-yellow-500" />
 						<div>
 							<PrismicRichText field={item.tip} />
 						</div>

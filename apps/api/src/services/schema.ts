@@ -10,9 +10,18 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
-} from "@squared/db";
-import { createEnumSchema, createSchema } from "@squared/rpc";
+	WorkspaceInviteLink,
+} from "@squaredmade/db";
+import { createEnumSchema, createSchema } from "@squaredmade/rpc";
 import z from "zod";
+
+export const workspaceInviteLinkSchema = createSchema<WorkspaceInviteLink>()(
+	z.object({
+		link: z.string(),
+		expiration: z.number().optional(),
+		uses: z.number().optional(),
+	}),
+);
 
 export const statusEnum = createEnumSchema<Task["status"]>()(
 	z.enum([
@@ -132,6 +141,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
 		labels: z.array(labelSchema),
+		inviteLinks: z.array(workspaceInviteLinkSchema),
 		createdAt: z.date(),
 	}),
 );

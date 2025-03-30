@@ -12,8 +12,8 @@ import {
 	sprintsTable,
 	tasksTable,
 	teamsTable,
-} from "@squared/db";
-import createCustomLogger from "@squared/logger";
+} from "@squaredmade/db";
+import createCustomLogger from "@squaredmade/logger";
 import { addWeeks } from "date-fns";
 import type {
 	AddRetrospectivePayload,
@@ -147,6 +147,9 @@ export class SprintService implements SprintRpc {
 						and(
 							eq(tasksTable.sprintId, currentSprint.id),
 							ne(tasksTable.status, "done"),
+							ne(tasksTable.status, "canceled"),
+							ne(tasksTable.status, "duplicated"),
+							ne(tasksTable.status, "archived"),
 						),
 					);
 			}

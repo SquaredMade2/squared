@@ -1,4 +1,4 @@
-import type { RetrospectiveItemType, Sprint, Task } from "@squared/db";
+import type { RetrospectiveItemType, Sprint, Task } from "@squaredmade/db";
 
 export type NextSprintPayload = {
 	teamId: string;

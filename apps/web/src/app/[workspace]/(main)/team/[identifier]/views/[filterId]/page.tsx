@@ -11,7 +11,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useFilterStore, useViewStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -78,7 +78,7 @@ export default function FilterViewPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}
 		>
-			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+			<div className={`flex grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&

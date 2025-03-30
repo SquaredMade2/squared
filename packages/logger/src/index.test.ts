@@ -33,7 +33,7 @@ vi.mock("winston", () => {
 	};
 });
 
-describe("@squared/logger", () => {
+describe("@squaredmade/logger", () => {
 	let originalEnv: NodeJS.ProcessEnv;
 
 	beforeEach(() => {

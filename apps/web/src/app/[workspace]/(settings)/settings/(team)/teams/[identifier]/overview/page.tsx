@@ -30,8 +30,8 @@ import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Effort } from "@squared/db";
-import { ChevronDown } from "@squared/icons";
+import type { Effort } from "@squaredmade/db";
+import { ChevronDown } from "@squaredmade/icons";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -157,7 +157,6 @@ export default function TeamsSetting() {
 					await client.team.getTeamByIdentifier
 						.$get({
 							identifier: updatedTeam.identifier,
-							workspaceId: updatedTeam.workspaceId,
 						})
 						.then((res) => res.json()),
 				);

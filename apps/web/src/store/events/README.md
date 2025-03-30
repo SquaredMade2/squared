@@ -106,8 +106,8 @@ const updateCommits = (newCommits: TaskEvent[]) => {
 
 The store uses the following types:
 
-- `TaskEvent`: Represents a task-related event (imported from `@squared/db`).
-- `Notification`: Represents a notification (imported from `@squared/db`).
+- `TaskEvent`: Represents a task-related event (imported from `@squaredmade/db`).
+- `Notification`: Represents a notification (imported from `@squaredmade/db`).
 - `GetNotificationsResponse`: The response type for fetching notifications (imported from `@/gen/rpc/event`).
 
 Make sure these types are correctly imported and up-to-date in your project.

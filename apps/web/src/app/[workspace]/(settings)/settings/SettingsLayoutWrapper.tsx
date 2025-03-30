@@ -13,7 +13,7 @@ export default function SettingsLayoutWrapper({
 		<SidebarProvider>
 			<div className="flex h-screen w-full">
 				<SettingsNavBar />
-				<SidebarInset className="container flex-grow overflow-auto">
+				<SidebarInset className="container grow overflow-auto">
 					<ScrollArea className="flex h-screen w-full justify-center overflow-y-hidden p-6">
 						{children}
 						<LabelModal />

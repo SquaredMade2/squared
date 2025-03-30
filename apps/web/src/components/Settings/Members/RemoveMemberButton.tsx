@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { Ellipsis } from "@squared/icons";
+import { Ellipsis } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import type { MemberWithRole } from "./data-table";
 
@@ -34,9 +34,7 @@ const RemoveMemberButton = ({
 		mutationFn: async () => {
 			if (!pageId) throw new Error("No pageId provided");
 			if (page === "workspace") {
-				await client.workspace.removeUser.$post({
-					workspaceId: pageId,
-				});
+				await client.workspace.removeUser.$post();
 				return "Workspace member removed";
 			}
 			await client.team.removeUser.$post({

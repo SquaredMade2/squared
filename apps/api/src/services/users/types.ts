@@ -1,4 +1,4 @@
-import type { Team, User, Workspace } from "@squared/db";
+import type { Team, User, Workspace } from "@squaredmade/db";
 
 export type UserAvatar = {
 	id: string;

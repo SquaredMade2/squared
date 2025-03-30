@@ -8,7 +8,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/utils/cn";
-import { Calendar as CalendarIcon } from "@squared/icons";
+import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { format } from "date-fns";
 import * as React from "react";
 
@@ -57,12 +57,7 @@ export function DatePicker({
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-auto p-0" align="start">
-				<Calendar
-					mode="single"
-					selected={date}
-					onSelect={handleSelectDate}
-					initialFocus
-				/>
+				<Calendar mode="single" selected={date} onSelect={handleSelectDate} />
 				<div className="flex justify-end gap-2 border-border border-t p-3">
 					<Button
 						size="sm"

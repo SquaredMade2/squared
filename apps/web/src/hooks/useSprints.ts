@@ -2,7 +2,7 @@ import { client } from "@/lib/client";
 import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
-import type { Sprint } from "@squared/db";
+import type { Sprint } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -21,7 +21,6 @@ export function useSprints(sprintId?: string) {
 			if (!parsedTeamIdentifier) throw new Error("Team not found");
 			const res = await client.team.getTeamByIdentifier.$get({
 				identifier: parsedTeamIdentifier,
-				workspaceId: organization.id,
 			});
 			const team = await res.json();
 			if (!team) throw new Error("Team not found");

@@ -93,12 +93,12 @@ const TextEditorMentions = ({
 								<CommandItem
 									key={user.userId}
 									className={cn(
-										`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
+										`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-hidden aria-selected:bg-accent aria-selected:text-accent-foreground`,
 									)}
 									ref={(e) => handleUsersRef(e, index, user)}
 									onSelect={() => handleMentionClick(user)}
 								>
-									<Avatar className="mx-2 flex size-6 flex-shrink-0 items-center">
+									<Avatar className="mx-2 flex size-6 shrink-0 items-center">
 										<AvatarImage src={user.imageUrl} className="rounded " />
 										<AvatarFallback className="rounded text-xxs">
 											{getInitials(formatName(user))}

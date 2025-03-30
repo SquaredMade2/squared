@@ -9,8 +9,8 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { useFilterStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@squared/db";
-import { Check } from "@squared/icons";
+import type { Label } from "@squaredmade/db";
+import { Check } from "@squaredmade/icons";
 import { useEffect, useState } from "react";
 import {
 	DropdownMenuSub,

@@ -44,10 +44,10 @@ export default function WorkspaceLayoutWrapper({
 
 	return (
 		<div className="flex h-screen w-screen overflow-hidden">
-			<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
+			<div className="shrink-0 transition-all duration-300 ease-in-out">
 				<SidebarNav />
 			</div>
-			<main className="h-full w-full flex-grow overflow-auto">{children}</main>
+			<main className="h-full w-full grow overflow-auto">{children}</main>
 		</div>
 	);
 }
