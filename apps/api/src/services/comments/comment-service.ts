@@ -17,6 +17,10 @@ export class CommentService implements CommentRpc {
 			.insert(commentsTable)
 			.values(comment)
 			.returning();
+		if (!result[0]) {
+			this.logger.error("No comment returned from DB insertion", comment);
+			throw new Error("No comment returned from DB insertion");
+		}
 		return result[0];
 	}
 	async deleteComment({ commentId }: { commentId: string }): Promise<void> {

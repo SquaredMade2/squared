@@ -52,7 +52,7 @@ const initialValue: CustomDescendant[] = [
 	},
 ];
 
-const defaultTransforms = {
+const defaultSelectionRange = {
 	anchor: { path: [0, 0], offset: 0 },
 	focus: { path: [0, 0], offset: 0 },
 };
@@ -80,7 +80,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		if (checkIfSlateEmpty(editor)) {
 			setEditorContent([]);
 			editor.children = initialValue;
-			Transforms.select(editor, defaultTransforms);
+			Transforms.select(editor, defaultSelectionRange);
 			return;
 		}
 
@@ -90,7 +90,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 
 		setEditorContent([]);
 		editor.children = initialValue;
-		Transforms.select(editor, defaultTransforms);
+		Transforms.select(editor, defaultSelectionRange);
 	}
 
 	const handleMentionKeyUp = (event: KeyboardEvent) => {

@@ -39,10 +39,10 @@ export const EventTabs = () => {
 					date: new Date(),
 					taskId: currentTask.id,
 				};
-				const newComentRes = await client.comment.addComment
+				const newCommentRes = await client.comment.addComment
 					.$post(newComment)
 					.then((res) => res.json());
-				setComments([...comments, newComentRes]);
+				setComments([...comments, newCommentRes]);
 				const mentions = getMentionsFromSlate(editorContent);
 
 				if (currentTask && workspace && users) {
@@ -53,7 +53,7 @@ export const EventTabs = () => {
 							(user) => user.firstName === currentMentionUser,
 						);
 
-						if (!mentionedUser || !mentionedUser.userId) return;
+						if (!mentionedUser || !mentionedUser.userId) continue;
 
 						const mentionEvent: CreateNotificationRequest = {
 							description: "Task Comment Mention",
