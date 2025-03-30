@@ -37,7 +37,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -80,7 +80,7 @@ export default function WorkspaceSettings() {
 			name: organization?.name,
 			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
-		disabled: membership?.role !== "org:admin" ? true : false,
+		disabled: membership?.role !== "org:admin" && true,
 	});
 
 	const { watch, setValue } = form;
@@ -332,44 +332,41 @@ export default function WorkspaceSettings() {
 				</form>
 			</Form>
 
-			<Separator className="my-6" />
+			<Protect condition={(has) => has({ role: "org:admin" })}>
+				<Separator className="my-6" />
 
-			<div className="rounded-lg bg-destructive/10 p-6">
-				<h2 className="mb-4 font-semibold text-xl">Delete Workspace</h2>
-				<p className="mb-4 text-muted-foreground">
-					Permanently delete your workspace and all of its contents from the
-					platform. This action is not reversible, so please continue with
-					caution.
-				</p>
-				<AlertDialog>
-					<AlertDialogTrigger asChild>
-						<Button
-							disabled={membership?.role !== "org:admin" ? true : false}
-							variant="destructive"
-						>
-							Delete Workspace
-						</Button>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-							<AlertDialogDescription>
-								This action cannot be undone. This will permanently delete your
-								workspace and remove your data from our servers.
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction
-								className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-								onClick={() => deleteWorkspace()}
-							>
-								{isDeleting ? "Deleting..." : "Yes, delete workspace"}
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
-			</div>
+				<div className="rounded-lg bg-destructive/10 p-6">
+					<h2 className="mb-4 font-semibold text-xl">Delete Workspace</h2>
+					<p className="mb-4 text-muted-foreground">
+						Permanently delete your workspace and all of its contents from the
+						platform. This action is not reversible, so please continue with
+						caution.
+					</p>
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<Button variant="destructive">Delete Workspace</Button>
+						</AlertDialogTrigger>
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+								<AlertDialogDescription>
+									This action cannot be undone. This will permanently delete
+									your workspace and remove your data from our servers.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>Cancel</AlertDialogCancel>
+								<AlertDialogAction
+									className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+									onClick={() => deleteWorkspace()}
+								>
+									{isDeleting ? "Deleting..." : "Yes, delete workspace"}
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+				</div>
+			</Protect>
 		</div>
 	);
 }
