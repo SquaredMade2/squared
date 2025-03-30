@@ -8,12 +8,15 @@ require (
 	github.com/joho/godotenv v1.5.1
 )
 
-require github.com/google/go-github/v68 v68.0.0 // indirect
+require (
+	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
+	github.com/google/go-github/v68 v68.0.0 // indirect
+)
 
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.14.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang-jwt/jwt/v4 v4.5.2
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/go-github/v70 v70.0.0
 	github.com/google/go-querystring v1.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
