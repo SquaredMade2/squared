@@ -13,7 +13,7 @@ export class CommentService implements CommentRpc {
 	}
 	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment> {
 		this.logger.info("Adding comment with payload", comment);
-		return await this.db
+		return this.db
 			.insert(commentsTable)
 			.values(comment)
 			.returning()
