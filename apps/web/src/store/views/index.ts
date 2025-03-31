@@ -76,7 +76,7 @@ export const createViewStore = (
 					set(({ displayOptions }) => ({
 						displayOptions: {
 							...displayOptions,
-							input,
+							...input,
 						},
 					}));
 				},
