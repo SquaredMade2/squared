@@ -67,7 +67,10 @@ export const createViewStore = (
 							...displayOptions,
 							viewOptions: {
 								...displayOptions.viewOptions,
-								[`${view}Options`]: input,
+								[`${view}Options`]: {
+									...displayOptions.viewOptions[`${view}Options`],
+									...input,
+								},
 							},
 						},
 					}));
