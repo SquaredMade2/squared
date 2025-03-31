@@ -1,4 +1,4 @@
-import { createRpcHandler, createServiceSchema } from "@squared/rpc";
+import { createRpcHandler, createServiceSchema } from "@squaredmade/rpc";
 import z from "zod";
 import { githubRepoSchema } from "../schema";
 import type { GithubService } from "./github-service";
@@ -63,7 +63,9 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 			description: z.string(),
 			workspaceId: z.string(),
 		}),
-		output: z.void(),
+		output: z.object({
+			slug: z.string(),
+		}),
 	},
 });
 

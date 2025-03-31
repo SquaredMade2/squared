@@ -1,9 +1,11 @@
 {
-	"name": "@squared/builder",
-	"version": "0.0.0",
-	"private": true,
+	"name": "@squaredmade/builder",
+	"version": "1.0.1",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
 	"bin": {
 		"squared-build": "./dist/cli.js"
 	},
@@ -20,18 +22,17 @@
 	"scripts": {
 		"build": "ts-node ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules",
-		"prepare": "pnpm run build",
 		"prebuild": "rimraf ./dist"
 	},
 	"devDependencies": {
-		"@squared/logger": "workspace:*",
-		"@squared/typescript-config": "workspace:*",
+		"@squaredmade/logger": "^1.0.0",
+		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.10.10",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.2"
 	},
 	"dependencies": {
-		"esbuild": "^0.24.0",
+		"esbuild": "^0.25.0",
 		"tslib": "^2.7.0",
 		"tsup": "^8.0.2"
 	}

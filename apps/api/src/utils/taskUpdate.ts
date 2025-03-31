@@ -4,7 +4,7 @@ import {
 	type User,
 	eq,
 	usersTable,
-} from "@squared/db";
+} from "@squaredmade/db";
 
 export async function subscribeUser(
 	user: User,

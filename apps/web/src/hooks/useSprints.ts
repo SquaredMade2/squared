@@ -2,7 +2,7 @@ import { client } from "@/lib/client";
 import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
-import type { Sprint } from "@squared/db";
+import type { Sprint } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 

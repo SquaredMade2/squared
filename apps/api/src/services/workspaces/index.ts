@@ -2,7 +2,7 @@ import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
-} from "@squared/rpc";
+} from "@squaredmade/rpc";
 import { z } from "zod";
 import { labelSchema, workspaceRoleEnum, workspaceSchema } from "../schema";
 import type {
@@ -21,12 +21,13 @@ const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 
 const joinWorkspaceParamsSchema = createSchema<JoinWorkspaceParams>()(
 	z.object({
-		user: z.object({
-			id: z.string(),
-			name: z.string(),
-			email: z.string(),
+		token: z.string(),
+		isLink: z.boolean(),
+		userId: z.string(),
+		workspace: z.object({
+			id: z.string().optional(),
+			name: z.string().optional(),
 		}),
-		workspaceId: z.string(),
 	}),
 );
 
@@ -92,6 +93,14 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.object({ success: z.boolean() }),
 	},
+	generateWorkspaceInviteLink: {
+		input: z.object({
+			workspaceId: z.string(),
+			expiration: z.string().optional(),
+			uses: z.number().optional(),
+		}),
+		output: z.string(),
+	},
 	getTakenWorkspaceUrls: {
 		input: z.undefined(),
 		output: z.array(z.string()),
@@ -146,6 +155,8 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
+		generateWorkspaceInviteLink: (input) =>
+			workspaceService.generateWorkspaceInviteLink(input),
 		getTakenWorkspaceUrls: () => workspaceService.getTakenWorkspaceUrls(),
 		getWorkspaceLabels: (input) => workspaceService.getWorkspaceLabels(input),
 		createWorkspaceLabel: (input) =>

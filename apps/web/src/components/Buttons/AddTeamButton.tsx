@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "@squared/icons";
+import { Plus } from "@squaredmade/icons";
 import Link from "next/link";
 
 const AddTeamButton = ({ workspaceUrl }: { workspaceUrl: string }) => {

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/utils/cn";
-import { Check, ChevronsUpDown } from "@squared/icons";
+import { Check, ChevronsUpDown } from "@squaredmade/icons";
 import type { Dispatch, SetStateAction } from "react";
 
 interface DesignationComboboxProps<T> {

@@ -50,3 +50,6 @@ generated
 
 # Husky
 .husky/_
+
+# Storybook
+storybook-static/

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
 import { formatName, formatUrl, getInitials } from "@/utils/formatting";
-import { UserSearch } from "@squared/icons";
+import { UserSearch } from "@squaredmade/icons";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";

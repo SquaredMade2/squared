@@ -1,18 +1,29 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:base"],
-	"schedule": ["on the first day of the month"],
+	"schedule": ["at any time"],
 	"prConcurrentLimit": 50,
 	"labels": ["Updates"],
+	"dependencyDashboard": true,
+	"automerge": true,
+	"automergeType": "pr",
+	"automergeStrategy": "auto",
+	"requiredStatusChecks": [],
+	"platformAutomerge": true,
+	"minimumReleaseAge": "3 days",
 	"packageRules": [
 		{
 			"matchManagers": [
 				"npm",
+				"nvm",
+				"gomod",
 				"dockerfile",
 				"docker-compose",
 				"github-actions"
 			],
-			"reviewers": ["team:squared-developers"]
+			"reviewers": ["team:squared-developers"],
+			"stabilityDays": 3,
+			"matchConfidence": ["neutral", "high"]
 		}
 	]
 }

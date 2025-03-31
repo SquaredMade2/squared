@@ -1,4 +1,4 @@
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import {
@@ -11,7 +11,7 @@ import {
 // Mock logger
 const mockLogger = createCustomLogger("rpc-test");
 
-describe("@squared/rpc", () => {
+describe("@squaredmade/rpc", () => {
 	afterEach(() => {
 		vi.clearAllMocks();
 	});

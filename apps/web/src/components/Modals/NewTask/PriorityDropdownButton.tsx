@@ -10,8 +10,8 @@ import {
 import { priorityOptions } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import type { Priority } from "@squared/db";
-import { Check } from "@squared/icons";
+import type { Priority } from "@squaredmade/db";
+import { Check } from "@squaredmade/icons";
 
 export const PriorityDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);

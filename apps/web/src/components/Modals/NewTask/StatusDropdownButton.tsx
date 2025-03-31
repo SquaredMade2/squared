@@ -10,8 +10,8 @@ import {
 import { statusOptions } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@squared/db";
-import { Check } from "@squared/icons";
+import type { Status } from "@squaredmade/db";
+import { Check } from "@squaredmade/icons";
 
 export const StatusDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);

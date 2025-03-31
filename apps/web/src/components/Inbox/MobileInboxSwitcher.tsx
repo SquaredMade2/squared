@@ -20,7 +20,7 @@ import {
 	Inbox,
 	MapPin,
 	MessageCircleMore,
-} from "@squared/icons";
+} from "@squaredmade/icons";
 import { DialogTitle } from "@squaredmade/ui/dialog";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useState } from "react";

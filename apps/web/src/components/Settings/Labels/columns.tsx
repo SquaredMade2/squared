@@ -1,5 +1,5 @@
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import type { Label } from "@squared/db";
+import type { Label } from "@squaredmade/db";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DeleteLabelButton } from "./DeleteLabelButton";
 import { EditLabelButton } from "./EditLabelButton";

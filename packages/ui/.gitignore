@@ -1,2 +1,15 @@
-storybook-static
-src/icons/components
+.DS_Store
+node_modules
+.turbo
+*.log
+.next
+dist
+dist-ssr
+*.local
+.env
+.cache
+server/dist
+public/dist
+storybook-static/
+.rollup.cache
+*storybook.log

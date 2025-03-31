@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { Router } from "express";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";

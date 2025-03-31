@@ -19,7 +19,7 @@ import {
 import { useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { Check, CirclePlus } from "@squared/icons";
+import { Check, CirclePlus } from "@squaredmade/icons";
 import { useRouter } from "next/navigation";
 import WorkspaceInitials from "../WorkspaceImage";
 

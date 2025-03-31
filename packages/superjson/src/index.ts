@@ -1,5 +1,5 @@
-import { copy } from "copy-anything";
 import { ClassRegistry, type RegisterOptions } from "./class-registry";
+import { copy } from "./copy";
 import {
 	type CustomTransfomer,
 	CustomTransformerRegistry,

@@ -11,6 +11,10 @@
 	"files": {
 		"maxSize": 10000000
 	},
+	"formatter": {
+		"formatWithErrors": true,
+		"ignore": ["dist/**", "node_modules/**", "pnpm-lock.yaml"]
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

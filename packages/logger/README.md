@@ -1,4 +1,4 @@
-# @squared/logger
+# @squaredmade/logger
 
 A flexible and customizable logging utility built on top of Winston for Node.js applications.
 
@@ -16,7 +16,7 @@ A flexible and customizable logging utility built on top of Winston for Node.js 
 ### Basic Usage
 
 ```typescript
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 
 // Create a logger with default options
 const logger = createCustomLogger("example");
@@ -32,7 +32,7 @@ To support string interpolation in log messages, use Node.js's built-in `util.fo
 
 ```typescript
 import util from "util";
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 
 const logger = createCustomLogger();
 

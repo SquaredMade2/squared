@@ -6,7 +6,7 @@ import {
 } from "@/store";
 import { orderTasks } from "@/utils/compareSorting";
 import { Droppable } from "@hello-pangea/dnd";
-import type { Task } from "@squared/db";
+import type { Task } from "@squaredmade/db";
 import { usePathname } from "next/navigation";
 import TaskCard from "../TaskCard";
 

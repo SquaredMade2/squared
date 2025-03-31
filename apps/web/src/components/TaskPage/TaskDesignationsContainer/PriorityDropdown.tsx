@@ -13,7 +13,7 @@ import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import type { Priority, TaskEvent } from "@squared/db";
+import type { Priority, TaskEvent } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 
 const PriorityDropdown = () => {

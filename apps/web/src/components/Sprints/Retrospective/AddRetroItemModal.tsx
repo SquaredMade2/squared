@@ -7,7 +7,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { CirclePlus } from "@squared/icons";
+import { CirclePlus } from "@squaredmade/icons";
 import { useCallback, useState } from "react";
 
 type ColumnType = "wentWell" | "toImprove" | "actionItems";

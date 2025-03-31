@@ -6,7 +6,7 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import type { CompletedTaskPeriod, TaskGroup } from "@/store/views";
-import { Priority, Status, type Task } from "@squared/db";
+import { Priority, Status, type Task } from "@squaredmade/db";
 import { isAfter, startOfDay, subDays, subMonths } from "date-fns";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {

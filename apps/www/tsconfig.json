@@ -1,12 +1,12 @@
 {
-	"extends": "@squared/typescript-config/nextjs.json",
+	"extends": "@squaredmade/typescript-config/nextjs.json",
 	"compilerOptions": {
 		"outDir": "dist/",
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["*"]
+			"@/*": ["src/*"]
 		},
-		"moduleResolution": "Bundler",
+		"moduleResolution": "bundler",
 		"module": "ESNext",
 		"types": ["node"],
 		"typeRoots": ["./node_modules/@types"],

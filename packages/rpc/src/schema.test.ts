@@ -1,4 +1,4 @@
-import createCustomLogger from "@squared/logger";
+import createCustomLogger from "@squaredmade/logger";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import {
@@ -14,7 +14,7 @@ import {
 
 const testLogger = createCustomLogger("rpc-test");
 
-describe("@squared/rpc schema utilities", () => {
+describe("@squaredmade/rpc schema utilities", () => {
 	describe("createSchema", () => {
 		it("should return the input schema", () => {
 			type User = {
@@ -98,7 +98,7 @@ describe("@squared/rpc schema utilities", () => {
 	describe("ValidationError", () => {
 		it("should create a validation error with the correct properties", () => {
 			const code = "validation";
-			const type = "https://errors.squared.global/@squared/rpc/validation";
+			const type = "https://errors.squared.global/@squaredmade/rpc/validation";
 			const message = "Validation failed";
 			const params = { instancePath: "user.age", schemaPath: "min" };
 
@@ -124,7 +124,7 @@ describe("@squared/rpc schema utilities", () => {
 			expect(error.name).toBe("ResponseValidationError");
 			expect(error.code).toBe("response-validation");
 			expect(error.type).toBe(
-				"https://errors.squared.global/@squared/rpc/response-validation",
+				"https://errors.squared.global/@squaredmade/rpc/response-validation",
 			);
 			expect(error.message).toBe(message);
 			expect(error.params).toEqual(params);

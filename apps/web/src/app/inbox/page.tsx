@@ -10,7 +10,7 @@ import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
 import { useEventStore, useUserStore, useViewStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
-import type { NotificationType } from "@squared/db";
+import type { NotificationType } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -1,7 +1,7 @@
 import { high, low, medium } from "@/components/Svg";
 import { complexityScale, effortEstimateOptions } from "@/lib/constants";
 import { useTeamStore } from "@/store";
-import { CircleHelp } from "@squared/icons";
+import { CircleHelp } from "@squaredmade/icons";
 import { Button } from "../../ui/button";
 import {
 	Dialog,

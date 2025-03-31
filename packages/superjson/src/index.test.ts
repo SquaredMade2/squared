@@ -1,6 +1,5 @@
 import * as fs from "node:fs";
 import { Decimal } from "decimal.js";
-import { ObjectId } from "mongodb";
 import { type TestAPI, describe, expect, it, test } from "vitest";
 import SuperJSON from "./index";
 import {
@@ -491,31 +490,6 @@ describe("stringify & parse", () => {
 			},
 		},
 
-		"works for custom transformers": {
-			input: () => {
-				SuperJSON.registerCustom<ObjectId, string>(
-					{
-						isApplicable: (v): v is ObjectId => v instanceof ObjectId,
-						serialize: (v) => v.toHexString(),
-						deserialize: (v) => new ObjectId(v),
-					},
-					"objectid",
-				);
-
-				return {
-					a: new ObjectId("5f7887f4f0b172093e89f126"),
-				};
-			},
-			output: {
-				a: "5f7887f4f0b172093e89f126",
-			},
-			outputAnnotations: {
-				values: {
-					a: [["custom", "objectid"]],
-				},
-			},
-		},
-
 		"works for Decimal.js": {
 			input: () => {
 				SuperJSON.registerCustom<Decimal, string>(
@@ -886,7 +860,7 @@ describe("stringify & parse", () => {
 		class CustomError extends Error {
 			constructor(public readonly customProperty: number) {
 				super("I'm a custom error");
-				// eslint-disable-next-line es5/no-es6-static-methods
+
 				Object.setPrototypeOf(this, CustomError.prototype);
 			}
 		}

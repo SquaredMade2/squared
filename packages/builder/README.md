@@ -9,7 +9,7 @@ Squared Build Tool is a powerful and flexible build utility designed to compile 
 - Creates TypeScript declaration files (.d.ts)
 - Configurable external dependencies
 - Source map generation
-- Custom logging using @squared/logger
+- Custom logging using @squaredmade/logger
 
 ## Usage
 
@@ -28,7 +28,7 @@ This command will build the project, creating output files in the `dist` directo
 You can also use the build function programmatically in your Node.js scripts:
 
 ```javascript
-import { build } from "@squared/build";
+import { build } from "@squaredmade/build";
 
 build("./src/index.ts")
   .then(() => console.log("Build completed successfully."))

@@ -14,7 +14,7 @@ import { statusOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
-import type { Status } from "@squared/db";
+import type { Status } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {

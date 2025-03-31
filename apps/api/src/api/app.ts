@@ -1,7 +1,7 @@
 import { rpcHandlers } from "@/services";
-import { createDb } from "@squared/db";
-import createCustomLogger from "@squared/logger";
-import { createErrorHandler, createRequestHandler } from "@squared/rpc";
+import { createDb } from "@squaredmade/db";
+import createCustomLogger from "@squaredmade/logger";
+import { createErrorHandler, createRequestHandler } from "@squaredmade/rpc";
 import cors from "cors";
 import express from "express";
 import "dotenv/config";

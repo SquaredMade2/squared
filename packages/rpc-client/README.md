@@ -1,11 +1,11 @@
-# @squared/rpc-client
+# @squaredmade/rpc-client
 
-A lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) client for modern Node.js applications. This client is designed to work seamlessly with the @squared/rpc server implementation.
+A lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) client for modern Node.js applications. This client is designed to work seamlessly with the @squaredmade/rpc server implementation.
 
 ## Features
 
 - TypeScript-first implementation
-- Context management using @squared/context
+- Context management using @squaredmade/context
 - Built-in error handling
 - Support for request timeouts and deadlines
 - Easy-to-use API for making RPC calls
@@ -18,7 +18,7 @@ A lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) client for mode
 Here's a simple example of how to use the RPCClient:
 
 ```typescript
-import { RPCClient } from "@squared/rpc-client";
+import { RPCClient } from "@squaredmade/rpc-client";
 
 const client = new RPCClient("http://api.example.com", "userService");
 
@@ -39,8 +39,8 @@ getUser("123");
 If you need to pass context (e.g., for request ID or deadline), you can use the RPCContextClient:
 
 ```typescript
-import { RPCContextClient } from "@squared/rpc-client";
-import * as context from "@squared/context";
+import { RPCContextClient } from "@squaredmade/rpc-client";
+import * as context from "@squaredmade/context";
 
 const client = new RPCContextClient(
   "http://api.example.com",
@@ -106,7 +106,7 @@ interface RequestOptions {
 The client throws `RpcResponseError` for errors returned by the server. You can catch and handle these errors as follows:
 
 ```typescript
-import { RpcResponseError } from "@squared/rpc-client";
+import { RpcResponseError } from "@squaredmade/rpc-client";
 
 try {
   const result = await client.request("someMethod", {

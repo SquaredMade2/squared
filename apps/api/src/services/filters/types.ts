@@ -1,4 +1,4 @@
-import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
+import type { SavedFilter as SavedFilterType, Task } from "@squaredmade/db";
 
 export type FilterValue =
 	| string

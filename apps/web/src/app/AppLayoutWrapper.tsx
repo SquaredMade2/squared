@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	InviteModal,
 	NewTaskModal,
 	TaskSelector,
 	WorkspaceInviteModal,
@@ -39,7 +40,7 @@ export default function ClientLayoutWrapper({
 							errorMessage = "An unknown error occurred.";
 						}
 						// toast notify user, log as an example
-						console.log(errorMessage);
+						console.error(errorMessage);
 					},
 				}),
 			}),
@@ -66,6 +67,7 @@ export default function ClientLayoutWrapper({
 								<SearchCommand />
 								<WorkspaceSwitcher />
 								<TaskSelector />
+								<InviteModal />
 								<NewTaskModal />
 								{children}
 							</>

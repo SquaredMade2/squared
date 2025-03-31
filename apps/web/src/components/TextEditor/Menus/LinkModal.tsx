@@ -9,7 +9,7 @@ import { DialogHeader } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { useModalStore } from "@/store";
 import { verifyUrlFormat } from "@/utils/formatting";
-import { Link } from "@squared/icons";
+import { Link } from "@squaredmade/icons";
 import { useState } from "react";
 import type { LinkModalProps } from "../interfaces";
 

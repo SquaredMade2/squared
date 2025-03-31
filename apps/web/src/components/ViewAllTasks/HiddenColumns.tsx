@@ -1,7 +1,7 @@
 import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { Droppable } from "@hello-pangea/dnd";
-import type { Priority, Status, Task } from "@squared/db";
+import type { Priority, Status, Task } from "@squaredmade/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import {
 	Accordion,

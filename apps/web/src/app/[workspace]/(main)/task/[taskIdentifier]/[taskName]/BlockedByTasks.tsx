@@ -12,8 +12,8 @@ import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useTaskStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
-import type { Task, User } from "@squared/db";
-import { ChevronDown, ChevronRight, UserSearch } from "@squared/icons";
+import type { Task, User } from "@squaredmade/db";
+import { ChevronDown, ChevronRight, UserSearch } from "@squaredmade/icons";
 import Link from "next/link";
 import { useState } from "react";
 

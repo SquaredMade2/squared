@@ -1,9 +1,4 @@
-import pkg from "@squared/builder";
+import pkg from "@squaredmade/builder";
 const { build } = pkg;
 
-build("src/index.ts", [
-	"express",
-	"@squared/context",
-	"@squared/logger",
-	"zod",
-]);
+build("src/index.ts");

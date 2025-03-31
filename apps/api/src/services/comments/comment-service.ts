@@ -1,6 +1,11 @@
-import { type Comment, type DBClient, commentsTable, eq } from "@squared/db";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
+import {
+	type Comment,
+	type DBClient,
+	commentsTable,
+	eq,
+} from "@squaredmade/db";
+import type { Logger } from "@squaredmade/logger";
+import createCustomLogger from "@squaredmade/logger";
 import type { CommentRpc } from "./types";
 
 export class CommentService implements CommentRpc {
@@ -11,9 +16,17 @@ export class CommentService implements CommentRpc {
 		this.db = db;
 		this.logger = createCustomLogger("comments");
 	}
-	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment[]> {
+	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment> {
 		this.logger.info("Adding comment with payload", comment);
-		return await this.db.insert(commentsTable).values(comment).returning();
+		const result = await this.db
+			.insert(commentsTable)
+			.values(comment)
+			.returning();
+		if (!result[0]) {
+			this.logger.error("No comment returned from DB insertion", comment);
+			throw new Error("No comment returned from DB insertion");
+		}
+		return result[0];
 	}
 	async deleteComment({ commentId }: { commentId: string }): Promise<void> {
 		this.logger.info("Deleting comment with id", commentId);

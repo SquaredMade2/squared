@@ -113,7 +113,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRequestResponse, installationId int64) error {
 	// Create a GitHub client using the App's JWT
 	ctx := context.Background()
-	client, err := createGitHubClient(installationId)
+	client, err := createGitHubInstallationClient(installationId)
 	if err != nil {
 		return err
 	}
@@ -144,7 +144,7 @@ func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRe
 func addCommentToPR(owner, repo string, prNumber int, tasks rpc.UpsertPullRequestResponse, installationId int64) error {
 	ctx := context.Background()
 	baseUrl := os.Getenv("APP_URL")
-	client, err := createGitHubClient(installationId)
+	client, err := createGitHubInstallationClient(installationId)
 
 	// Check if bot has already commented
 	comments, _, err := client.Issues.ListComments(ctx, owner, repo, prNumber, nil)
