@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
+import { Protect, useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import type { Team } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
@@ -142,11 +142,13 @@ export function DataTable({ columns, data }: DataTableProps) {
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!
 					</p>
-					<Button variant={"outline"}>
-						{membersCsv && (
-							<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
-						)}
-					</Button>
+					<Protect condition={(has) => has({ role: "org:admin" })}>
+						<Button variant={"outline"}>
+							{membersCsv && (
+								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+							)}
+						</Button>
+					</Protect>
 				</div>
 			</div>
 		</div>
