@@ -17,7 +17,16 @@ export class CommentService implements CommentRpc {
 			.insert(commentsTable)
 			.values(comment)
 			.returning()
-			.then((res) => res[0]);
+			.then((res) => {
+				if (!res[0]) {
+					this.logger.error(
+						"Something went wrong while adding comment using:",
+						comment,
+					);
+					throw new Error("Adding Comment Failed");
+				}
+				return res[0];
+			});
 	}
 	async deleteComment({ commentId }: { commentId: string }): Promise<void> {
 		this.logger.info("Deleting comment with id", commentId);
