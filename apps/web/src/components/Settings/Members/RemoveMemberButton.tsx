@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { useUser } from "@clerk/nextjs";
 import { Ellipsis } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import type { MemberWithRole } from "./data-table";
@@ -27,7 +28,11 @@ const RemoveMemberButton = ({
 	refetch: () => void;
 }) => {
 	const currentUser = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const { toast } = useToast();
+	const loggedInUserRole = membersWithRoles?.find(
+		(u) => u.identifier === user?.id,
+	)?.role;
 
 	const { mutate: handleClick } = useMutation({
 		mutationKey: ["workspace", "removeMember", pageId],
@@ -54,6 +59,10 @@ const RemoveMemberButton = ({
 			});
 		},
 	});
+
+	if (loggedInUserRole !== "org:admin") {
+		return null;
+	}
 
 	return (
 		<DropdownMenu>
