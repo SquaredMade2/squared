@@ -46,10 +46,7 @@ export const MobileNavbar = ({
 						<div className="flex items-center space-x-2">
 							<ModeToggle />
 							<button type="button" onClick={() => setOpen(!open)}>
-								<X
-									className="h-8 w-8 text-black dark:text-white"
-									onClick={() => setOpen(!open)}
-								/>
+								<X className="h-8 w-8 text-black dark:text-white" />
 							</button>
 						</div>
 					</div>
