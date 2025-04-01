@@ -2,7 +2,6 @@ import { CompletedTaskPeriodOptions } from "@/lib/constants";
 import { useViewStore } from "@/store";
 import {
 	type CompletedTaskPeriod,
-	type DisplayOptions,
 	type DisplayProperty,
 	type TaskGroup,
 	type TaskOrder,
@@ -46,16 +45,10 @@ import {
 } from "../ui/tooltip";
 
 const TopNavBarDisplay = () => {
-	const {
-		view,
-		setView,
-		displayOptions,
-		setListViewOptions,
-		setGridViewOptions,
-	} = useViewStore((state) => state);
+	const { view, setView, displayOptions, setViewOptions, setDisplayOptions } =
+		useViewStore((state) => state);
 
 	const currentOptions = displayOptions.viewOptions[`${view}Options`];
-	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
 	const { taskOrder, groupTasksBy, showCompletedTasks, groupRowsBy } =
@@ -73,7 +66,7 @@ const TopNavBarDisplay = () => {
 					Status: "Priority",
 					Assignee: "Status",
 				};
-			setOptions({
+			setDisplayOptions({
 				taskOrder: {
 					...taskOrder,
 					orderBy: orderMap[
@@ -114,18 +107,14 @@ const TopNavBarDisplay = () => {
 			},
 			{} as DisplayProperty,
 		);
-		setOptions({
-			viewOptions: {
-				[`${view}Options`]: {
-					...currentOptions,
-					displayProperties: updatedProperties,
-				},
-			},
-		} as Partial<DisplayOptions>);
+		setViewOptions({
+			...currentOptions,
+			displayProperties: updatedProperties,
+		});
 	};
 
 	const handleDropdownSelection = (value: CompletedTaskPeriod) => {
-		setOptions({
+		setDisplayOptions({
 			showCompletedTasks: { show: value !== "None", period: value },
 		});
 	};
@@ -135,7 +124,7 @@ const TopNavBarDisplay = () => {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<div className="relative flex h-10 flex-col items-end gap-2 ">
+			<div className="relative flex h-10 flex-col items-end gap-2">
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button variant="ghost" className="gap-2">
@@ -182,12 +171,12 @@ const TopNavBarDisplay = () => {
 										onValueChange={(value: TaskGroup) => {
 											if (value === groupRowsBy) {
 												// Apply the swap
-												setOptions({
+												setDisplayOptions({
 													groupRowsBy: "None",
 													groupTasksBy: value,
 												});
 											} else {
-												setOptions({
+												setDisplayOptions({
 													groupTasksBy: value,
 												});
 											}
@@ -225,13 +214,13 @@ const TopNavBarDisplay = () => {
 										onValueChange={(value: TaskGroup | "None") => {
 											if (value === groupTasksBy) {
 												// Apply the swap
-												setOptions({
+												setDisplayOptions({
 													groupRowsBy: value,
 													groupTasksBy:
 														value === "Status" ? "Priority" : "Status",
 												});
 											} else {
-												setOptions({
+												setDisplayOptions({
 													groupRowsBy: value,
 												});
 											}
@@ -267,7 +256,7 @@ const TopNavBarDisplay = () => {
 								<div className="col-span-3">
 									<Select
 										onValueChange={(value) =>
-											setOptions({
+											setDisplayOptions({
 												taskOrder: {
 													...taskOrder,
 													orderBy: value as TaskOrder,
@@ -304,7 +293,7 @@ const TopNavBarDisplay = () => {
 												variant="outline"
 												size="sm"
 												onClick={() =>
-													setOptions({
+													setDisplayOptions({
 														taskOrder: {
 															...taskOrder,
 															orderAscending: !taskOrder.orderAscending,
@@ -358,7 +347,7 @@ const TopNavBarDisplay = () => {
 								<Switch
 									checked={displayOptions.showSubTasks}
 									onCheckedChange={(checked) =>
-										setOptions({ showSubTasks: checked })
+										setDisplayOptions({ showSubTasks: checked })
 									}
 								/>
 							</div>
@@ -373,14 +362,10 @@ const TopNavBarDisplay = () => {
 									<Switch
 										checked={showEmptyGroups}
 										onCheckedChange={(checked) =>
-											setOptions({
-												viewOptions: {
-													[`${view}Options`]: {
-														...currentOptions,
-														showEmptyGroups: checked,
-													},
-												},
-											} as Partial<DisplayOptions>)
+											setViewOptions({
+												...currentOptions,
+												showEmptyGroups: checked,
+											})
 										}
 									/>
 								</div>
