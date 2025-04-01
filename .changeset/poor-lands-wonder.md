@@ -2,4 +2,4 @@
 "@squaredmade/icons": patch
 ---
 
-add new icons
+Added camera, cornerDownLeft, and moveVertical to the icons library 
