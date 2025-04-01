@@ -37,7 +37,7 @@ const HomePage = () => {
 
 	useEffect(() => {
 		if (!isLoaded) return;
-		if (workspaceLoading && workspace) {
+		if (!workspaceLoading && workspace) {
 			router.push(`/${workspace}`);
 		}
 		if (organization && isLoaded) {
