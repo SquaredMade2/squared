@@ -95,8 +95,8 @@ interface ViewActions {
 	getGridOptions: () => ViewOptions.Grid;
 	setShowNavbar: (input: boolean) => void;
 	setShowMobileNavbar: (input: boolean) => void;
-	setListViewOptions: (input: Partial<DisplayOptions>) => void;
-	setGridViewOptions: (input: Partial<DisplayOptions>) => void;
+	setDisplayOptions: (input: Partial<DisplayOptions>) => void;
+	setViewOptions: (input: ViewOptions.Common) => void;
 	setLastVisitedPage: (input: LastVisitedPathOption) => void;
 }
 
