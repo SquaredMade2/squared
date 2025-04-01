@@ -22,26 +22,25 @@ const HomePage = () => {
 	} = useQuery({
 		queryKey: ["user", "defaultWorkspace"],
 		queryFn: async () => {
+			if (!user) {
+				await signOut();
+			}
 			if (isLoaded && userMemberships.data.length > 0 && !orgId) {
 				setActive?.({
 					organization: userMemberships.data[0].organization.id,
 				});
-				return userMemberships.data[0].organization;
+				return userMemberships.data[0].organization.slug;
 			}
-			return "";
 		},
-		enabled: isLoaded && !!user,
+		enabled: isLoaded && !!user && userMemberships.data.length > 0 && !orgId,
 	});
-
-	const signUserOut = async () => {
-		await signOut();
-	};
 
 	useEffect(() => {
 		if (!isLoaded) return;
-		if (workspaceLoading && !user) {
-			signUserOut();
-		} else if (organization && isLoaded) {
+		if (workspaceLoading && workspace) {
+			router.push(`/${workspace}`);
+		}
+		if (organization && isLoaded) {
 			router.push(`/${organization.slug}`);
 		} else {
 			router.push("/create");
