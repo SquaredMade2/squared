@@ -2,46 +2,51 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useAuth, useClerk, useOrganizationList, useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const HomePage = () => {
 	const router = useRouter();
 	const { user } = useUser();
-	const { organization } = useClerk();
+	const { organization, signOut } = useClerk();
 	const { setActive, isLoaded, userMemberships } = useOrganizationList({
 		userMemberships: true,
 	});
-	const [error, setError] = useState<string | null>(null);
 	const { orgId } = useAuth();
+
+	const {
+		data: workspace,
+		isLoading: workspaceLoading,
+		error: workspaceError,
+	} = useQuery({
+		queryKey: ["user", "defaultWorkspace"],
+		queryFn: async () => {
+			if (isLoaded && userMemberships.data.length > 0 && !orgId) {
+				setActive?.({
+					organization: userMemberships.data[0].organization.id,
+				});
+				return userMemberships.data[0].organization;
+			}
+			return "";
+		},
+		enabled: isLoaded && !!user,
+	});
+
+	const signUserOut = async () => {
+		await signOut();
+	};
 
 	useEffect(() => {
 		if (!isLoaded) return;
-		if (isLoaded && !organization) {
-			setError(
-				"There was an error loading the organization list. Please try again.",
-			);
-			return;
-		}
-		if (!user) {
-			router.push("/sign-in");
-		}
-
-		if (userMemberships.data.length > 0 && !orgId && isLoaded) {
-			setActive?.({
-				organization: userMemberships.data[0].organization.id,
-			}).then(() => {
-				router.push(`/${userMemberships.data[0].organization.slug}`);
-			});
-		}
-
-		if (organization && isLoaded) {
+		if (workspaceLoading && !user) {
+			signUserOut();
+		} else if (organization && isLoaded) {
 			router.push(`/${organization.slug}`);
 		} else {
 			router.push("/create");
 		}
-		//check for if the user has organizations but doesn't have an active organization set
-	}, [isLoaded]);
+	}, [isLoaded, workspace, workspaceLoading]);
 
 	if (!isLoaded) {
 		return (
@@ -56,8 +61,8 @@ const HomePage = () => {
 		);
 	}
 
-	if (error) {
-		return <div>Error: {error}</div>;
+	if (workspaceError) {
+		return <div>Error: {workspaceError.message}</div>;
 	}
 
 	// Fallback UI instead of returning null
