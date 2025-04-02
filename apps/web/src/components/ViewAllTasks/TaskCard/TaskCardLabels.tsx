@@ -15,7 +15,7 @@ export const LabelColor = ({ label }: { label: Label }) => {
 	);
 };
 
-export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
+export default function Labels({ labels }: TaskCardLabelsProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [minWidth, setMinWidth] = useState<number>(0);
 	const { view } = useViewStore((state) => state);

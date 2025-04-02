@@ -13,6 +13,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { UserSearch } from "@squaredmade/icons";
 import { formatDate } from "date-fns";
@@ -39,6 +40,8 @@ const TaskList = ({
 		status: showStatus,
 		priority: showPriority,
 	} = getListOptions().displayProperties;
+
+	const isOverdue = task.dueDate && task.dueDate < new Date();
 
 	return (
 		<Link
@@ -72,7 +75,12 @@ const TaskList = ({
 						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{showLabels && <TaskCardLabels labels={taskLabels} />}
 							{showDueDate && (
-								<div className="xs:hidden shrink-0 whitespace-nowrap text-muted-foreground sm:hidden md:flex">
+								<div
+									className={cn(
+										"xs:hidden shrink-0 whitespace-nowrap sm:hidden md:flex",
+										isOverdue && "text-destructive",
+									)}
+								>
 									{task.dueDate
 										? formatDate(new Date(task.dueDate), "MMM dd")
 										: "No Date"}

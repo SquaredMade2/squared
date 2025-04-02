@@ -13,6 +13,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
 import {
 	formatName,
 	formatUrl,
@@ -43,6 +44,8 @@ const TaskGrid = ({
 		labels: showLabels,
 		priority: showPriority,
 	} = getGridOptions().displayProperties;
+
+	const isOverdue = task.dueDate && task.dueDate < new Date();
 
 	return (
 		<Link
@@ -114,7 +117,12 @@ const TaskGrid = ({
 					</div>
 					<div className="-my-1 flex w-full flex-wrap items-center gap-1">
 						{showDueDate && task.dueDate && (
-							<div className="mb-1 flex w-fit items-center gap-2 rounded-md border border-border bg-background p-1 text-sm">
+							<div
+								className={cn(
+									"mb-1 flex w-fit items-center gap-2 rounded-md border border-border bg-background p-1 text-sm",
+									isOverdue && "text-destructive",
+								)}
+							>
 								<Calendar className="size-4" />
 								{task.dueDate
 									? formatDate(new Date(task.dueDate), "MMM dd")
