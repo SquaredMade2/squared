@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type VisibilityState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -25,11 +26,21 @@ export type MemberWithRole = PublicUserData & {
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
+	userRole: string | undefined;
 	team: Team | null;
 }
 
-export function DataTable({ columns, data }: DataTableProps) {
+export function DataTable({ columns, data, userRole }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		columns.reduce((init, { id }) => {
+			return {
+				...init,
+				[`${id}`]: userRole === "org:admin",
+			};
+		}, {}),
+	);
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
 	const { memberships, organization } = useOrganization({
@@ -52,9 +63,11 @@ export function DataTable({ columns, data }: DataTableProps) {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		onColumnFiltersChange: setColumnFilters,
+		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
 		state: {
 			columnFilters,
+			columnVisibility,
 		},
 	});
 
@@ -104,7 +117,12 @@ export function DataTable({ columns, data }: DataTableProps) {
 						className="max-w-xs"
 					/>
 					<div className="flex items-center justify-center gap-2">
-						<Button onClick={handleWorkspaceInvite}>Invite People</Button>
+						<Button
+							disabled={userRole !== "org:admin"}
+							onClick={handleWorkspaceInvite}
+						>
+							Invite People
+						</Button>
 					</div>
 				</div>
 				<Table>

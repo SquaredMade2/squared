@@ -35,6 +35,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	},
 	{
 		accessorKey: "manage-role",
+		id: "manage-role",
 		cell: ({ row, column }) => {
 			const userId = row.original.userId;
 			const role = row.original.role;
@@ -53,6 +54,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	},
 	{
 		accessorKey: "manage",
+		id: "manage",
 		cell: ({ row, column }) => {
 			const userId: string = row.original.identifier;
 			const { page, pageId, membersWithRoles, refetch } =
