@@ -34,11 +34,11 @@ export function DataTable({ columns, data, userRole }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		columns.reduce((init, { id }) => {
-			return {
-				...init,
-				[`${id}`]: userRole === "org:admin",
-			};
-		}, {}),
+			if (id) {
+				init[`${id}`] = userRole === "org:admin";
+			}
+			return init;
+		}, {} as VisibilityState),
 	);
 
 	const [searchTerm, setSearchTerm] = useState("");
