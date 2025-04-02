@@ -430,7 +430,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		return await this.db
 			.select()
 			.from(workspacesTable)
-			.where(eq(workspacesTable.id, workspaceId))
+			.where(eq(workspacesTable.externalId, workspaceId))
 			.then((results) => results[0].labels);
 	}
 

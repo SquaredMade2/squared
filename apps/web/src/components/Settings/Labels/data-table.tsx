@@ -6,6 +6,7 @@ import type { Label } from "@squaredmade/db";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type VisibilityState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -16,8 +17,21 @@ import { useState } from "react";
 export function DataTable({
 	columns,
 	data,
-}: { columns: ColumnDef<Label, unknown>[]; data: Label[] }) {
+	userRole,
+}: {
+	columns: ColumnDef<Label, unknown>[];
+	data: Label[];
+	userRole: string | undefined;
+}) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		columns.reduce((init, { id }) => {
+			return {
+				...init,
+				[`${id}`]: userRole === "org:admin",
+			};
+		}, {}),
+	);
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
 
@@ -33,8 +47,9 @@ export function DataTable({
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		onColumnFiltersChange: setColumnFilters,
+		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
-		state: { columnFilters },
+		state: { columnFilters, columnVisibility },
 	});
 
 	return (
@@ -49,6 +64,7 @@ export function DataTable({
 					/>
 					<div className="flex items-center justify-center gap-2">
 						<Button
+							disabled={userRole !== "org:admin"}
 							onClick={() => {
 								setShowLabelModal(true);
 								setLabelData({});
