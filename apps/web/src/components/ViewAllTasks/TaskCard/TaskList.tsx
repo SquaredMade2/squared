@@ -13,6 +13,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { cn } from "@/utils/cn";
 import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { UserSearch } from "@squaredmade/icons";
@@ -40,8 +41,6 @@ const TaskList = ({
 		status: showStatus,
 		priority: showPriority,
 	} = getListOptions().displayProperties;
-
-	const isOverdue = task.dueDate && task.dueDate < new Date();
 
 	return (
 		<Link
@@ -78,7 +77,8 @@ const TaskList = ({
 								<div
 									className={cn(
 										"xs:hidden shrink-0 whitespace-nowrap sm:hidden md:flex",
-										isOverdue && "text-destructive",
+										checkOverdueDate(new Date(task.dueDate ?? "")) &&
+											"text-destructive",
 									)}
 								>
 									{task.dueDate

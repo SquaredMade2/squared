@@ -7,6 +7,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { cn } from "@/utils/cn";
 import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { format } from "date-fns";
@@ -40,8 +41,6 @@ export function DatePicker({
 		setDropdownOpen(false);
 	};
 
-	const isOverdue = date && date < new Date();
-
 	return (
 		<Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
 			<PopoverTrigger asChild>
@@ -51,7 +50,7 @@ export function DatePicker({
 					className={cn(
 						"inline-flex h-10 w-full items-center justify-start px-4 py-2 text-left font-normal",
 						!date && "text-muted-foreground",
-						isOverdue && "text-destructive",
+						checkOverdueDate(new Date(date ?? 0)) && "text-destructive",
 						className,
 					)}
 				>
