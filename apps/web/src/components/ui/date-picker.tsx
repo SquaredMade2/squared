@@ -50,7 +50,7 @@ export function DatePicker({
 					className={cn(
 						"inline-flex h-10 w-full items-center justify-start px-4 py-2 text-left font-normal",
 						!date && "text-muted-foreground",
-						checkOverdueDate(new Date(date ?? 0)) && "text-destructive",
+						date && checkOverdueDate(new Date(date)) && "text-destructive",
 						className,
 					)}
 				>
