@@ -19,6 +19,7 @@ export const EventTabs = () => {
 	const { comments, setComments } = useCommentStore((state) => state);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const { workspace } = useTaskDashboard();
+
 	const { memberships } = useOrganization({
 		memberships: {
 			infinite: true,
@@ -31,30 +32,38 @@ export const EventTabs = () => {
 		(membership) => membership.publicUserData,
 	);
 
-	function createMentions({
-		editorContent,
-	}: {
-		editorContent: CustomDescendant[];
-	}) {
-		if (!currentTask || !workspace) return;
+	const { mutate: createMentionNotifications } = useMutation({
+		mutationKey: ["notification", "createMention"],
+		mutationFn: async ({
+			editorContent,
+		}: { editorContent: CustomDescendant[] }) => {
+			if (!currentTask || !workspace) return;
 
-		const mentions = getMentionsFromSlate(editorContent);
+			const mentions = getMentionsFromSlate(editorContent);
 
-		for (const mention of mentions) {
-			const mentionedUser = users?.find((user) => user.firstName === mention);
+			for (const mention of mentions) {
+				const mentionedUser = users?.find((user) => user.firstName === mention);
 
-			if (!mentionedUser || !mentionedUser.userId) continue;
+				if (!mentionedUser || !mentionedUser.userId) continue;
 
-			const mentionEvent: CreateNotificationRequest = {
-				description: "Task Comment Mention",
-				taskId: currentTask.id,
-				type: "MENTIONED",
-				userId: mentionedUser.userId,
-				workspaceId: workspace.id,
-			};
-			client.notification.createMention.$post(mentionEvent);
-		}
-	}
+				const mentionEvent: CreateNotificationRequest = {
+					description: "Task Comment Mention",
+					taskId: currentTask.id,
+					type: "MENTIONED",
+					userId: mentionedUser.userId,
+					workspaceId: workspace.externalId,
+				};
+				await client.notification.createMention.$post(mentionEvent);
+			}
+		},
+		onError: (error) => {
+			toast({
+				title: "Error creating mention",
+				description: parseError(error),
+				variant: "destructive",
+			});
+		},
+	});
 
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", currentTask?.id],
@@ -80,7 +89,7 @@ export const EventTabs = () => {
 			}
 
 			if (users && workspace) {
-				createMentions({
+				createMentionNotifications({
 					editorContent,
 				});
 			} else {

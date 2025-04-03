@@ -189,6 +189,9 @@ export class EventService implements EventRpc {
 		description?: string;
 		type: NotificationType;
 	}): Promise<Notification> {
+		this.logger.info(
+			`Creating notification for userId: ${userId}, taskId: ${taskId}, type: ${type}`,
+		);
 		return this.db
 			.insert(notificationsTable)
 			.values({
