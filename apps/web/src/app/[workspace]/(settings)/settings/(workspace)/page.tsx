@@ -80,7 +80,7 @@ export default function WorkspaceSettings() {
 			name: organization?.name,
 			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
-		disabled: membership?.role !== "org:admin" && true,
+		disabled: membership?.role !== "org:admin",
 	});
 
 	const { watch, setValue } = form;
