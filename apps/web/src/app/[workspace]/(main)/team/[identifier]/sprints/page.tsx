@@ -320,17 +320,17 @@ export default function SprintDashboard() {
 									<YAxis hide={true} />
 									<Tooltip
 										contentStyle={{
-											background: "hsl(var(--card))",
+											background: "var(--card)",
 											border: "none",
 											borderRadius: "8px",
 										}}
-										labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+										labelStyle={{ color: "var(--muted-foreground)" }}
 										formatter={(value) => Math.floor(Number(value))}
 									/>
 									<Line
 										type="monotone"
 										dataKey="tasks"
-										stroke="hsl(var(--primary))"
+										stroke="var(--primary)"
 										strokeWidth={2}
 										dot={false}
 										name="Actual"
@@ -338,7 +338,7 @@ export default function SprintDashboard() {
 									<Line
 										type="monotone"
 										dataKey="ideal"
-										stroke="hsl(var(--muted))"
+										stroke="var(--muted)"
 										strokeWidth={2}
 										strokeDasharray="5 5"
 										dot={false}
@@ -346,12 +346,12 @@ export default function SprintDashboard() {
 									/>
 									<ReferenceLine
 										x={currentDay}
-										stroke="hsl(var(--destructive))"
+										stroke="var(--destructive)"
 										strokeWidth={1}
 										label={{
 											value: "Today",
 											position: "top",
-											fill: "hsl(var(--destructive))",
+											fill: "var(--destructive)",
 										}}
 									/>
 								</LineChart>
