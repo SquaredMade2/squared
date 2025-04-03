@@ -35,7 +35,7 @@ export function DataTable({ columns, data, userRole }: DataTableProps) {
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		columns.reduce((init, { id }) => {
 			if (id) {
-				init[`${id}`] = userRole === "org:admin";
+				init[`${id}`] = userRole === "org:admin" || userRole === "org:owner";
 			}
 			return init;
 		}, {} as VisibilityState),
@@ -160,7 +160,11 @@ export function DataTable({ columns, data, userRole }: DataTableProps) {
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!
 					</p>
-					<Protect condition={(has) => has({ role: "org:admin" })}>
+					<Protect
+						condition={(has) =>
+							has({ role: "org:admin" }) || has({ role: "org:owner" })
+						}
+					>
 						<Button variant={"outline"}>
 							{membersCsv && (
 								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>

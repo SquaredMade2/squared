@@ -10,7 +10,7 @@ export function MembersPage({
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	team?: Team | null;
 }) {
-	const { memberships } = useOrganization({
+	const { membership, memberships } = useOrganization({
 		memberships: {
 			infinite: true,
 			pageSize: 100,
@@ -23,7 +23,12 @@ export function MembersPage({
 	return (
 		<>
 			{users && users.length > 0 && (
-				<DataTable columns={columns} data={users} team={team ? team : null} />
+				<DataTable
+					columns={columns}
+					data={users}
+					team={team ? team : null}
+					userRole={membership?.role}
+				/>
 			)}
 		</>
 	);
