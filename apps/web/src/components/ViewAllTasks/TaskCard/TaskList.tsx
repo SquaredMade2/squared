@@ -77,8 +77,7 @@ const TaskList = ({
 								<div
 									className={cn(
 										"xs:hidden shrink-0 whitespace-nowrap sm:hidden md:flex",
-										checkOverdueDate(new Date(task.dueDate ?? "")) &&
-											"text-destructive",
+										checkOverdueDate(task.dueDate) && "text-destructive",
 									)}
 								>
 									{task.dueDate
