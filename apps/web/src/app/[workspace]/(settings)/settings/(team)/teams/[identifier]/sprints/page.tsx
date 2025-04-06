@@ -4,7 +4,6 @@ import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
-import { cn } from "@/utils/cn";
 import { parseError } from "@/utils/parseError";
 import type { Team } from "@squaredmade/db";
 import {
@@ -28,6 +27,7 @@ import {
 import { Button } from "@squaredmade/ui/button";
 import { Calendar } from "@squaredmade/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
+import { cn } from "@squaredmade/ui/cn";
 import { Label } from "@squaredmade/ui/label";
 import {
 	Popover,

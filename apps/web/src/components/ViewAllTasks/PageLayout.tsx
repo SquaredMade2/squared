@@ -3,11 +3,11 @@
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTaskStore, useViewStore } from "@/store";
-import { cn } from "@/utils/cn";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squaredmade/db";
 import { Clipboard } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
 import { NoTasksNewTaskButton } from "../Modals";

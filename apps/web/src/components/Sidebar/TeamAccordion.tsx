@@ -1,7 +1,6 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/utils/cn";
 import type { Team } from "@squaredmade/db";
 import { LayoutGrid } from "@squaredmade/icons";
 import {
@@ -11,6 +10,7 @@ import {
 	AccordionTrigger,
 } from "@squaredmade/ui/accordion";
 import { buttonVariants } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddTeamButton from "../Buttons/AddTeamButton";

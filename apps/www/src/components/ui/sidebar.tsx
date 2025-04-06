@@ -1,9 +1,9 @@
 "use client";
 
 import { useIsMobile } from "@/hooks/useMobile";
-import { cn } from "@/lib/utils";
 import { PanelLeft } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { Sheet, SheetContent } from "@squaredmade/ui/sheet";

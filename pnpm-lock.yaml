@@ -147,22 +147,19 @@ importers:
         version: 18.0.0-beta.0(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@mdx-js/loader':
         specifier: ^3.0.1
-        version: 3.1.0(acorn@8.14.1)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))
+        version: 3.1.0(acorn@8.14.1)(webpack@5.97.1)
       '@mdx-js/react':
         specifier: ^3.0.1
         version: 3.1.0(@types/react@19.0.12)(react@19.1.0)
       '@next/mdx':
         specifier: 15.2.4
-        version: 15.2.4(@mdx-js/loader@3.1.0(acorn@8.14.1)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.1.0))
+        version: 15.2.4(@mdx-js/loader@3.1.0(acorn@8.14.1)(webpack@5.97.1))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.1.0))
       '@radix-ui/react-context-menu':
         specifier: ^2.2.6
         version: 2.2.6(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-hover-card':
         specifier: ^1.1.6
         version: 1.1.6(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-label':
-        specifier: ^2.0.2
-        version: 2.1.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-progress':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -235,9 +232,6 @@ importers:
       react-csv:
         specifier: ^2.2.2
         version: 2.2.2
-      react-day-picker:
-        specifier: 8.10.1
-        version: 8.10.1(date-fns@4.1.0)(react@19.1.0)
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
@@ -319,7 +313,7 @@ importers:
         version: 29.7.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       jest-extended:
         specifier: ^4.0.2
-        version: 4.0.2(jest@29.7.0(@types/node@22.13.14)(ts-node@10.9.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(@types/node@22.13.14)(typescript@5.8.2)))
+        version: 4.0.2(jest@29.7.0(@types/node@22.13.14))
       next:
         specifier: 15.2.3
         version: 15.2.3(@babel/core@7.26.8)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2783,19 +2777,6 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
-        optional: true
-
-  '@radix-ui/react-label@2.1.2':
-    resolution: {integrity: sha512-zo1uGMTaNlHehDyFQcDZXRJhUPDuukcnHz0/jnrup0JA6qL+AFpAnty+7VKa9esuU5xTblAZzTGYJKSKaBxBhw==}
-    peerDependencies:
-      '@types/react': 19.0.12
-      '@types/react-dom': 19.0.4
-      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
-      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      '@types/react-dom':
         optional: true
 
   '@radix-ui/react-menu@2.1.6':
@@ -7874,12 +7855,6 @@ packages:
   react-csv@2.2.2:
     resolution: {integrity: sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==}
 
-  react-day-picker@8.10.1:
-    resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
-    peerDependencies:
-      date-fns: ^2.28.0 || ^3.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   react-docgen-typescript@2.2.2:
     resolution: {integrity: sha512-tvg2ZtOpOi6QDwsb3GZhOjDkkX0h8Z2gipvTg6OVMUyoYoURhEiRNePT8NZItTVCDh39JJHnLdfCOkzoLbFnTg==}
     peerDependencies:
@@ -10892,12 +10867,12 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
-  '@mdx-js/loader@3.1.0(acorn@8.14.1)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))':
+  '@mdx-js/loader@3.1.0(acorn@8.14.1)(webpack@5.97.1)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       source-map: 0.7.4
     optionalDependencies:
-      webpack: 5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))
+      webpack: 5.97.1
     transitivePeerDependencies:
       - acorn
       - supports-color
@@ -10947,11 +10922,11 @@ snapshots:
 
   '@next/env@15.2.3': {}
 
-  '@next/mdx@15.2.4(@mdx-js/loader@3.1.0(acorn@8.14.1)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.1.0))':
+  '@next/mdx@15.2.4(@mdx-js/loader@3.1.0(acorn@8.14.1)(webpack@5.97.1))(@mdx-js/react@3.1.0(@types/react@19.0.12)(react@19.1.0))':
     dependencies:
       source-map: 0.7.4
     optionalDependencies:
-      '@mdx-js/loader': 3.1.0(acorn@8.14.1)(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))
+      '@mdx-js/loader': 3.1.0(acorn@8.14.1)(webpack@5.97.1)
       '@mdx-js/react': 3.1.0(@types/react@19.0.12)(react@19.1.0)
 
   '@next/swc-darwin-arm64@15.2.3':
@@ -11239,15 +11214,6 @@ snapshots:
       react: 19.1.0
     optionalDependencies:
       '@types/react': 19.0.12
-
-  '@radix-ui/react-label@2.1.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
-    dependencies:
-      '@radix-ui/react-primitive': 2.0.2(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-    optionalDependencies:
-      '@types/react': 19.0.12
-      '@types/react-dom': 19.0.4(@types/react@19.0.12)
 
   '@radix-ui/react-menu@2.1.6(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
@@ -15311,7 +15277,7 @@ snapshots:
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
-  jest-extended@4.0.2(jest@29.7.0(@types/node@22.13.14)(ts-node@10.9.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(@types/node@22.13.14)(typescript@5.8.2))):
+  jest-extended@4.0.2(jest@29.7.0(@types/node@22.13.14)):
     dependencies:
       jest-diff: 29.7.0
       jest-get-type: 29.6.3
@@ -17024,11 +16990,6 @@ snapshots:
 
   react-csv@2.2.2: {}
 
-  react-day-picker@8.10.1(date-fns@4.1.0)(react@19.1.0):
-    dependencies:
-      date-fns: 4.1.0
-      react: 19.1.0
-
   react-docgen-typescript@2.2.2(typescript@5.8.2):
     dependencies:
       typescript: 5.8.2
@@ -18023,16 +17984,14 @@ snapshots:
       '@swc/core': 1.11.13(@swc/helpers@0.5.15)
       esbuild: 0.25.2
 
-  terser-webpack-plugin@5.3.11(@swc/core@1.11.13(@swc/helpers@0.5.15))(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))):
+  terser-webpack-plugin@5.3.11(webpack@5.97.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
       terser: 5.37.0
-      webpack: 5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15))
-    optionalDependencies:
-      '@swc/core': 1.11.13(@swc/helpers@0.5.15)
+      webpack: 5.97.1
     optional: true
 
   terser@5.37.0:
@@ -18605,7 +18564,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)):
+  webpack@5.97.1:
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -18627,7 +18586,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.11(@swc/core@1.11.13(@swc/helpers@0.5.15))(webpack@5.97.1(@swc/core@1.11.13(@swc/helpers@0.5.15)))
+      terser-webpack-plugin: 5.3.11(webpack@5.97.1)
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:

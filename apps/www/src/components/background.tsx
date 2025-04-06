@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import { motion } from "framer-motion";
 import { useId } from "react";
 

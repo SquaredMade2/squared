@@ -1,5 +1,5 @@
-import { cn } from "@/utils/cn";
 import type { Label } from "@squaredmade/db";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Tooltip,
 	TooltipContent,

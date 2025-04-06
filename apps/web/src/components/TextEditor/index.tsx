@@ -1,5 +1,4 @@
 import { useModalStore } from "@/store";
-import { cn } from "@/utils/cn";
 import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
@@ -8,6 +7,7 @@ import {
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	type KeyboardEvent,
 	useCallback,

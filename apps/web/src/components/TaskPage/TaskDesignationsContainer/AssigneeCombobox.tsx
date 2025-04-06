@@ -12,12 +12,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
-import { cn } from "@/utils/cn";
 import { formatName, getInitials } from "@/utils/formatting";
 import type { TaskEvent } from "@squaredmade/db";
 import { Check, ChevronsUpDown, UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Popover,
 	PopoverContent,

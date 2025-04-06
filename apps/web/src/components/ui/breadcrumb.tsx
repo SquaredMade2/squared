@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { ChevronRight } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import { Slot } from "@squaredmade/ui/slot";
 import { MoreHorizontal } from "lucide-react";
 import type * as React from "react";

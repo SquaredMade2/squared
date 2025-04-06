@@ -7,10 +7,10 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/utils/cn";
 // import type { Sprint, Task } from "@squaredmade/db";
 import { Check, ChevronsUpDown } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Popover,
 	PopoverContent,

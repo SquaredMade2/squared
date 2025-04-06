@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import * as ScrollAreaPrimitive from "@squaredmade/ui/scroll-area";
 import * as React from "react";
 

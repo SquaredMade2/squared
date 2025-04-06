@@ -10,9 +10,9 @@ import {
 	CommandSeparator,
 } from "@/components/ui/command";
 import { useModalStore } from "@/store";
-import { cn } from "@/utils/cn";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { Check, CirclePlus } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Dialog,
 	DialogContent,

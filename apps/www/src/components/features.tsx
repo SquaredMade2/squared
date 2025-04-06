@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import type React from "react";
 import { GridLineHorizontal, GridLineVertical } from "./grid-lines";
 import { Heading } from "./heading";

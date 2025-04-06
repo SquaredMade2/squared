@@ -5,13 +5,13 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
 import type { Priority, Status } from "@squaredmade/db";
 import { CirclePlus, EllipsisVertical } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	DropdownMenu,
 	DropdownMenuContent,

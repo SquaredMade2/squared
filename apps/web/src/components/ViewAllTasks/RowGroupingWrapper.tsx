@@ -1,9 +1,9 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useViewStore } from "@/store";
-import { cn } from "@/utils/cn";
 import { Droppable } from "@hello-pangea/dnd";
 import { ChevronDown, ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import { useState } from "react";
 import GroupColumn from "./GroupColumn";
 import { RowGroupHeader } from "./RowGroupHeader";

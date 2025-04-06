@@ -1,8 +1,8 @@
 import { useIsMobile } from "@/hooks/useMobile";
-import { cn } from "@/utils/cn";
 import { Slot } from "@radix-ui/react-slot";
 import { PanelLeft } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { Sheet, SheetContent } from "@squaredmade/ui/sheet";

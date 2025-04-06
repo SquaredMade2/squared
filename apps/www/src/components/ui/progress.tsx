@@ -3,7 +3,7 @@
 import * as ProgressPrimitive from "@squaredmade/ui/progress";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 
 const Progress = React.forwardRef<
 	React.ElementRef<typeof ProgressPrimitive.Root>,
