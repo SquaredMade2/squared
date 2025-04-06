@@ -290,6 +290,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.0.13
         version: 4.0.17
+      '@tailwindcss/typography':
+        specifier: ^0.5.13
+        version: 0.5.16(tailwindcss@4.0.17)
       '@testing-library/jest-dom':
         specifier: ^6.5.0
         version: 6.6.3
@@ -343,6 +346,9 @@ importers:
       '@prismicio/react':
         specifier: ^3.0.0
         version: 3.2.0(@prismicio/client@7.17.0)(react@19.1.0)
+      '@radix-ui/react-context-menu':
+        specifier: ^2.2.6
+        version: 2.2.6(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/fonts':
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.0.17)

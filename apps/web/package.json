@@ -73,6 +73,7 @@
 		"@squaredmade/db": "^1.1.0",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@tailwindcss/postcss": "^4.0.13",
+		"@tailwindcss/typography": "^0.5.13",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@types/jest": "^29.5.12",
 		"@types/react": "19.0.12",
