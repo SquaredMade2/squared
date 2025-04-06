@@ -1,10 +1,3 @@
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-} from "@/components/ui/form";
 import { client } from "@/lib/client";
 import {
 	useModalStore,
@@ -15,7 +8,6 @@ import {
 import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { CirclePlus } from "@squaredmade/icons";
 import {
 	Accordion,
@@ -24,12 +16,20 @@ import {
 } from "@squaredmade/ui/accordion";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
 import { Button } from "@squaredmade/ui/button";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";

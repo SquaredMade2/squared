@@ -1,9 +1,9 @@
 "use client";
 
-import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/utils/cn";
 import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
 import {
 	Popover,
 	PopoverContent,

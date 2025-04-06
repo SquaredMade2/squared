@@ -1,13 +1,13 @@
 "use client";
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import { useTaskStore, useTeamStore, useViewStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
-} from "@squaredmade/ui/breadcrumb";
+} from "@/components/ui/breadcrumb";
+import { useTaskStore, useTeamStore, useViewStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
 import Link from "next/link";
 
 export const TaskBreadcrumbs = () => {
