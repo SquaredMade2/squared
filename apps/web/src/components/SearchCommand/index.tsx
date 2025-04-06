@@ -12,16 +12,15 @@ import {
 } from "@/components/ui/command";
 import { DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
 import { useFilterStore, useModalStore, useViewStore } from "@/store";
 import { useId } from "@squaredmade/ui/id";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";
 
 export default function SearchCommand() {
-	const { toast } = useToast();
 	const {
 		setShowNewTask,
 		showCommand,
@@ -32,11 +31,8 @@ export default function SearchCommand() {
 	const { setShowNavbar } = useViewStore((state) => state);
 	const { clearFilter } = useFilterStore((state) => state);
 
-	const showToast = (
-		title: string,
-		variant?: "destructive" | "default" | null,
-	) => {
-		toast({ title, variant });
+	const showToast = (title: string) => {
+		toast.success(title);
 	};
 
 	const commandItems = new CommandSchema({

@@ -6,11 +6,11 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogHeader } from "@/components/ui/dialog";
-import { toast } from "@/components/ui/use-toast";
 import { useModalStore } from "@/store";
 import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "@squaredmade/icons";
 import { useState } from "react";
+import { toast } from "sonner";
 import type { LinkModalProps } from "../interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
@@ -24,10 +24,8 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 
 	const handleInjectLinkContent = () => {
 		if (!verifyUrlFormat(linkUrl)) {
-			toast({
-				title: "Invalid Link",
+			toast.error("Invalid Link", {
 				description: "Please provide a valid link.",
-				variant: "destructive",
 			});
 			return;
 		}
@@ -37,11 +35,9 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 
 	const handleOpenChange = (linkFormState: boolean) => {
 		if (!selection) {
-			toast({
-				title: "Place text cursor",
+			toast.error("Place text cursor", {
 				description:
 					"Place a text cursor in the designated area to insert the link",
-				variant: "destructive",
 			});
 			return;
 		}

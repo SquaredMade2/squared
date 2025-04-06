@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
@@ -16,7 +17,6 @@ import {
 } from "../ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
 	name: z
@@ -27,7 +27,6 @@ const formSchema = z.object({
 });
 
 export const LabelModal = () => {
-	const { toast } = useToast();
 	const queryClient = useQueryClient();
 	const { showLabelModal, setShowLabelModal, labelData, setLabelData } =
 		useModalStore((state) => state);
@@ -82,8 +81,7 @@ export const LabelModal = () => {
 			return res.json();
 		},
 		onSuccess: async (_, variables) => {
-			toast({
-				title: "Label updated successfully",
+			toast.success("Label updated successfully", {
 				description: `Label "${variables.name}" has been updated`,
 			});
 			queryClient.invalidateQueries({
@@ -92,11 +90,9 @@ export const LabelModal = () => {
 			handleResetForm();
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating label",
+			toast.error("Error updating label", {
 				description:
 					error instanceof Error ? error.message : "An unknown error occurred",
-				variant: "destructive",
 			});
 		},
 	});
@@ -110,8 +106,7 @@ export const LabelModal = () => {
 			return res.json();
 		},
 		onSuccess: async (_, variables) => {
-			toast({
-				title: "Label created successfully",
+			toast.success("Label created successfully", {
 				description: `Label "${variables.name}" has been created`,
 			});
 			queryClient.invalidateQueries({
@@ -120,11 +115,9 @@ export const LabelModal = () => {
 			handleResetForm();
 		},
 		onError: (error) => {
-			toast({
-				title: "Error creating label",
+			toast.error("Error creating label", {
 				description:
 					error instanceof Error ? error.message : "An unknown error occurred",
-				variant: "destructive",
 			});
 		},
 	});

@@ -4,6 +4,7 @@ import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import { Copy, GitPullRequestArrow, Link } from "@squaredmade/icons";
 import { useCallback, useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
 	Tooltip,
@@ -11,10 +12,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
-import { useToast } from "../ui/use-toast";
 
 export const TaskSidebarTopRow = () => {
-	const { toast } = useToast();
 	const task = useTaskStore((state) => state.currentTask);
 	const { organization } = useOrganization();
 
@@ -26,24 +25,21 @@ export const TaskSidebarTopRow = () => {
 
 	const copyUrl = async (): Promise<void> => {
 		await window.navigator.clipboard.writeText(TaskUrl);
-		toast({
-			title: "Task link copied to clipboard",
+		toast.success("Task link copied to clipboard", {
 			description: "Paste it wherever you like",
 		});
 	};
 
 	const copyTaskId = async (): Promise<void> => {
 		await navigator.clipboard.writeText(identifier);
-		toast({
-			title: `${identifier} copied to clipboard`,
+		toast.success(`${identifier} copied to clipboard`, {
 			description: "Paste it wherever you like",
 		});
 	};
 
 	const copyGitBranchName = async (): Promise<void> => {
 		await navigator.clipboard.writeText(gitBranchName.trim());
-		toast({
-			title: `${gitBranchName} copied to clipboard`,
+		toast.success(`${gitBranchName} copied to clipboard`, {
 			description: "Paste it wherever you like",
 		});
 	};

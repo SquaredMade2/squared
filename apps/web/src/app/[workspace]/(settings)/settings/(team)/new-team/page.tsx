@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
@@ -30,6 +29,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -50,7 +50,6 @@ const formSchema = z.object({
 });
 
 export default function CreateTeam() {
-	const { toast } = useToast();
 	const router = useRouter();
 	const { organization, isLoaded } = useOrganization();
 	const { loading: teamLoading, authorized } = useTeams();
@@ -86,13 +85,11 @@ export default function CreateTeam() {
 			router.push(
 				`/${organization?.slug}/team/${data?.identifier?.toUpperCase()}/all`,
 			);
-			toast({ title: "Team created" });
+			toast.success("Team created");
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to create team",
+			toast.error("Failed to create team", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

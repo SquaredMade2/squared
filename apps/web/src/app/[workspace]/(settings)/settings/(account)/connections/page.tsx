@@ -3,15 +3,14 @@
 import { GoogleIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { Github } from "@squaredmade/icons";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Page = () => {
 	const { user, isLoaded } = useUser();
-	const { toast } = useToast();
 	const router = useRouter();
 
 	if (!isLoaded || !user) return null;
@@ -33,20 +32,17 @@ const Page = () => {
 				throw new Error("External verification URL not found");
 			}
 
-			toast({
-				title: "Account connected",
-				description: `Successfully connected your ${
+			toast.success(
+				`Successfully connected your ${
 					strategy === "oauth_google" ? "Google" : "GitHub"
 				} account.`,
-			});
+			);
 		} catch (error) {
-			toast({
-				variant: "destructive",
-				title: "Error",
-				description: `Failed to connect ${
+			toast.error(
+				`Failed to connect ${
 					strategy === "oauth_google" ? "Google" : "GitHub"
 				} account. ${parseError(error, "Please try again.")}`,
-			});
+			);
 		}
 	};
 
@@ -58,32 +54,25 @@ const Page = () => {
 		);
 
 		if (!externalAccount) {
-			toast({
-				variant: "destructive",
-				title: "Error",
-				description: `No ${
-					strategy === "google" ? "Google" : "GitHub"
-				} account found.`,
-			});
+			toast.error(
+				`No ${strategy === "google" ? "Google" : "GitHub"} account found.`,
+			);
 			return;
 		}
 
 		try {
 			await externalAccount.destroy();
-			toast({
-				title: "Account disconnected",
-				description: `Successfully disconnected your ${
+			toast.success(
+				`Successfully disconnected your ${
 					strategy === "google" ? "Google" : "GitHub"
 				} account.`,
-			});
+			);
 		} catch {
-			toast({
-				variant: "destructive",
-				title: "Error",
-				description: `Failed to disconnect ${
+			toast.error(
+				`Failed to disconnect ${
 					strategy === "google" ? "Google" : "GitHub"
 				} account. Please try again.`,
-			});
+			);
 		}
 	};
 

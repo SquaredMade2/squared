@@ -3,17 +3,16 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client"; // Assuming this is where your API client is exported
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function WelcomePage() {
 	const { user, isLoaded: isUserLoaded } = useUser();
 	const router = useRouter();
-	const { toast } = useToast();
 
 	const mutation = useMutation({
 		mutationFn: (userData: {
@@ -23,12 +22,12 @@ export default function WelcomePage() {
 			username: string | null;
 		}) => client.auth.register.$post(userData).then((res) => res.json()),
 		onSuccess: ({ message }) => {
-			toast({ title: message });
+			toast.success(message);
 			router.push("/");
 		},
 		onError: (error) => {
 			console.error("Error registering user", error);
-			toast({ title: "Error registering user", variant: "destructive" });
+			toast.error("Error registering user");
 		},
 	});
 

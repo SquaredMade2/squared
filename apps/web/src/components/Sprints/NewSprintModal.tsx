@@ -10,12 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import type { Team } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface NewSprintModalProps {
 	isOpen: boolean;
@@ -35,7 +35,6 @@ export const NewSprintModal = ({
 	const [sprintName, setSprintName] = useState(initialSprintName);
 	const [sprintDescription, setSprintDescription] = useState("");
 	const router = useRouter();
-	const { toast } = useToast();
 
 	const { mutate: startNextSprint } = useMutation({
 		mutationKey: ["sprint", "startNextSprint"],
@@ -50,15 +49,12 @@ export const NewSprintModal = ({
 			});
 		},
 		onError: (error) => {
-			toast({
-				title: "Error Creating Sprint",
+			toast.error("Error Creating Sprint", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 		onSuccess: () => {
-			toast({
-				title: "Sprint Created",
+			toast.success("Sprint Created", {
 				description: "The new sprint has been successfully created.",
 			});
 			router.push(redirectUrl);

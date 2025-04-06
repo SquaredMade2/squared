@@ -8,7 +8,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
@@ -16,10 +15,9 @@ import type { TaskEvent } from "@squaredmade/db";
 import { ChevronDown } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { type JSX, useState } from "react";
-
+import { toast } from "sonner";
 const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
-	const { toast } = useToast();
 
 	const { team } = useTeamStore((state) => state);
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
@@ -66,10 +64,8 @@ const EffortEstimateDropdown = () => {
 			return updatedTask;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating effort estimate",
+			toast.error("Error updating effort estimate", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 		onSettled: () => setOpen(false),

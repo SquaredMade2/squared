@@ -4,15 +4,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/utils/cn";
 import type { Team } from "@squaredmade/db";
 import { LayoutGrid } from "@squaredmade/icons";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import AddTeamButton from "../Buttons/AddTeamButton";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "../ui/accordion";
+} from "@squaredmade/ui/accordion";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import AddTeamButton from "../Buttons/AddTeamButton";
 import { buttonVariants } from "../ui/button";
 import NavBarTeams from "./NavBarTeams";
 

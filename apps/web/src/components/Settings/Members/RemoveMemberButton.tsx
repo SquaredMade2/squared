@@ -5,12 +5,12 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { Ellipsis } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { MemberWithRole } from "./data-table";
 
 const RemoveMemberButton = ({
@@ -27,7 +27,6 @@ const RemoveMemberButton = ({
 	refetch: () => void;
 }) => {
 	const currentUser = useUserStore((state) => state.user);
-	const { toast } = useToast();
 
 	const { mutate: handleClick } = useMutation({
 		mutationKey: ["workspace", "removeMember", pageId],
@@ -43,14 +42,12 @@ const RemoveMemberButton = ({
 			return "Team member removed";
 		},
 		onSuccess: (data) => {
-			toast({ title: data });
+			toast.success(data);
 			membersWithRoles && refetch();
 		},
 		onError: (error) => {
-			toast({
-				title: "Member could not be removed",
+			toast.error("Member could not be removed", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

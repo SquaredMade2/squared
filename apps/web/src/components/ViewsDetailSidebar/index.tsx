@@ -14,6 +14,7 @@ import { Info, Trash } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import LabelBadge from "../LabelBadges";
 import {
 	AlertDialog,
@@ -28,7 +29,6 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { useToast } from "../ui/use-toast";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;
@@ -48,7 +48,6 @@ const ViewsDetailSidebar = ({
 	const filteredTasks = filterTasksWithFilter(tasks);
 	const allLabels = workspace?.labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-	const { toast } = useToast();
 
 	const author = users.find((u) => u.externalId === filter.authorId);
 
@@ -87,20 +86,17 @@ const ViewsDetailSidebar = ({
 		},
 		onSuccess: () => {
 			deleteSavedFilter(filter.id);
-			toast({
-				title: "Filter Deleted",
+			toast.success("Filter Deleted", {
 				description: "The filter has been successfully deleted.",
 			});
 			router.back();
 		},
 		onError: (error) => {
-			toast({
-				title: "Error deleting filter",
+			toast.error("Error deleting filter", {
 				description: parseError(
 					error,
 					"An error occurred while deleting the filter.",
 				),
-				variant: "destructive",
 			});
 		},
 	});

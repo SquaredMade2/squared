@@ -1,4 +1,3 @@
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
@@ -8,6 +7,7 @@ import { useOrganization } from "@clerk/nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
+import { toast } from "sonner";
 import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -22,7 +22,6 @@ export const TaskPageForm = () => {
 		setCurrentTask,
 	} = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
-	const { toast } = useToast();
 	const queryClient = useQueryClient();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
@@ -53,14 +52,12 @@ export const TaskPageForm = () => {
 				.then((res) => res.json());
 			setEvents(updatedEvents);
 			queryClient.invalidateQueries({ queryKey: ["event", task?.id] });
-			toast({ title: "Task updated successfully" });
+			toast.success("Task updated successfully");
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating task",
+			toast.error("Error updating task", {
 				description:
 					error instanceof Error ? error.message : "An unknown error occurred",
-				variant: "destructive",
 			});
 		},
 	});

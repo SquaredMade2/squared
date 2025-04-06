@@ -28,9 +28,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Badge } from "../ui/badge";
-import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),
@@ -53,7 +53,6 @@ export function SaveFilterForm({
 	const { team } = useTeamStore((state) => state);
 	const { users } = useUsers();
 	const { workspace } = useWorkspaceStore((state) => state);
-	const { toast } = useToast();
 	const [formattedFilters, setFormattedFilters] = useState<
 		{ name: string; value: string }[]
 	>([]);
@@ -176,10 +175,8 @@ export function SaveFilterForm({
 			handleUrl(data);
 		},
 		onError: (error) => {
-			toast({
-				title: `Error ${type === "new" ? "Creating" : "Updating"} Filter`,
+			toast.error(`Error ${type === "new" ? "Creating" : "Updating"} Filter`, {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 		onSettled: () => {

@@ -16,7 +16,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
@@ -32,6 +31,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
@@ -42,7 +42,6 @@ function SidebarContent() {
 	const { user } = useUser();
 	const { setShowCommand } = useModalStore((state) => state);
 	const router = useRouter();
-	const { toast } = useToast();
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const { state } = useSidebar();
 	const { signOut } = useClerk();
@@ -77,10 +76,10 @@ function SidebarContent() {
 		try {
 			await signOut();
 			router.replace("/sign-in");
-			toast({ title: "Logged out successfully." });
+			toast.success("Logged out successfully.");
 		} catch (error) {
 			console.error("Logout failed", error);
-			toast({ title: "Failed to log out", variant: "destructive" });
+			toast.error("Failed to log out");
 		}
 	};
 

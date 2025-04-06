@@ -18,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
@@ -29,6 +28,7 @@ import { ChevronRight } from "@squaredmade/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -49,7 +49,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const NewTaskModal = () => {
-	const { toast } = useToast();
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
 	const { createTask, isLoading } = useCreateTask();
@@ -88,10 +87,8 @@ export const NewTaskModal = () => {
 
 	const handleCreateTask = (values: FormValues) => {
 		if (!team || !organization) {
-			toast({
-				title: "Error",
+			toast.error("Error", {
 				description: "Team or workspace not found",
-				variant: "destructive",
 			});
 			return;
 		}
@@ -111,18 +108,14 @@ export const NewTaskModal = () => {
 
 		createTask(createTaskParams, {
 			onSuccess: () => {
-				toast({
-					title: "Task Created Successfully",
-				});
+				toast.success("Task Created Successfully");
 				setShowNewTask(false);
 				setNewTaskData({});
 				form.reset();
 			},
 			onError: (error) => {
-				toast({
-					title: "Error creating task",
+				toast.error("Error creating task", {
 					description: parseError(error),
-					variant: "destructive",
 				});
 			},
 		});

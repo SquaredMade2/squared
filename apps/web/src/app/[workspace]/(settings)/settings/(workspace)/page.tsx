@@ -33,7 +33,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
@@ -43,6 +42,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -63,7 +63,6 @@ const formSchema = z.object({
 export default function WorkspaceSettings() {
 	const { workspace } = useWorkspaces();
 	const [isFormChanged, setIsFormChanged] = useState(false);
-	const { toast } = useToast();
 	const router = useRouter();
 	const { organization } = useOrganization();
 	const { userMemberships } = useOrganizationList({ userMemberships: true });
@@ -99,16 +98,9 @@ export default function WorkspaceSettings() {
 		if (file && organization) {
 			try {
 				await organization.setLogo({ file });
-				toast({
-					title: "Success",
-					description: "Profile picture updated successfully.",
-				});
+				toast.success("Profile picture updated successfully.");
 			} catch {
-				toast({
-					variant: "destructive",
-					title: "Error",
-					description: "Failed to update profile picture. Please try again.",
-				});
+				toast.error("Failed to update profile picture. Please try again.");
 			}
 		}
 	};
@@ -162,14 +154,12 @@ export default function WorkspaceSettings() {
 			},
 			onSuccess: (updatedWorkspace) => {
 				updateWorkspace(updatedWorkspace);
-				toast({ title: "Workspace updated successfully" });
+				toast.success("Workspace updated successfully");
 				setIsFormChanged(false);
 			},
 			onError: (error) => {
-				toast({
-					title: "Error updating workspace",
+				toast.error("Error updating workspace", {
 					description: parseError(error),
-					variant: "destructive",
 				});
 			},
 		},
@@ -184,7 +174,7 @@ export default function WorkspaceSettings() {
 			});
 		},
 		onSuccess: () => {
-			toast({ title: "Workspace deleted successfully" });
+			toast.success("Workspace deleted successfully");
 			if (userMemberships.data?.[0].organization.slug) {
 				router.replace(`/${userMemberships.data?.[0].organization.slug}`);
 			} else {
@@ -192,10 +182,8 @@ export default function WorkspaceSettings() {
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Error deleting workspace",
+			toast.error("Error deleting workspace", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

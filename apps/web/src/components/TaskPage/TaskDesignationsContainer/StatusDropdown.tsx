@@ -8,7 +8,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";
@@ -16,9 +15,9 @@ import { formatStatus } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import type { Status } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const StatusDropdown = () => {
-	const { toast } = useToast();
 	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
 		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
@@ -48,10 +47,8 @@ const StatusDropdown = () => {
 			return res;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating status",
+			toast.error("Error updating status", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

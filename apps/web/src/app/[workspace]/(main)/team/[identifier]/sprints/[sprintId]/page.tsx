@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
@@ -51,6 +50,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { toast } from "sonner";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 
@@ -168,14 +168,12 @@ export default function SprintDashboardPage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to assign tasks to sprint",
+			toast.error("Failed to assign tasks to sprint", {
 				description: parseError(error, "Unknown error"),
-				variant: "destructive",
 			});
 		},
 		onSuccess: (data) => {
-			toast({ title: "Tasks assigned to sprint" });
+			toast.success("Tasks assigned to sprint");
 			setTasks(data);
 		},
 	});
@@ -191,14 +189,12 @@ export default function SprintDashboardPage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to end the sprint.",
+			toast.error("Failed to end the sprint.", {
 				description: parseError(error, "Unknown error"),
-				variant: "destructive",
 			});
 		},
 		onSuccess: () => {
-			toast({ title: "Sprint ended successfully" });
+			toast.success("Sprint ended successfully");
 			router.push(`/${organization?.slug}/team/${team?.identifier}/all`);
 		},
 	});

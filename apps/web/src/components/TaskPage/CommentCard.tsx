@@ -7,9 +7,9 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
+import { toast } from "sonner";
 import MentionHover from "../TextEditor/Menus/MentionHover";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { toast } from "../ui/use-toast";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";
@@ -111,17 +111,13 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 					setAuthorName(formatName(user));
 					setAvatarUrl(user?.imageUrl ?? "");
 				} else {
-					toast({
-						title: "Error getting author",
+					toast.error("Error getting author", {
 						description: "User data not returned",
-						variant: "destructive",
 					});
 				}
 			} catch (err) {
-				toast({
-					title: "Error getting author",
+				toast.error("Error getting author", {
 					description: err instanceof Error ? err.message : "",
-					variant: "destructive",
 				});
 			}
 		};
@@ -134,10 +130,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				const mdxSource = await serialize(formattedComment);
 				setCommentData(mdxSource);
 			} catch (err) {
-				toast({
-					title: "Error converting to MDX",
+				toast.error("Error converting to MDX", {
 					description: err instanceof Error ? err.message : "",
-					variant: "destructive",
 				});
 			}
 		};

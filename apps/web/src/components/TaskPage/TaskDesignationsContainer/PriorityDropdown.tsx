@@ -8,16 +8,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority, TaskEvent } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
-
+import { toast } from "sonner";
 const PriorityDropdown = () => {
-	const { toast } = useToast();
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
@@ -44,10 +42,8 @@ const PriorityDropdown = () => {
 			return updatedTask;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating priority",
+			toast.error("Error updating priority", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});

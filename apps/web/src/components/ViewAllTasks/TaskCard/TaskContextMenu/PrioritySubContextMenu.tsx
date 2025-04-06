@@ -7,17 +7,16 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squaredmade/db";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { ContextMenuProps } from "./interfaces";
 
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
-	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updatePriority } = useMutation({
@@ -32,11 +31,9 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 			return updatedTask;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating task",
+			toast.error("Error updating task", {
 				description:
 					error instanceof Error ? error.message : "An error occurred",
-				variant: "destructive",
 			});
 		},
 	});

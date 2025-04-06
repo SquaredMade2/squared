@@ -32,7 +32,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
@@ -51,7 +50,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-
+import { toast } from "sonner";
 export default function SprintDashboard() {
 	const { sprints, sprint, team: currentTeam } = useSprints();
 	const { tasks, setTasks } = useTaskStore((state) => state);
@@ -74,8 +73,6 @@ export default function SprintDashboard() {
 		}[]
 	>([]);
 	useWorkspaces();
-
-	const { toast } = useToast();
 
 	useEffect(() => {
 		setTargetSprint(sprint?.id);
@@ -210,10 +207,8 @@ export default function SprintDashboard() {
 			);
 		},
 		onError: (error) => {
-			toast({
-				title: "Error Assigning Tasks",
+			toast.error("Error Assigning Tasks", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
@@ -276,10 +271,8 @@ export default function SprintDashboard() {
 			);
 		},
 		onError: (error) => {
-			toast({
-				title: "Error Auto-Assigning Tasks",
+			toast.error("Error Auto-Assigning Tasks", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});

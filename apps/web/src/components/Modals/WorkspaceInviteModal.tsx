@@ -7,6 +7,7 @@ import { useOrganization } from "@clerk/nextjs";
 import { LoaderCircle } from "@squaredmade/icons";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -18,7 +19,6 @@ import {
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
-import { useToast } from "../ui/use-toast";
 
 export const WorkspaceInviteModal = () => {
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(
@@ -26,7 +26,6 @@ export const WorkspaceInviteModal = () => {
 	);
 	const [inviteEmails, setInviteEmails] = useState<string>("");
 	const { organization } = useOrganization();
-	const { toast } = useToast();
 
 	const { mutate: handleInvite, isPending } = useMutation({
 		mutationKey: ["workspace", "workspaceInvite", organization?.id],
@@ -45,15 +44,11 @@ export const WorkspaceInviteModal = () => {
 		onSuccess: () => {
 			setInviteEmails("");
 			setShowWorkspaceInvite(false);
-			toast({
-				title: "Invites sent!",
-			});
+			toast.success("Invites sent!");
 		},
 		onError: (error) => {
-			toast({
-				title: "Error sending invites",
+			toast.error("Error sending invites", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

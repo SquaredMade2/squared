@@ -25,9 +25,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWorkspaceStore } from "@/store";
 import type { Priority, Sprint, Status, Task } from "@squaredmade/db";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
-import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;
@@ -374,11 +374,11 @@ export function AssignTasksDialog({
 						onClick={() => {
 							handleBulkAssign();
 							setIsOpen(false);
-							toast({
-								title: `You successfully added ${selectedTasks.length} ${
+							toast.success(
+								`You successfully added ${selectedTasks.length} ${
 									selectedTasks.length < 2 ? "task" : "tasks"
 								} to ${activeSprint?.name}.`,
-							});
+							);
 						}}
 						disabled={selectedTasks.length < 1}
 					>

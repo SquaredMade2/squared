@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
@@ -43,6 +42,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -92,7 +92,6 @@ export default function TeamsSetting() {
 	const [showEffortDropdown, setShowEffortDropdown] = useState(false);
 	const [selectedEffort, setSelectedEffort] =
 		useState<Record<string, number | string | number[]>>();
-	const { toast } = useToast();
 	const router = useRouter();
 	const { organization, isLoaded } = useOrganization();
 	const { team, loading: teamLoading } = useTeams();
@@ -161,14 +160,12 @@ export default function TeamsSetting() {
 						.then((res) => res.json()),
 				);
 				router.refresh();
-				toast({ title: "Team updated successfully" });
+				toast.success("Team updated successfully");
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to update team",
+			toast.error("Failed to update team", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
@@ -186,13 +183,11 @@ export default function TeamsSetting() {
 		onSuccess: () => {
 			deleteTeam(team.id);
 			router.push(`/${organization?.slug}`);
-			toast({ title: "Team deleted" });
+			toast.success("Team deleted");
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to delete team",
+			toast.error("Failed to delete team", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});

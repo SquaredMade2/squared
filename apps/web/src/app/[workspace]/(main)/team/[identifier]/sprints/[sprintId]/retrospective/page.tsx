@@ -2,7 +2,6 @@
 
 import { RetroColumn } from "@/components/Sprints";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
@@ -12,6 +11,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { type Socket, io } from "socket.io-client";
+import { toast } from "sonner";
 
 export type RetroItem = Pick<
 	RetrospectiveItem,
@@ -39,10 +39,8 @@ export default function SprintRetrospectivePage() {
 					})
 					.then((res) => res.json());
 			} catch (error) {
-				toast({
-					title: "Failed to load retrospective data",
+				toast.error("Failed to load retrospective data", {
 					description: parseError(error),
-					variant: "destructive",
 				});
 				return { actionItems: [], toImprove: [], wentWell: [] };
 			}
@@ -65,11 +63,9 @@ export default function SprintRetrospectivePage() {
 
 		newSocket.on("connect_error", (error) => {
 			console.error("Socket.IO connection error:", error);
-			toast({
-				title: "Connection error",
+			toast.error("Connection error", {
 				description:
 					"Unable to connect to the server. Please try refreshing the page.",
-				variant: "destructive",
 			});
 		});
 
@@ -109,16 +105,14 @@ export default function SprintRetrospectivePage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to add item",
+			toast.error("Failed to add item", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 		onSuccess: (response) => {
 			socket?.emit("addItem", { sprintId, ...response });
 			fetchData();
-			toast({ title: "Item added successfully" });
+			toast.success("Item added successfully");
 		},
 	});
 	const { mutate: handleLikeItem } = useMutation({
@@ -131,10 +125,8 @@ export default function SprintRetrospectivePage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to like item",
+			toast.error("Failed to like item", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 		onSuccess: (response) => {
@@ -169,10 +161,7 @@ export default function SprintRetrospectivePage() {
 					type: destinationType,
 				});
 				if (!response) {
-					toast({
-						title: "There was an issue updating your item",
-						variant: "destructive",
-					});
+					toast.error("There was an issue updating your item");
 					return;
 				}
 
@@ -187,10 +176,10 @@ export default function SprintRetrospectivePage() {
 					destinationIndex,
 				});
 
-				toast({ title: "Item moved successfully", variant: "default" });
+				toast.success("Item moved successfully");
 			} catch (error) {
 				console.error("Error moving item:", error);
-				toast({ title: "Failed to move item", variant: "destructive" });
+				toast.error("Failed to move item");
 			}
 		},
 		[sprintId, socket],

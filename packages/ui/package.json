@@ -78,12 +78,12 @@
 		},
 		"./calendar": {
 			"import": {
-				"types": "./dist/components/card/index.d.mts",
-				"default": "./dist/components/card/index.mjs"
+				"types": "./dist/components/calendar/index.d.mts",
+				"default": "./dist/components/calendar/index.mjs"
 			},
 			"require": {
-				"types": "./dist/components/card/index.d.ts",
-				"default": "./dist/components/card/index.js"
+				"types": "./dist/components/calendar/index.d.ts",
+				"default": "./dist/components/calendar/index.js"
 			}
 		},
 		"./card": {
