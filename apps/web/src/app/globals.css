@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+@source "../../node_modules/@squaredmade/ui";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -298,5 +300,11 @@
 				rotateX(-180deg);
 			filter: grayscale(0.8);
 		}
+	}
+}
+
+@layer components {
+	button {
+		cursor: pointer;
 	}
 }

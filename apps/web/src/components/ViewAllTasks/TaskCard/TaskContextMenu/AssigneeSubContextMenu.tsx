@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
@@ -12,7 +13,6 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@squaredmade/ui/context-menu";
-import { ScrollArea, ScrollBar } from "@squaredmade/ui/scroll-area";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
