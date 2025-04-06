@@ -24,7 +24,7 @@
 	"types": "dist/index.d.ts",
 	"files": ["dist", "src/fonts", "tailwind-plugin.js"],
 	"scripts": {
-		"build": "node build.mjs",
+		"xbuild": "node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf dist"
 	},

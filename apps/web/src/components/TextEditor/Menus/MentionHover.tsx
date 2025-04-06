@@ -1,13 +1,13 @@
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { formatName, getInitials, truncateString } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Card, CardContent } from "@squaredmade/ui/card";
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from "@squaredmade/ui/hover-card";
 import { useEffect, useState } from "react";
 import type { MentionHoverProps } from "../interfaces";
 

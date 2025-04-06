@@ -13,7 +13,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFilterStore, useModalStore, useViewStore } from "@/store";
 import { DialogTitle } from "@squaredmade/ui/dialog";
-import { useId } from "@squaredmade/ui/id";
+import { useId } from "@squaredmade/ui/use-id";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";
 import { toast } from "sonner";
