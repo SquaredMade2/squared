@@ -1,5 +1,4 @@
 import { useIsMobile } from "@/hooks/useMobile";
-import { Slot } from "@radix-ui/react-slot";
 import { PanelLeft } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
@@ -7,6 +6,7 @@ import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { Sheet, SheetContent } from "@squaredmade/ui/sheet";
 import { Skeleton } from "@squaredmade/ui/skeleton";
+import { Slot } from "@squaredmade/ui/slot";
 import {
 	Tooltip,
 	TooltipContent,
