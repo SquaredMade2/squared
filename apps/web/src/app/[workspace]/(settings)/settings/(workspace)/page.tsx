@@ -2,20 +2,10 @@
 
 import ImageUpload from "@/components/ImageUpload";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -28,6 +18,17 @@ import {
 	AlertDialogTrigger,
 } from "@squaredmade/ui/alert-dialog";
 import { Button } from "@squaredmade/ui/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import {
 	Select,
@@ -41,7 +42,6 @@ import { Separator } from "@squaredmade/ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -231,7 +231,8 @@ export default function WorkspaceSettings() {
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
-							defaultValue={""}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
 							name="name"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
@@ -245,7 +246,8 @@ export default function WorkspaceSettings() {
 						/>
 						<FormField
 							control={form.control}
-							defaultValue={""}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
 							name="url"
 							render={({ field }) => (
 								<FormItem className="col-span-1">

@@ -1,9 +1,9 @@
 "use client";
 
-import { Calendar } from "@/components/ui/calendar";
 import { useFilterStore } from "@/store";
 import type { FilterCondition } from "@/store/filters";
 import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,

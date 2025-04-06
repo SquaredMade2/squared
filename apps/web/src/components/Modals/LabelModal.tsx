@@ -1,13 +1,5 @@
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-} from "@/components/ui/form";
 import { client } from "@/lib/client";
 import { useModalStore, useWorkspaceStore } from "@/store";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
@@ -16,11 +8,19 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@squaredmade/ui/dialog";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 

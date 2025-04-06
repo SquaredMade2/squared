@@ -1,7 +1,6 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Calendar } from "@/components/ui/calendar";
 import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
@@ -27,6 +26,7 @@ import {
 	AlertDialogTrigger,
 } from "@squaredmade/ui/alert-dialog";
 import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { Label } from "@squaredmade/ui/label";
 import {
