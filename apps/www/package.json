@@ -16,6 +16,8 @@
 		"@prismicio/next": "^2.0.0",
 		"@prismicio/react": "^3.0.0",
 		"@radix-ui/react-context-menu": "^2.2.6",
+		"@radix-ui/react-progress": "^1.1.2",
+		"@radix-ui/react-scroll-area": "^1.2.3",
 		"@squaredmade/fonts": "^1.0.4",
 		"@squaredmade/icons": "1.0.3",
 		"@squaredmade/ui": "2.0.2",

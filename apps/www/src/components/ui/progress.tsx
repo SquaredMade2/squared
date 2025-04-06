@@ -1,6 +1,6 @@
 "use client";
 
-import * as ProgressPrimitive from "@squaredmade/ui/progress";
+import * as ProgressPrimitive from "@radix-ui/react-progress";
 import * as React from "react";
 
 import { cn } from "@squaredmade/ui/cn";
