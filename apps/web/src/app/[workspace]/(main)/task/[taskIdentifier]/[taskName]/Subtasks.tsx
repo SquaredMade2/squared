@@ -1,6 +1,7 @@
 "use client";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
@@ -20,7 +21,6 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@squaredmade/ui/collapsible";
-import { ContextMenu, ContextMenuTrigger } from "@squaredmade/ui/context-menu";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
