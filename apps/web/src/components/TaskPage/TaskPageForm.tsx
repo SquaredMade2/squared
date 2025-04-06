@@ -4,14 +4,14 @@ import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useOrganization } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { StatusIcon } from "../Icons";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 
 export const TaskPageForm = () => {
 	const { organization } = useOrganization();

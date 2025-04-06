@@ -18,31 +18,35 @@ import {
 	Menu,
 	SlidersVertical,
 } from "@squaredmade/icons";
-import { useEffect } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@squaredmade/ui/dropdown-menu";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { Switch } from "../ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@squaredmade/ui/toggle-group";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
+} from "@squaredmade/ui/tooltip";
+import { useEffect } from "react";
 
 const TopNavBarDisplay = () => {
 	const { view, setView, displayOptions, setViewOptions, setDisplayOptions } =

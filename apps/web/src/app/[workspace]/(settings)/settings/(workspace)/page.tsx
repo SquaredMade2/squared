@@ -3,6 +3,20 @@
 import ImageUpload from "@/components/ImageUpload";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
 	AlertDialog,
 	AlertDialogAction,
 	AlertDialogCancel,
@@ -12,18 +26,9 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -31,13 +36,8 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

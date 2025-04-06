@@ -1,11 +1,5 @@
 "use client";
 
-import { useModalStore, useTaskStore } from "@/store";
-import { formatUrl } from "@/utils/formatting";
-import { useOrganization } from "@clerk/nextjs";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
-import { useRouter } from "next/navigation";
-import { StatusIcon } from "../Icons";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -13,9 +7,15 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "../ui/command";
-import { DialogTitle } from "../ui/dialog";
-import { ScrollArea } from "../ui/scroll-area";
+} from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useModalStore, useTaskStore } from "@/store";
+import { formatUrl } from "@/utils/formatting";
+import { useOrganization } from "@clerk/nextjs";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
+import { useRouter } from "next/navigation";
+import { StatusIcon } from "../Icons";
 
 export function TaskSelector() {
 	const router = useRouter();

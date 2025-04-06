@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import type { Team } from "@squaredmade/db";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -6,12 +8,10 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { client } from "@/lib/client";
-import type { Team } from "@squaredmade/db";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

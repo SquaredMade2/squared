@@ -11,11 +11,6 @@ import { getInitials } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import type { Task } from "@squaredmade/db";
 import { Info, Trash } from "@squaredmade/icons";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-import LabelBadge from "../LabelBadges";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -23,12 +18,17 @@ import {
 	AlertDialogContent,
 	AlertDialogFooter,
 	AlertDialogHeader,
-} from "../ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+} from "@squaredmade/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Badge } from "@squaredmade/ui/badge";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import LabelBadge from "../LabelBadges";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;

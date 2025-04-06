@@ -5,20 +5,20 @@ import { useModalStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { LoaderCircle } from "@squaredmade/icons";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
-} from "../ui/dialog";
-import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
-import { Textarea } from "../ui/textarea";
+} from "@squaredmade/ui/dialog";
+import { Label } from "@squaredmade/ui/label";
+import { Separator } from "@squaredmade/ui/separator";
+import { Textarea } from "@squaredmade/ui/textarea";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const WorkspaceInviteModal = () => {
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(

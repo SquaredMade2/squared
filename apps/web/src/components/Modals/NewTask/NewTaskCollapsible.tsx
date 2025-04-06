@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
@@ -6,8 +5,6 @@ import {
 	FormItem,
 	FormLabel,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { client } from "@/lib/client";
 import {
 	useModalStore,
@@ -26,6 +23,9 @@ import {
 	AccordionItem,
 } from "@squaredmade/ui/accordion";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";

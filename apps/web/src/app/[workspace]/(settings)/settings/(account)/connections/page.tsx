@@ -1,11 +1,11 @@
 "use client";
 
 import { GoogleIcon } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { Github } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import { Separator } from "@squaredmade/ui/separator";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

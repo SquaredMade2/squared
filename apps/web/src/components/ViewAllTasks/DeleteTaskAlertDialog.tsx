@@ -4,10 +4,6 @@ import { client } from "@/lib/client";
 import { useTaskStore, useTeamStore, useViewStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import type { Task } from "@squaredmade/db";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import type { Dispatch, SetStateAction } from "react";
-import { toast } from "sonner";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -17,8 +13,12 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { buttonVariants } from "../ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { buttonVariants } from "@squaredmade/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import type { Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
 
 export const DeleteTaskAlertDialog = ({
 	task,

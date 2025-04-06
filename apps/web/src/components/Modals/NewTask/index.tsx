@@ -1,13 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import {
 	Form,
 	FormControl,
@@ -15,9 +7,6 @@ import {
 	FormItem,
 	FormLabel,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
@@ -25,6 +14,17 @@ import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";

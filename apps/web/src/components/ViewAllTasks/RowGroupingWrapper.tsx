@@ -1,10 +1,10 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { Droppable } from "@hello-pangea/dnd";
 import { ChevronDown, ChevronRight } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
 import GroupColumn from "./GroupColumn";
 import { RowGroupHeader } from "./RowGroupHeader";
 import TaskColumnTitle from "./TaskColumnTitle";

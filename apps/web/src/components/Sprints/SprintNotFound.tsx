@@ -1,6 +1,6 @@
 import { CircleAlert } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import Link from "next/link";
-import { Button } from "../ui/button";
 
 interface SprintNotFoundProps {
 	workspaceUrl?: string;

@@ -1,14 +1,14 @@
 import { high, low, medium } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useModalStore, useTeamStore } from "@/store";
+import { Check } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { effortEstimateOptions } from "@/lib/constants";
-import { useModalStore, useTeamStore } from "@/store";
-import { Check } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 
 import type { JSX } from "react";
 

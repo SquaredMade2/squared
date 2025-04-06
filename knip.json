@@ -16,12 +16,11 @@
 			"project": ["**/*.ts"]
 		},
 		"apps/web": {
-			"entry": ["src/index.ts", "src/**/{page,route}.{ts,tsx}"],
-			"project": ["**/*.{ts,tsx}"],
-			"ignore": ["src/**/components/ui/**"]
+			"entry": ["src/app/**/*.{ts,tsx}"],
+			"project": ["**/*.{ts,tsx}"]
 		},
 		"apps/www": {
-			"entry": ["src/index.ts", "src/**/*.{ts,tsx}"],
+			"entry": ["src/app/**/*.{ts,tsx}"],
 			"project": ["**/*.{ts,tsx}"],
 			"ignore": ["prismic/slices/**/*.{ts,tsx}"]
 		},

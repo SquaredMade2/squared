@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useUser } from "@clerk/nextjs";
+import { UserCog } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
-import { useUser } from "@clerk/nextjs";
-import { UserCog } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";

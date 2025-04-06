@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
+import { CirclePlus } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { CirclePlus } from "@squaredmade/icons";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
 import { useCallback, useState } from "react";
 
 type ColumnType = "wentWell" | "toImprove" | "actionItems";

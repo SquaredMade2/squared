@@ -1,6 +1,5 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
@@ -9,6 +8,7 @@ import { handleFormatSlateToComment } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CreatedByInformation } from ".";

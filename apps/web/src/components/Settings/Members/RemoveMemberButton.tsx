@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { useUserStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { Ellipsis } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { client } from "@/lib/client";
-import { useUserStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { Ellipsis } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { MemberWithRole } from "./data-table";

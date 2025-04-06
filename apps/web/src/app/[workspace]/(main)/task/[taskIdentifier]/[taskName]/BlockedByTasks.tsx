@@ -1,19 +1,19 @@
 "use client";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useTaskStore, useUserStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Task, User } from "@squaredmade/db";
 import { ChevronDown, ChevronRight, UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@squaredmade/ui/collapsible";
 import Link from "next/link";
 import { useState } from "react";
 

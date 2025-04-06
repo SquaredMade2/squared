@@ -1,11 +1,11 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";

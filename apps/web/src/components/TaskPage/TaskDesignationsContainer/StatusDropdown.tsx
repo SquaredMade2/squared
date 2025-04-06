@@ -1,19 +1,19 @@
 "use client";
 
 import { StatusIcon } from "@/components/Icons";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import type { Status } from "@squaredmade/db";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@squaredmade/ui/select";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 

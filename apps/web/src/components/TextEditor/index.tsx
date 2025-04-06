@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import {
@@ -8,6 +7,7 @@ import {
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
+import { Button } from "@squaredmade/ui/button";
 import {
 	type KeyboardEvent,
 	useCallback,

@@ -1,8 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { formatName, getInitials, truncateString } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Card, CardContent } from "@squaredmade/ui/card";
 import {
 	HoverCard,
 	HoverCardContent,

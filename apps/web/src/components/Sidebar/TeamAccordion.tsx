@@ -10,10 +10,10 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@squaredmade/ui/accordion";
+import { buttonVariants } from "@squaredmade/ui/button";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddTeamButton from "../Buttons/AddTeamButton";
-import { buttonVariants } from "../ui/button";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {

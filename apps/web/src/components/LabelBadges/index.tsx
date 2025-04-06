@@ -1,12 +1,12 @@
 import { cn } from "@/utils/cn";
 import type { Label } from "@squaredmade/db";
-import { useTheme } from "next-themes";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
+} from "@squaredmade/ui/tooltip";
+import { useTheme } from "next-themes";
 
 function hexToRGB(hex: string): [number, number, number] {
 	const rgb = Number.parseInt(hex.slice(1), 16);

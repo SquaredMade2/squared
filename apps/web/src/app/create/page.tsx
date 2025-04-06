@@ -1,13 +1,13 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Card } from "@squaredmade/ui/card";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";

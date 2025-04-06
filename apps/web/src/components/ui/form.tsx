@@ -1,6 +1,8 @@
 "use client";
 
-import type * as LabelPrimitive from "@squaredmade/ui/label";
+import type * as LabelPrimitive from "@radix-ui/react-label";
+import { cn } from "@squaredmade/ui/cn";
+import { Label } from "@squaredmade/ui/label";
 import { Slot } from "@squaredmade/ui/slot";
 import * as React from "react";
 import {
@@ -11,9 +13,6 @@ import {
 	FormProvider,
 	useFormContext,
 } from "react-hook-form";
-
-import { Label } from "@/components/ui/label";
-import { cn } from "@/utils/cn";
 
 const Form = FormProvider;
 

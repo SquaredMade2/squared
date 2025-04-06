@@ -1,12 +1,12 @@
+import { useUsers } from "@/hooks/useUsers";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
 import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { useUsers } from "@/hooks/useUsers";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
+} from "@squaredmade/ui/dropdown-menu";
 import { toast } from "sonner";
 import type { AssigneeBoxProps } from "./interfaces";
 

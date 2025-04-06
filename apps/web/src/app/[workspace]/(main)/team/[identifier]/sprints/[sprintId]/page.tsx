@@ -7,14 +7,22 @@ import {
 	SprintNotFound,
 } from "@/components/Sprints";
 import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { useSprints } from "@/hooks/useSprints";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
+import type { Sprint, Status, Task } from "@squaredmade/db";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Dialog,
 	DialogClose,
@@ -23,16 +31,8 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSprints } from "@/hooks/useSprints";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
-import type { Sprint, Status, Task } from "@squaredmade/db";
+} from "@squaredmade/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";

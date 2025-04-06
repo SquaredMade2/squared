@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { client } from "@/lib/client";
+import { Button } from "@squaredmade/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
 import { toast } from "sonner";

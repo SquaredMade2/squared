@@ -1,35 +1,7 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
@@ -43,6 +15,34 @@ import {
 	Maximize2,
 	X,
 } from "@squaredmade/icons";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
+import { Label } from "@squaredmade/ui/label";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";

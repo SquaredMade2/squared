@@ -3,8 +3,8 @@ import { useEventStore, useTaskStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
 import type { GithubCommit, TaskEvent } from "@squaredmade/db";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { formatDate } from "date-fns";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const CreatedByInformation = () => {
 	const { users } = useUsers();

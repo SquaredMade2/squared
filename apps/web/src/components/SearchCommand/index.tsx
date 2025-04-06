@@ -10,9 +10,9 @@ import {
 	CommandSeparator,
 	CommandShortcut,
 } from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFilterStore, useModalStore, useViewStore } from "@/store";
+import { DialogTitle } from "@squaredmade/ui/dialog";
 import { useId } from "@squaredmade/ui/id";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";

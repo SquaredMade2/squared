@@ -1,10 +1,10 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { client } from "@/lib/client"; // Assuming this is where your API client is exported
 import { useUser } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
