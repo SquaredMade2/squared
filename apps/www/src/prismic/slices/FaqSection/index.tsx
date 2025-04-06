@@ -1,11 +1,11 @@
+import type { Content } from "@prismicio/client";
+import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
-import type { Content } from "@prismicio/client";
-import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
+} from "@squaredmade/ui/accordion";
 import type { FC } from "react";
 
 /**
