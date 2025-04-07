@@ -1,17 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useUser } from "@clerk/nextjs";
+import { UserCog } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
-import { useUser } from "@clerk/nextjs";
-import { UserCog } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { MemberWithRole } from "./data-table";
 
 const ManageMembersRoleButton = ({
@@ -25,7 +25,6 @@ const ManageMembersRoleButton = ({
 }) => {
 	const queryClient = useQueryClient();
 	const { user } = useUser();
-	const { toast } = useToast();
 	const loggedInUserRole = membersWithRoles?.find(
 		(u) => u.identifier === user?.id,
 	)?.role;
@@ -44,13 +43,11 @@ const ManageMembersRoleButton = ({
 			queryClient.invalidateQueries({
 				queryKey: ["userRole", user?.id, pageId],
 			});
-			toast({ title: `Member role updated to ${newRole}` });
+			toast.success(`Member role updated to ${newRole}`);
 		},
 		onError: (error) => {
-			toast({
-				title: "Member role could not be updated",
+			toast.error("Member role could not be updated", {
 				description: parseError(error, "unknown error"),
-				variant: "destructive",
 			});
 		},
 	});

@@ -1,17 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import {
@@ -23,14 +11,26 @@ import {
 import type { SavedFilter } from "@/store/filters";
 import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Badge } from "@squaredmade/ui/badge";
+import { Button } from "@squaredmade/ui/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
-import { Badge } from "../ui/badge";
-import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),
@@ -53,7 +53,6 @@ export function SaveFilterForm({
 	const { team } = useTeamStore((state) => state);
 	const { users } = useUsers();
 	const { workspace } = useWorkspaceStore((state) => state);
-	const { toast } = useToast();
 	const [formattedFilters, setFormattedFilters] = useState<
 		{ name: string; value: string }[]
 	>([]);
@@ -176,10 +175,8 @@ export function SaveFilterForm({
 			handleUrl(data);
 		},
 		onError: (error) => {
-			toast({
-				title: `Error ${type === "new" ? "Creating" : "Updating"} Filter`,
+			toast.error(`Error ${type === "new" ? "Creating" : "Updating"} Filter`, {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 		onSettled: () => {

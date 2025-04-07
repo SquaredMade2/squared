@@ -2,6 +2,10 @@
 
 import ImageUpload from "@/components/ImageUpload";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,8 +16,8 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
@@ -22,8 +26,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -31,18 +37,12 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
-import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -63,7 +63,6 @@ const formSchema = z.object({
 export default function WorkspaceSettings() {
 	const { workspace } = useWorkspaces();
 	const [isFormChanged, setIsFormChanged] = useState(false);
-	const { toast } = useToast();
 	const router = useRouter();
 	const { membership, organization } = useOrganization();
 	const { userMemberships } = useOrganizationList({ userMemberships: true });
@@ -100,16 +99,9 @@ export default function WorkspaceSettings() {
 		if (file && organization) {
 			try {
 				await organization.setLogo({ file });
-				toast({
-					title: "Success",
-					description: "Profile picture updated successfully.",
-				});
+				toast.success("Profile picture updated successfully.");
 			} catch {
-				toast({
-					variant: "destructive",
-					title: "Error",
-					description: "Failed to update profile picture. Please try again.",
-				});
+				toast.error("Failed to update profile picture. Please try again.");
 			}
 		}
 	};
@@ -163,14 +155,12 @@ export default function WorkspaceSettings() {
 			},
 			onSuccess: (updatedWorkspace) => {
 				updateWorkspace(updatedWorkspace);
-				toast({ title: "Workspace updated successfully" });
+				toast.success("Workspace updated successfully");
 				setIsFormChanged(false);
 			},
 			onError: (error) => {
-				toast({
-					title: "Error updating workspace",
+				toast.error("Error updating workspace", {
 					description: parseError(error),
-					variant: "destructive",
 				});
 			},
 		},
@@ -185,7 +175,7 @@ export default function WorkspaceSettings() {
 			});
 		},
 		onSuccess: () => {
-			toast({ title: "Workspace deleted successfully" });
+			toast.success("Workspace deleted successfully");
 			if (userMemberships.data?.[0].organization.slug) {
 				router.replace(`/${userMemberships.data?.[0].organization.slug}`);
 			} else {
@@ -193,10 +183,8 @@ export default function WorkspaceSettings() {
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Error deleting workspace",
+			toast.error("Error deleting workspace", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});
@@ -244,7 +232,8 @@ export default function WorkspaceSettings() {
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
-							defaultValue={""}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
 							name="name"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
@@ -258,7 +247,8 @@ export default function WorkspaceSettings() {
 						/>
 						<FormField
 							control={form.control}
-							defaultValue={""}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
 							name="url"
 							render={({ field }) => (
 								<FormItem className="col-span-1">

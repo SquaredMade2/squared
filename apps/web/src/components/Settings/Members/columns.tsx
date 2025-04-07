@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import type { ColumnDef } from "@tanstack/react-table";
 import ManageMembersRoleButton from "./ManageMembersRoleButton";
 import RemoveMemberButton from "./RemoveMemberButton";

@@ -5,21 +5,21 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
 import type { Priority, Status } from "@squaredmade/db";
 import { CirclePlus, EllipsisVertical } from "@squaredmade/icons";
-import { usePathname } from "next/navigation";
-import { PriorityIcon, StatusIcon } from "../Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
+import { usePathname } from "next/navigation";
+import { PriorityIcon, StatusIcon } from "../Icons";
 import { LabelColor } from "./TaskCard/TaskCardLabels";
 import type { TaskColumnTitleProps } from "./interfaces";
 

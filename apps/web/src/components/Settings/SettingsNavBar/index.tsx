@@ -1,26 +1,7 @@
 "use client";
 
-import {
-	BriefcaseBusiness,
-	ChevronLeft,
-	CircleUser,
-	Moon,
-	Sun,
-	Users,
-} from "@squaredmade/icons";
-import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
-
 import AddTeamButton from "@/components/Buttons/AddTeamButton";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
 	Sidebar,
 	SidebarContent,
@@ -29,11 +10,29 @@ import {
 	SidebarTrigger,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { useTeams } from "@/hooks/useTeams";
 import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import type { Team } from "@squaredmade/db";
+import {
+	BriefcaseBusiness,
+	ChevronLeft,
+	CircleUser,
+	Moon,
+	Sun,
+	Users,
+} from "@squaredmade/icons";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@squaredmade/ui/accordion";
+import { Button } from "@squaredmade/ui/button";
+import { Separator } from "@squaredmade/ui/separator";
+import { TooltipProvider } from "@squaredmade/ui/tooltip";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 function SettingsNavbarContent() {
 	const router = useRouter();

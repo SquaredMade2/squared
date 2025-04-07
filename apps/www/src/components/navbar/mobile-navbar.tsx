@@ -1,6 +1,6 @@
 "use client";
-import { cn } from "@/lib/utils";
 import { Menu, X } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { useState } from "react";

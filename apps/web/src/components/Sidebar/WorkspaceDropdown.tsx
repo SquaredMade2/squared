@@ -1,20 +1,20 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@squaredmade/ui/dropdown-menu";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 

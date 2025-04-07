@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";

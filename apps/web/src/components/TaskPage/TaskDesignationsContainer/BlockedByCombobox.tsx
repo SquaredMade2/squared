@@ -1,9 +1,9 @@
-import { toast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import type { Task } from "@squaredmade/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 import { DesignationComboboxMany } from "./DesignationComboboxMany";
 
 const BlockedByCombobox = () => {
@@ -24,10 +24,7 @@ const BlockedByCombobox = () => {
 	const { mutate: mutateUpdateBlockedByTasks } = useMutation({
 		mutationFn: async (blockingId: string) => {
 			if (currentTaskBlockingIds.includes(blockingId)) {
-				toast({
-					title: "You can't have two tasks blocking each other",
-					variant: "destructive",
-				});
+				toast.error("You can't have two tasks blocking each other");
 				return currentTaskBlockedBy;
 			}
 			const res = await client.task.updateBlockedOrBlockingTasks.$post({

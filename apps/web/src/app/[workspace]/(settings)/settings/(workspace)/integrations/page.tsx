@@ -1,13 +1,13 @@
 "use client";
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
+import { useOrganization } from "@clerk/nextjs";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { useOrganization } from "@clerk/nextjs";
+} from "@squaredmade/ui/card";
 import Link from "next/link";
 
 const IntegrationSettings = () => {

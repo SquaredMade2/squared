@@ -1,5 +1,18 @@
 # @squaredmade/ui
 
+## 2.0.2
+
+### Patch Changes
+
+- Fix Up Exports for Calendar and Alert Dialog
+
+## 2.0.1
+
+### Patch Changes
+
+- Updated dependencies [f52462b]
+  - @squaredmade/icons@1.0.3
+
 ## 2.0.0
 
 ### Major Changes

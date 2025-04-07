@@ -1,7 +1,9 @@
 "use client";
 
 import ImageUpload from "@/components/ImageUpload";
-import { Button } from "@/components/ui/button";
+import { getInitials } from "@/utils/formatting";
+import { useUser } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
@@ -10,16 +12,14 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { getInitials } from "@/utils/formatting";
-import { useUser } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -29,7 +29,6 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-	const { toast } = useToast();
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -64,15 +63,12 @@ export default function Profile() {
 				username: values.username,
 			});
 
-			toast({
-				title: "Profile updated",
+			toast.success("Profile updated", {
 				description: "Your profile information has been successfully updated.",
 			});
 			router.refresh();
 		} catch {
-			toast({
-				variant: "destructive",
-				title: "Error",
+			toast.error("Error updating profile", {
 				description: "Failed to update profile. Please try again.",
 			});
 		} finally {
@@ -85,16 +81,9 @@ export default function Profile() {
 		if (file && user) {
 			try {
 				await user.setProfileImage({ file });
-				toast({
-					title: "Success",
-					description: "Profile picture updated successfully.",
-				});
+				toast.success("Profile picture updated successfully.");
 			} catch {
-				toast({
-					variant: "destructive",
-					title: "Error",
-					description: "Failed to update profile picture. Please try again.",
-				});
+				toast.error("Failed to update profile picture. Please try again.");
 			}
 		}
 	};

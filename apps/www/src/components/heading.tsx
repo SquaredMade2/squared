@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import type { AnimationProps, MotionProps } from "framer-motion";
 import type React from "react";
 import Balancer from "react-wrap-balancer";

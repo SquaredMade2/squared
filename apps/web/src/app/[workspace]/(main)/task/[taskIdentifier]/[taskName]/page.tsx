@@ -11,20 +11,19 @@ import {
 } from "@/components/TaskPage";
 import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
 	const { isLoading, subtasks, currentTaskBlockedBy } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
-	const { toast } = useToast();
 
 	useEffect(() => {
 		if (!currentTask) return;
@@ -41,10 +40,8 @@ const TaskPage = () => {
 		},
 		onError: (error) => {
 			console.error(error);
-			toast({
-				title: "Error updating task",
+			toast.error("Error updating task", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

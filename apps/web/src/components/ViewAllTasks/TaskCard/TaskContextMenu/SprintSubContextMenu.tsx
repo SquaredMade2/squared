@@ -4,15 +4,14 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { ContextMenuProps } from "./interfaces";
 
 const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const { sprint: activeSprint, loading } = useSprints();
 
@@ -34,20 +33,16 @@ const SprintSubContextMenu = ({ task }: ContextMenuProps) => {
 			return updatedTask;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating task",
+			toast.error("Error updating task", {
 				description:
 					error instanceof Error ? error.message : "An error occurred",
-				variant: "destructive",
 			});
 		},
 		onSuccess: (updatedTask, sprintId) => {
-			toast({
-				title: "Task updated",
+			toast.success("Task updated", {
 				description: sprintId
 					? `${updatedTask.title} has been added to the active sprint.`
 					: `${updatedTask.title} has been removed from the active sprint.`,
-				variant: "default",
 			});
 		},
 	});

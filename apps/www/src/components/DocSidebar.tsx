@@ -1,11 +1,6 @@
 "use client";
 
 import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
 	Sidebar,
 	SidebarContent,
 	SidebarGroup,
@@ -19,6 +14,11 @@ import {
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ChevronDown } from "@squaredmade/icons";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@squaredmade/ui/collapsible";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";

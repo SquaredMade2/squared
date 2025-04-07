@@ -2,23 +2,23 @@
 
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { useOrganization, useUser } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
-import { client } from "@/lib/client";
-import { useOrganization, useUser } from "@clerk/nextjs";
+} from "@squaredmade/ui/dropdown-menu";
+import { Separator } from "@squaredmade/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, MoreVertical, Plus } from "lucide-react";
 import Link from "next/link";
