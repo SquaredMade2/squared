@@ -2,7 +2,6 @@ import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useUsers } from "@/hooks/useUsers";
 import { useViewStore, useWorkspaceStore } from "@/store";
 import type { TaskGroup } from "@/store/views";
-import { cn } from "@/utils/cn";
 import {
 	formatName,
 	formatPriority,
@@ -16,6 +15,7 @@ import type {
 import { Droppable } from "@hello-pangea/dnd";
 import type { Priority, Status } from "@squaredmade/db";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { cn } from "@squaredmade/ui/cn";
 import { UserSearch } from "lucide-react";
 import { GridColumnNewTaskButton } from "../../Modals";
 import type { GroupColumnProps } from "../interfaces";

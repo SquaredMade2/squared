@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight } from "@squaredmade/icons";
+import { Skeleton } from "@squaredmade/ui/skeleton";
 
 export const LoadingTask = () => {
 	return (

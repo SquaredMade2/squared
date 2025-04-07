@@ -7,14 +7,22 @@ import {
 	SprintNotFound,
 } from "@/components/Sprints";
 import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { useSprints } from "@/hooks/useSprints";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
+import type { Sprint, Status, Task } from "@squaredmade/db";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Dialog,
 	DialogClose,
@@ -23,17 +31,8 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
-import { useSprints } from "@/hooks/useSprints";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
-import type { Sprint, Status, Task } from "@squaredmade/db";
+} from "@squaredmade/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
@@ -51,6 +50,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { toast } from "sonner";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 
@@ -168,14 +168,12 @@ export default function SprintDashboardPage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to assign tasks to sprint",
+			toast.error("Failed to assign tasks to sprint", {
 				description: parseError(error, "Unknown error"),
-				variant: "destructive",
 			});
 		},
 		onSuccess: (data) => {
-			toast({ title: "Tasks assigned to sprint" });
+			toast.success("Tasks assigned to sprint");
 			setTasks(data);
 		},
 	});
@@ -191,14 +189,12 @@ export default function SprintDashboardPage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to end the sprint.",
+			toast.error("Failed to end the sprint.", {
 				description: parseError(error, "Unknown error"),
-				variant: "destructive",
 			});
 		},
 		onSuccess: () => {
-			toast({ title: "Sprint ended successfully" });
+			toast.success("Sprint ended successfully");
 			router.push(`/${organization?.slug}/team/${team?.identifier}/all`);
 		},
 	});

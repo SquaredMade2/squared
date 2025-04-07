@@ -1,7 +1,10 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useOrganization, useUser } from "@clerk/nextjs";
+import { LogOut, Settings } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -9,10 +12,7 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useSidebar } from "@/components/ui/sidebar";
-import { useOrganization, useUser } from "@clerk/nextjs";
-import { LogOut, Settings } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 import Link from "next/link";
 
 interface UserProfileProps {

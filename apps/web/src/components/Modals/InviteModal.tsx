@@ -5,19 +5,17 @@ import { LINK_EXPIRATION_TIMES } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import { Copy } from "@squaredmade/icons";
-import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -25,8 +23,10 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../ui/select";
-import { toast } from "../ui/use-toast";
+} from "@squaredmade/ui/select";
+import { useMutation } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export const InviteModal = () => {
 	const [expirationPeriod, setExpirationPeriod] = useState<string>("7d");
@@ -58,10 +58,8 @@ export const InviteModal = () => {
 		},
 		onSuccess: (inviteLink) => setLink(inviteLink),
 		onError: (error) => {
-			toast({
-				title: "Error creating link",
+			toast.error("Error creating link", {
 				description: error.message,
-				variant: "destructive",
 			});
 			if (link) setLink("");
 		},
@@ -85,12 +83,10 @@ export const InviteModal = () => {
 		const url = `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`;
 		try {
 			await window.navigator.clipboard.writeText(url);
-			toast({ title: "URL copied to clipboard" });
+			toast.success("URL copied to clipboard");
 		} catch (_) {
-			toast({
-				title: "Failed to copy URL",
+			toast.error("Failed to copy URL", {
 				description: "Please try again or copy manually",
-				variant: "destructive",
 			});
 		}
 	};

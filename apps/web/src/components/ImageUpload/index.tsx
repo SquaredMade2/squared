@@ -1,5 +1,5 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Camera } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface ImageUploadProps {
 	imageUrl?: string;

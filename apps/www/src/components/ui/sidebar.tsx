@@ -1,23 +1,22 @@
 "use client";
 
+import { useIsMobile } from "@/hooks/useMobile";
 import { PanelLeft } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
+import { Sheet, SheetContent } from "@squaredmade/ui/sheet";
+import { Skeleton } from "@squaredmade/ui/skeleton";
 import { Slot } from "@squaredmade/ui/slot";
-import { type VariantProps, cva } from "class-variance-authority";
-import * as React from "react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useIsMobile } from "@/hooks/useMobile";
-import { cn } from "@/lib/utils";
+} from "@squaredmade/ui/tooltip";
+import { type VariantProps, cva } from "class-variance-authority";
+import * as React from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

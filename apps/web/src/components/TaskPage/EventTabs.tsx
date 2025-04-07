@@ -1,6 +1,5 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
@@ -9,10 +8,11 @@ import { handleFormatSlateToComment } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreatedByInformation } from ".";
 import TextEditor, { type CustomDescendant } from "../TextEditor";
-import { useToast } from "../ui/use-toast";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
@@ -26,7 +26,6 @@ export const EventTabs = () => {
 			pageSize: 100,
 		},
 	});
-	const { toast } = useToast();
 
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
@@ -57,10 +56,8 @@ export const EventTabs = () => {
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Error creating mention",
+			toast.error("Error creating mention", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});
@@ -80,10 +77,8 @@ export const EventTabs = () => {
 
 				setComments([...comments, createdComment]);
 			} else {
-				toast({
-					title: "Error getting comments",
+				toast.error("Error getting comments", {
 					description: "Could not find user data and current task",
-					variant: "destructive",
 				});
 				throw new Error("Could not find user data and current task");
 			}
@@ -95,19 +90,15 @@ export const EventTabs = () => {
 			} else {
 				if (!users) console.error("No users found", users);
 				if (!workspace) console.error("No workspace found", workspace);
-				toast({
-					title: "Mentions could not be processed",
+				toast.error("Mentions could not be processed", {
 					description:
 						"Your comment was saved, but user mentions couldn't be processed",
-					variant: "destructive",
 				});
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Error adding comment",
+			toast.error("Error adding comment", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

@@ -2,7 +2,15 @@
 
 import { PriorityIcon } from "@/components/Icons";
 import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSprints } from "@/hooks/useSprints";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
+import type { Priority, Sprint, Task } from "@squaredmade/db";
+import { CircleAlert } from "@squaredmade/icons";
+import { Alert, AlertDescription, AlertTitle } from "@squaredmade/ui/alert";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,15 +20,15 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -28,17 +36,8 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
-import { useSprints } from "@/hooks/useSprints";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
-import type { Priority, Sprint, Task } from "@squaredmade/db";
-import { CircleAlert } from "@squaredmade/icons";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
@@ -51,7 +50,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-
+import { toast } from "sonner";
 export default function SprintDashboard() {
 	const { sprints, sprint, team: currentTeam } = useSprints();
 	const { tasks, setTasks } = useTaskStore((state) => state);
@@ -74,8 +73,6 @@ export default function SprintDashboard() {
 		}[]
 	>([]);
 	useWorkspaces();
-
-	const { toast } = useToast();
 
 	useEffect(() => {
 		setTargetSprint(sprint?.id);
@@ -210,10 +207,8 @@ export default function SprintDashboard() {
 			);
 		},
 		onError: (error) => {
-			toast({
-				title: "Error Assigning Tasks",
+			toast.error("Error Assigning Tasks", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
@@ -276,10 +271,8 @@ export default function SprintDashboard() {
 			);
 		},
 		onError: (error) => {
-			toast({
-				title: "Error Auto-Assigning Tasks",
+			toast.error("Error Auto-Assigning Tasks", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});

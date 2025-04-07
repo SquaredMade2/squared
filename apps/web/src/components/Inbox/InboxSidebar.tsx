@@ -1,6 +1,4 @@
 import type { NotificationFilter } from "@/app/inbox/page";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import type { Notification } from "@squaredmade/db";
@@ -14,7 +12,9 @@ import {
 	MessageCircleMore,
 	type SquaredIcon,
 } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import { Label } from "@squaredmade/ui/label";
+import { Separator } from "@squaredmade/ui/separator";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;

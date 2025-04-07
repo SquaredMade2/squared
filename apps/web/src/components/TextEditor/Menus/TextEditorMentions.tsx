@@ -4,12 +4,12 @@ import {
 	CommandGroup,
 	CommandList,
 } from "@/components/ui/command";
-import { cn } from "@/utils/cn";
 import { formatName, getInitials, truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { cn } from "@squaredmade/ui/cn";
 import { CommandItem } from "cmdk";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef } from "react";

@@ -1,7 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -10,26 +8,27 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useUsers } from "@/hooks/useUsers";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore } from "@/store";
+import { formatName, getInitials } from "@/utils/formatting";
+import type { TaskEvent } from "@squaredmade/db";
+import { Check, ChevronsUpDown, UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
-import { useUsers } from "@/hooks/useUsers";
-import { client } from "@/lib/client";
-import { useEventStore, useTaskStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { formatName, getInitials } from "@/utils/formatting";
-import type { TaskEvent } from "@squaredmade/db";
-import { Check, ChevronsUpDown, UserSearch } from "@squaredmade/icons";
+} from "@squaredmade/ui/popover";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const { toast } = useToast();
 	const { setEvents } = useEventStore((state) => state);
 	const queryClient = useQueryClient();
 	const { users } = useUsers();
@@ -60,17 +59,12 @@ const AssigneeCombobox = () => {
 			queryClient.invalidateQueries({
 				queryKey: ["event", currentTask?.id],
 			});
-			toast({
-				title: "Success",
-				description: "Assignee updated successfully",
-			});
+			toast.success("Assignee updated successfully");
 		},
 		onError: (error) => {
-			toast({
-				title: "Error",
+			toast.error("Error updating assignee", {
 				description:
 					error instanceof Error ? error.message : "Failed to update assignee",
-				variant: "destructive",
 			});
 		},
 	});

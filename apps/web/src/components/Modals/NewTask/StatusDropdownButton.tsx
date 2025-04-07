@@ -1,17 +1,17 @@
 import { StatusIcon } from "@/components/Icons";
-import { Button } from "@/components/ui/button";
+import { statusOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import type { Status } from "@squaredmade/db";
+import { Check } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { statusOptions } from "@/lib/constants";
-import { useModalStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@squaredmade/db";
-import { Check } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 
 export const StatusDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);

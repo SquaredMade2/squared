@@ -1,24 +1,22 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Card } from "@squaredmade/ui/card";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { toast } from "sonner";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
-	const { toast } = useToast();
 	const router = useRouter();
 
 	// List of restricted routes (initial set)
@@ -63,17 +61,15 @@ const Join = () => {
 		},
 		onSuccess: (data) => {
 			if (!data) return;
-			toast({ title: "Workspace created successfully" });
+			toast.success("Workspace created successfully");
 			if (data) {
 				router.refresh();
 				router.push(`/${data.url}`);
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to create workspace",
+			toast.error("Failed to create workspace", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});
@@ -100,34 +96,24 @@ const Join = () => {
 		e.preventDefault();
 
 		if (inputValue.length === 0) {
-			toast({
-				title: "Please enter a workspace name.",
-				variant: "destructive",
-			});
+			toast.error("Please enter a workspace name.");
 			return;
 		}
 
 		if (urlInputValue.length === 0) {
-			toast({
-				title: "Please enter a workspace URL.",
-				variant: "destructive",
-			});
+			toast.error("Please enter a workspace URL.");
 			return;
 		}
 
 		if (isUrlTaken(urlInputValue)) {
-			toast({
-				title: "Workspace URL already exists. Please choose a different name.",
-				variant: "destructive",
-			});
+			toast.error(
+				"Workspace URL already exists. Please choose a different name.",
+			);
 			return;
 		}
 
 		if (urlInputValue.includes("/")) {
-			toast({
-				title: "Workplace URL cannot contain '/'",
-				variant: "destructive",
-			});
+			toast.error("Workplace URL cannot contain '/'");
 			return;
 		}
 

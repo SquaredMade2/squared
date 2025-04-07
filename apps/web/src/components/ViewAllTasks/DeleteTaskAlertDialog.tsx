@@ -4,9 +4,6 @@ import { client } from "@/lib/client";
 import { useTaskStore, useTeamStore, useViewStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import type { Task } from "@squaredmade/db";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import type { Dispatch, SetStateAction } from "react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,9 +13,12 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { buttonVariants } from "../ui/button";
-import { useToast } from "../ui/use-toast";
+} from "@squaredmade/ui/alert-dialog";
+import { buttonVariants } from "@squaredmade/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import type { Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
 
 export const DeleteTaskAlertDialog = ({
 	task,
@@ -35,7 +35,6 @@ export const DeleteTaskAlertDialog = ({
 	const { lastVisitedPage } = useViewStore((state) => state);
 	const { organization } = useOrganization();
 	const { team } = useTeamStore((state) => state);
-	const { toast } = useToast();
 	const router = useRouter();
 
 	const { mutate: handleDelete } = useMutation({
@@ -46,8 +45,7 @@ export const DeleteTaskAlertDialog = ({
 			});
 		},
 		onSuccess: () => {
-			toast({
-				title: "Task Deleted",
+			toast.success("Task Deleted", {
 				description: `${task.title} has been successfully deleted.`,
 			});
 			deleteTask(task.id);
@@ -58,10 +56,8 @@ export const DeleteTaskAlertDialog = ({
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Error deleting task",
+			toast.error("Error deleting task", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
