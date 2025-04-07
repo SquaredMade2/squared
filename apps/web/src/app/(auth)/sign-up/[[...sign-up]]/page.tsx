@@ -11,7 +11,7 @@ import {
 } from "@squaredmade/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
+import { authStyles } from "../../authStyles";
 const RegisterPage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
@@ -33,19 +33,7 @@ const RegisterPage = () => {
 				<CardContent>
 					<SignUp
 						appearance={{
-							elements: {
-								formButtonPrimary:
-									"bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 w-full",
-								card: "bg-transparent shadow-none",
-								header: "hidden",
-								footer: "hidden",
-								formFieldLabel: "text-muted-foreground",
-								formResendCodeLink: "text-muted-foreground",
-								socialButtonsBlockButton: "bg-primary/20",
-								socialButtonsBlockButtonText: "text-foreground/80",
-								otpCodeFieldInput:
-									"flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground/80",
-							},
+							elements: authStyles,
 						}}
 						signInForceRedirectUrl={"/"}
 						fallbackRedirectUrl={"/welcome"}
