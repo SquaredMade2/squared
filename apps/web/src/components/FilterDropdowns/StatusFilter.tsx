@@ -69,39 +69,21 @@ const StatusFilterDropDown = ({
 		useFilterStore((state) => state);
 
 	const handleStatusChange = (status: Status, checked: boolean) => {
-		setSelectedStatuses((prev) => {
-			if (!checked && prev.length === 1 && prev.includes(status)) {
-				//delay the filter removal to allow the checkbox to update
-				setTimeout(() => {
-					removeFilter("status");
-				}, 0);
-				return [];
-			}
-			return checked
-				? [...prev, status]
-				: prev.filter((item) => item !== status);
-		});
+		setSelectedStatuses((prev) =>
+			checked ? [...prev, status] : prev.filter((item) => item !== status),
+		);
 	};
 
 	useEffect(() => {
+		removeFilter("status");
 		if (selectedStatuses.length > 0) {
-			const currentStatusFilter = currentFilters.find(
-				(filter) => filter.field === "status",
-			);
-			const currentValues = (currentStatusFilter?.value as Status[]) || [];
-
-			const needsUpdate = currentValues.length !== selectedStatuses.length;
-
-			if (needsUpdate) {
-				removeFilter("status");
-				addFilter({
-					field: "status",
-					value: selectedStatuses,
-					operator: "arrayIncludesAny",
-				});
-			}
+			addFilter({
+				field: "status",
+				value: selectedStatuses,
+				operator: "arrayIncludesAny",
+			});
 		}
-	}, [selectedStatuses, addFilter, removeFilter, currentFilters]);
+	}, [selectedStatuses, addFilter, removeFilter]);
 
 	useEffect(() => {
 		if (
@@ -117,38 +99,6 @@ const StatusFilterDropDown = ({
 			}
 		}
 	}, [currentFilterTypes, currentFilters]);
-
-	//this was the code before
-
-	// useEffect(() => {
-	// 	if (selectedStatuses.length > 0) {
-	// 		removeFilter("status");
-	// 		addFilter({
-	// 			field: "status",
-	// 			value: selectedStatuses,
-	// 			operator: "arrayIncludesAny",
-	// 		});
-	// 	} else {
-	// 		if (currentFilterTypes.includes("status")) {
-	// 			setSelectedStatuses(
-	// 				currentFilters
-	// 					.filter((filter) => filter.field === "status")
-	// 					.flatMap((filter) => filter.value) as Status[],
-	// 			);
-	// 		} else {
-	// 			removeFilter("status");
-	// 		}
-	// 	}
-	// }, [selectedStatuses, addFilter, removeFilter]);
-
-	// useEffect(() => {
-	// 	if (
-	// 		currentFilterTypes.length === 0 ||
-	// 		!currentFilterTypes.includes("status")
-	// 	) {
-	// 		setSelectedStatuses([]);
-	// 	}
-	// }, [currentFilterTypes]);
 
 	return (
 		<DropdownMenuSub>
