@@ -46,7 +46,7 @@ export default function EffortFilterDropDown({
 
 	useEffect(() => {
 		if (
-			currentFilterTypes.length === 0 &&
+			selectedEffort === null &&
 			currentFilterTypes.includes("effortEstimate")
 		) {
 			const effortValues = Number(

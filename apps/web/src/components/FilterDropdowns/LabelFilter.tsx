@@ -63,7 +63,7 @@ export default function LabelFilterDropDown({
 				setSelectedLabels(matchedLabels);
 			}
 		}
-	}, []);
+	}, [currentFilterTypes, currentFilters]);
 
 	const filteredLabels =
 		workspace?.labels?.filter((label) =>
