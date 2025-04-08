@@ -38,39 +38,32 @@ export default function LabelFilterDropDown({
 	};
 
 	useEffect(() => {
+		removeFilter("labels");
 		if (selectedLabels.length > 0) {
-			removeFilter("labels");
 			addFilter({
 				field: "labels",
 				value: selectedLabels.map((label) => label.name),
 				operator: "arrayIncludesAny",
 			});
-		} else {
-			if (currentFilterTypes.includes("labels")) {
-				setSelectedLabels(
-					currentFilters
-						.filter((filter) => filter.field === "labels")
-						.flatMap(
-							(filter) =>
-								workspace?.labels?.filter((label) =>
-									(filter.value as string[]).includes(label.name),
-								) ?? [],
-						),
-				);
-			} else {
-				removeFilter("labels");
-			}
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
 
 	useEffect(() => {
-		if (
-			currentFilterTypes.length === 0 ||
-			!currentFilterTypes.includes("labels")
-		) {
-			setSelectedLabels([]);
+		if (selectedLabels.length === 0 && currentFilterTypes.includes("labels")) {
+			const labelValues = currentFilters
+				.filter((filter) => filter.field === "labels")
+				.flatMap((filter) => filter.value) as string[];
+
+			const matchedLabels =
+				workspace?.labels?.filter((label) =>
+					labelValues.includes(label.name),
+				) || [];
+
+			if (labelValues.length > 0) {
+				setSelectedLabels(matchedLabels);
+			}
 		}
-	}, [currentFilterTypes]);
+	}, []);
 
 	const filteredLabels =
 		workspace?.labels?.filter((label) =>

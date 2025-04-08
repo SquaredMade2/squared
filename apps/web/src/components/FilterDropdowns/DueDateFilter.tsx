@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useFilterStore } from "@/store";
 import type { FilterCondition } from "@/store/filters";
+import { formatDateForComparison } from "@/store/filters/helpers";
 import { useEffect, useState } from "react";
 import {
 	DropdownMenuSub,
@@ -20,7 +21,8 @@ const DueDateFilterDropDown = ({
 	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(
 		"before",
 	);
-	const { addFilter, currentFilterTypes } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
+		useFilterStore((state) => state);
 
 	const handleSelectDate = (date: Date | undefined) => {
 		setSelectedDate(date);
@@ -30,6 +32,22 @@ const DueDateFilterDropDown = ({
 		setSelectedToggle(type);
 	};
 
+	const dueDateFilter = currentFilters.find(
+		(filter) => filter.field === "dueDate",
+	);
+
+	const storedDueDateValue = dueDateFilter?.value
+		? (dueDateFilter.value as string | undefined)
+		: undefined;
+
+	useEffect(() => {
+		if (storedDueDateValue) {
+			setSelectedDate(new Date(storedDueDateValue));
+		} else {
+			setSelectedDate(undefined);
+		}
+	}, [storedDueDateValue]);
+
 	const handleFilter = () => {
 		if (selectedToggle && selectedDate) {
 			const filterCondition: FilterCondition = {
@@ -38,6 +56,20 @@ const DueDateFilterDropDown = ({
 				operator: selectedToggle === "before" ? "lessThan" : "greaterThan",
 			};
 			addFilter(filterCondition);
+			setOpen(false);
+		}
+	};
+
+	const isSameDate =
+		selectedDate &&
+		storedDueDateValue &&
+		formatDateForComparison(storedDueDateValue.toString()) ===
+			formatDateForComparison(selectedDate.toISOString());
+
+	const resetFilter = () => {
+		if (isSameDate) {
+			removeFilter("dueDate");
+			setSelectedDate(undefined);
 			setOpen(false);
 		}
 	};
@@ -86,9 +118,13 @@ const DueDateFilterDropDown = ({
 					<Button variant="outline" onClick={() => setOpen(false)}>
 						Cancel
 					</Button>
-					<Button onClick={handleFilter} disabled={!selectedDate}>
-						Filter
-					</Button>
+					{isSameDate ? (
+						<Button onClick={resetFilter}>Clear</Button>
+					) : (
+						<Button onClick={handleFilter} disabled={!selectedDate}>
+							Filter
+						</Button>
+					)}
 				</div>
 			</DropdownMenuSubContent>
 		</DropdownMenuSub>

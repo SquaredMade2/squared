@@ -11,6 +11,7 @@ import { useFilterStore } from "@/store/filters";
 import { Check } from "@squaredmade/icons";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
+//import { set } from "date-fns";
 
 const effortOptions = [
 	{ id: 0, name: 1, svg: low(), group: "effortEstimate" },
@@ -33,34 +34,28 @@ export default function EffortFilterDropDown({
 		useFilterStore((state) => state);
 
 	useEffect(() => {
+		removeFilter("effortEstimate");
 		if (selectedEffort !== null) {
-			removeFilter("effortEstimate");
 			addFilter({
 				field: "effortEstimate",
 				value: selectedEffort,
 				operator: "equals",
 			});
-		} else {
-			if (currentFilterTypes.includes("effortEstimate")) {
-				setSelectedEffort(
-					Number(
-						currentFilters
-							.filter((filter) => filter.field === "effortEstimate")
-							.flatMap((filter) => filter.value),
-					),
-				);
-			} else {
-				removeFilter("effortEstimate");
-			}
 		}
 	}, [selectedEffort, addFilter, removeFilter]);
 
 	useEffect(() => {
 		if (
-			currentFilterTypes.length === 0 ||
-			!currentFilterTypes.includes("effortEstimate")
+			currentFilterTypes.length === 0 &&
+			currentFilterTypes.includes("effortEstimate")
 		) {
-			setSelectedEffort(null);
+			const effortValues = Number(
+				currentFilters
+					.filter((filter) => filter.field === "effortEstimate")
+					.flatMap((filter) => filter.value),
+			);
+
+			setSelectedEffort(effortValues);
 		}
 	}, [currentFilterTypes]);
 

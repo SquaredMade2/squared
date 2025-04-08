@@ -67,34 +67,30 @@ const PriorityFilterDropDown = ({
 	};
 
 	useEffect(() => {
+		removeFilter("priority");
 		if (selectedPriorities.length > 0) {
-			removeFilter("priority");
 			addFilter({
 				field: "priority",
 				value: selectedPriorities,
 				operator: "arrayIncludesAny",
 			});
-		} else {
-			if (currentFilterTypes.includes("priority")) {
-				setSelectedPriorities(
-					currentFilters
-						.filter((filter) => filter.field === "priority")
-						.flatMap((filter) => filter.value) as Priority[],
-				);
-			} else {
-				removeFilter("priority");
-			}
 		}
-	}, [selectedPriorities]);
+	}, [selectedPriorities, addFilter, removeFilter]);
 
 	useEffect(() => {
 		if (
-			currentFilterTypes.length === 0 ||
-			!currentFilterTypes.includes("priority")
+			selectedPriorities.length === 0 &&
+			currentFilterTypes.includes("priority")
 		) {
-			setSelectedPriorities([]);
+			const priorityValues = currentFilters
+				.filter((filter) => filter.field === "priority")
+				.flatMap((filter) => filter.value) as Priority[];
+
+			if (priorityValues.length > 0) {
+				setSelectedPriorities(priorityValues);
+			}
 		}
-	}, [currentFilterTypes]);
+	}, [currentFilterTypes, currentFilters]);
 
 	return (
 		<DropdownMenuSub>
