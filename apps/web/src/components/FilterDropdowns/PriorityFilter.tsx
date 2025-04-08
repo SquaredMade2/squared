@@ -1,11 +1,11 @@
+import { useFilterStore } from "@/store";
+import { Priority } from "@squaredmade/db";
 import {
 	DropdownMenuCheckboxItem,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useFilterStore } from "@/store";
-import { Priority } from "@squaredmade/db";
+} from "@squaredmade/ui/dropdown-menu";
 import { useEffect, useState } from "react";
 import { PriorityIcon } from "../Icons";
 import type { FilterOption } from "./interfaces";

@@ -1,5 +1,5 @@
 import { Bold, Heading, Italic } from "@squaredmade/icons";
-import { Button } from "../ui/button";
+import { Button } from "@squaredmade/ui/button";
 import LinkModal from "./Menus/LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
 

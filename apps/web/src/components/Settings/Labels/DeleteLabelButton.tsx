@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
+import { Button } from "@squaredmade/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
 export const DeleteLabelButton = ({
 	labelName,
@@ -12,8 +12,6 @@ export const DeleteLabelButton = ({
 	pageId: string;
 	refetch: () => void;
 }) => {
-	const { toast } = useToast();
-
 	const deleteLabelMutation = useMutation({
 		mutationFn: async () => {
 			await client.workspace.deleteWorkspaceLabel
@@ -21,15 +19,13 @@ export const DeleteLabelButton = ({
 				.then((res) => res.json());
 		},
 		onSuccess: () => {
-			toast({ title: `${labelName} successfully deleted` });
+			toast.success(`${labelName} successfully deleted`);
 			refetch();
 		},
 		onError: (error) => {
 			console.error(error);
-			toast({
-				title: "Label could not be deleted",
+			toast.error("Label could not be deleted", {
 				description: "An unknown error occurred",
-				variant: "destructive",
 			});
 		},
 	});

@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/utils/cn";
-import { Calendar as CalendarIcon } from "@squaredmade/icons";
+} from "@squaredmade/ui/popover";
 import { format } from "date-fns";
 import * as React from "react";
 

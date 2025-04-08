@@ -9,17 +9,17 @@ import {
 	CommandList,
 	CommandSeparator,
 } from "@/components/ui/command";
+import { useModalStore } from "@/store";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { Check, CirclePlus } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { useModalStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
-import { Check, CirclePlus } from "@squaredmade/icons";
+} from "@squaredmade/ui/dialog";
 import { useRouter } from "next/navigation";
 import WorkspaceInitials from "../WorkspaceImage";
 

@@ -1,5 +1,11 @@
 # @squaredmade/ui
 
+## 2.0.2
+
+### Patch Changes
+
+- Fix Up Exports for Calendar and Alert Dialog
+
 ## 2.0.1
 
 ### Patch Changes

@@ -1,18 +1,16 @@
+import { useUsers } from "@/hooks/useUsers";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
 import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-
-import { useToast } from "@/components/ui/use-toast";
-import { useUsers } from "@/hooks/useUsers";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
+} from "@squaredmade/ui/dropdown-menu";
+import { toast } from "sonner";
 import type { AssigneeBoxProps } from "./interfaces";
 
 export const AssigneeBox = ({ task }: AssigneeBoxProps) => {
-	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = task.id;
 	const { users } = useUsers();
@@ -26,8 +24,7 @@ export const AssigneeBox = ({ task }: AssigneeBoxProps) => {
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 		} catch (error) {
-			toast({
-				title: "Error",
+			toast.error("Error updating task", {
 				description: `Failed to update assignee: ${error}`,
 			});
 		}

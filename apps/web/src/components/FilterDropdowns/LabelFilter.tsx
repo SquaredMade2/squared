@@ -8,16 +8,16 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFilterStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squaredmade/db";
 import { Check } from "@squaredmade/icons";
-import { useEffect, useState } from "react";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "../ui/dropdown-menu";
-import { ScrollArea } from "../ui/scroll-area";
+} from "@squaredmade/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 export default function LabelFilterDropDown({

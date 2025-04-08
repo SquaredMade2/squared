@@ -1,5 +1,5 @@
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import { Globe } from "../globe";
 export const SkeletonFour = () => {
 	return (

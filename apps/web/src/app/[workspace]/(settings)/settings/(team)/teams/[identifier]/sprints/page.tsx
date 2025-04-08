@@ -1,8 +1,10 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import type { Team } from "@squaredmade/db";
 import {
 	Calendar as CalendarIcon,
@@ -11,11 +13,6 @@ import {
 	Maximize2,
 	X,
 } from "@squaredmade/icons";
-import { addDays, format, startOfWeek } from "date-fns";
-import Link from "next/link";
-import { useState } from "react";
-
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -26,29 +23,31 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
+import { cn } from "@squaredmade/ui/cn";
+import { Label } from "@squaredmade/ui/label";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@squaredmade/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { client } from "@/lib/client";
-import { cn } from "@/utils/cn";
-import { parseError } from "@/utils/parseError";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { addDays, format, startOfWeek } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
@@ -60,7 +59,6 @@ export default function SprintSettings() {
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		team?.sprintStartDate || null,
 	);
-	const { toast } = useToast();
 
 	const {
 		data: { pending, active } = { pending: 0, active: null },
@@ -114,10 +112,8 @@ export default function SprintSettings() {
 			refetchSprints();
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating team sprints",
+			toast.error("Error updating team sprints", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});
@@ -131,18 +127,14 @@ export default function SprintSettings() {
 				.then((res) => res.json());
 		},
 		onSuccess: async () => {
-			toast({
-				title: "Active tasks added to sprint",
+			toast.success("Active tasks added to sprint", {
 				description:
 					"The tasks have been successfully added to the current sprint.",
-				variant: "default",
 			});
 		},
 		onError: (error) => {
-			toast({
-				title: "Error adding active tasks to sprint",
+			toast.error("Error adding active tasks to sprint", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});
