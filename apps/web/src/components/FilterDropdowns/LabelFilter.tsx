@@ -38,8 +38,9 @@ export default function LabelFilterDropDown({
 	};
 
 	useEffect(() => {
-		removeFilter("labels");
-		if (selectedLabels.length > 0) {
+		if (selectedLabels.length === 0) {
+			removeFilter("labels");
+		} else if (selectedLabels.length > 0) {
 			addFilter({
 				field: "labels",
 				value: selectedLabels.map((label) => label.name),

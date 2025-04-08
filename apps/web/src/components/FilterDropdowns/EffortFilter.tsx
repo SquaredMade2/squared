@@ -57,7 +57,7 @@ export default function EffortFilterDropDown({
 
 			setSelectedEffort(effortValues);
 		}
-	}, [currentFilterTypes]);
+	}, [currentFilterTypes, selectedEffort, currentFilters]);
 
 	const handleEffortSelect = (effort: number) => {
 		setSelectedEffort((prevEffort) => (prevEffort === effort ? null : effort));
