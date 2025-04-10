@@ -20,6 +20,9 @@ export function MembersPage({
 		...membership.publicUserData,
 		role: membership.role,
 	}));
+	const hasMembershipManagePermission = membership?.permissions.includes(
+		"org:sys_memberships:manage",
+	) as ClerkAuthorization["permissions"] | undefined;
 	return (
 		<>
 			{users && users.length > 0 && (
@@ -27,7 +30,7 @@ export function MembersPage({
 					columns={columns}
 					data={users}
 					team={team ? team : null}
-					userRole={membership?.role}
+					membershipManagementPermission={hasMembershipManagePermission}
 				/>
 			)}
 		</>

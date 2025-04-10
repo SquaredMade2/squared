@@ -26,16 +26,20 @@ export type MemberWithRole = PublicUserData & {
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
-	userRole: string | undefined;
+	membershipManagementPermission: ClerkAuthorization["permissions"] | undefined;
 	team: Team | null;
 }
 
-export function DataTable({ columns, data, userRole }: DataTableProps) {
+export function DataTable({
+	columns,
+	data,
+	membershipManagementPermission,
+}: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		columns.reduce((init, { id }) => {
 			if (id) {
-				init[`${id}`] = userRole === "org:admin" || userRole === "org:owner";
+				init[`${id}`] = Boolean(membershipManagementPermission);
 			}
 			return init;
 		}, {} as VisibilityState),
@@ -117,12 +121,9 @@ export function DataTable({ columns, data, userRole }: DataTableProps) {
 						className="max-w-xs"
 					/>
 					<div className="flex items-center justify-center gap-2">
-						<Button
-							disabled={userRole !== "org:admin"}
-							onClick={handleWorkspaceInvite}
-						>
-							Invite People
-						</Button>
+						<Protect permission={"org:sys_memberships:manage"}>
+							<Button onClick={handleWorkspaceInvite}>Invite People</Button>
+						</Protect>
 					</div>
 				</div>
 				<Table>
@@ -160,11 +161,7 @@ export function DataTable({ columns, data, userRole }: DataTableProps) {
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!
 					</p>
-					<Protect
-						condition={(has) =>
-							has({ role: "org:admin" }) || has({ role: "org:owner" })
-						}
-					>
+					<Protect condition={(has) => has({ role: "org:admin" })}>
 						<Button variant={"outline"}>
 							{membersCsv && (
 								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>

@@ -23,12 +23,9 @@ declare global {
 			clear: jest.MockedFunction<() => void>;
 		};
 	}
-
 	interface ClerkAuthorization {
-		role: "org:admin" | "org:member" | "org:owner";
-		permissions: Autocomplete<
-			OrganizationSystemPermissionKey | string[] | undefined
-		>;
+		role: "org:admin" | "org:member";
+		permissions: Autocomplete<OrganizationSystemPermissionKey | string[]>;
 	}
 }
 
