@@ -1,4 +1,5 @@
 import { useModalStore } from "@/store";
+import { Protect } from "@clerk/nextjs";
 import type { Label } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
@@ -35,8 +36,6 @@ export function DataTable({
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
 
-	const hasPermission = !workspaceManagePermission;
-
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
 		setSearchTerm(value);
@@ -65,15 +64,16 @@ export function DataTable({
 						className="max-w-xs"
 					/>
 					<div className="flex items-center justify-center gap-2">
-						<Button
-							disabled={hasPermission}
-							onClick={() => {
-								setShowLabelModal(true);
-								setLabelData({});
-							}}
-						>
-							Add New Label
-						</Button>
+						<Protect permission="org:sys_profile:manage">
+							<Button
+								onClick={() => {
+									setShowLabelModal(true);
+									setLabelData({});
+								}}
+							>
+								Add New Label
+							</Button>
+						</Protect>
 					</div>
 				</div>
 				<Table>

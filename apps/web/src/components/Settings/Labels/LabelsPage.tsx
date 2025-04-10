@@ -15,7 +15,7 @@ export function LabelsPage({
 }) {
 	const { membership } = useOrganization();
 	const hasWorkspaceManagePermission = membership?.permissions.includes(
-		"org:sys_domains:manage",
+		"org:sys_profile:manage",
 	);
 	return (
 		<>

@@ -22,7 +22,7 @@ export function MembersPage({
 	}));
 	const hasMembershipManagePermission = membership?.permissions.includes(
 		"org:sys_memberships:manage",
-	) as ClerkAuthorization["permissions"] | undefined;
+	);
 	return (
 		<>
 			{users && users.length > 0 && (

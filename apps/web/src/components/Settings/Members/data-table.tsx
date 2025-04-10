@@ -26,7 +26,7 @@ export type MemberWithRole = PublicUserData & {
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
-	membershipManagementPermission: ClerkAuthorization["permissions"] | undefined;
+	membershipManagementPermission: boolean | undefined;
 	team: Team | null;
 }
 
