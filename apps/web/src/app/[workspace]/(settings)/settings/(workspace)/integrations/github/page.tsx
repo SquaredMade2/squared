@@ -3,7 +3,7 @@
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import { client } from "@/lib/client";
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { Protect, useOrganization, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
@@ -88,11 +88,13 @@ const GithubSettings: React.FC = () => {
 										</p>
 									</div>
 									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button variant="ghost" size="sm">
-												<MoreVertical className="h-4 w-4" />
-											</Button>
-										</DropdownMenuTrigger>
+										<Protect permission="org:sys_profile:manage">
+											<DropdownMenuTrigger asChild>
+												<Button variant="ghost" size="sm">
+													<MoreVertical className="h-4 w-4" />
+												</Button>
+											</DropdownMenuTrigger>
+										</Protect>
 										<DropdownMenuContent align="end">
 											<DropdownMenuItem
 												disabled={isNotAdmin}
@@ -111,23 +113,25 @@ const GithubSettings: React.FC = () => {
 								</div>
 							))}
 							<Separator />
-							<div className="flex items-center justify-end">
-								<Button
-									className="mt-4"
-									variant="ghost"
-									disabled={isNotAdmin}
-									onClick={() =>
-										window.open(
-											`https://github.com/apps/squaredmadeapp/installations/new?state=${organization?.id}&redirect_uri=${callbackUrl}`,
-											"_blank",
-											"noopener,noreferrer",
-										)
-									}
-								>
-									<Plus className="mr-2 size-4" />
-									Add Organization
-								</Button>
-							</div>
+							<Protect permission="org:sys_profile:manage">
+								<div className="flex items-center justify-end">
+									<Button
+										className="mt-4"
+										variant="ghost"
+										disabled={isNotAdmin}
+										onClick={() =>
+											window.open(
+												`https://github.com/apps/squaredmadeapp/installations/new?state=${organization?.id}&redirect_uri=${callbackUrl}`,
+												"_blank",
+												"noopener,noreferrer",
+											)
+										}
+									>
+										<Plus className="mr-2 size-4" />
+										Add Organization
+									</Button>
+								</div>
+							</Protect>
 						</CardContent>
 					</Card>
 
