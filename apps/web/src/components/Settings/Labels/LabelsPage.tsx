@@ -14,13 +14,16 @@ export function LabelsPage({
 	workspace?: Workspace | null;
 }) {
 	const { membership } = useOrganization();
+	const hasWorkspaceManagePermission = membership?.permissions.includes(
+		"org:sys_domains:manage",
+	);
 	return (
 		<>
 			{labels.length > 0 && workspace && (
 				<DataTable
 					columns={columns}
 					data={labels}
-					userRole={membership?.role}
+					workspaceManagePermission={hasWorkspaceManagePermission}
 				/>
 			)}
 		</>

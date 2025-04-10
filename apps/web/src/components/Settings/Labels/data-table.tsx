@@ -17,23 +17,25 @@ import { useState } from "react";
 export function DataTable({
 	columns,
 	data,
-	userRole,
+	workspaceManagePermission,
 }: {
 	columns: ColumnDef<Label, unknown>[];
 	data: Label[];
-	userRole: string | undefined;
+	workspaceManagePermission: boolean | undefined;
 }) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		columns.reduce((init, { id }) => {
 			if (id) {
-				init[`${id}`] = userRole === "org:admin";
+				init[`${id}`] = Boolean(workspaceManagePermission);
 			}
 			return init;
 		}, {} as VisibilityState),
 	);
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
+
+	const hasPermission = !workspaceManagePermission;
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -64,7 +66,7 @@ export function DataTable({
 					/>
 					<div className="flex items-center justify-center gap-2">
 						<Button
-							disabled={userRole !== "org:admin"}
+							disabled={hasPermission}
 							onClick={() => {
 								setShowLabelModal(true);
 								setLabelData({});
