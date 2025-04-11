@@ -1,6 +1,5 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
@@ -9,52 +8,59 @@ import { handleFormatSlateToComment } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreatedByInformation } from ".";
 import TextEditor, { type CustomDescendant } from "../TextEditor";
-import { useToast } from "../ui/use-toast";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
 	const { comments, setComments } = useCommentStore((state) => state);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const { workspace } = useTaskDashboard();
+
 	const { memberships } = useOrganization({
 		memberships: {
 			infinite: true,
 			pageSize: 100,
 		},
 	});
-	const { toast } = useToast();
 
 	const users = memberships?.data?.map(
 		(membership) => membership.publicUserData,
 	);
 
-	function createMentions({
-		editorContent,
-	}: {
-		editorContent: CustomDescendant[];
-	}) {
-		if (!currentTask || !workspace) return;
+	const { mutate: createMentionNotifications } = useMutation({
+		mutationKey: ["notification", "createMention"],
+		mutationFn: async ({
+			editorContent,
+		}: { editorContent: CustomDescendant[] }) => {
+			if (!currentTask || !workspace) return;
 
-		const mentions = getMentionsFromSlate(editorContent);
+			const mentions = getMentionsFromSlate(editorContent);
 
-		for (const mention of mentions) {
-			const mentionedUser = users?.find((user) => user.firstName === mention);
+			for (const mention of mentions) {
+				const mentionedUser = users?.find((user) => user.firstName === mention);
 
-			if (!mentionedUser || !mentionedUser.userId) continue;
+				if (!mentionedUser || !mentionedUser.userId) continue;
 
-			const mentionEvent: CreateNotificationRequest = {
-				description: "Task Comment Mention",
-				taskId: currentTask.id,
-				type: "MENTIONED",
-				userId: mentionedUser.userId,
-				workspaceId: workspace.id,
-			};
-			client.notification.createMention.$post(mentionEvent);
-		}
-	}
+				const mentionEvent: CreateNotificationRequest = {
+					description: "Task Comment Mention",
+					taskId: currentTask.id,
+					type: "MENTIONED",
+					userId: mentionedUser.userId,
+					workspaceId: workspace.externalId,
+				};
+				await client.notification.createMention.$post(mentionEvent);
+			}
+		},
+		onError: (error) => {
+			toast.error("Error creating mention", {
+				description: parseError(error),
+			});
+		},
+	});
 
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", currentTask?.id],
@@ -71,34 +77,28 @@ export const EventTabs = () => {
 
 				setComments([...comments, createdComment]);
 			} else {
-				toast({
-					title: "Error getting comments",
+				toast.error("Error getting comments", {
 					description: "Could not find user data and current task",
-					variant: "destructive",
 				});
 				throw new Error("Could not find user data and current task");
 			}
 
 			if (users && workspace) {
-				createMentions({
+				createMentionNotifications({
 					editorContent,
 				});
 			} else {
 				if (!users) console.error("No users found", users);
 				if (!workspace) console.error("No workspace found", workspace);
-				toast({
-					title: "Mentions could not be processed",
+				toast.error("Mentions could not be processed", {
 					description:
 						"Your comment was saved, but user mentions couldn't be processed",
-					variant: "destructive",
 				});
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Error adding comment",
+			toast.error("Error adding comment", {
 				description: parseError(error),
-				variant: "destructive",
 			});
 		},
 	});

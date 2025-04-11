@@ -9,16 +9,20 @@ import {
 	Check,
 	Trash2,
 } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
+import {
+	Tooltip,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@squaredmade/ui/tooltip";
 import { useMutation } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 export const columns: ColumnDef<
 	Notification & { Task: Task; Workspace: Workspace }

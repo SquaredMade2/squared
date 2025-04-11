@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import styles from "./common.module.css";
 
 export const GridLineHorizontal = ({ ...props }) => {

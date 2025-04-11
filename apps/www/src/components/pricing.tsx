@@ -1,6 +1,6 @@
 "use client";
 import { tiers } from "@/constants/tier";
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { useState } from "react";

@@ -1,7 +1,6 @@
 "use client";
 
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import { Button } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -10,15 +9,16 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, TaskEvent } from "@squaredmade/db";
 import { Check, Plus, Tag } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";

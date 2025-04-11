@@ -1,16 +1,15 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squaredmade/db";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const SprintDropdown = () => {
 	const [open, setOpen] = useState(false);
-	const { toast } = useToast();
 	const { team } = useTeamStore((state) => state);
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
@@ -56,10 +55,8 @@ const SprintDropdown = () => {
 			return updatedTask;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating sprint",
+			toast.error("Error updating sprint", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 		onSettled: () => setOpen(false),

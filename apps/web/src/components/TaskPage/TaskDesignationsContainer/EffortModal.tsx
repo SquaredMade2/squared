@@ -2,14 +2,14 @@ import { high, low, medium } from "@/components/Svg";
 import { complexityScale, effortEstimateOptions } from "@/lib/constants";
 import { useTeamStore } from "@/store";
 import { CircleHelp } from "@squaredmade/icons";
-import { Button } from "../../ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "../../ui/dialog";
+} from "@squaredmade/ui/dialog";
 
 const EffortModal = () => {
 	const { team } = useTeamStore((state) => state);

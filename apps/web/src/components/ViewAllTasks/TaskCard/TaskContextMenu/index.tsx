@@ -3,7 +3,6 @@ import {
 	ContextMenuItem,
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useModalStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
@@ -14,6 +13,7 @@ import {
 } from "@squaredmade/icons";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import { DeleteTaskAlertDialog } from "../../DeleteTaskAlertDialog";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
@@ -28,7 +28,6 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
 		useModalStore((state) => state);
 	const { organization } = useOrganization();
-	const { toast } = useToast();
 	const { team } = useTeams();
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
@@ -46,8 +45,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		await navigator.clipboard.writeText(
 			`${process.env.NEXT_PUBLIC_URL}/${organization?.slug}/task/${task.identifier}/${formatUrl(task.title)}`,
 		);
-		toast({
-			title: "Task link copied to clipboard",
+		toast.success("Task link copied to clipboard", {
 			description: "Paste it wherever you like",
 		});
 	};

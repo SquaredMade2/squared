@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -21,10 +20,15 @@ import {
 	MapPin,
 	MessageCircleMore,
 } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import { DialogTitle } from "@squaredmade/ui/dialog";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type NotificationFilter =
 	| "INBOX"

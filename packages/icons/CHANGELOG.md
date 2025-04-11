@@ -1,5 +1,11 @@
 # @squaredmade/icons
 
+## 1.0.3
+
+### Patch Changes
+
+- f52462b: Added "Camera", "CornerDownLeft", and "MoveVertical" to the icons library
+
 ## 1.0.2
 
 ### Patch Changes

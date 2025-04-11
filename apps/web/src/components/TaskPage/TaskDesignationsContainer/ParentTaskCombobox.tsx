@@ -1,14 +1,13 @@
 "use client";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import type { Task, TaskEvent } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const ParentTaskCombobox = () => {
-	const { toast } = useToast();
 	const [open, setOpen] = useState(false);
 	const { tasks, currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
@@ -40,10 +39,8 @@ const ParentTaskCombobox = () => {
 			return updatedTask;
 		},
 		onError: (error) => {
-			toast({
-				title: "Error updating parent id",
+			toast.error("Error updating parent id", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 		onSuccess: async (updatedTask) => {

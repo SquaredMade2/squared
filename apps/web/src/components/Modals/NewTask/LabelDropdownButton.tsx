@@ -1,6 +1,5 @@
 import LabelBadge from "@/components/LabelBadges";
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import { Button } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -9,14 +8,15 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
+import { useModalStore, useWorkspaceStore } from "@/store";
+import type { Label } from "@squaredmade/db";
+import { Check, Tag } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useModalStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@squaredmade/db";
-import { Check, Tag } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 import { useMemo, useState } from "react";
 
 export const LabelDropdownButton = () => {

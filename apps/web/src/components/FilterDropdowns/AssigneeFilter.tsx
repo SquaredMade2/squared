@@ -8,20 +8,20 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUsers } from "@/hooks/useUsers";
 import { useFilterStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import { formatName, getInitials } from "@/utils/formatting";
 import type { PublicUserData } from "@clerk/types";
 import { Check, UserSearch } from "@squaredmade/icons";
-import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "../ui/dropdown-menu";
-import { ScrollArea } from "../ui/scroll-area";
+} from "@squaredmade/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 export default function AssigneeFilterDropDown({

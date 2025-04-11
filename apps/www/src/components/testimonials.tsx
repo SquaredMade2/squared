@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@squaredmade/ui/cn";
 import Image from "next/image";
 import { useMemo } from "react";
 import { Heading } from "./heading";

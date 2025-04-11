@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
+import type { Task } from "@squaredmade/db";
+import { Ellipsis } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import type { Task } from "@squaredmade/db";
-import { Ellipsis } from "@squaredmade/icons";
+} from "@squaredmade/ui/popover";
 import DeleteTaskModal from "../DeleteTaskModal";
 
 export default function DeleteTaskPopOver({ task }: { task: Task }) {

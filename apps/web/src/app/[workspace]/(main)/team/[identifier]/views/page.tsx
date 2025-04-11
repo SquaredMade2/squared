@@ -1,15 +1,15 @@
 "use client";
+import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
+import { useFilterStore } from "@/store";
+import type { SavedFilter } from "@/store/filters";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { useTeams } from "@/hooks/useTeams";
-import { client } from "@/lib/client";
-import { useFilterStore } from "@/store";
-import type { SavedFilter } from "@/store/filters";
+} from "@squaredmade/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 

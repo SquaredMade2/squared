@@ -2,9 +2,9 @@
 
 import { useOrganization } from "@clerk/nextjs";
 import { ArrowLeft } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Button } from "../ui/button";
 
 const tabs = [
 	{ id: "assigned", label: "Assigned" },
