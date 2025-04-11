@@ -11,7 +11,6 @@ import {
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 } from "@squaredmade/ui/dropdown-menu";
-import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 const DueDateFilterDropDown = ({
