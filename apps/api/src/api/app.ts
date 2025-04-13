@@ -13,7 +13,7 @@ const logger = createCustomLogger("api");
 function createApp() {
 	const app = express();
 
-	const productionDomain = "https://app..com";
+	const productionDomain = "https://app.squaredmade.com";
 	const productionServerDomain = "https://api.squaredmade.com";
 	const developmentDomain = "https://app-develop.squaredmade.com";
 	const localDevDomain = "http://localhost:3000";
