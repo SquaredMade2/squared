@@ -146,16 +146,9 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			onValueChange={setIsOpen}
 		>
 			<AccordionItem value="subtask-collapsible">
-				<AccordionTrigger asChild>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						className="my-4 flex w-full items-center"
-					>
-						<CirclePlus className="mr-2 h-4 w-4" />
-						Add Subtask
-					</Button>
+				<AccordionTrigger className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-input bg-transparent px-3 hover:bg-accent hover:text-accent-foreground hover:no-underline">
+					<CirclePlus className="mr-2 h-4 w-4" />
+					Add Subtask
 				</AccordionTrigger>
 				<AccordionContent className="px-1">
 					<Form {...form}>
