@@ -5,7 +5,7 @@ import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -79,7 +79,6 @@ export default function WorkspaceSettings() {
 			name: organization?.name,
 			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
-		disabled: membership?.role !== "org:admin",
 	});
 
 	const { watch, setValue } = form;
@@ -322,7 +321,7 @@ export default function WorkspaceSettings() {
 				</form>
 			</Form>
 
-			<Protect condition={(has) => has({ role: "org:admin" })}>
+			<Protect permission="org:sys_profile:delete">
 				<Separator className="my-6" />
 
 				<div className="rounded-lg bg-destructive/10 p-6">
