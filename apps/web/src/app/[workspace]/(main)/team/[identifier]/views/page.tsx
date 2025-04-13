@@ -56,7 +56,7 @@ export default function ViewsPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-4">
+		<div className="container mx-auto p-4 px-14">
 			<div className="mb-6 flex items-center justify-between">
 				<h1 className="font-bold text-2xl">Saved Views</h1>
 			</div>

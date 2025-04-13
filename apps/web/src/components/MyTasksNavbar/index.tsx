@@ -27,7 +27,7 @@ const MyTasksNavbar = () => {
 		[router, organization?.slug],
 	);
 	return (
-		<div className="my-4 flex items-center justify-start space-x-4">
+		<div className="my-3 flex items-center justify-start space-x-4">
 			<Button
 				size="icon"
 				variant="ghost"
