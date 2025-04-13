@@ -115,8 +115,9 @@ export default function WorkspaceSettings() {
 		//on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
 		if (
 			form.getValues("name") !== workspace.name ||
-			form.getValues("url") !==
-				workspace.url.replace("https://app.squaredmade.com/", "")
+			(form.getValues("url") !==
+				workspace.url.replace("https://app.squaredmade.com/", "") &&
+				hasDomainManagePermission)
 		) {
 			updateValues();
 		}
