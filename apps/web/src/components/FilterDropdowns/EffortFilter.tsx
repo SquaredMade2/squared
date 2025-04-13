@@ -11,7 +11,6 @@ import {
 } from "@squaredmade/ui/dropdown-menu";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
-//import { set } from "date-fns";
 
 const effortOptions = [
 	{ id: 0, name: 1, svg: low(), group: "effortEstimate" },
