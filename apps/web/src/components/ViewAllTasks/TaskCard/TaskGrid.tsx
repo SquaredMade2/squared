@@ -1,7 +1,6 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
 import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import { cn } from "@squaredmade/ui/cn";
 import {
 	formatName,
 	formatUrl,
@@ -11,6 +10,7 @@ import {
 import { Calendar, UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Card, CardContent } from "@squaredmade/ui/card";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -119,7 +119,8 @@ const TaskGrid = ({
 							<div
 								className={cn(
 									"mb-1 flex w-fit items-center gap-2 rounded-md border border-border bg-background p-1 text-sm",
-									checkOverdueDate(task.dueDate) && "text-destructive border-destructive",
+									checkOverdueDate(task.dueDate) &&
+										"border-destructive text-destructive",
 								)}
 							>
 								<Calendar className="size-4" />

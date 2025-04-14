@@ -1,5 +1,6 @@
 "use client";
 
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Calendar } from "@squaredmade/ui/calendar";
@@ -8,8 +9,7 @@ import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
+} from "@squaredmade/ui/popover";
 import { format } from "date-fns";
 import * as React from "react";
 
@@ -50,7 +50,7 @@ export function DatePicker({
 					className={cn(
 						"inline-flex h-10 w-full items-center justify-start px-4 py-2 text-left font-normal",
 						!date && "text-muted-foreground",
-						date && checkOverdueDate(date) && "text-destructive border-destructive",
+						date && checkOverdueDate(date) && "text-destructive",
 						className,
 					)}
 				>

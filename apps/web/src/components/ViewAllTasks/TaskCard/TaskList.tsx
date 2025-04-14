@@ -1,9 +1,11 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -15,8 +17,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import { cn } from "@squaredmade/ui/cn";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";
@@ -77,7 +77,8 @@ const TaskList = ({
 								<div
 									className={cn(
 										"xs:hidden shrink-0 whitespace-nowrap sm:hidden md:flex",
-										checkOverdueDate(task.dueDate) && "text-destructive border-destructive",
+										checkOverdueDate(task.dueDate) &&
+											"border-destructive text-destructive",
 									)}
 								>
 									{task.dueDate
