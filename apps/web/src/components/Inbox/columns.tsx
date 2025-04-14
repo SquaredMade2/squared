@@ -133,7 +133,9 @@ export const columns: ColumnDef<
 
 			const { user } = useUserStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
-			const { setNotifications } = useEventStore((state) => state);
+			const { setNotifications, notifications } = useEventStore(
+				(state) => state,
+			);
 
 			const { mutate: handleMarkAsDismissed } = useMutation({
 				mutationKey: ["notification", "markAsDismissed", row.original.id],
@@ -145,7 +147,15 @@ export const columns: ColumnDef<
 						.then((res) => res.json());
 				},
 				onSuccess: (updatedNotifications) => {
-					setNotifications(updatedNotifications);
+					const updatedNotificationsArray = notifications.map(
+						(notification) =>
+							updatedNotifications.find(
+								(updated) => updated.id === notification.id,
+							) || notification,
+					);
+
+					// Update state with the new array
+					setNotifications(updatedNotificationsArray);
 				},
 			});
 
