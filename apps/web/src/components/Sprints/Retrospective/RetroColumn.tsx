@@ -35,16 +35,18 @@ export const RetroColumn = ({
 							ref={provided.innerRef}
 							className="mb-4 min-h-[200px] grow space-y-2"
 						>
-							{items.map((item, index) => {
-								return (
-									<RetroItemCard
-										key={item.id}
-										item={item}
-										index={index}
-										onLikeItem={onLikeItem}
-									/>
-								);
-							})}
+							{items
+								.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+								.map((item, index) => {
+									return (
+										<RetroItemCard
+											key={item.id}
+											item={item}
+											index={index}
+											onLikeItem={onLikeItem}
+										/>
+									);
+								})}
 							{provided.placeholder}
 						</div>
 					)}

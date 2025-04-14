@@ -24,6 +24,7 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 		content: z.string(),
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
 		likes: z.array(z.string()),
+		createdAt: z.date(),
 	}),
 );
 
