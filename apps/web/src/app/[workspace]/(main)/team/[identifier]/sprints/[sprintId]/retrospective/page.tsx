@@ -97,6 +97,10 @@ export default function SprintRetrospectivePage() {
 			fetchData();
 		});
 
+		newSocket.on("itemLiked", () => {
+			fetchData();
+		});
+
 		setSocket(newSocket);
 
 		fetchData();
@@ -146,7 +150,7 @@ export default function SprintRetrospectivePage() {
 			});
 		},
 		onSuccess: (response) => {
-			socket?.emit("likeItem", {
+			socket?.emit("itemLiked", {
 				sprintId,
 				itemId: response.id,
 				userId: response.authorId,

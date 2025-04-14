@@ -80,6 +80,10 @@ io.on("connection", (socket) => {
 		io.to(data.sprintId).emit("itemAdded", data);
 	});
 
+	socket.on("likeItem", (data) => {
+		io.to(data.sprintId).emit("itemLiked", data);
+	});
+
 	socket.on("moveItem", (data) => {
 		io.to(data.sprintId).emit("itemMoved", data);
 	});
