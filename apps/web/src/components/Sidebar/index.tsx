@@ -210,33 +210,46 @@ function IconButton({
 		return null;
 	}
 
+	if (state === "expanded") {
+		return (
+			<Button
+				variant="ghost"
+				size={state === "expanded" ? "sm" : "icon"}
+				aria-label={label}
+				onClick={onClick}
+				className="relative w-full justify-start"
+			>
+				<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+				<span className="ml-2 w-auto opacity-100 transition-all duration-300">
+					{label}
+				</span>
+				{!!(notificationCount && notificationCount > 0) && (
+					<div
+						className="absolute top-3 right-3 h-2 w-2 rounded-full bg-primary"
+						aria-hidden="true"
+					/>
+				)}
+			</Button>
+		);
+	}
+
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
 				<Button
 					variant="ghost"
-					size={state === "expanded" ? "sm" : "icon"}
+					size="icon"
 					aria-label={label}
 					onClick={onClick}
-					className={`relative justify-start ${
-						state === "collapsed" ? "mx-1 px-3" : "w-full"
-					}`}
+					className="relative mx-1 justify-start px-3"
 				>
 					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-					<span
-						className={`ml-2 transition-all duration-300 ${
-							state === "collapsed"
-								? "w-0 overflow-hidden opacity-0"
-								: "w-auto opacity-100"
-						}`}
-					>
+					<span className="ml-2 w-0 overflow-hidden opacity-0 transition-all duration-300">
 						{label}
 					</span>
 					{!!(notificationCount && notificationCount > 0) && (
 						<div
-							className={`absolute h-2 w-2 rounded-full bg-primary ${
-								state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"
-							}`}
+							className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-primary"
 							aria-hidden="true"
 						/>
 					)}
