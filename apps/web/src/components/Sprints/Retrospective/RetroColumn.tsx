@@ -22,6 +22,9 @@ export const RetroColumn = ({
 	onAddItem,
 	onLikeItem,
 }: RetroColumnProps) => {
+	console.log(
+		items.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()),
+	);
 	return (
 		<Card className="flex h-full flex-col bg-background">
 			<CardHeader>
@@ -36,7 +39,7 @@ export const RetroColumn = ({
 							className="mb-4 min-h-[200px] grow space-y-2"
 						>
 							{items
-								.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+								.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
 								.map((item, index) => {
 									return (
 										<RetroItemCard
