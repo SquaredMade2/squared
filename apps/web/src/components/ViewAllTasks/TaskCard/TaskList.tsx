@@ -16,7 +16,7 @@ import {
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
 import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import { cn } from "@/utils/cn";
+import { cn } from "@squaredmade/ui/cn";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";
