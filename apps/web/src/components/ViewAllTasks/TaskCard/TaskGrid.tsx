@@ -1,7 +1,7 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
 import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import { cn } from "@/utils/cn";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	formatName,
 	formatUrl,
