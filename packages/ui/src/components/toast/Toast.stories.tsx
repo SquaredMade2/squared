@@ -1,120 +1,277 @@
 import { Button } from "@squaredmade/ui/button";
-import type { Meta, StoryObj } from "@storybook/react";
-import { Toast, ToastAction } from "./Toast";
-import { Toaster } from "./Toaster";
-import { useToast } from "./useToast";
+import { Toaster, toast } from "@squaredmade/ui/toast";
+import type { Meta } from "@storybook/react";
+import { useEffect, useState } from "react";
 
-const meta: Meta<typeof Toast> = {
+const meta: Meta<typeof Toaster> = {
 	title: "Components/Toast",
-	component: Toast,
-	tags: ["autodocs", "figma"],
+	component: Toaster,
+	tags: ["autodocs"],
 	parameters: {
-		layout: "fullscreen",
+		controls: { expanded: true },
 	},
-	decorators: [
-		(Story) => (
-			<div
-				style={{ padding: "20px", position: "relative", minHeight: "100vh" }}
-			>
-				<Story />
-				<Toaster />
-			</div>
-		),
-	],
 };
 
 export default meta;
-type Story = StoryObj<typeof Toast>;
 
-const ToastTrigger = ({ action }: { action: () => void }) => {
-	return <Button onClick={action}>Show Toast</Button>;
+// Basic toast example
+export const Basic = () => {
+	return (
+		<div>
+			<Button onClick={() => toast("Hello World!")}>Show Basic Toast</Button>
+			<Toaster />
+		</div>
+	);
 };
 
-export const SuccessToast: Story = {
-	render: () => {
-		const { toast } = useToast();
-		const showToast = () => {
-			toast({
-				title: "Success!",
-				description: "Your changes have been saved successfully.",
-			});
-		};
-		return <ToastTrigger action={showToast} />;
-	},
+// All toast types
+export const Types = () => {
+	return (
+		<div>
+			<div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+				<Button onClick={() => toast("Default toast message")}>Default</Button>
+				<Button
+					onClick={() => toast.success("Success toast message")}
+					variant="secondary"
+				>
+					Success
+				</Button>
+				<Button
+					onClick={() => toast.error("Error toast message")}
+					variant="destructive"
+				>
+					Error
+				</Button>
+				<Button onClick={() => toast.info("Info toast message")}>Info</Button>
+				<Button onClick={() => toast.warning("Warning toast message")}>
+					Warning
+				</Button>
+				<Button onClick={() => toast.loading("Loading, please wait...")}>
+					Loading
+				</Button>
+			</div>
+			<Toaster />
+		</div>
+	);
 };
 
-export const DestructiveToast: Story = {
-	render: () => {
-		const { toast } = useToast();
-		const showToast = () => {
-			toast({
-				title: "Error",
-				description: "There was a problem with your request.",
-				variant: "destructive",
-			});
-		};
-		return <ToastTrigger action={showToast} />;
-	},
+// Toast with title and description
+export const TitleAndDescription = () => {
+	return (
+		<div>
+			<Button
+				onClick={() =>
+					toast.success("Successfully saved!", {
+						description: "Your changes have been saved successfully.",
+					})
+				}
+			>
+				Show Success Toast
+			</Button>
+			<Toaster />
+		</div>
+	);
 };
 
-export const ToastWithAction: Story = {
-	render: () => {
-		const { toast } = useToast();
-		const showToast = () => {
-			toast({
-				title: "Scheduled: Catch up",
-				description: "Friday, February 10, 2023 at 5:57 PM",
-				action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-			});
-		};
-		return <ToastTrigger action={showToast} />;
-	},
-};
-
-export const CustomDurationToast: Story = {
-	render: () => {
-		const { toast } = useToast();
-		const showToast = () => {
-			toast({
-				title: "Custom Duration",
-				description: "This toast will disappear in 10 seconds",
-				duration: 10000,
-			});
-		};
-		return <ToastTrigger action={showToast} />;
-	},
-};
-
-export const MultipleToasts: Story = {
-	render: () => {
-		const { toast } = useToast();
-		const showToasts = () => {
-			toast({ title: "Toast 1", description: "First toast" });
+// Promise integration
+export const PromiseToast = () => {
+	const mockPromise = () => {
+		return new Promise<{ name: string; items: number }>((resolve, reject) => {
 			setTimeout(() => {
-				toast({ title: "Toast 2", description: "Second toast" });
-			}, 1000);
-			setTimeout(() => {
-				toast({ title: "Toast 3", description: "Third toast" });
+				Math.random() > 0.3
+					? resolve({ name: "John", items: 5 })
+					: reject(new Error("Failed to fetch data"));
 			}, 2000);
-		};
-		return <ToastTrigger action={showToasts} />;
-	},
+		});
+	};
+
+	return (
+		<div>
+			<Button
+				onClick={() =>
+					toast.promise(mockPromise(), {
+						loading: "Fetching data...",
+						success: (data) => `Retrieved ${data.items} items for ${data.name}`,
+						error: (err) =>
+							err instanceof Error ? `Error: ${err.message}` : "Unknown error",
+					})
+				}
+			>
+				Fetch Data
+			</Button>
+			<Toaster />
+		</div>
+	);
 };
 
-export const ToastWithCustomContent: Story = {
-	render: () => {
-		const { toast } = useToast();
-		const showToast = () => {
-			toast({
-				title: "Custom Content",
-				description: (
-					<div className="flex items-center">
-						<span className="mr-2">🎉</span>
-						<span>Congratulations! You&apos;ve won a prize!</span>
-					</div>
-				),
-			});
-		};
-		return <ToastTrigger action={showToast} />;
-	},
+// Toast with actions
+export const WithActions = () => {
+	return (
+		<div>
+			<Button
+				onClick={() =>
+					toast.info("Update Available", {
+						description: "A new version is available. Update now?",
+						action: {
+							label: "Update",
+							onClick: () => console.log("Update clicked"),
+						},
+						cancel: {
+							label: "Later",
+							onClick: () => console.log("Later clicked"),
+						},
+					})
+				}
+			>
+				Show Toast with Actions
+			</Button>
+			<Toaster />
+		</div>
+	);
+};
+
+export const MultipleToasts = () => {
+	const showToasts = async () => {
+		for (let i = 1; i <= 3; i++) {
+			toast(`Toast message ${i}`);
+			await new Promise((resolve) => setTimeout(resolve, 800));
+		}
+	};
+
+	return (
+		<div>
+			<Button onClick={showToasts}>Show Multiple Toasts</Button>
+			<Toaster />
+		</div>
+	);
+};
+// Toast durations
+export const Duration = () => {
+	return (
+		<div>
+			<div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+				<Button onClick={() => toast("Quick toast", { duration: 1000 })}>
+					1 second
+				</Button>
+				<Button onClick={() => toast("Default toast", { duration: 4000 })}>
+					4 seconds (default)
+				</Button>
+				<Button onClick={() => toast("Long toast", { duration: 10000 })}>
+					10 seconds
+				</Button>
+				<Button
+					onClick={() =>
+						toast("Persistent toast", { duration: Number.POSITIVE_INFINITY })
+					}
+				>
+					Persistent
+				</Button>
+			</div>
+			<Toaster />
+		</div>
+	);
+};
+
+// Close button
+export const CloseButton = () => {
+	return (
+		<div>
+			<Button
+				onClick={() =>
+					toast("Dismissible Toast", {
+						description: "Click the X to dismiss this toast",
+						closeButton: true,
+					})
+				}
+			>
+				Show Toast with Close Button
+			</Button>
+			<Toaster />
+		</div>
+	);
+};
+
+// Programmatic dismissal
+export const ProgrammaticDismissal = () => {
+	const [toastId, setToastId] = useState<string | number | null>(null);
+
+	const showToast = () => {
+		const id = toast.loading(
+			"This toast will be dismissed programmatically...",
+			{
+				duration: Number.POSITIVE_INFINITY,
+			},
+		);
+		setToastId(id);
+	};
+
+	const dismissToast = () => {
+		if (toastId) {
+			toast.dismiss(toastId);
+			setToastId(null);
+		}
+	};
+
+	return (
+		<div>
+			<div style={{ display: "flex", gap: "8px" }}>
+				<Button
+					onClick={showToast}
+					disabled={toastId !== null}
+					style={{ opacity: toastId !== null ? 0.5 : 1 }}
+				>
+					Show Toast
+				</Button>
+				<Button
+					onClick={dismissToast}
+					disabled={toastId === null}
+					style={{ opacity: toastId === null ? 0.5 : 1 }}
+				>
+					Dismiss Toast
+				</Button>
+			</div>
+			<Toaster />
+		</div>
+	);
+};
+
+// Accessibility example
+export const Accessibility = () => {
+	const [isMac, setIsMac] = useState(false);
+
+	useEffect(() => {
+		// Check if user is on a Mac
+		const userAgent = window.navigator.userAgent.toLowerCase();
+		setIsMac(/macintosh|mac os x/i.test(userAgent));
+	}, []);
+
+	// Formatted hotkey text for display
+	const hotkeyText = isMac ? "⌥ + T" : "Alt + T";
+	return (
+		<div>
+			<p>Press {hotkeyText} to focus the toasts (default hotkey)</p>
+			<Button
+				onClick={() =>
+					[1, 2, 3].map(() =>
+						toast.info("Accessible Toast", {
+							description:
+								"This toast is fully accessible with proper ARIA attributes",
+							action: {
+								label: "OK",
+								onClick: () => console.log("Action clicked"),
+							},
+						}),
+					)
+				}
+			>
+				Show Accessible Toasts
+			</Button>
+			<Toaster
+				containerAriaLabel="Notifications"
+				toastOptions={{
+					closeButtonAriaLabel: "Close notification",
+				}}
+			/>
+		</div>
+	);
 };
