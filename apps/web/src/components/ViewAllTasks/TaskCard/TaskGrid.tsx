@@ -119,7 +119,7 @@ const TaskGrid = ({
 							<div
 								className={cn(
 									"mb-1 flex w-fit items-center gap-2 rounded-md border border-border bg-background p-1 text-sm",
-									checkOverdueDate(task.dueDate) && "text-destructive",
+									checkOverdueDate(task.dueDate) && "text-destructive border-destructive",
 								)}
 							>
 								<Calendar className="size-4" />
