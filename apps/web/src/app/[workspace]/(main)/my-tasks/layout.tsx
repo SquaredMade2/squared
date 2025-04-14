@@ -11,7 +11,7 @@ export default function MyTasksLayout({
 	children,
 }: { children: React.ReactNode }) {
 	return (
-		<main className="container flex h-screen w-full grow flex-col overflow-hidden px-12">
+		<main className="container flex h-screen w-full grow flex-col overflow-hidden">
 			<MyTasksNavbar />
 			{children}
 		</main>

@@ -30,9 +30,9 @@ export default function UpcomingSprints() {
 	);
 
 	return (
-		<ScrollArea className="container mx-auto h-[100vh] overflow-y-auto px-14 py-3">
+		<ScrollArea className="container mx-auto h-[100vh] overflow-y-auto py-3">
 			<div>
-				<h1 className="mb-6 font-bold text-3xl">Upcoming Sprints</h1>
+				<h1 className="mb-6 pl-12 font-bold text-3xl">Upcoming Sprints</h1>
 				{team?.sprintsEnabled ? (
 					<>
 						<div className="flex flex-col gap-2">
