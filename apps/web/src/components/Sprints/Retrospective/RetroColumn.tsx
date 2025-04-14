@@ -22,9 +22,6 @@ export const RetroColumn = ({
 	onAddItem,
 	onLikeItem,
 }: RetroColumnProps) => {
-	console.log(
-		items.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()),
-	);
 	return (
 		<Card className="flex h-full flex-col bg-background">
 			<CardHeader>
