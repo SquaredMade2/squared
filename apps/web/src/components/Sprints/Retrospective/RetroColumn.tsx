@@ -13,6 +13,7 @@ interface RetroColumnProps {
 	items: RetroItem[];
 	onAddItem: (type: RetrospectiveItemType, content: string) => void;
 	onLikeItem: (itemId: string) => void;
+	likedItems: string[];
 }
 
 export const RetroColumn = ({
@@ -21,6 +22,7 @@ export const RetroColumn = ({
 	items,
 	onAddItem,
 	onLikeItem,
+	likedItems,
 }: RetroColumnProps) => {
 	return (
 		<Card className="flex h-full flex-col bg-background">
@@ -42,6 +44,7 @@ export const RetroColumn = ({
 										item={item}
 										index={index}
 										onLikeItem={onLikeItem}
+										liked={likedItems.includes(item.id)}
 									/>
 								);
 							})}

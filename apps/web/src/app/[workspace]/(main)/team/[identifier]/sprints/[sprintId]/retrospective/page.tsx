@@ -4,6 +4,7 @@ import { RetroColumn } from "@/components/Sprints";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
+import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import type { RetrospectiveItem, RetrospectiveItemType } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
@@ -23,26 +24,41 @@ export default function SprintRetrospectivePage() {
 	const params = useParams();
 	const sprintId = parseParams(params.sprintId) ?? "";
 	const [socket, setSocket] = useState<Socket | null>(null);
+	const { user } = useUser();
 
 	const { identifier, workspace } = params;
 
 	const {
-		data = { actionItems: [], toImprove: [], wentWell: [] },
+		data = { actionItems: [], toImprove: [], wentWell: [], likedItems: [] },
 		refetch: fetchData,
 	} = useQuery({
 		queryKey: ["sprint", "retrospective", sprintId],
 		queryFn: async () => {
 			try {
-				return await client.sprint.getRetro
+				const response = await client.sprint.getRetro
 					.$get({
 						sprintId,
 					})
 					.then((res) => res.json());
+
+				const likedItems = [
+					...response.actionItems.filter((item) =>
+						item.likes.includes(user?.id ?? ""),
+					),
+					...response.toImprove.filter((item) =>
+						item.likes.includes(user?.id ?? ""),
+					),
+					...response.wentWell.filter((item) =>
+						item.likes.includes(user?.id ?? ""),
+					),
+				].map((item) => item.id);
+
+				return { ...response, likedItems };
 			} catch (error) {
 				toast.error("Failed to load retrospective data", {
 					description: parseError(error),
 				});
-				return { actionItems: [], toImprove: [], wentWell: [] };
+				return { actionItems: [], toImprove: [], wentWell: [], likedItems: [] };
 			}
 		},
 	});
@@ -206,6 +222,7 @@ export default function SprintRetrospectivePage() {
 							items={data.wentWell}
 							onAddItem={(type, content) => handleAddItem({ type, content })}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
+							likedItems={data.likedItems}
 						/>
 						<RetroColumn
 							title="To Improve"
@@ -213,6 +230,7 @@ export default function SprintRetrospectivePage() {
 							items={data.toImprove}
 							onAddItem={(type, content) => handleAddItem({ type, content })}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
+							likedItems={data.likedItems}
 						/>
 						<RetroColumn
 							title="Action Items"
@@ -220,6 +238,7 @@ export default function SprintRetrospectivePage() {
 							items={data.actionItems}
 							onAddItem={(type, content) => handleAddItem({ type, content })}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
+							likedItems={data.likedItems}
 						/>
 					</div>
 				</div>

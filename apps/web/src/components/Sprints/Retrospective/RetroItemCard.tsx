@@ -7,19 +7,21 @@ import { Button } from "@squaredmade/ui/button";
 import { Card, CardContent } from "@squaredmade/ui/card";
 import {
 	Tooltip,
+	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
-import { TooltipContent } from "@squaredmade/ui/tooltip";
 
 export const RetroItemCard = ({
 	item,
 	index,
 	onLikeItem,
+	liked,
 }: {
 	item: RetroItem;
 	index: number;
 	onLikeItem: (itemId: string) => void;
+	liked: boolean;
 }) => {
 	const { users } = useUsers();
 	const author = users?.find((u) => u.userId === item.authorId);
@@ -52,7 +54,7 @@ export const RetroItemCard = ({
 									<Tooltip>
 										<TooltipTrigger>
 											<Button
-												variant="outline"
+												variant={liked ? "secondary" : "outline"}
 												className="gap-2"
 												onClick={() => onLikeItem(item.id)}
 											>

@@ -139,7 +139,7 @@ export default function SprintDashboardPage() {
 			sprint ? differenceInDays(new Date(), new Date(sprint.startDate)) : 0,
 		);
 		setBurndownData(getBurndownData());
-	}, [sprint, getBurndownData]);
+	}, [sprint]);
 
 	const getTaskStatusData = () => {
 		const statusCounts = sprintTasks.reduce(
