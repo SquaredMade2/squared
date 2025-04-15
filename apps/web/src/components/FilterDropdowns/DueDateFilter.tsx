@@ -3,7 +3,6 @@
 import { useFilterStore } from "@/store";
 import type { FilterCondition } from "@/store/filters";
 import { formatDateForComparison } from "@/store/filters/helpers";
-import { useEffect, useState } from "react";
 import { Button } from "@squaredmade/ui/button";
 import { Calendar } from "@squaredmade/ui/calendar";
 import {
@@ -11,6 +10,7 @@ import {
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 const DueDateFilterDropDown = ({
