@@ -104,41 +104,43 @@ export function BasicLoginForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full max-w-md">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="email@example.com" {...field} />
-              </FormControl>
-              <FormDescription>
-                Enter your registered email address.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Sign In</Button>
-      </form>
-    </Form>
-  );
+	<Form
+		{...form}
+		onSubmit={onSubmit}
+		className="w-full max-w-md space-y-8"
+	>
+		<FormField
+			control={form.control}
+			name="email"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Email</FormLabel>
+					<FormControl>
+						<Input placeholder="email@example.com" {...field} />
+					</FormControl>
+					<FormDescription>
+						Enter your registered email address.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+		<FormField
+			control={form.control}
+			name="password"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Password</FormLabel>
+					<FormControl>
+						<Input type="password" placeholder="********" {...field} />
+					</FormControl>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+		<Button type="submit">Sign In</Button>
+	</Form>
+);
 }`,
 			},
 		},
@@ -178,42 +180,41 @@ export function BasicLoginForm() {
 			}
 
 			return (
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="w-full max-w-md space-y-8"
-					>
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input placeholder="email@example.com" {...field} />
-									</FormControl>
-									<FormDescription>
-										Enter your registered email address.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="password"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Password</FormLabel>
-									<FormControl>
-										<Input type="password" placeholder="********" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<Button type="submit">Sign In</Button>
-					</form>
+				<Form
+					{...form}
+					onSubmit={onSubmit}
+					className="w-full max-w-md space-y-8"
+				>
+					<FormField
+						control={form.control}
+						name="email"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Email</FormLabel>
+								<FormControl>
+									<Input placeholder="email@example.com" {...field} />
+								</FormControl>
+								<FormDescription>
+									Enter your registered email address.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="password"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Password</FormLabel>
+								<FormControl>
+									<Input type="password" placeholder="********" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<Button type="submit">Sign In</Button>
 				</Form>
 			);
 		}
@@ -297,115 +298,120 @@ export function ProfileFormExample() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Profile</h3>
-          <p className="text-sm text-muted-foreground">
-            Update your profile information.
-          </p>
-        </div>
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="username" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="email@example.com" {...field} />
-              </FormControl>
-              <FormDescription>
-                We'll never share your email with anyone else.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="user">User</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                This is the role that will be assigned to your account.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="notifications"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Email Notifications</FormLabel>
-                <FormDescription>
-                  Receive emails about your account activity.
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Update profile</Button>
-      </form>
-    </Form>
-  );
+	<Form
+		{...form}
+		onSubmit={onSubmit}
+		className="w-full max-w-md space-y-8"
+	>
+		<div className="space-y-4">
+			<h3 className="font-medium text-lg">Profile</h3>
+			<p className="text-muted-foreground text-sm">
+				Update your profile information.
+			</p>
+		</div>
+		<FormField
+			control={form.control}
+			name="username"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Username</FormLabel>
+					<FormControl>
+						<Input placeholder="username" {...field} />
+					</FormControl>
+					<FormDescription>
+						This is your public display name.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+		<FormField
+			control={form.control}
+			name="email"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Email</FormLabel>
+					<FormControl>
+						<Input placeholder="email@example.com" {...field} />
+					</FormControl>
+					<FormDescription>
+						We&apos;ll never share your email with anyone else.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+		<FormField
+			control={form.control}
+			name="bio"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Bio</FormLabel>
+					<FormControl>
+						<Textarea
+							placeholder="Tell us a little bit about yourself"
+							className="resize-none"
+							{...field}
+						/>
+					</FormControl>
+					<FormDescription>
+						You can <span>@mention</span> other users and organizations.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+		<FormField
+			control={form.control}
+			name="role"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Role</FormLabel>
+					<Select
+						onValueChange={field.onChange}
+						defaultValue={field.value}
+					>
+						<FormControl>
+							<SelectTrigger>
+								<SelectValue placeholder="Select a role" />
+							</SelectTrigger>
+						</FormControl>
+						<SelectContent>
+							<SelectItem value="user">User</SelectItem>
+							<SelectItem value="manager">Manager</SelectItem>
+							<SelectItem value="admin">Admin</SelectItem>
+						</SelectContent>
+					</Select>
+					<FormDescription>
+						This is the role that will be assigned to your account.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+		<FormField
+			control={form.control}
+			name="notifications"
+			render={({ field }) => (
+				<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+					<FormControl>
+						<Checkbox
+							checked={field.value}
+							onCheckedChange={field.onChange}
+						/>
+					</FormControl>
+					<div className="space-y-1 leading-none">
+						<FormLabel>Email Notifications</FormLabel>
+						<FormDescription>
+							Receive emails about your account activity.
+						</FormDescription>
+					</div>
+				</FormItem>
+			)}
+		/>
+		<Button type="submit">Update profile</Button>
+	</Form>
+);
 }`,
 			},
 		},
@@ -455,119 +461,118 @@ export function ProfileFormExample() {
 			}
 
 			return (
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="w-full max-w-md space-y-8"
-					>
-						<div className="space-y-4">
-							<h3 className="font-medium text-lg">Profile</h3>
-							<p className="text-muted-foreground text-sm">
-								Update your profile information.
-							</p>
-						</div>
-						<FormField
-							control={form.control}
-							name="username"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Username</FormLabel>
+				<Form
+					{...form}
+					onSubmit={onSubmit}
+					className="w-full max-w-md space-y-8"
+				>
+					<div className="space-y-4">
+						<h3 className="font-medium text-lg">Profile</h3>
+						<p className="text-muted-foreground text-sm">
+							Update your profile information.
+						</p>
+					</div>
+					<FormField
+						control={form.control}
+						name="username"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Username</FormLabel>
+								<FormControl>
+									<Input placeholder="username" {...field} />
+								</FormControl>
+								<FormDescription>
+									This is your public display name.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="email"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Email</FormLabel>
+								<FormControl>
+									<Input placeholder="email@example.com" {...field} />
+								</FormControl>
+								<FormDescription>
+									We&apos;ll never share your email with anyone else.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="bio"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Bio</FormLabel>
+								<FormControl>
+									<Textarea
+										placeholder="Tell us a little bit about yourself"
+										className="resize-none"
+										{...field}
+									/>
+								</FormControl>
+								<FormDescription>
+									You can <span>@mention</span> other users and organizations.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="role"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Role</FormLabel>
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+								>
 									<FormControl>
-										<Input placeholder="username" {...field} />
+										<SelectTrigger>
+											<SelectValue placeholder="Select a role" />
+										</SelectTrigger>
 									</FormControl>
+									<SelectContent>
+										<SelectItem value="user">User</SelectItem>
+										<SelectItem value="manager">Manager</SelectItem>
+										<SelectItem value="admin">Admin</SelectItem>
+									</SelectContent>
+								</Select>
+								<FormDescription>
+									This is the role that will be assigned to your account.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="notifications"
+						render={({ field }) => (
+							<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+								<FormControl>
+									<Checkbox
+										checked={field.value}
+										onCheckedChange={field.onChange}
+									/>
+								</FormControl>
+								<div className="space-y-1 leading-none">
+									<FormLabel>Email Notifications</FormLabel>
 									<FormDescription>
-										This is your public display name.
+										Receive emails about your account activity.
 									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input placeholder="email@example.com" {...field} />
-									</FormControl>
-									<FormDescription>
-										We&apos;ll never share your email with anyone else.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="bio"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Bio</FormLabel>
-									<FormControl>
-										<Textarea
-											placeholder="Tell us a little bit about yourself"
-											className="resize-none"
-											{...field}
-										/>
-									</FormControl>
-									<FormDescription>
-										You can <span>@mention</span> other users and organizations.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="role"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Role</FormLabel>
-									<Select
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select a role" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<SelectItem value="user">User</SelectItem>
-											<SelectItem value="manager">Manager</SelectItem>
-											<SelectItem value="admin">Admin</SelectItem>
-										</SelectContent>
-									</Select>
-									<FormDescription>
-										This is the role that will be assigned to your account.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="notifications"
-							render={({ field }) => (
-								<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-									<FormControl>
-										<Checkbox
-											checked={field.value}
-											onCheckedChange={field.onChange}
-										/>
-									</FormControl>
-									<div className="space-y-1 leading-none">
-										<FormLabel>Email Notifications</FormLabel>
-										<FormDescription>
-											Receive emails about your account activity.
-										</FormDescription>
-									</div>
-								</FormItem>
-							)}
-						/>
-						<Button type="submit">Update profile</Button>
-					</form>
+								</div>
+							</FormItem>
+						)}
+					/>
+					<Button type="submit">Update profile</Button>
 				</Form>
 			);
 		}
@@ -632,93 +637,95 @@ export function RadioGroupFormExample() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Notification Preferences</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="all" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      All notifications
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="mentions" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Only mentions and direct messages
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="none" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      No notifications
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormDescription>
-                Select the type of notifications you want to receive.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="marketingEmails"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Marketing Emails</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="yes" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Yes, I want to receive marketing emails
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="no" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      No, please don't send me marketing emails
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <Button type="submit">Save preferences</Button>
-      </form>
-    </Form>
-  );
+	<Form
+		{...form}
+		onSubmit={onSubmit}
+		className="w-full max-w-md space-y-6"
+	>
+		<FormField
+			control={form.control}
+			name="type"
+			render={({ field }) => (
+				<FormItem className="space-y-3">
+					<FormLabel>Notification Preferences</FormLabel>
+					<FormControl>
+						<RadioGroup
+							onValueChange={field.onChange}
+							defaultValue={field.value}
+							className="flex flex-col space-y-1"
+						>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="all" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									All notifications
+								</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="mentions" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									Only mentions and direct messages
+								</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="none" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									No notifications
+								</FormLabel>
+							</FormItem>
+						</RadioGroup>
+					</FormControl>
+					<FormDescription>
+						Select the type of notifications you want to receive.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+
+		<FormField
+			control={form.control}
+			name="marketingEmails"
+			render={({ field }) => (
+				<FormItem className="space-y-3">
+					<FormLabel>Marketing Emails</FormLabel>
+					<FormControl>
+						<RadioGroup
+							onValueChange={field.onChange}
+							defaultValue={field.value}
+							className="flex flex-col space-y-1"
+						>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="yes" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									Yes, I want to receive marketing emails
+								</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="no" />
+								</FormControl>
+								<FormLabel className="font-normal">
+									No, please don&apos;t send me marketing emails
+								</FormLabel>
+							</FormItem>
+						</RadioGroup>
+					</FormControl>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+
+		<Button type="submit">Save preferences</Button>
+	</Form>
+);
 }`,
 			},
 		},
@@ -752,94 +759,93 @@ export function RadioGroupFormExample() {
 			}
 
 			return (
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="w-full max-w-md space-y-6"
-					>
-						<FormField
-							control={form.control}
-							name="type"
-							render={({ field }) => (
-								<FormItem className="space-y-3">
-									<FormLabel>Notification Preferences</FormLabel>
-									<FormControl>
-										<RadioGroup
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-											className="flex flex-col space-y-1"
-										>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="all" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													All notifications
-												</FormLabel>
-											</FormItem>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="mentions" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													Only mentions and direct messages
-												</FormLabel>
-											</FormItem>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="none" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													No notifications
-												</FormLabel>
-											</FormItem>
-										</RadioGroup>
-									</FormControl>
-									<FormDescription>
-										Select the type of notifications you want to receive.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+				<Form
+					{...form}
+					onSubmit={onSubmit}
+					className="w-full max-w-md space-y-6"
+				>
+					<FormField
+						control={form.control}
+						name="type"
+						render={({ field }) => (
+							<FormItem className="space-y-3">
+								<FormLabel>Notification Preferences</FormLabel>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+										className="flex flex-col space-y-1"
+									>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="all" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												All notifications
+											</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="mentions" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												Only mentions and direct messages
+											</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="none" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												No notifications
+											</FormLabel>
+										</FormItem>
+									</RadioGroup>
+								</FormControl>
+								<FormDescription>
+									Select the type of notifications you want to receive.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
-						<FormField
-							control={form.control}
-							name="marketingEmails"
-							render={({ field }) => (
-								<FormItem className="space-y-3">
-									<FormLabel>Marketing Emails</FormLabel>
-									<FormControl>
-										<RadioGroup
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-											className="flex flex-col space-y-1"
-										>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="yes" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													Yes, I want to receive marketing emails
-												</FormLabel>
-											</FormItem>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="no" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													No, please don&apos;t send me marketing emails
-												</FormLabel>
-											</FormItem>
-										</RadioGroup>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+					<FormField
+						control={form.control}
+						name="marketingEmails"
+						render={({ field }) => (
+							<FormItem className="space-y-3">
+								<FormLabel>Marketing Emails</FormLabel>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+										className="flex flex-col space-y-1"
+									>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="yes" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												Yes, I want to receive marketing emails
+											</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="no" />
+											</FormControl>
+											<FormLabel className="font-normal">
+												No, please don&apos;t send me marketing emails
+											</FormLabel>
+										</FormItem>
+									</RadioGroup>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
-						<Button type="submit">Save preferences</Button>
-					</form>
+					<Button type="submit">Save preferences</Button>
 				</Form>
 			);
 		}
@@ -939,58 +945,62 @@ export function AsyncSubmissionFormExample() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Your username" 
-                  {...field} 
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input 
-                  type="email" 
-                  placeholder="email@example.com" 
-                  {...field} 
-                  disabled={isSubmitting} 
-                />
-              </FormControl>
-              <FormDescription>
-                We'll never share your email with anyone else.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-          {isSubmitting ? "Submitting..." : "Submit"}
-        </Button>
-      </form>
-    </Form>
-  );
+	<Form
+		{...form}
+		onSubmit={onSubmit}
+		className="w-full max-w-md space-y-8"
+	>
+		<FormField
+			control={form.control}
+			name="username"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Username</FormLabel>
+					<FormControl>
+						<Input
+							placeholder="Your username"
+							{...field}
+							disabled={isSubmitting}
+						/>
+					</FormControl>
+					<FormDescription>
+						This is your public display name.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+
+		<FormField
+			control={form.control}
+			name="email"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Email</FormLabel>
+					<FormControl>
+						<Input
+							type="email"
+							placeholder="email@example.com"
+							{...field}
+							disabled={isSubmitting}
+						/>
+					</FormControl>
+					<FormDescription>
+						We&apos;ll never share your email with anyone else.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+
+		<Button type="submit" disabled={isSubmitting}>
+			{isSubmitting && (
+				<LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+			)}
+			{isSubmitting ? "Submitting..." : "Submit"}
+		</Button>
+	</Form>
+);
 }`,
 			},
 		},
@@ -1061,61 +1071,60 @@ export function AsyncSubmissionFormExample() {
 			}
 
 			return (
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="w-full max-w-md space-y-8"
-					>
-						<FormField
-							control={form.control}
-							name="username"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Username</FormLabel>
-									<FormControl>
-										<Input
-											placeholder="Your username"
-											{...field}
-											disabled={isSubmitting}
-										/>
-									</FormControl>
-									<FormDescription>
-										This is your public display name.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+				<Form
+					{...form}
+					onSubmit={onSubmit}
+					className="w-full max-w-md space-y-8"
+				>
+					<FormField
+						control={form.control}
+						name="username"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Username</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Your username"
+										{...field}
+										disabled={isSubmitting}
+									/>
+								</FormControl>
+								<FormDescription>
+									This is your public display name.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input
-											type="email"
-											placeholder="email@example.com"
-											{...field}
-											disabled={isSubmitting}
-										/>
-									</FormControl>
-									<FormDescription>
-										We&apos;ll never share your email with anyone else.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+					<FormField
+						control={form.control}
+						name="email"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Email</FormLabel>
+								<FormControl>
+									<Input
+										type="email"
+										placeholder="email@example.com"
+										{...field}
+										disabled={isSubmitting}
+									/>
+								</FormControl>
+								<FormDescription>
+									We&apos;ll never share your email with anyone else.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
-						<Button type="submit" disabled={isSubmitting}>
-							{isSubmitting && (
-								<LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-							)}
-							{isSubmitting ? "Submitting..." : "Submit"}
-						</Button>
-					</form>
+					<Button type="submit" disabled={isSubmitting}>
+						{isSubmitting && (
+							<LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+						)}
+						{isSubmitting ? "Submitting..." : "Submit"}
+					</Button>
 				</Form>
 			);
 		}
@@ -1203,8 +1212,7 @@ export function DynamicFieldsFormExample() {
   }
 
   return (
-    <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <Form {...form} onSubmit={onSubmit} className="space-y-8">
           <FormField
             control={form.control}
             name="title"
@@ -1309,7 +1317,6 @@ export function DynamicFieldsFormExample() {
           </div>
 
           <Button type="submit">Submit</Button>
-        </form>
       </Form>
   );
 }`,
@@ -1367,117 +1374,115 @@ export function DynamicFieldsFormExample() {
 		}
 
 		return (
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<FormField
-						control={form.control}
-						name="title"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Contact List Title</FormLabel>
-								<FormControl>
-									<Input placeholder="Enter a title" {...field} />
-								</FormControl>
-								<FormDescription>
-									Name your list of contacts (e.g., &quot;Work Contacts&quot;)
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+			<Form {...form} onSubmit={onSubmit} className="space-y-8">
+				<FormField
+					control={form.control}
+					name="title"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Contact List Title</FormLabel>
+							<FormControl>
+								<Input placeholder="Enter a title" {...field} />
+							</FormControl>
+							<FormDescription>
+								Name your list of contacts (e.g., &quot;Work Contacts&quot;)
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 
-					<div className="space-y-4">
-						<div className="flex items-center justify-between">
-							<h3 className="font-medium text-lg">Contacts</h3>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								onClick={() => append({ name: "", email: "", phone: "" })}
-								className="flex items-center gap-1"
-							>
-								<Plus className="h-4 w-4" />
-								Add Contact
-							</Button>
-						</div>
-
-						{fields.map((field, index) => (
-							<Card key={field.id}>
-								<CardContent className="pt-6">
-									<div className="mb-4 flex items-start justify-between">
-										<h4 className="font-medium">Contact #{index + 1}</h4>
-										{fields.length > 1 && (
-											<Button
-												type="button"
-												variant="ghost"
-												size="sm"
-												onClick={() => remove(index)}
-												className="text-red-500 hover:bg-red-50 hover:text-red-700"
-											>
-												<Trash className="mr-1 h-4 w-4" />
-												Remove
-											</Button>
-										)}
-									</div>
-
-									<div className="grid gap-4 md:grid-cols-3">
-										<FormField
-											control={form.control}
-											name={`contacts.${index}.name`}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Name</FormLabel>
-													<FormControl>
-														<Input placeholder="John Doe" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`contacts.${index}.email`}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Email</FormLabel>
-													<FormControl>
-														<Input
-															placeholder="john.doe@example.com"
-															type="email"
-															{...field}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`contacts.${index}.phone`}
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Phone (optional)</FormLabel>
-													<FormControl>
-														<Input placeholder="1234567890" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-								</CardContent>
-							</Card>
-						))}
-
-						{form.formState.errors.contacts && (
-							<p className="font-medium text-red-500 text-sm">
-								{form.formState.errors.contacts.message}
-							</p>
-						)}
+				<div className="space-y-4">
+					<div className="flex items-center justify-between">
+						<h3 className="font-medium text-lg">Contacts</h3>
+						<Button
+							type="button"
+							variant="outline"
+							size="sm"
+							onClick={() => append({ name: "", email: "", phone: "" })}
+							className="flex items-center gap-1"
+						>
+							<Plus className="h-4 w-4" />
+							Add Contact
+						</Button>
 					</div>
 
-					<Button type="submit">Submit</Button>
-				</form>
+					{fields.map((field, index) => (
+						<Card key={field.id}>
+							<CardContent className="pt-6">
+								<div className="mb-4 flex items-start justify-between">
+									<h4 className="font-medium">Contact #{index + 1}</h4>
+									{fields.length > 1 && (
+										<Button
+											type="button"
+											variant="ghost"
+											size="sm"
+											onClick={() => remove(index)}
+											className="text-red-500 hover:bg-red-50 hover:text-red-700"
+										>
+											<Trash className="mr-1 h-4 w-4" />
+											Remove
+										</Button>
+									)}
+								</div>
+
+								<div className="grid gap-4 md:grid-cols-3">
+									<FormField
+										control={form.control}
+										name={`contacts.${index}.name`}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Name</FormLabel>
+												<FormControl>
+													<Input placeholder="John Doe" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name={`contacts.${index}.email`}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Email</FormLabel>
+												<FormControl>
+													<Input
+														placeholder="john.doe@example.com"
+														type="email"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name={`contacts.${index}.phone`}
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Phone (optional)</FormLabel>
+												<FormControl>
+													<Input placeholder="1234567890" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+							</CardContent>
+						</Card>
+					))}
+
+					{form.formState.errors.contacts && (
+						<p className="font-medium text-red-500 text-sm">
+							{form.formState.errors.contacts.message}
+						</p>
+					)}
+				</div>
+
+				<Button type="submit">Submit</Button>
 			</Form>
 		);
 	},
@@ -1599,200 +1604,204 @@ export function ConditionalFieldsFormExample() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="contactMethod"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Preferred Contact Method</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="email" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Email</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="phone" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Phone</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="mail" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Postal Mail</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormDescription>
-                How would you like us to contact you?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        {/* Conditional Email Field */}
-        {contactMethod === "email" && (
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="you@example.com" {...field} />
-                </FormControl>
-                <FormDescription>
-                  We'll use this email to contact you.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        
-        {/* Conditional Phone Fields */}
-        {contactMethod === "phone" && (
-          <>
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="(555) 555-5555" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    We'll use this number to contact you.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="allowTexting"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Text Message Alerts</FormLabel>
-                    <FormDescription>
-                      Allow sending text messages to your phone number.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-        
-        {/* Conditional Mailing Address Fields */}
-        {contactMethod === "mail" && (
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Street Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123 Main St" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input placeholder="City" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="state"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>State</FormLabel>
-                    <FormControl>
-                      <Input placeholder="State" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="zipCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ZIP Code</FormLabel>
-                  <FormControl>
-                    <Input placeholder="12345" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
-        
-        {/* Additional Notes - Always visible */}
-        <FormField
-          control={form.control}
-          name="additionalNotes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Additional Notes</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Any additional information you'd like us to know..."
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Optional: Add any other details you'd like us to know.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  );
+	<Form
+		{...form}
+		onSubmit={onSubmit}
+		className="w-full max-w-md space-y-8"
+	>
+		<FormField
+			control={form.control}
+			name="contactMethod"
+			render={({ field }) => (
+				<FormItem className="space-y-3">
+					<FormLabel>Preferred Contact Method</FormLabel>
+					<FormControl>
+						<RadioGroup
+							onValueChange={field.onChange}
+							defaultValue={field.value}
+							className="flex flex-col space-y-1"
+						>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="email" />
+								</FormControl>
+								<FormLabel className="font-normal">Email</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="phone" />
+								</FormControl>
+								<FormLabel className="font-normal">Phone</FormLabel>
+							</FormItem>
+							<FormItem className="flex items-center space-x-3 space-y-0">
+								<FormControl>
+									<RadioGroupItem value="mail" />
+								</FormControl>
+								<FormLabel className="font-normal">Postal Mail</FormLabel>
+							</FormItem>
+						</RadioGroup>
+					</FormControl>
+					<FormDescription>
+						How would you like us to contact you?
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+
+		{/* Conditional Email Field */}
+		{contactMethod === "email" && (
+			<FormField
+				control={form.control}
+				name="email"
+				render={({ field }) => (
+					<FormItem>
+						<FormLabel>Email Address</FormLabel>
+						<FormControl>
+							<Input placeholder="you@example.com" {...field} />
+						</FormControl>
+						<FormDescription>
+							We&apos;ll use this email to contact you.
+						</FormDescription>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
+		)}
+
+		{/* Conditional Phone Fields */}
+		{contactMethod === "phone" && (
+			<>
+				<FormField
+					control={form.control}
+					name="phone"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Phone Number</FormLabel>
+							<FormControl>
+								<Input placeholder="(555) 555-5555" {...field} />
+							</FormControl>
+							<FormDescription>
+								We&apos;ll use this number to contact you.
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
+					name="allowTexting"
+					render={({ field }) => (
+						<FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+							<div className="space-y-0.5">
+								<FormLabel className="text-base">
+									Text Message Alerts
+								</FormLabel>
+								<FormDescription>
+									Allow sending text messages to your phone number.
+								</FormDescription>
+							</div>
+							<FormControl>
+								<Switch
+									checked={field.value}
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+						</FormItem>
+					)}
+				/>
+			</>
+		)}
+
+		{/* Conditional Mailing Address Fields */}
+		{contactMethod === "mail" && (
+			<div className="space-y-4">
+				<FormField
+					control={form.control}
+					name="address"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Street Address</FormLabel>
+							<FormControl>
+								<Input placeholder="123 Main St" {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<div className="grid grid-cols-2 gap-4">
+					<FormField
+						control={form.control}
+						name="city"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>City</FormLabel>
+								<FormControl>
+									<Input placeholder="City" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="state"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>State</FormLabel>
+								<FormControl>
+									<Input placeholder="State" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+				</div>
+
+				<FormField
+					control={form.control}
+					name="zipCode"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>ZIP Code</FormLabel>
+							<FormControl>
+								<Input placeholder="12345" {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+			</div>
+		)}
+
+		{/* Additional Notes - Always visible */}
+		<FormField
+			control={form.control}
+			name="additionalNotes"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Additional Notes</FormLabel>
+					<FormControl>
+						<Textarea
+							placeholder="Any additional information you'd like us to know..."
+							className="resize-none"
+							{...field}
+						/>
+					</FormControl>
+					<FormDescription>
+						Optional: Add any other details you&apos;d like us to know.
+					</FormDescription>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
+
+		<Button type="submit">Submit</Button>
+	</Form>
+);
 }`,
 			},
 		},
@@ -1898,205 +1907,202 @@ export function ConditionalFieldsFormExample() {
 			}
 
 			return (
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="w-full max-w-md space-y-8"
-					>
+				<Form
+					{...form}
+					onSubmit={onSubmit}
+					className="w-full max-w-md space-y-8"
+				>
+					<FormField
+						control={form.control}
+						name="contactMethod"
+						render={({ field }) => (
+							<FormItem className="space-y-3">
+								<FormLabel>Preferred Contact Method</FormLabel>
+								<FormControl>
+									<RadioGroup
+										onValueChange={field.onChange}
+										defaultValue={field.value}
+										className="flex flex-col space-y-1"
+									>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="email" />
+											</FormControl>
+											<FormLabel className="font-normal">Email</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="phone" />
+											</FormControl>
+											<FormLabel className="font-normal">Phone</FormLabel>
+										</FormItem>
+										<FormItem className="flex items-center space-x-3 space-y-0">
+											<FormControl>
+												<RadioGroupItem value="mail" />
+											</FormControl>
+											<FormLabel className="font-normal">Postal Mail</FormLabel>
+										</FormItem>
+									</RadioGroup>
+								</FormControl>
+								<FormDescription>
+									How would you like us to contact you?
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Conditional Email Field */}
+					{contactMethod === "email" && (
 						<FormField
 							control={form.control}
-							name="contactMethod"
+							name="email"
 							render={({ field }) => (
-								<FormItem className="space-y-3">
-									<FormLabel>Preferred Contact Method</FormLabel>
+								<FormItem>
+									<FormLabel>Email Address</FormLabel>
 									<FormControl>
-										<RadioGroup
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-											className="flex flex-col space-y-1"
-										>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="email" />
-												</FormControl>
-												<FormLabel className="font-normal">Email</FormLabel>
-											</FormItem>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="phone" />
-												</FormControl>
-												<FormLabel className="font-normal">Phone</FormLabel>
-											</FormItem>
-											<FormItem className="flex items-center space-x-3 space-y-0">
-												<FormControl>
-													<RadioGroupItem value="mail" />
-												</FormControl>
-												<FormLabel className="font-normal">
-													Postal Mail
-												</FormLabel>
-											</FormItem>
-										</RadioGroup>
+										<Input placeholder="you@example.com" {...field} />
 									</FormControl>
 									<FormDescription>
-										How would you like us to contact you?
+										We&apos;ll use this email to contact you.
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
+					)}
 
-						{/* Conditional Email Field */}
-						{contactMethod === "email" && (
+					{/* Conditional Phone Fields */}
+					{contactMethod === "phone" && (
+						<>
 							<FormField
 								control={form.control}
-								name="email"
+								name="phone"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Email Address</FormLabel>
+										<FormLabel>Phone Number</FormLabel>
 										<FormControl>
-											<Input placeholder="you@example.com" {...field} />
+											<Input placeholder="(555) 555-5555" {...field} />
 										</FormControl>
 										<FormDescription>
-											We&apos;ll use this email to contact you.
+											We&apos;ll use this number to contact you.
 										</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-						)}
 
-						{/* Conditional Phone Fields */}
-						{contactMethod === "phone" && (
-							<>
-								<FormField
-									control={form.control}
-									name="phone"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Phone Number</FormLabel>
-											<FormControl>
-												<Input placeholder="(555) 555-5555" {...field} />
-											</FormControl>
+							<FormField
+								control={form.control}
+								name="allowTexting"
+								render={({ field }) => (
+									<FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+										<div className="space-y-0.5">
+											<FormLabel className="text-base">
+												Text Message Alerts
+											</FormLabel>
 											<FormDescription>
-												We&apos;ll use this number to contact you.
+												Allow sending text messages to your phone number.
 											</FormDescription>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+										</div>
+										<FormControl>
+											<Switch
+												checked={field.value}
+												onCheckedChange={field.onChange}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</>
+					)}
 
+					{/* Conditional Mailing Address Fields */}
+					{contactMethod === "mail" && (
+						<div className="space-y-4">
+							<FormField
+								control={form.control}
+								name="address"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Street Address</FormLabel>
+										<FormControl>
+											<Input placeholder="123 Main St" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<div className="grid grid-cols-2 gap-4">
 								<FormField
 									control={form.control}
-									name="allowTexting"
-									render={({ field }) => (
-										<FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-											<div className="space-y-0.5">
-												<FormLabel className="text-base">
-													Text Message Alerts
-												</FormLabel>
-												<FormDescription>
-													Allow sending text messages to your phone number.
-												</FormDescription>
-											</div>
-											<FormControl>
-												<Switch
-													checked={field.value}
-													onCheckedChange={field.onChange}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</>
-						)}
-
-						{/* Conditional Mailing Address Fields */}
-						{contactMethod === "mail" && (
-							<div className="space-y-4">
-								<FormField
-									control={form.control}
-									name="address"
+									name="city"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Street Address</FormLabel>
+											<FormLabel>City</FormLabel>
 											<FormControl>
-												<Input placeholder="123 Main St" {...field} />
+												<Input placeholder="City" {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
 
-								<div className="grid grid-cols-2 gap-4">
-									<FormField
-										control={form.control}
-										name="city"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>City</FormLabel>
-												<FormControl>
-													<Input placeholder="City" {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-
-									<FormField
-										control={form.control}
-										name="state"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>State</FormLabel>
-												<FormControl>
-													<Input placeholder="State" {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								</div>
-
 								<FormField
 									control={form.control}
-									name="zipCode"
+									name="state"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>ZIP Code</FormLabel>
+											<FormLabel>State</FormLabel>
 											<FormControl>
-												<Input placeholder="12345" {...field} />
+												<Input placeholder="State" {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
 							</div>
+
+							<FormField
+								control={form.control}
+								name="zipCode"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>ZIP Code</FormLabel>
+										<FormControl>
+											<Input placeholder="12345" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+					)}
+
+					{/* Additional Notes - Always visible */}
+					<FormField
+						control={form.control}
+						name="additionalNotes"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Additional Notes</FormLabel>
+								<FormControl>
+									<Textarea
+										placeholder="Any additional information you'd like us to know..."
+										className="resize-none"
+										{...field}
+									/>
+								</FormControl>
+								<FormDescription>
+									Optional: Add any other details you&apos;d like us to know.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
 						)}
+					/>
 
-						{/* Additional Notes - Always visible */}
-						<FormField
-							control={form.control}
-							name="additionalNotes"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Additional Notes</FormLabel>
-									<FormControl>
-										<Textarea
-											placeholder="Any additional information you'd like us to know..."
-											className="resize-none"
-											{...field}
-										/>
-									</FormControl>
-									<FormDescription>
-										Optional: Add any other details you&apos;d like us to know.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<Button type="submit">Submit</Button>
-					</form>
+					<Button type="submit">Submit</Button>
 				</Form>
 			);
 		}
@@ -2367,8 +2373,7 @@ export const DeepNestedForm: Story = {
           </CardContent>
         </Card>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Form {...form} onSubmit={onSubmit} className="space-y-8">
             {/* Delivery Settings Section */}
             <div>
               <h3 className="text-xl font-semibold mb-4">Delivery Settings</h3>
@@ -2639,7 +2644,6 @@ export const DeepNestedForm: Story = {
             <div className="flex justify-end pt-4">
               <Button type="submit">Save Configuration</Button>
             </div>
-          </form>
         </Form>
       </div>
     );`,
@@ -2948,277 +2952,166 @@ export const DeepNestedForm: Story = {
 					</CardContent>
 				</Card>
 
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						{/* Delivery Settings Section */}
-						<div>
-							<h3 className="mb-4 font-semibold text-xl">Delivery Settings</h3>
-							<Card>
-								<CardContent className="space-y-4 pt-6">
-									<FormField
-										control={form.control}
-										name="config.deliveryFee"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Delivery fee</FormLabel>
-												<FormControl>
-													<Input
-														type="number"
-														{...field}
-														placeholder="0"
-														min={0}
-														step={1}
-														onChange={(e) =>
-															field.onChange(
-																Number.parseInt(e.target.value) || 0,
-															)
-														}
-													/>
-												</FormControl>
-												<FormDescription>Cents / Pence</FormDescription>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
+				<Form {...form} onSubmit={onSubmit} className="space-y-8">
+					{/* Delivery Settings Section */}
+					<div>
+						<h3 className="mb-4 font-semibold text-xl">Delivery Settings</h3>
+						<Card>
+							<CardContent className="space-y-4 pt-6">
+								<FormField
+									control={form.control}
+									name="config.deliveryFee"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Delivery fee</FormLabel>
+											<FormControl>
+												<Input
+													type="number"
+													{...field}
+													placeholder="0"
+													min={0}
+													step={1}
+													onChange={(e) =>
+														field.onChange(Number.parseInt(e.target.value) || 0)
+													}
+												/>
+											</FormControl>
+											<FormDescription>Cents / Pence</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-									<FormField
-										control={form.control}
-										name="config.deliveryFeeTaxPercentage"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Delivery Tax Rate</FormLabel>
-												<FormControl>
-													<Input
-														type="number"
-														{...field}
-														placeholder="0"
-														min={0}
-														onChange={(e) =>
-															field.onChange(
-																Number.parseFloat(e.target.value) || 0,
-															)
-														}
-													/>
-												</FormControl>
-												<FormDescription>
-													Enter as percentage, e.g. &quot;6.7&quot; for 6.7% tax
-													on delivery fee
-												</FormDescription>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
+								<FormField
+									control={form.control}
+									name="config.deliveryFeeTaxPercentage"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Delivery Tax Rate</FormLabel>
+											<FormControl>
+												<Input
+													type="number"
+													{...field}
+													placeholder="0"
+													min={0}
+													onChange={(e) =>
+														field.onChange(
+															Number.parseFloat(e.target.value) || 0,
+														)
+													}
+												/>
+											</FormControl>
+											<FormDescription>
+												Enter as percentage, e.g. &quot;6.7&quot; for 6.7% tax
+												on delivery fee
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-									<FormField
-										control={form.control}
-										name="config.deliveryMinOrder"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Minimum delivery order</FormLabel>
-												<FormControl>
-													<Input
-														type="number"
-														{...field}
-														placeholder="0"
-														min={1}
-														step={1}
-														onChange={(e) =>
-															field.onChange(
-																Number.parseInt(e.target.value) || 0,
-															)
-														}
-													/>
-												</FormControl>
-												<FormDescription>Cents / Pence</FormDescription>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
+								<FormField
+									control={form.control}
+									name="config.deliveryMinOrder"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Minimum delivery order</FormLabel>
+											<FormControl>
+												<Input
+													type="number"
+													{...field}
+													placeholder="0"
+													min={1}
+													step={1}
+													onChange={(e) =>
+														field.onChange(Number.parseInt(e.target.value) || 0)
+													}
+												/>
+											</FormControl>
+											<FormDescription>Cents / Pence</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-									<FormField
-										control={form.control}
-										name="deliveryPostcodesString"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Postcodes</FormLabel>
-												<FormControl>
-													<Input {...field} placeholder="Type in postcode(s)" />
-												</FormControl>
-												<FormDescription>
-													Delimit postcodes with a comma
-												</FormDescription>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
+								<FormField
+									control={form.control}
+									name="deliveryPostcodesString"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Postcodes</FormLabel>
+											<FormControl>
+												<Input {...field} placeholder="Type in postcode(s)" />
+											</FormControl>
+											<FormDescription>
+												Delimit postcodes with a comma
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-									<div className="mt-6 space-y-2">
-										<h4 className="font-medium">Delivery Areas</h4>
-										<p className="text-gray-500 text-sm">
-											Toggle excluded delivery areas:
-										</p>
-										<div className="flex flex-col gap-2">
-											{deliveryAreas.map((area) => {
-												const isExcluded = excludedDeliveryAreaIds.fields.some(
-													(field) => field.value === area.id,
-												);
-												return (
-													<div
-														key={area.id}
-														className={`cursor-pointer rounded-md border p-3 ${
-															isExcluded
-																? "border-gray-300 bg-gray-100"
-																: "border-gray-200"
-														}`}
-														onClick={() => toggleDeliveryArea(area.id)}
-													>
-														<div className="flex items-center justify-between">
-															<span>{area.name}</span>
-															<span>
-																{isExcluded ? "(Excluded)" : "(Included)"}
-															</span>
-														</div>
+								<div className="mt-6 space-y-2">
+									<h4 className="font-medium">Delivery Areas</h4>
+									<p className="text-gray-500 text-sm">
+										Toggle excluded delivery areas:
+									</p>
+									<div className="flex flex-col gap-2">
+										{deliveryAreas.map((area) => {
+											const isExcluded = excludedDeliveryAreaIds.fields.some(
+												(field) => field.value === area.id,
+											);
+											return (
+												<div
+													key={area.id}
+													className={`cursor-pointer rounded-md border p-3 ${
+														isExcluded
+															? "border-gray-300 bg-gray-100"
+															: "border-gray-200"
+													}`}
+													onClick={() => toggleDeliveryArea(area.id)}
+												>
+													<div className="flex items-center justify-between">
+														<span>{area.name}</span>
+														<span>
+															{isExcluded ? "(Excluded)" : "(Included)"}
+														</span>
 													</div>
-												);
-											})}
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</div>
-
-						<Separator />
-
-						{/* Custom Order Notifications */}
-						<div>
-							<h3 className="mb-4 font-semibold text-xl">
-								Custom Order Notifications
-							</h3>
-							<Card>
-								<CardContent className="space-y-8 pt-6">
-									{OrderingNotificationStatuses.map((status) => (
-										<div key={status} className="space-y-4">
-											<h4 className="font-semibold">
-												Order{" "}
-												{status
-													.split("_")
-													.map(
-														(word) =>
-															word.charAt(0) + word.slice(1).toLowerCase(),
-													)
-													.join(" ")}{" "}
-												Notifications
-											</h4>
-
-											<FormField
-												control={form.control}
-												name={`config.orderingNotificationMessages.${status}.disabled`}
-												render={({ field }) => (
-													<FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
-														<FormControl>
-															<Checkbox
-																checked={field.value}
-																onCheckedChange={field.onChange}
-															/>
-														</FormControl>
-														<div className="space-y-1 leading-none">
-															<FormLabel>Disable Notification Type</FormLabel>
-														</div>
-													</FormItem>
-												)}
-											/>
-
-											<FormField
-												control={form.control}
-												name={`config.orderingNotificationMessages.${status}.title`}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Message Title</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-
-											<FormField
-												control={form.control}
-												name={`config.orderingNotificationMessages.${status}.body`}
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Message Body</FormLabel>
-														<FormControl>
-															<Input {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
-									))}
-								</CardContent>
-							</Card>
-						</div>
-
-						<Separator />
-
-						{/* Other Settings */}
-						<div>
-							<h3 className="mb-4 font-semibold text-xl">Other Settings</h3>
-							<Card>
-								<CardContent className="space-y-6 pt-6">
-									<FormField
-										control={form.control}
-										name="config.waitTimeMins"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Estimated wait time</FormLabel>
-												<FormControl>
-													<Input
-														type="number"
-														{...field}
-														placeholder="0"
-														min={0}
-														step={1}
-														onChange={(e) =>
-															field.onChange(
-																Number.parseInt(e.target.value) || 0,
-															)
-														}
-													/>
-												</FormControl>
-												<FormDescription>Minutes</FormDescription>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-
-									<FormField
-										control={form.control}
-										name="settings.fulfillmentTypeEnabled"
-										render={({ field }) => (
-											<FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
-												<FormControl>
-													<Checkbox
-														checked={field.value}
-														onCheckedChange={field.onChange}
-													/>
-												</FormControl>
-												<div className="space-y-1 leading-none">
-													<FormLabel>
-														Enable menu based on fulfillment type
-													</FormLabel>
 												</div>
-											</FormItem>
-										)}
-									/>
+											);
+										})}
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
 
-									<div className="space-y-2">
-										<h5 className="text-gray-500 text-sm">Item Level Notes</h5>
+					<Separator />
+
+					{/* Custom Order Notifications */}
+					<div>
+						<h3 className="mb-4 font-semibold text-xl">
+							Custom Order Notifications
+						</h3>
+						<Card>
+							<CardContent className="space-y-8 pt-6">
+								{OrderingNotificationStatuses.map((status) => (
+									<div key={status} className="space-y-4">
+										<h4 className="font-semibold">
+											Order{" "}
+											{status
+												.split("_")
+												.map(
+													(word) =>
+														word.charAt(0) + word.slice(1).toLowerCase(),
+												)
+												.join(" ")}{" "}
+											Notifications
+										</h4>
+
 										<FormField
 											control={form.control}
-											name="config.allowItemNotes"
+											name={`config.orderingNotificationMessages.${status}.disabled`}
 											render={({ field }) => (
 												<FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
 													<FormControl>
@@ -3228,7 +3121,7 @@ export const DeepNestedForm: Story = {
 														/>
 													</FormControl>
 													<div className="space-y-1 leading-none">
-														<FormLabel>Allow Item Level Notes</FormLabel>
+														<FormLabel>Disable Notification Type</FormLabel>
 													</div>
 												</FormItem>
 											)}
@@ -3236,38 +3129,141 @@ export const DeepNestedForm: Story = {
 
 										<FormField
 											control={form.control}
-											name="config.itemNotesMaxLength"
+											name={`config.orderingNotificationMessages.${status}.title`}
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>
-														Maximum characters allowed for item level notes
-													</FormLabel>
+													<FormLabel>Message Title</FormLabel>
 													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															min={1}
-															step={1}
-															onChange={(e) =>
-																field.onChange(
-																	Number.parseInt(e.target.value) || 0,
-																)
-															}
-														/>
+														<Input {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
+											name={`config.orderingNotificationMessages.${status}.body`}
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Message Body</FormLabel>
+													<FormControl>
+														<Input {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
 											)}
 										/>
 									</div>
-								</CardContent>
-							</Card>
-						</div>
+								))}
+							</CardContent>
+						</Card>
+					</div>
 
-						<div className="flex justify-end pt-4">
-							<Button type="submit">Save Configuration</Button>
-						</div>
-					</form>
+					<Separator />
+
+					{/* Other Settings */}
+					<div>
+						<h3 className="mb-4 font-semibold text-xl">Other Settings</h3>
+						<Card>
+							<CardContent className="space-y-6 pt-6">
+								<FormField
+									control={form.control}
+									name="config.waitTimeMins"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Estimated wait time</FormLabel>
+											<FormControl>
+												<Input
+													type="number"
+													{...field}
+													placeholder="0"
+													min={0}
+													step={1}
+													onChange={(e) =>
+														field.onChange(Number.parseInt(e.target.value) || 0)
+													}
+												/>
+											</FormControl>
+											<FormDescription>Minutes</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name="settings.fulfillmentTypeEnabled"
+									render={({ field }) => (
+										<FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
+											<FormControl>
+												<Checkbox
+													checked={field.value}
+													onCheckedChange={field.onChange}
+												/>
+											</FormControl>
+											<div className="space-y-1 leading-none">
+												<FormLabel>
+													Enable menu based on fulfillment type
+												</FormLabel>
+											</div>
+										</FormItem>
+									)}
+								/>
+
+								<div className="space-y-2">
+									<h5 className="text-gray-500 text-sm">Item Level Notes</h5>
+									<FormField
+										control={form.control}
+										name="config.allowItemNotes"
+										render={({ field }) => (
+											<FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
+												<FormControl>
+													<Checkbox
+														checked={field.value}
+														onCheckedChange={field.onChange}
+													/>
+												</FormControl>
+												<div className="space-y-1 leading-none">
+													<FormLabel>Allow Item Level Notes</FormLabel>
+												</div>
+											</FormItem>
+										)}
+									/>
+
+									<FormField
+										control={form.control}
+										name="config.itemNotesMaxLength"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>
+													Maximum characters allowed for item level notes
+												</FormLabel>
+												<FormControl>
+													<Input
+														type="number"
+														{...field}
+														min={1}
+														step={1}
+														onChange={(e) =>
+															field.onChange(
+																Number.parseInt(e.target.value) || 0,
+															)
+														}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+
+					<div className="flex justify-end pt-4">
+						<Button type="submit">Save Configuration</Button>
+					</div>
 				</Form>
 			</div>
 		);
