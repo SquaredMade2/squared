@@ -76,7 +76,7 @@ const TaskList = ({
 							{showDueDate && (
 								<div
 									className={cn(
-										"xs:hidden shrink-0 whitespace-nowrap sm:hidden md:flex",
+										"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex",
 										checkOverdueDate(task.dueDate) &&
 											"border-destructive text-destructive",
 									)}
