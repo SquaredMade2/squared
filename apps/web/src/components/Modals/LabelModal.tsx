@@ -144,96 +144,94 @@ export const LabelModal = () => {
 						{labelData.name ? "Edit Label" : "Create Label"}
 					</DialogTitle>
 				</DialogHeader>
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(handleLabelSubmit)}>
-						<div className="my-4 grid grid-cols-2 gap-4">
-							<div className="flex flex-col gap-4 ">
-								<FormField
-									control={form.control}
-									name="name"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="flex items-center gap-4">
-												Label Name{" "}
-												{nameExists && (
-													<span className="text-red-500">
-														Label name already exists!
-													</span>
-												)}
-											</FormLabel>
-											<FormControl>
+				<Form {...form} onSubmit={handleLabelSubmit}>
+					<div className="my-4 grid grid-cols-2 gap-4">
+						<div className="flex flex-col gap-4 ">
+							<FormField
+								control={form.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="flex items-center gap-4">
+											Label Name{" "}
+											{nameExists && (
+												<span className="text-red-500">
+													Label name already exists!
+												</span>
+											)}
+										</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Label Name"
+												onChange={(e) => {
+													field.onChange(e);
+													checkLabelExists(e.target.value);
+												}}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Label Description</FormLabel>
+										<FormControl>
+											<Input {...field} placeholder="Label Description" />
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="color"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Label Color</FormLabel>
+										<FormControl>
+											<div className="flex items-center gap-2">
+												<div
+													className="h-5 w-5 rounded-lg border border-gray-500"
+													style={{ backgroundColor: field.value }}
+												/>
 												<Input
 													{...field}
-													placeholder="Label Name"
-													onChange={(e) => {
-														field.onChange(e);
-														checkLabelExists(e.target.value);
-													}}
+													value={field.value}
+													onChange={(e) => field.onChange(e.target.value)}
 												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="description"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Label Description</FormLabel>
-											<FormControl>
-												<Input {...field} placeholder="Label Description" />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="color"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Label Color</FormLabel>
-											<FormControl>
-												<div className="flex items-center gap-2">
-													<div
-														className="h-5 w-5 rounded-lg border border-gray-500"
-														style={{ backgroundColor: field.value }}
-													/>
-													<Input
-														{...field}
-														value={field.value}
-														onChange={(e) => field.onChange(e.target.value)}
-													/>
-												</div>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
-							<div className="flex flex-col items-center justify-center gap-4 ">
-								<HexColorPicker
-									color={form.watch("color")}
-									onChange={form.setValue.bind(null, "color")}
-								/>
-							</div>
+											</div>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 						</div>
-						<DialogFooter>
-							<Button
-								type="button"
-								onClick={handleResetForm}
-								className="bg-transparent text-foreground hover:cursor-pointer"
-								variant="destructive"
-							>
-								Discard
-							</Button>
-							<Button
-								type="submit"
-								className="hover:cursor-pointer"
-								disabled={nameExists}
-							>
-								Save
-							</Button>
-						</DialogFooter>
-					</form>
+						<div className="flex flex-col items-center justify-center gap-4 ">
+							<HexColorPicker
+								color={form.watch("color")}
+								onChange={form.setValue.bind(null, "color")}
+							/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button
+							type="button"
+							onClick={handleResetForm}
+							className="bg-transparent text-foreground hover:cursor-pointer"
+							variant="destructive"
+						>
+							Discard
+						</Button>
+						<Button
+							type="submit"
+							className="hover:cursor-pointer"
+							disabled={nameExists}
+						>
+							Save
+						</Button>
+					</DialogFooter>
 				</Form>
 			</DialogContent>
 		</Dialog>

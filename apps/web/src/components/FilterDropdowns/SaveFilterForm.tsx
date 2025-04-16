@@ -70,7 +70,7 @@ export function SaveFilterForm({
 			description: "",
 		},
 	});
-	const { control, handleSubmit, reset } = form;
+	const { control, reset } = form;
 
 	useEffect(() => {
 		if (pathname.includes("/views")) {
@@ -186,56 +186,51 @@ export function SaveFilterForm({
 	});
 
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={handleSubmit((values) => upsertFilter(values))}
-				className="mb-8 space-y-4"
-			>
-				<FormField
-					control={control}
-					name="title"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Filter Name</FormLabel>
-							<FormControl>
-								<Input placeholder="Enter filter name" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={control}
-					name="description"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Description (optional)</FormLabel>
-							<FormControl>
-								<Textarea placeholder="Enter filter description" {...field} />
-							</FormControl>
-							<FormDescription>
-								Provide a brief description of what this filter does.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<div className="flex flex-wrap gap-2">
-					{formattedFilters.map(({ name, value }) => (
-						<Badge key={name + value} variant="secondary">
-							{name}: {value}
-						</Badge>
-					))}
-				</div>
-				<div className="flex justify-end space-x-2">
-					<Button type="button" variant="outline" onClick={onCancel}>
-						Cancel
-					</Button>
-					<Button type="submit" disabled={isPending}>
-						{type === "new" ? "Save New Filter" : "Save"}
-					</Button>
-				</div>
-			</form>
+		<Form {...form} onSubmit={upsertFilter} className="mb-8 space-y-4">
+			<FormField
+				control={control}
+				name="title"
+				render={({ field }) => (
+					<FormItem>
+						<FormLabel>Filter Name</FormLabel>
+						<FormControl>
+							<Input placeholder="Enter filter name" {...field} />
+						</FormControl>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
+			<FormField
+				control={control}
+				name="description"
+				render={({ field }) => (
+					<FormItem>
+						<FormLabel>Description (optional)</FormLabel>
+						<FormControl>
+							<Textarea placeholder="Enter filter description" {...field} />
+						</FormControl>
+						<FormDescription>
+							Provide a brief description of what this filter does.
+						</FormDescription>
+						<FormMessage />
+					</FormItem>
+				)}
+			/>
+			<div className="flex flex-wrap gap-2">
+				{formattedFilters.map(({ name, value }) => (
+					<Badge key={name + value} variant="secondary">
+						{name}: {value}
+					</Badge>
+				))}
+			</div>
+			<div className="flex justify-end space-x-2">
+				<Button type="button" variant="outline" onClick={onCancel}>
+					Cancel
+				</Button>
+				<Button type="submit" disabled={isPending}>
+					{type === "new" ? "Save New Filter" : "Save"}
+				</Button>
+			</div>
 		</Form>
 	);
 }

@@ -100,70 +100,63 @@ export default function Profile() {
 				<Separator />
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 					<div className="md:col-span-2">
-						<Form {...form}>
-							<form
-								onSubmit={form.handleSubmit(onSubmit)}
-								className="space-y-6"
-							>
-								<div className="space-y-4">
-									<h2 className="font-semibold text-xl">
-										Personal Information
-									</h2>
-									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-										<FormField
-											control={form.control}
-											name="firstName"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>First name</FormLabel>
-													<FormControl>
-														<Input {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="lastName"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Last name</FormLabel>
-													<FormControl>
-														<Input {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
+						<Form {...form} onSubmit={onSubmit} className="space-y-6">
+							<div className="space-y-4">
+								<h2 className="font-semibold text-xl">Personal Information</h2>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 									<FormField
 										control={form.control}
-										name="username"
+										name="firstName"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Username</FormLabel>
+												<FormLabel>First name</FormLabel>
 												<FormControl>
 													<Input {...field} />
 												</FormControl>
-												<FormDescription>
-													How you want to be called in Squared
-												</FormDescription>
 												<FormMessage />
 											</FormItem>
 										)}
 									/>
-									<FormItem>
-										<FormLabel>Email</FormLabel>
-										<FormDescription>
-											{user.primaryEmailAddress?.emailAddress}
-										</FormDescription>
-									</FormItem>
+									<FormField
+										control={form.control}
+										name="lastName"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Last name</FormLabel>
+												<FormControl>
+													<Input {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
 								</div>
-								<Button type="submit" disabled={isUpdating}>
-									{isUpdating ? "Updating..." : "Update Profile"}
-								</Button>
-							</form>
+								<FormField
+									control={form.control}
+									name="username"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Username</FormLabel>
+											<FormControl>
+												<Input {...field} />
+											</FormControl>
+											<FormDescription>
+												How you want to be called in Squared
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormItem>
+									<FormLabel>Email</FormLabel>
+									<FormDescription>
+										{user.primaryEmailAddress?.emailAddress}
+									</FormDescription>
+								</FormItem>
+							</div>
+							<Button type="submit" disabled={isUpdating}>
+								{isUpdating ? "Updating..." : "Update Profile"}
+							</Button>
 						</Form>
 					</div>
 					<div>
