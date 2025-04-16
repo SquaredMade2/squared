@@ -51,7 +51,7 @@ const NavBarTeams = ({
 				<Copy className="mr-2 size-4 text-muted-foreground" />
 				<p>Tasks</p>
 			</Button>
-			<div className="my-0.5 ml-4 border-border border-l pl-2">
+			<div className="my-0.5 ml-6 border-border border-l pl-3">
 				<Button
 					variant={currentPage === "active" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("active")}
@@ -79,7 +79,7 @@ const NavBarTeams = ({
 						<Activity className="mr-2 size-4 text-muted-foreground" />
 						<p>Sprints</p>
 					</Button>
-					<div className="my-0.5 ml-4 border-border border-l pl-2">
+					<div className="my-0.5 ml-6 border-border border-l pl-3">
 						<Button
 							variant={
 								currentPage === "current" && active ? "secondary" : "ghost"
