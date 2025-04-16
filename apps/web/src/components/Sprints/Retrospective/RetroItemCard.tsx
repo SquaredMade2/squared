@@ -39,7 +39,7 @@ export const RetroItemCard = ({
 				>
 					<Card>
 						<CardContent className="flex justify-between p-2">
-							<div className="flex flex-col">
+							<div className="flex flex-col pr-2">
 								<div>{item.content}</div>
 								{author && (
 									<div className="text-muted-foreground">
@@ -50,7 +50,7 @@ export const RetroItemCard = ({
 							{author && (
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger>
+										<TooltipTrigger asChild>
 											<Button
 												variant="outline"
 												className="gap-2"

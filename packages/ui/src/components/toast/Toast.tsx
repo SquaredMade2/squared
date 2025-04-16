@@ -1,1351 +1,1240 @@
-import { X } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
-import { createCollection } from "@squaredmade/ui/collection";
-import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
-import { type Scope, createContextScope } from "@squaredmade/ui/context";
-import { Portal } from "@squaredmade/ui/portal";
-import { Presence } from "@squaredmade/ui/presence";
-import {
-	Primitive,
-	dispatchDiscreteCustomEvent,
-} from "@squaredmade/ui/primitive";
+import { Spinner } from "@squaredmade/ui/spinner";
 import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
-import { useControllableState } from "@squaredmade/ui/use-controllable-state";
+import { useEscapeKeydown } from "@squaredmade/ui/use-escape-keydown";
+import { useIsDocumentHidden } from "@squaredmade/ui/use-is-document-hidden";
 import { useLayoutEffect } from "@squaredmade/ui/use-layout-effect";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
-import { type VariantProps, cva } from "class-variance-authority";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { usePrevious } from "@squaredmade/ui/use-previous";
 import {
-	DismissableLayer,
-	DismissableLayerBranch,
-} from "src/lib/dismissable-layer";
+	AlertCircle,
+	AlertTriangle,
+	CheckCircle,
+	X as CloseIcon,
+	Info,
+} from "lucide-react";
+import React from "react";
+import ReactDOM from "react-dom";
+import { ToastState } from "./state";
 
 /* -------------------------------------------------------------------------------------------------
- * ToastProvider
+ * Types and Interfaces
  * -----------------------------------------------------------------------------------------------*/
 
-const PROVIDER_NAME = "ToastProvider";
+/**
+ * Defines the available appearance types for toast notifications.
+ */
+export type ToastTypes =
+	| "normal"
+	| "action"
+	| "success"
+	| "info"
+	| "warning"
+	| "error"
+	| "loading"
+	| "default";
 
-const [Collection, useCollection, createCollectionScope] =
-	createCollection<ToastElement>("Toast");
+/**
+ * Represents either a Promise or a function that returns a Promise.
+ * Used for the promise property in toast notifications to track async operations.
+ */
+export type PromiseT<Data = unknown> = Promise<Data> | (() => Promise<Data>);
 
-type SwipeDirection = "up" | "down" | "left" | "right";
-type ToastProviderContextValue = {
-	label: string;
-	duration: number;
-	swipeDirection: SwipeDirection;
-	swipeThreshold: number;
-	toastCount: number;
-	viewport: ToastViewportElement | null;
-	onViewportChange(viewport: ToastViewportElement): void;
-	onToastAdd(): void;
-	onToastRemove(): void;
-	isFocusedToastEscapeKeyDownRef: React.RefObject<boolean>;
-	isClosePausedRef: React.RefObject<boolean>;
-};
-
-type ScopedProps<P> = P & { __scopeToast?: Scope };
-const [createToastContext, createToastScope] = createContextScope("Toast", [
-	createCollectionScope,
-]);
-const [ToastProviderProvider, useToastProviderContext] =
-	createToastContext<ToastProviderContextValue>(PROVIDER_NAME);
-
-interface ToastProviderProps {
-	children?: React.ReactNode;
-	/**
-	 * An author-localized label for each toast. Used to help screen reader users
-	 * associate the interruption with a toast.
-	 * @defaultValue 'Notification'
-	 */
-	label?: string;
-	/**
-	 * Time in milliseconds that each toast should remain visible for.
-	 * @defaultValue 5000
-	 */
-	duration?: number;
-	/**
-	 * Direction of pointer swipe that should close the toast.
-	 * @defaultValue 'right'
-	 */
-	swipeDirection?: SwipeDirection;
-	/**
-	 * Distance in pixels that the swipe must pass before a close is triggered.
-	 * @defaultValue 50
-	 */
-	swipeThreshold?: number;
+/**
+ * Collection of custom icons that can be provided to override the default toast icons.
+ */
+interface ToastIcons {
+	/** Custom icon to display for success toast notifications */
+	success?: React.ReactNode;
+	/** Custom icon to display for informational toast notifications */
+	info?: React.ReactNode;
+	/** Custom icon to display for warning toast notifications */
+	warning?: React.ReactNode;
+	/** Custom icon to display for error toast notifications */
+	error?: React.ReactNode;
+	/** Custom icon to display for loading toast notifications */
+	loading?: React.ReactNode;
+	/** Custom icon to display for the toast close button */
+	close?: React.ReactNode;
 }
 
 /**
- * ToastProvider component for managing toasts
+ * Represents an action button that can be added to a toast notification.
+ */
+interface Action {
+	/** The content to display on the action button */
+	label: React.ReactNode;
+	onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}
+
+/**
+ * Configuration object for an individual toast notification.
+ */
+interface ToastT {
+	/** Unique identifier for the toast */
+	id: number | string;
+	/** Primary content of the toast, can be a React node or a function returning a React node */
+	title?: (() => React.ReactNode) | React.ReactNode;
+	/** Visual appearance type for the toast */
+	type?: ToastTypes;
+	/** Custom icon to display, overrides the default icon for the selected type */
+	icon?: React.ReactNode;
+	/** Whether to show a close button on this toast */
+	closeButton?: boolean;
+	/** Whether this toast can be dismissed by user actions like swiping or clicking close */
+	dismissible?: boolean;
+	/** Secondary content displayed below the title, can be a React node or a function returning a React node */
+	description?: (() => React.ReactNode) | React.ReactNode;
+	/** Time in milliseconds before the toast auto-dismisses (0 or Infinity to prevent auto-dismiss) */
+	duration?: number;
+	/** When true, marks the toast for deletion */
+	delete?: boolean;
+	/** Primary action button or custom component shown on the toast */
+	action?: Action | React.ReactNode;
+	/** Secondary/cancel action button or custom component shown on the toast */
+	cancel?: Action | React.ReactNode;
+	/** Callback fired when the toast is dismissed by user action */
+	onDismiss?: (toast: ToastT) => void;
+	/** Callback fired when the toast is automatically closed after its duration expires */
+	onAutoClose?: (toast: ToastT) => void;
+	/** Promise to track for loading/success/error states - used for promise-based toast creation */
+	promise?: PromiseT;
+}
+
+/**
+ * Tracks the height of a toast for animation and positioning calculations.
+ */
+interface HeightT {
+	/** Height of the toast element in pixels */
+	height: number;
+	/** ID of the toast this height measurement belongs to */
+	toastId: number | string;
+}
+
+/**
+ * Global configuration options that can be applied to all toasts.
+ */
+interface ToastOptions {
+	/** Whether to show close buttons on all toasts */
+	closeButton?: boolean;
+	/** Default duration in milliseconds before toasts auto-dismiss */
+	duration?: number;
+	/** Accessibility label for close buttons */
+	closeButtonAriaLabel?: string;
+}
+
+/**
+ * Defines positioning offsets for the toast container.
+ * Can be a simple value applied to all sides, or an object with specific values per side.
+ */
+type Offset =
+	| {
+			/** Distance from the top edge of the viewport */
+			top?: string | number;
+			/** Distance from the right edge of the viewport */
+			right?: string | number;
+			/** Distance from the bottom edge of the viewport */
+			bottom?: string | number;
+			/** Distance from the left edge of the viewport */
+			left?: string | number;
+	  }
+	| string
+	| number;
+
+/**
+ * Props for the Toaster component that manages and displays toasts.
+ */
+interface ToasterProps {
+	/** Array of keys used as a keyboard shortcut to focus the toast list */
+	hotkey?: (keyof KeyboardEvent | "KeyT")[];
+	/** When true, toasts remain expanded by default instead of collapsing */
+	expand?: boolean;
+	/** Default duration in milliseconds that toasts remain visible */
+	duration?: number;
+	/** Spacing between toasts in pixels */
+	gap?: number;
+	/** Maximum number of toasts visible at once */
+	visibleToasts?: number;
+	/** Whether to show a close button on toasts by default */
+	closeButton?: boolean;
+	/** Options applied to all toasts */
+	toastOptions?: ToastOptions;
+	/** Positioning offset from viewport edges */
+	offset?: Offset;
+	/** Positioning offset for mobile viewport */
+	mobileOffset?: Offset;
+	/** Custom icon components to override defaults */
+	icons?: ToastIcons;
+	/** Accessibility label for the toast container */
+	containerAriaLabel?: string;
+}
+
+/**
+ * Props for the internal Toast component that renders individual notifications.
+ * These props are typically provided by the parent Toaster component.
+ */
+interface ToastProps {
+	/** The toast configuration object */
+	toast: ToastT;
+	/** Array of all active toasts */
+	toasts: ToastT[];
+	/** Position of this toast in the stack (0 is front/top) */
+	index: number;
+	/** Whether the toast stack is currently expanded */
+	expanded: boolean;
+	/** Array of height measurements for all toasts */
+	heights: HeightT[];
+	/** Function to update height measurements */
+	setHeights: React.Dispatch<React.SetStateAction<HeightT[]>>;
+	/** Function to remove a toast from the stack */
+	removeToast: (toast: ToastT) => void;
+	/** Spacing between toasts in pixels */
+	gap?: number;
+	/** Maximum number of toasts visible at once */
+	visibleToasts: number;
+	/** Whether toasts should be expanded by default */
+	expandByDefault: boolean;
+	/** Whether to show a close button on this toast */
+	closeButton: boolean;
+	/** Whether user is currently interacting with a toast */
+	interacting: boolean;
+	/** Time in milliseconds before auto-dismissing */
+	duration?: number;
+	/** Custom loading icon */
+	loadingIcon?: React.ReactNode;
+	/** Custom icons for different toast types */
+	icons?: ToastIcons;
+	/** Accessibility label for the close button */
+	closeButtonAriaLabel?: string;
+}
+
+/**
+ * Instructions to dismiss a specific toast by ID.
+ * Used internally by the toast state management system.
+ */
+interface ToastToDismiss {
+	/** ID of the toast to dismiss */
+	id: number | string;
+	/** Flag indicating the toast should be dismissed */
+	dismiss: boolean;
+}
+
+interface CustomCSSProperties extends React.CSSProperties {
+	[key: `--offset-${string}`]: string;
+	[key: `--mobile-offset-${string}`]: string;
+}
+
+/* -------------------------------------------------------------------------------------------------
+ * Constants
+ * -----------------------------------------------------------------------------------------------*/
+
+// Visible toasts amount
+const VISIBLE_TOASTS_AMOUNT = 3;
+
+// Viewport padding
+const VIEWPORT_OFFSET = "24px";
+
+// Mobile viewport padding
+const MOBILE_VIEWPORT_OFFSET = "16px";
+
+// Default lifetime of a toasts (in ms)
+const TOAST_LIFETIME = 4000;
+
+// Default toast width
+const TOAST_WIDTH = 356;
+
+// Default gap between toasts
+const GAP = 14;
+
+// Threshold to dismiss a toast
+const SWIPE_THRESHOLD = 45;
+
+// Equal to exit animation duration
+const TIME_BEFORE_UNMOUNT = 400;
+
+/* -------------------------------------------------------------------------------------------------
+ * Helper Functions
+ * -----------------------------------------------------------------------------------------------*/
+
+/**
+ * Gets the appropriate icon asset based on toast type
+ */
+const getAsset = (type: ToastTypes) => {
+	switch (type) {
+		case "success":
+			return <CheckCircle color="primary" />;
+
+		case "info":
+			return <Info />;
+
+		case "warning":
+			return <AlertTriangle />;
+
+		case "error":
+			return <AlertCircle color="accent" />;
+
+		default:
+			return null;
+	}
+};
+
+/**
+ * Helper function to check if an action object has the expected structure
+ */
+function isAction(action: Action | React.ReactNode): action is Action {
+	return (action as Action).label !== undefined;
+}
+
+/**
+ * Assigns offset values to CSS custom properties for positioning
+ */
+function assignOffset(
+	defaultOffset: ToasterProps["offset"] | undefined,
+	mobileOffset: ToasterProps["mobileOffset"] | undefined,
+) {
+	const styles = {} as CustomCSSProperties;
+
+	[defaultOffset, mobileOffset].forEach((offset, index) => {
+		const isMobile = index === 1;
+		const prefix = isMobile ? "--mobile-offset" : "--offset";
+		const defaultValue = isMobile ? MOBILE_VIEWPORT_OFFSET : VIEWPORT_OFFSET;
+
+		function assignAll(offset: string | number) {
+			for (const key of ["top", "right", "bottom", "left"]) {
+				styles[`${prefix}-${key}`] =
+					typeof offset === "number" ? `${offset}px` : offset;
+			}
+		}
+
+		if (typeof offset === "number" || typeof offset === "string") {
+			assignAll(offset);
+		} else if (typeof offset === "object") {
+			for (const key of ["top", "right", "bottom", "left"] as const) {
+				// Use a type assertion to let TypeScript know we're using valid keys
+				const offsetKey = key as keyof typeof offset;
+
+				if (offset[offsetKey] === undefined) {
+					styles[`${prefix}-${key}`] = defaultValue;
+				} else {
+					const value = offset[offsetKey];
+					styles[`${prefix}-${key}`] =
+						typeof value === "number" ? `${value}px` : (value as string);
+				}
+			}
+		} else {
+			assignAll(defaultValue);
+		}
+	});
+
+	return styles;
+}
+
+/* -------------------------------------------------------------------------------------------------
+ * useToasts Hook
+ * -----------------------------------------------------------------------------------------------*/
+
+/**
+ * Hook for consuming toasts within components
  *
- * The ToastProvider component provides a context for managing toasts throughout your application. It handles the addition and removal of toasts, as well as their positioning and animation.
+ * This hook provides access to active toasts from the global toast state.
+ * Use this hook to retrieve the current list of active toasts within any component.
+ */
+function useToasts() {
+	const [activeToasts, setActiveToasts] = React.useState<ToastT[]>([]);
+
+	React.useEffect(() => {
+		return ToastState.subscribe((toast) => {
+			if ((toast as ToastToDismiss).dismiss) {
+				setTimeout(() => {
+					ReactDOM.flushSync(() => {
+						setActiveToasts((toasts) =>
+							toasts.filter((t) => t.id !== toast.id),
+						);
+					});
+				});
+				return;
+			}
+
+			// Prevent batching, temp solution.
+			setTimeout(() => {
+				ReactDOM.flushSync(() => {
+					setActiveToasts((toasts) => {
+						if (!toast.id) return toasts;
+						const toastWithId = toast as ToastT;
+
+						const indexOfExistingToast = toasts.findIndex(
+							(t) => t.id === toastWithId.id,
+						);
+
+						// Update the toast if it already exists
+						if (indexOfExistingToast !== -1) {
+							return [
+								...toasts.slice(0, indexOfExistingToast),
+								{ ...toasts[indexOfExistingToast], ...toast },
+								...toasts.slice(indexOfExistingToast + 1),
+							];
+						}
+
+						return [toastWithId, ...toasts];
+					});
+				});
+			});
+		});
+	}, []);
+
+	return {
+		toasts: activeToasts,
+	};
+}
+
+/* -------------------------------------------------------------------------------------------------
+ * Toast Component
+ * -----------------------------------------------------------------------------------------------*/
+
+/**
+ * Toast component for displaying individual notification messages
+ *
+ * The Toast component renders a single notification with optional title, description, icon, and actions.
+ * It handles interactions including swiping to dismiss, animation states, and lifecycle management.
  *
  * Key features:
- * - Centralized toast management
- * - Customizable duration and swipe behavior
- * - Accessible, using appropriate ARIA attributes
- * - Supports multiple simultaneous toasts
+ * - Interactive swipe-to-dismiss functionality
+ * - Support for various notification types (success, error, etc.)
+ * - Auto-dismiss with configurable duration
+ * - Customizable content with title, description and actions
+ * - Animated entrance and exit transitions
  *
- * Usage considerations:
- * - Wrap your application or a section of it with ToastProvider
- * - Use the useToast hook in child components to add or remove toasts
- * - Customize the appearance and behavior of toasts using the provided props
- * - Ensure the label prop is descriptive for screen readers
+ * This component is typically used internally by the Toaster component.
  */
-const ToastProvider: React.FC<ToastProviderProps> = (
-	props: ScopedProps<ToastProviderProps>,
-) => {
-	const {
-		__scopeToast,
-		label = "Notification",
-		duration = 5000,
-		swipeDirection = "right",
-		swipeThreshold = 50,
-		children,
-	} = props;
-	const [viewport, setViewport] = React.useState<ToastViewportElement | null>(
+const Toast = ({
+	toast,
+	interacting,
+	setHeights,
+	visibleToasts,
+	heights,
+	index,
+	toasts,
+	expanded,
+	removeToast,
+	closeButton: closeButtonFromToaster,
+	duration: durationFromToaster,
+	gap,
+	expandByDefault,
+	icons,
+	closeButtonAriaLabel = "Close toast",
+}: ToastProps) => {
+	const [swipeDirection, setSwipeDirection] = React.useState<"x" | "y" | null>(
 		null,
 	);
-	const [toastCount, setToastCount] = React.useState(0);
-	const isFocusedToastEscapeKeyDownRef = React.useRef(false);
-	const isClosePausedRef = React.useRef(false);
+	const [swipeOutDirection, setSwipeOutDirection] = React.useState<
+		"left" | "right" | "up" | "down" | null
+	>(null);
+	const [mounted, setMounted] = React.useState(false);
+	const [removed, setRemoved] = React.useState(false);
+	const [swiping, setSwiping] = React.useState(false);
+	const [swipeOut, setSwipeOut] = React.useState(false);
+	const [isSwiped, setIsSwiped] = React.useState(false);
+	const [offsetBeforeRemove, setOffsetBeforeRemove] = React.useState(0);
+	const [initialHeight, setInitialHeight] = React.useState(0);
+	const remainingTime = React.useRef(
+		toast.duration || durationFromToaster || TOAST_LIFETIME,
+	);
+	const dragStartTime = React.useRef<Date | null>(null);
+	const toastRef = React.useRef<HTMLLIElement>(null);
+	const isFront = index === 0;
+	const isVisible = index + 1 <= visibleToasts;
+	const toastType = toast.type;
+	const dismissible = toast.dismissible !== false;
+	// Height index is used to calculate the offset as it gets updated before the toast array, which means we can calculate the new layout faster.
+	const heightIndex = React.useMemo(
+		() => heights.findIndex((height) => height.toastId === toast.id) || 0,
+		[heights, toast.id],
+	);
+	const closeButton = React.useMemo(
+		() => toast.closeButton ?? closeButtonFromToaster,
+		[toast.closeButton, closeButtonFromToaster],
+	);
+	const duration = React.useMemo(
+		() => toast.duration || durationFromToaster || TOAST_LIFETIME,
+		[toast.duration, durationFromToaster],
+	);
+	const [closeTimerStartTime, setCloseTimerStartTime] = React.useState(0);
+	const previousCloseTimerStartTime = usePrevious(closeTimerStartTime);
+	const closeTimerStartTimeRef = React.useRef(0);
+	const offset = React.useRef(0);
+	const pointerStartRef = React.useRef<{ x: number; y: number } | null>(null);
+	const toastsHeightBefore = React.useMemo(() => {
+		return heights.reduce((prev, curr, reducerIndex) => {
+			// Calculate offset up until current toast
+			if (reducerIndex >= heightIndex) {
+				return prev;
+			}
 
-	if (!label.trim()) {
-		console.error(
-			`Invalid prop \`label\` supplied to \`${PROVIDER_NAME}\`. Expected non-empty \`string\`.`,
-		);
+			return prev + curr.height;
+		}, 0);
+	}, [heights, heightIndex]);
+	const isDocumentHidden = useIsDocumentHidden();
+
+	const disabled = toastType === "loading";
+
+	offset.current = React.useMemo(
+		() => heightIndex * (gap ?? 1) + toastsHeightBefore,
+		[heightIndex, toastsHeightBefore],
+	);
+
+	React.useEffect(() => {
+		remainingTime.current = duration;
+	}, [duration]);
+
+	React.useEffect(() => {
+		// Trigger enter animation without using CSS animation
+		setMounted(true);
+	}, []);
+
+	useLayoutEffect(() => {
+		const toastNode = toastRef.current;
+		if (toastNode) {
+			const height = toastNode.getBoundingClientRect().height;
+			// Add toast height to heights array after the toast is mounted
+			setInitialHeight(height);
+			setHeights((h) => [{ toastId: toast.id, height }, ...h]);
+			return () =>
+				setHeights((h) => h.filter((height) => height.toastId !== toast.id));
+		}
+	}, [setHeights, toast.id]);
+
+	useLayoutEffect(() => {
+		if (!mounted) return;
+		// biome-ignore lint/style/noNonNullAssertion: We check mounted state above
+		const toastNode = toastRef.current!;
+		const originalHeight = toastNode.style.height;
+		toastNode.style.height = "auto";
+		const newHeight = toastNode.getBoundingClientRect().height;
+		toastNode.style.height = originalHeight;
+
+		setInitialHeight(newHeight);
+
+		setHeights((heights) => {
+			const alreadyExists = heights.find(
+				(height) => height.toastId === toast.id,
+			);
+			if (!alreadyExists) {
+				return [
+					{
+						toastId: toast.id,
+						height: newHeight,
+					},
+					...heights,
+				];
+			}
+			return heights.map((height) =>
+				height.toastId === toast.id ? { ...height, height: newHeight } : height,
+			);
+		});
+	}, [mounted, toast.title, toast.description, setHeights, toast.id]);
+
+	const deleteToast = useCallbackRef(() => {
+		// Save the offset for the exit swipe animation
+		setRemoved(true);
+		setOffsetBeforeRemove(offset.current);
+		setHeights((h) => h.filter((height) => height.toastId !== toast.id));
+
+		setTimeout(() => {
+			removeToast(toast);
+		}, TIME_BEFORE_UNMOUNT);
+	});
+
+	React.useEffect(() => {
+		if (
+			(toast.promise && toastType === "loading") ||
+			toast.duration === Number.POSITIVE_INFINITY ||
+			toast.type === "loading"
+		)
+			return;
+		let timeoutId: NodeJS.Timeout;
+
+		// Pause the timer on each hover
+		const pauseTimer = () => {
+			if (previousCloseTimerStartTime < closeTimerStartTime) {
+				// Get the elapsed time since the timer started
+				const elapsedTime = new Date().getTime() - closeTimerStartTime;
+
+				remainingTime.current = remainingTime.current - elapsedTime;
+			}
+
+			setCloseTimerStartTime(new Date().getTime());
+		};
+
+		const startTimer = () => {
+			// setTimeout(, Infinity) behaves as if the delay is 0.
+			// As a result, the toast would be closed immediately, giving the appearance that it was never rendered.
+			// See: https://github.com/denysdovhan/wtfjs?tab=readme-ov-file#an-infinite-timeout
+			if (remainingTime.current === Number.POSITIVE_INFINITY) return;
+
+			closeTimerStartTimeRef.current = new Date().getTime();
+
+			// Let the toast know it has started
+			timeoutId = setTimeout(() => {
+				toast.onAutoClose?.(toast);
+				deleteToast();
+			}, remainingTime.current);
+		};
+
+		if (expanded || interacting || isDocumentHidden) {
+			pauseTimer();
+		} else {
+			startTimer();
+		}
+
+		return () => clearTimeout(timeoutId);
+	}, [expanded, interacting, toast, toastType, isDocumentHidden, deleteToast]);
+
+	React.useEffect(() => {
+		if (toast.delete) {
+			deleteToast();
+		}
+	}, [deleteToast, toast.delete]);
+
+	let icon = null;
+	if (toastType) {
+		if (toast.icon) {
+			icon = toast.icon;
+		}
+		if (icons && toastType in icons) {
+			icon = icons[toastType as keyof ToastIcons];
+		}
+		if (toastType) {
+			icon = getAsset(toastType);
+		}
 	}
 
+	const hasIcon = toast.icon || toastType || toast.promise;
+	const getY = () => {
+		if (removed && !isFront && !swipeOut && !expanded) return "translateY(40%)";
+		if (removed && !isFront && !swipeOut && expanded)
+			return "translateY(calc(var(--lift) * var(--offset) + var(--lift) * -100%))";
+		if (removed && isFront && !swipeOut)
+			return "translateY(calc(var(--lift) * -100%))";
+		if (mounted && expanded)
+			return "translateY(calc(var(--lift) * var(--offset)))";
+		if (!expanded && !isFront)
+			return "translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--scale)))";
+		if (mounted) return "translateY(0)";
+		return "translateY(100%)";
+	};
+
 	return (
-		<Collection.Provider scope={__scopeToast}>
-			<ToastProviderProvider
-				scope={__scopeToast}
-				label={label}
-				duration={duration}
-				swipeDirection={swipeDirection}
-				swipeThreshold={swipeThreshold}
-				toastCount={toastCount}
-				viewport={viewport}
-				onViewportChange={setViewport}
-				onToastAdd={React.useCallback(
-					() => setToastCount((prevCount) => prevCount + 1),
-					[],
-				)}
-				onToastRemove={React.useCallback(
-					() => setToastCount((prevCount) => prevCount - 1),
-					[],
-				)}
-				isFocusedToastEscapeKeyDownRef={isFocusedToastEscapeKeyDownRef}
-				isClosePausedRef={isClosePausedRef}
-			>
-				{children}
-			</ToastProviderProvider>
-		</Collection.Provider>
+		<li
+			// biome-ignore lint/a11y/noNoninteractiveTabindex: This element is interactive
+			tabIndex={0}
+			ref={toastRef}
+			className={cn(
+				// Base toast styles
+				"break-anywhere absolute right-0 bottom-0 z-[999999] box-border flex w-[var(--width)] translate-y-full transform touch-none items-center gap-1.5 rounded-md border border-border bg-card p-4 text-foreground text-sm opacity-0 shadow-[0px_4px_12px_rgba(0,0,0,0.1)] outline-none transition-[transform_400ms,opacity_400ms,height_400ms,box-shadow_200ms]",
+
+				// Focus styles
+				"focus-visible:shadow-[0px_4px_12px_rgba(0,0,0,0.1),0_0_0_2px_rgba(0,0,0,0.2)]",
+				disabled && "cursor-not-allowed",
+
+				// Swiping state
+				swiping &&
+					"before:-translate-y-1/2 before:absolute before:top-1/2 before:right-[-100%] before:left-[-100%] before:z-[-1] before:h-full before:scale-y-[3] before:content-['']",
+
+				// Removed state - general
+				removed &&
+					"before:absolute before:inset-0 before:scale-y-2 before:content-['']",
+
+				// Expanded state
+				expanded &&
+					"after:absolute after:bottom-full after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-['']",
+
+				// Mounted state
+				mounted &&
+					"translate-y-0 opacity-100 [&>*]:transition-opacity [&>*]:duration-400",
+
+				// Visibility state
+				!isVisible && "pointer-events-none opacity-0",
+
+				// Mounted and expanded
+				mounted &&
+					expanded &&
+					"transform-[translateY(calc(var(--lift)*var(--offset)))] h-[var(--initial-height)]",
+
+				// Non-expanded and non-front toast (stacked toasts)
+				!expanded &&
+					!isFront &&
+					"transform-[translateY(calc(var(--lift-amount)*var(--toasts-before)))] z-[var(--z-index)] h-[var(--front-toast-height)] scale-[calc(1-var(--toasts-before)*0.05)]",
+				!expanded && !isFront && "[&>*]:opacity-0",
+
+				// Removed and front toast without swipe-out
+				removed &&
+					isFront &&
+					!swipeOut &&
+					"transform-[translateY(calc(var(--lift)*-100%))] opacity-0",
+
+				// Removed and non-front toast - expanded
+				removed &&
+					!isFront &&
+					!swipeOut &&
+					expanded &&
+					"transform-[translateY(calc(var(--lift)*var(--offset)+var(--lift)*-100%))] opacity-0",
+
+				// Removed and non-front toast - not expanded
+				removed &&
+					!isFront &&
+					!swipeOut &&
+					!expanded &&
+					"transform-[translateY(40%)] opacity-0 transition-[transform_500ms,opacity_200ms]",
+
+				// Removed state with additional styling
+				removed && "before:h-[calc(var(--initial-height)+20%)]",
+
+				// Swiping transformation
+				swiping &&
+					"transform-[var(--y)_translateY(var(--swipe-amount-y,0px))_translateX(var(--swipe-amount-x,0px))] transition-none",
+
+				// Swiped state
+				isSwiped && "select-none",
+
+				// Swipe out animations
+				swipeOut &&
+					"animation-duration-200 animation-ease-out animation-fill-forwards",
+				swipeOut && swipeOutDirection === "right" && "swipe-out-right",
+				swipeOut && swipeOutDirection === "down" && "swipe-out-down",
+
+				// Toast type styling
+				toastType === "error" &&
+					"bg-destructive/90 text-destructive-foreground",
+			)}
+			style={
+				{
+					"--toasts-before": index,
+					"--z-index": toasts.length - index,
+					"--offset": `${removed ? offsetBeforeRemove : offset.current}px`,
+					"--initial-height": expandByDefault ? "auto" : `${initialHeight}px`,
+					"--lift": -1,
+					"--lift-amount": "calc(var(--lift) * var(--gap))",
+					"--y": getY(),
+				} as React.CSSProperties
+			}
+			onDragEnd={() => {
+				setSwiping(false);
+				setSwipeDirection(null);
+				pointerStartRef.current = null;
+			}}
+			onPointerDown={(event) => {
+				if (disabled || !dismissible) return;
+				dragStartTime.current = new Date();
+				setOffsetBeforeRemove(offset.current);
+				// Ensure we maintain correct pointer capture even when going outside of the toast (e.g. when swiping)
+				(event.target as HTMLElement).setPointerCapture(event.pointerId);
+				if ((event.target as HTMLElement).tagName === "BUTTON") return;
+				setSwiping(true);
+				pointerStartRef.current = { x: event.clientX, y: event.clientY };
+			}}
+			onPointerUp={() => {
+				if (swipeOut || !dismissible) return;
+
+				pointerStartRef.current = null;
+				const swipeAmountX = Number(
+					toastRef.current?.style
+						.getPropertyValue("--swipe-amount-x")
+						.replace("px", "") || 0,
+				);
+				const swipeAmountY = Number(
+					toastRef.current?.style
+						.getPropertyValue("--swipe-amount-y")
+						.replace("px", "") || 0,
+				);
+				const timeTaken =
+					new Date().getTime() -
+					(dragStartTime.current ? dragStartTime.current.getTime() : 0);
+
+				const swipeAmount =
+					swipeDirection === "x" ? swipeAmountX : swipeAmountY;
+				const velocity = Math.abs(swipeAmount) / timeTaken;
+
+				if (Math.abs(swipeAmount) >= SWIPE_THRESHOLD || velocity > 0.11) {
+					setOffsetBeforeRemove(offset.current);
+
+					if (swipeDirection === "x") {
+						toastRef.current?.style.setProperty("--swipe-amount-x", "400px");
+						setSwipeOutDirection("right");
+					} else {
+						toastRef.current?.style.setProperty("--swipe-amount-y", "300px");
+						setSwipeOutDirection("down");
+					}
+
+					toast.onDismiss?.(toast);
+
+					deleteToast();
+					setSwipeOut(true);
+
+					return;
+				}
+				toastRef.current?.style.setProperty("--swipe-amount-x", "0px");
+				toastRef.current?.style.setProperty("--swipe-amount-y", "0px");
+
+				setIsSwiped(false);
+				setSwiping(false);
+				setSwipeDirection(null);
+			}}
+			onPointerMove={(event) => {
+				if (!pointerStartRef.current || !dismissible) return;
+				let isHighlighted = false;
+
+				if (window.getSelection() && window.getSelection() !== null) {
+					// biome-ignore lint/style/noNonNullAssertion: We check for null above
+					isHighlighted = window.getSelection()!.toString().length > 0;
+				}
+
+				if (isHighlighted) return;
+
+				const yDelta = event.clientY - pointerStartRef.current.y;
+				const xDelta = event.clientX - pointerStartRef.current.x;
+
+				const swipeDirections = ["bottom", "right"];
+
+				// Determine swipe direction if not already locked
+				if (!swipeDirection && (Math.abs(xDelta) > 1 || Math.abs(yDelta) > 1)) {
+					setSwipeDirection(Math.abs(xDelta) > Math.abs(yDelta) ? "x" : "y");
+				}
+
+				const swipeAmount = { x: 0, y: 0 };
+
+				const getDampening = (delta: number) => {
+					const factor = Math.abs(delta) / 20;
+
+					return 1 / (1.5 + factor);
+				};
+
+				// Only apply swipe in the locked direction
+				if (swipeDirection === "y") {
+					// Handle vertical swipes
+					if (
+						swipeDirections.includes("top") ||
+						swipeDirections.includes("bottom")
+					) {
+						if (
+							(swipeDirections.includes("top") && yDelta < 0) ||
+							(swipeDirections.includes("bottom") && yDelta > 0)
+						) {
+							swipeAmount.y = yDelta;
+						} else {
+							// Smoothly transition to dampened movement
+							const dampenedDelta = yDelta * getDampening(yDelta);
+							// Ensure we don't jump when transitioning to dampened movement
+							swipeAmount.y =
+								Math.abs(dampenedDelta) < Math.abs(yDelta)
+									? dampenedDelta
+									: yDelta;
+						}
+					}
+				} else if (swipeDirection === "x") {
+					// Handle horizontal swipes
+					if (
+						swipeDirections.includes("left") ||
+						swipeDirections.includes("right")
+					) {
+						if (
+							(swipeDirections.includes("left") && xDelta < 0) ||
+							(swipeDirections.includes("right") && xDelta > 0)
+						) {
+							swipeAmount.x = xDelta;
+						} else {
+							// Smoothly transition to dampened movement
+							const dampenedDelta = xDelta * getDampening(xDelta);
+							// Ensure we don't jump when transitioning to dampened movement
+							swipeAmount.x =
+								Math.abs(dampenedDelta) < Math.abs(xDelta)
+									? dampenedDelta
+									: xDelta;
+						}
+					}
+				}
+
+				if (Math.abs(swipeAmount.x) > 0 || Math.abs(swipeAmount.y) > 0) {
+					setIsSwiped(true);
+				}
+
+				// Apply transform using both x and y values
+				toastRef.current?.style.setProperty(
+					"--swipe-amount-x",
+					`${swipeAmount.x}px`,
+				);
+				toastRef.current?.style.setProperty(
+					"--swipe-amount-y",
+					`${swipeAmount.y}px`,
+				);
+			}}
+		>
+			{/* Close Button */}
+			{closeButton && toastType !== "loading" && (
+				<button
+					aria-label={closeButtonAriaLabel}
+					className="absolute top-1 right-1 z-[1] flex transform cursor-pointer items-center justify-center rounded-full p-0 transition-[opacity_100ms,background_200ms,border-color_200ms] focus-visible:shadow-[0px_4px_12px_rgba(0,0,0,0.1),0_0_0_2px_rgba(0,0,0,0.2)] disabled:cursor-not-allowed"
+					onClick={
+						disabled || !dismissible
+							? () => {}
+							: () => {
+									deleteToast();
+									toast.onDismiss?.(toast);
+								}
+					}
+					type="button"
+				>
+					{icons?.close ?? (
+						<CloseIcon
+							color="muted"
+							strokeWidth={1}
+							fill="currentColor"
+							size={16}
+						/>
+					)}
+				</button>
+			)}
+
+			{/* Toast Icon */}
+			{hasIcon && (
+				<div className="-ml-1 relative mr-3 flex h-4 w-4 flex-shrink-0 items-center justify-start">
+					{toast.promise || (toast.type === "loading" && !toast.icon)
+						? toast.icon || (
+								<Spinner className={toastType !== "loading" ? "hidden" : ""} />
+							)
+						: null}
+					{toast.type !== "loading" ? icon : null}
+				</div>
+			)}
+
+			<div className="flex flex-col gap-0.5">
+				{/* Toast Title */}
+				<div className="font-medium text-sm leading-normal group-[.toast]:font-semibold">
+					{typeof toast.title === "function" ? toast.title() : toast.title}
+				</div>
+				{/* Toast Description */}
+				{toast.description ? (
+					<div
+						className={cn(
+							"font-normal text-xs leading-normal group-[.toast]:text-muted-foreground",
+							toastType === "error" &&
+								"group-[.toast]:text-destructive-foreground/80",
+						)}
+					>
+						{typeof toast.description === "function"
+							? toast.description()
+							: toast.description}
+					</div>
+				) : null}
+			</div>
+			{React.isValidElement(toast.cancel) ? (
+				toast.cancel
+			) : toast.cancel && isAction(toast.cancel) ? (
+				<Button
+					size="sm"
+					variant="outline"
+					onClick={(event) => {
+						// We need to check twice because typescript
+						if (!isAction(toast.cancel)) return;
+						if (!dismissible) return;
+						toast.cancel.onClick?.(event);
+						deleteToast();
+					}}
+					className="h-6 px-2 text-xs"
+				>
+					{toast.cancel.label}
+				</Button>
+			) : null}
+			{React.isValidElement(toast.action) ? (
+				toast.action
+			) : toast.action && isAction(toast.action) ? (
+				<Button
+					onClick={(event) => {
+						// We need to check twice because typescript
+						if (!isAction(toast.action)) return;
+						toast.action.onClick?.(event);
+						if (event.defaultPrevented) return;
+						deleteToast();
+					}}
+					className="h-6 px-2 text-xs"
+				>
+					{toast.action.label}
+				</Button>
+			) : null}
+		</li>
 	);
 };
 
-ToastProvider.displayName = PROVIDER_NAME;
-
 /* -------------------------------------------------------------------------------------------------
- * ToastViewport
+ * Toaster Component
  * -----------------------------------------------------------------------------------------------*/
 
-const VIEWPORT_NAME = "ToastViewport";
-const VIEWPORT_DEFAULT_HOTKEY = ["F8"];
-const VIEWPORT_PAUSE = "toast.viewportPause";
-const VIEWPORT_RESUME = "toast.viewportResume";
+/**
+ * Toaster component for managing and displaying toast notifications
+ *
+ * The Toaster component provides a container for displaying toast notifications in a consistent,
+ * accessible way. It manages the visibility, positioning, and interaction behavior of toasts.
+ *
+ * Key features:
+ * - Stacked arrangement of multiple toasts
+ * - Keyboard support with customizable hotkeys
+ * - Responsive positioning for different screen sizes
+ * - Accessibility support with appropriate ARIA attributes
+ * - Expand/collapse behavior for managing multiple notifications
+ *
+ * Usage considerations:
+ * - Place a single Toaster component at the root of your application
+ * - Use the useToasts hook to programmatically trigger toasts from any component
+ * - Configure default behavior through props for consistent notifications
+ */
+const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
+	{
+		hotkey = ["altKey", "KeyT"],
+		expand,
+		closeButton,
+		offset,
+		mobileOffset,
+		duration,
+		visibleToasts = VISIBLE_TOASTS_AMOUNT,
+		toastOptions,
+		gap = GAP,
+		icons,
+		containerAriaLabel = "Notifications",
+	},
+	forwardedRef,
+) {
+	const [toasts, setToasts] = React.useState<ToastT[]>([]);
+	const [heights, setHeights] = React.useState<HeightT[]>([]);
+	const [expanded, setExpanded] = React.useState(false);
+	const [interacting, setInteracting] = React.useState(false);
+	const toasterRef = React.useRef<HTMLElement>(null);
+	const composedRefs = useComposedRefs(toasterRef, forwardedRef);
 
-type ToastViewportElement = React.ComponentRef<typeof Primitive.ol>;
-type PrimitiveOrderedListProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.ol
->;
-interface ToastViewportProps extends PrimitiveOrderedListProps {
-	/**
-	 * The keys to use as the keyboard shortcut that will move focus to the toast viewport.
-	 * @defaultValue ['F8']
-	 */
-	hotkey?: string[];
-	/**
-	 * An author-localized label for the toast viewport to provide context for screen reader users
-	 * when navigating page landmarks. The available `{hotkey}` placeholder will be replaced for you.
-	 * @defaultValue 'Notifications ({hotkey})'
-	 */
-	label?: string;
-}
-
-const ToastViewportPrimitive = React.forwardRef<
-	ToastViewportElement,
-	ToastViewportProps
->((props: ScopedProps<ToastViewportProps>, forwardedRef) => {
-	const {
-		__scopeToast,
-		hotkey = VIEWPORT_DEFAULT_HOTKEY,
-		label = "Notifications ({hotkey})",
-		...viewportProps
-	} = props;
-	const context = useToastProviderContext(VIEWPORT_NAME, __scopeToast);
-	const getItems = useCollection(__scopeToast);
-	const wrapperRef = React.useRef<HTMLDivElement>(null);
-	const headFocusProxyRef = React.useRef<FocusProxyElement>(null);
-	const tailFocusProxyRef = React.useRef<FocusProxyElement>(null);
-	const ref = React.useRef<ToastViewportElement>(null);
-	const composedRefs = useComposedRefs(
-		forwardedRef,
-		ref,
-		context.onViewportChange,
-	);
+	const listRef = React.useRef<HTMLOListElement>(null);
 	const hotkeyLabel = hotkey
 		.join("+")
 		.replace(/Key/g, "")
 		.replace(/Digit/g, "");
-	const hasToasts = context.toastCount > 0;
+	const lastFocusedElementRef = React.useRef<HTMLElement>(null);
+	const isFocusWithinRef = React.useRef(false);
+
+	// Mark Toaster as mounted on component mount
+	React.useEffect(() => {
+		ToastState.markToasterMounted();
+
+		return () => {
+			// Mark Toaster as unmounted on component unmount
+			ToastState.markToasterUnmounted();
+		};
+	}, []);
+
+	const removeToast = useCallbackRef((toastToRemove: ToastT) => {
+		setToasts((toasts) => {
+			if (!toasts.find((toast) => toast.id === toastToRemove.id)?.delete) {
+				ToastState.dismiss(toastToRemove.id);
+			}
+
+			return toasts.filter(({ id }) => id !== toastToRemove.id);
+		});
+	});
+
+	React.useEffect(() => {
+		return ToastState.subscribe((toast) => {
+			if ((toast as ToastToDismiss).dismiss) {
+				// Prevent batching of other state updates
+				requestAnimationFrame(() => {
+					setToasts((toasts) =>
+						toasts.map((t) => (t.id === toast.id ? { ...t, delete: true } : t)),
+					);
+				});
+				return;
+			}
+
+			// Prevent batching, temp solution.
+			setTimeout(() => {
+				ReactDOM.flushSync(() => {
+					setToasts((toasts) => {
+						if (!toast.id) return toasts;
+						const toastWithId = toast as ToastT;
+
+						const indexOfExistingToast = toasts.findIndex(
+							(t) => t.id === toastWithId.id,
+						);
+
+						// Update the toast if it already exists
+						if (indexOfExistingToast !== -1) {
+							return [
+								...toasts.slice(0, indexOfExistingToast),
+								{ ...toasts[indexOfExistingToast], ...toast },
+								...toasts.slice(indexOfExistingToast + 1),
+							];
+						}
+
+						return [toastWithId, ...toasts];
+					});
+				});
+			});
+		});
+	}, [toasts]);
+
+	React.useEffect(() => {
+		// Ensure expanded is always false when no toasts are present / only one left
+		if (toasts.length <= 1) {
+			setExpanded(false);
+		}
+	}, [toasts]);
 
 	React.useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
-			// we use `event.code` as it is consistent regardless of meta keys that were pressed.
-			// for example, `event.key` for `Control+Alt+t` is `†` and `t !== †`
-			const isHotkeyPressed =
-				hotkey.length !== 0 &&
-				hotkey.every(
-					(key) => event.getModifierState(key) || event.code === key,
-				);
+			const isHotkeyPressed = hotkey.every((key) => {
+				if (key === "KeyT") return event.code === "KeyT";
+				return event[key];
+			});
+
 			if (isHotkeyPressed) {
-				ref.current?.focus();
+				setExpanded(true);
+				listRef.current?.focus();
 			}
 		};
 		document.addEventListener("keydown", handleKeyDown);
+
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	}, [hotkey]);
 
-	React.useEffect(() => {
-		const wrapper = wrapperRef.current;
-		const viewport = ref.current;
-		if (hasToasts && wrapper && viewport) {
-			const handlePause = () => {
-				if (!context.isClosePausedRef.current) {
-					const pauseEvent = new CustomEvent(VIEWPORT_PAUSE);
-					viewport.dispatchEvent(pauseEvent);
-					context.isClosePausedRef.current = true;
-				}
-			};
-
-			const handleResume = () => {
-				if (context.isClosePausedRef.current) {
-					const resumeEvent = new CustomEvent(VIEWPORT_RESUME);
-					viewport.dispatchEvent(resumeEvent);
-					context.isClosePausedRef.current = false;
-				}
-			};
-
-			const handleFocusOutResume = (event: FocusEvent) => {
-				const isFocusMovingOutside = !wrapper.contains(
-					event.relatedTarget as HTMLElement,
-				);
-				if (isFocusMovingOutside) {
-					handleResume();
-				}
-			};
-
-			const handlePointerLeaveResume = () => {
-				const isFocusInside = wrapper.contains(document.activeElement);
-				if (!isFocusInside) {
-					handleResume();
-				}
-			};
-
-			// Toasts are not in the viewport React tree so we need to bind DOM events
-			wrapper.addEventListener("focusin", handlePause);
-			wrapper.addEventListener("focusout", handleFocusOutResume);
-			wrapper.addEventListener("pointermove", handlePause);
-			wrapper.addEventListener("pointerleave", handlePointerLeaveResume);
-			window.addEventListener("blur-sm", handlePause);
-			window.addEventListener("focus", handleResume);
-			return () => {
-				wrapper.removeEventListener("focusin", handlePause);
-				wrapper.removeEventListener("focusout", handleFocusOutResume);
-				wrapper.removeEventListener("pointermove", handlePause);
-				wrapper.removeEventListener("pointerleave", handlePointerLeaveResume);
-				window.removeEventListener("blur-sm", handlePause);
-				window.removeEventListener("focus", handleResume);
-			};
+	useEscapeKeydown(() => {
+		if (
+			document.activeElement === listRef.current ||
+			listRef.current?.contains(document.activeElement as Node)
+		) {
+			setExpanded(false);
 		}
-	}, [hasToasts, context.isClosePausedRef]);
-
-	const getSortedTabbableCandidates = React.useCallback(
-		({ tabbingDirection }: { tabbingDirection: "forwards" | "backwards" }) => {
-			const toastItems = getItems();
-			const tabbableCandidates = toastItems.map((toastItem) => {
-				const toastNode = toastItem.ref.current!;
-				const toastTabbableCandidates = [
-					toastNode,
-					...getTabbableCandidates(toastNode),
-				];
-				return tabbingDirection === "forwards"
-					? toastTabbableCandidates
-					: toastTabbableCandidates.reverse();
-			});
-			return (
-				tabbingDirection === "forwards"
-					? tabbableCandidates.reverse()
-					: tabbableCandidates
-			).flat();
-		},
-		[getItems],
-	);
-
-	React.useEffect(() => {
-		const viewport = ref.current;
-		// We programmatically manage tabbing as we are unable to influence
-		// the source order with portals, this allows us to reverse the
-		// tab order so that it runs from most recent toast to least
-		if (viewport) {
-			const handleKeyDown = (event: KeyboardEvent) => {
-				const isMetaKey = event.altKey || event.ctrlKey || event.metaKey;
-				const isTabKey = event.key === "Tab" && !isMetaKey;
-
-				if (isTabKey) {
-					const focusedElement = document.activeElement;
-					const isTabbingBackwards = event.shiftKey;
-					const targetIsViewport = event.target === viewport;
-
-					// If we're back tabbing after jumping to the viewport then we simply
-					// proxy focus out to the preceding document
-					if (targetIsViewport && isTabbingBackwards) {
-						headFocusProxyRef.current?.focus();
-						return;
-					}
-
-					const tabbingDirection = isTabbingBackwards
-						? "backwards"
-						: "forwards";
-					const sortedCandidates = getSortedTabbableCandidates({
-						tabbingDirection,
-					});
-					const index = sortedCandidates.findIndex(
-						(candidate) => candidate === focusedElement,
-					);
-					if (focusFirst(sortedCandidates.slice(index + 1))) {
-						event.preventDefault();
-					} else {
-						// If we can't focus that means we're at the edges so we
-						// proxy to the corresponding exit point and let the browser handle
-						// tab/shift+tab keypress and implicitly pass focus to the next valid element in the document
-
-						isTabbingBackwards
-							? headFocusProxyRef.current?.focus()
-							: tailFocusProxyRef.current?.focus();
-					}
-				}
-			};
-
-			// Toasts are not in the viewport React tree so we need to bind DOM events
-			viewport.addEventListener("keydown", handleKeyDown);
-			return () => viewport.removeEventListener("keydown", handleKeyDown);
-		}
-	}, [getItems, getSortedTabbableCandidates]);
-
-	return (
-		<DismissableLayerBranch
-			ref={wrapperRef}
-			// biome-ignore lint/a11y/useSemanticElements: This is a region for screen reader users
-			role="region"
-			aria-label={label.replace("{hotkey}", hotkeyLabel)}
-			// Ensure virtual cursor from landmarks menus triggers focus/blur for pause/resume
-			tabIndex={-1}
-			// incase list has size when empty (e.g. padding), we remove pointer events so
-			// it doesn't prevent interactions with page elements that it overlays
-			style={{ pointerEvents: hasToasts ? undefined : "none" }}
-		>
-			{hasToasts && (
-				<FocusProxy
-					ref={headFocusProxyRef}
-					onFocusFromOutsideViewport={() => {
-						const tabbableCandidates = getSortedTabbableCandidates({
-							tabbingDirection: "forwards",
-						});
-						focusFirst(tabbableCandidates);
-					}}
-				/>
-			)}
-			{/**
-			 * tabindex on the the list so that it can be focused when items are removed. we focus
-			 * the list instead of the viewport so it announces number of items remaining.
-			 */}
-			<Collection.Slot scope={__scopeToast}>
-				<Primitive.ol tabIndex={-1} {...viewportProps} ref={composedRefs} />
-			</Collection.Slot>
-			{hasToasts && (
-				<FocusProxy
-					ref={tailFocusProxyRef}
-					onFocusFromOutsideViewport={() => {
-						const tabbableCandidates = getSortedTabbableCandidates({
-							tabbingDirection: "backwards",
-						});
-						focusFirst(tabbableCandidates);
-					}}
-				/>
-			)}
-		</DismissableLayerBranch>
-	);
-});
-
-ToastViewportPrimitive.displayName = VIEWPORT_NAME;
-
-/* -----------------------------------------------------------------------------------------------*/
-
-const FOCUS_PROXY_NAME = "ToastFocusProxy";
-
-type FocusProxyElement = React.ComponentRef<typeof VisuallyHidden>;
-type VisuallyHiddenProps = React.ComponentPropsWithoutRef<
-	typeof VisuallyHidden
->;
-interface FocusProxyProps extends VisuallyHiddenProps {
-	onFocusFromOutsideViewport(): void;
-}
-
-const FocusProxy = React.forwardRef<
-	FocusProxyElement,
-	ScopedProps<FocusProxyProps>
->((props, forwardedRef) => {
-	const { __scopeToast, onFocusFromOutsideViewport, ...proxyProps } = props;
-	const context = useToastProviderContext(FOCUS_PROXY_NAME, __scopeToast);
-
-	return (
-		<VisuallyHidden
-			aria-hidden
-			tabIndex={0}
-			{...proxyProps}
-			ref={forwardedRef}
-			// Avoid page scrolling when focus is on the focus proxy
-			style={{ position: "fixed" }}
-			onFocus={(event) => {
-				const prevFocusedElement = event.relatedTarget as HTMLElement | null;
-				const isFocusFromOutsideViewport =
-					!context.viewport?.contains(prevFocusedElement);
-				if (isFocusFromOutsideViewport) {
-					onFocusFromOutsideViewport();
-				}
-			}}
-		/>
-	);
-});
-
-FocusProxy.displayName = FOCUS_PROXY_NAME;
-
-/* -------------------------------------------------------------------------------------------------
- * Toast
- * -----------------------------------------------------------------------------------------------*/
-
-const TOAST_NAME = "Toast";
-const TOAST_SWIPE_START = "toast.swipeStart";
-const TOAST_SWIPE_MOVE = "toast.swipeMove";
-const TOAST_SWIPE_CANCEL = "toast.swipeCancel";
-const TOAST_SWIPE_END = "toast.swipeEnd";
-
-type ToastElement = ToastImplElement;
-interface ToastPropsPrimitive
-	extends Omit<ToastImplProps, keyof ToastImplPrivateProps> {
-	open?: boolean;
-	defaultOpen?: boolean;
-	onOpenChange?(open: boolean): void;
-	/**
-	 * Used to force mounting when more control is needed. Useful when
-	 * controlling animation with React animation libraries.
-	 */
-	forceMount?: true;
-}
-
-const ToastPrimitive = React.forwardRef<ToastElement, ToastPropsPrimitive>(
-	(props: ScopedProps<ToastPropsPrimitive>, forwardedRef) => {
-		const {
-			forceMount,
-			open: openProp,
-			defaultOpen,
-			onOpenChange,
-			...toastProps
-		} = props;
-		const [open = true, setOpen] = useControllableState({
-			prop: openProp,
-			defaultProp: defaultOpen,
-			onChange: onOpenChange,
-		});
-		return (
-			<Presence present={forceMount || open}>
-				<ToastImpl
-					open={open}
-					{...toastProps}
-					ref={forwardedRef}
-					onClose={() => setOpen(false)}
-					onPause={useCallbackRef(props.onPause)}
-					onResume={useCallbackRef(props.onResume)}
-					onSwipeStart={composeEventHandlers(props.onSwipeStart, (event) => {
-						event.currentTarget.setAttribute("data-swipe", "start");
-					})}
-					onSwipeMove={composeEventHandlers(props.onSwipeMove, (event) => {
-						const { x, y } = event.detail.delta;
-						event.currentTarget.setAttribute("data-swipe", "move");
-						event.currentTarget.style.setProperty(
-							"--squared-toast-swipe-move-x",
-							`${x}px`,
-						);
-						event.currentTarget.style.setProperty(
-							"--squared-toast-swipe-move-y",
-							`${y}px`,
-						);
-					})}
-					onSwipeCancel={composeEventHandlers(props.onSwipeCancel, (event) => {
-						event.currentTarget.setAttribute("data-swipe", "cancel");
-						event.currentTarget.style.removeProperty(
-							"--squared-toast-swipe-move-x",
-						);
-						event.currentTarget.style.removeProperty(
-							"--squared-toast-swipe-move-y",
-						);
-						event.currentTarget.style.removeProperty(
-							"--squared-toast-swipe-end-x",
-						);
-						event.currentTarget.style.removeProperty(
-							"--squared-toast-swipe-end-y",
-						);
-					})}
-					onSwipeEnd={composeEventHandlers(props.onSwipeEnd, (event) => {
-						const { x, y } = event.detail.delta;
-						event.currentTarget.setAttribute("data-swipe", "end");
-						event.currentTarget.style.removeProperty(
-							"--squared-toast-swipe-move-x",
-						);
-						event.currentTarget.style.removeProperty(
-							"--squared-toast-swipe-move-y",
-						);
-						event.currentTarget.style.setProperty(
-							"--squared-toast-swipe-end-x",
-							`${x}px`,
-						);
-						event.currentTarget.style.setProperty(
-							"--squared-toast-swipe-end-y",
-							`${y}px`,
-						);
-						setOpen(false);
-					})}
-				/>
-			</Presence>
-		);
-	},
-);
-
-ToastPrimitive.displayName = TOAST_NAME;
-
-/* -----------------------------------------------------------------------------------------------*/
-
-type SwipeEvent = { currentTarget: EventTarget & ToastElement } & Omit<
-	CustomEvent<{
-		originalEvent: React.PointerEvent;
-		delta: { x: number; y: number };
-	}>,
-	"currentTarget"
->;
-
-const [ToastInteractiveProvider, useToastInteractiveContext] =
-	createToastContext(TOAST_NAME, {
-		onClose() {},
 	});
 
-type ToastImplElement = React.ComponentRef<typeof Primitive.li>;
-type DismissableLayerProps = React.ComponentPropsWithoutRef<
-	typeof DismissableLayer
->;
-type ToastImplPrivateProps = { open: boolean; onClose(): void };
-type PrimitiveListItemProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.li
->;
-interface ToastImplProps extends ToastImplPrivateProps, PrimitiveListItemProps {
-	type?: "foreground" | "background";
-	/**
-	 * Time in milliseconds that toast should remain visible for. Overrides value
-	 * given to `ToastProvider`.
-	 */
-	duration?: number;
-	onEscapeKeyDown?: DismissableLayerProps["onEscapeKeyDown"];
-	onPause?(): void;
-	onResume?(): void;
-	onSwipeStart?(event: SwipeEvent): void;
-	onSwipeMove?(event: SwipeEvent): void;
-	onSwipeCancel?(event: SwipeEvent): void;
-	onSwipeEnd?(event: SwipeEvent): void;
-}
-
-const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
-	(props: ScopedProps<ToastImplProps>, forwardedRef) => {
-		const {
-			__scopeToast,
-			type = "foreground",
-			duration: durationProp,
-			open,
-			onClose,
-			onEscapeKeyDown,
-			onPause,
-			onResume,
-			onSwipeStart,
-			onSwipeMove,
-			onSwipeCancel,
-			onSwipeEnd,
-			...toastProps
-		} = props;
-		const context = useToastProviderContext(TOAST_NAME, __scopeToast);
-		const [node, setNode] = React.useState<ToastImplElement | null>(null);
-		const composedRefs = useComposedRefs(forwardedRef, (node) => setNode(node));
-		const pointerStartRef = React.useRef<{ x: number; y: number } | null>(null);
-		const swipeDeltaRef = React.useRef<{ x: number; y: number } | null>(null);
-		const duration = durationProp || context.duration;
-		const closeTimerStartTimeRef = React.useRef(0);
-		const closeTimerRemainingTimeRef = React.useRef(duration);
-		const closeTimerRef = React.useRef(0);
-		const { onToastAdd, onToastRemove } = context;
-		const handleClose = useCallbackRef(() => {
-			// focus viewport if focus is within toast to read the remaining toast
-			// count to SR users and ensure focus isn't lost
-			const isFocusInToast = node?.contains(document.activeElement);
-			if (isFocusInToast) {
-				context.viewport?.focus();
-			}
-			onClose();
-		});
-
-		const startTimer = React.useCallback(
-			(duration: number) => {
-				if (!duration || duration === Number.POSITIVE_INFINITY) {
-					return;
-				}
-				window.clearTimeout(closeTimerRef.current);
-				closeTimerStartTimeRef.current = new Date().getTime();
-				closeTimerRef.current = window.setTimeout(handleClose, duration);
-			},
-			[handleClose],
-		);
-
-		React.useEffect(() => {
-			const { viewport } = context;
-			if (viewport) {
-				const handleResume = () => {
-					startTimer(closeTimerRemainingTimeRef.current);
-					onResume?.();
-				};
-				const handlePause = () => {
-					const elapsedTime =
-						new Date().getTime() - closeTimerStartTimeRef.current;
-					closeTimerRemainingTimeRef.current =
-						closeTimerRemainingTimeRef.current - elapsedTime;
-					window.clearTimeout(closeTimerRef.current);
-					onPause?.();
-				};
-				viewport.addEventListener(VIEWPORT_PAUSE, handlePause);
-				viewport.addEventListener(VIEWPORT_RESUME, handleResume);
-				return () => {
-					viewport.removeEventListener(VIEWPORT_PAUSE, handlePause);
-					viewport.removeEventListener(VIEWPORT_RESUME, handleResume);
-				};
-			}
-		}, [context.viewport, duration, onPause, onResume, startTimer]);
-
-		// start timer when toast opens or duration changes.
-		// we include `open` in deps because closed !== unmounted when animating
-		// so it could reopen before being completely unmounted
-		React.useEffect(() => {
-			if (open && !context.isClosePausedRef.current) {
-				startTimer(duration);
-			}
-		}, [open, duration, context.isClosePausedRef, startTimer]);
-
-		React.useEffect(() => {
-			onToastAdd();
-			return () => onToastRemove();
-		}, [onToastAdd, onToastRemove]);
-
-		const announceTextContent = React.useMemo(() => {
-			return node ? getAnnounceTextContent(node) : null;
-		}, [node]);
-
-		if (!context.viewport) {
-			return null;
-		}
-
-		return (
-			<>
-				{announceTextContent && (
-					<ToastAnnounce
-						__scopeToast={__scopeToast}
-						// biome-ignore lint/a11y/useSemanticElements: This is a status element for screen reader users
-						role="status"
-						aria-live={type === "foreground" ? "assertive" : "polite"}
-						aria-atomic
-					>
-						{announceTextContent}
-					</ToastAnnounce>
-				)}
-
-				<ToastInteractiveProvider scope={__scopeToast} onClose={handleClose}>
-					{ReactDOM.createPortal(
-						<Collection.ItemSlot scope={__scopeToast}>
-							<DismissableLayer
-								asChild
-								onEscapeKeyDown={composeEventHandlers(onEscapeKeyDown, () => {
-									if (!context.isFocusedToastEscapeKeyDownRef.current) {
-										handleClose();
-									}
-									context.isFocusedToastEscapeKeyDownRef.current = false;
-								})}
-							>
-								<Primitive.li
-									// Ensure toasts are announced as status list or status when focused
-									role="status"
-									aria-live="off"
-									aria-atomic
-									tabIndex={0}
-									data-state={open ? "open" : "closed"}
-									data-swipe-direction={context.swipeDirection}
-									{...toastProps}
-									ref={composedRefs}
-									style={{
-										userSelect: "none",
-										touchAction: "none",
-										...props.style,
-									}}
-									onKeyDown={composeEventHandlers(props.onKeyDown, (event) => {
-										if (event.key !== "Escape") {
-											return;
-										}
-										onEscapeKeyDown?.(event.nativeEvent);
-										if (!event.nativeEvent.defaultPrevented) {
-											context.isFocusedToastEscapeKeyDownRef.current = true;
-											handleClose();
-										}
-									})}
-									onPointerDown={composeEventHandlers(
-										props.onPointerDown,
-										(event) => {
-											if (event.button !== 0) {
-												return;
-											}
-											pointerStartRef.current = {
-												x: event.clientX,
-												y: event.clientY,
-											};
-										},
-									)}
-									onPointerMove={composeEventHandlers(
-										props.onPointerMove,
-										(event) => {
-											if (!pointerStartRef.current) {
-												return;
-											}
-											const x = event.clientX - pointerStartRef.current.x;
-											const y = event.clientY - pointerStartRef.current.y;
-											const hasSwipeMoveStarted = Boolean(
-												swipeDeltaRef.current,
-											);
-											const isHorizontalSwipe = ["left", "right"].includes(
-												context.swipeDirection,
-											);
-											const clamp = ["left", "up"].includes(
-												context.swipeDirection,
-											)
-												? Math.min
-												: Math.max;
-											const clampedX = isHorizontalSwipe ? clamp(0, x) : 0;
-											const clampedY = !isHorizontalSwipe ? clamp(0, y) : 0;
-											const moveStartBuffer =
-												event.pointerType === "touch" ? 10 : 2;
-											const delta = { x: clampedX, y: clampedY };
-											const eventDetail = { originalEvent: event, delta };
-											if (hasSwipeMoveStarted) {
-												swipeDeltaRef.current = delta;
-												handleAndDispatchCustomEvent(
-													TOAST_SWIPE_MOVE,
-													onSwipeMove,
-													eventDetail,
-													{
-														discrete: false,
-													},
-												);
-											} else if (
-												isDeltaInDirection(
-													delta,
-													context.swipeDirection,
-													moveStartBuffer,
-												)
-											) {
-												swipeDeltaRef.current = delta;
-												handleAndDispatchCustomEvent(
-													TOAST_SWIPE_START,
-													onSwipeStart,
-													eventDetail,
-													{
-														discrete: false,
-													},
-												);
-												(event.target as HTMLElement).setPointerCapture(
-													event.pointerId,
-												);
-											} else if (
-												Math.abs(x) > moveStartBuffer ||
-												Math.abs(y) > moveStartBuffer
-											) {
-												// User is swiping in wrong direction so we disable swipe gesture
-												// for the current pointer down interaction
-												pointerStartRef.current = null;
-											}
-										},
-									)}
-									onPointerUp={composeEventHandlers(
-										props.onPointerUp,
-										(event) => {
-											const delta = swipeDeltaRef.current;
-											const target = event.target as HTMLElement;
-											if (target.hasPointerCapture(event.pointerId)) {
-												target.releasePointerCapture(event.pointerId);
-											}
-											swipeDeltaRef.current = null;
-											pointerStartRef.current = null;
-											if (delta) {
-												const toast = event.currentTarget;
-												const eventDetail = { originalEvent: event, delta };
-												if (
-													isDeltaInDirection(
-														delta,
-														context.swipeDirection,
-														context.swipeThreshold,
-													)
-												) {
-													handleAndDispatchCustomEvent(
-														TOAST_SWIPE_END,
-														onSwipeEnd,
-														eventDetail,
-														{
-															discrete: true,
-														},
-													);
-												} else {
-													handleAndDispatchCustomEvent(
-														TOAST_SWIPE_CANCEL,
-														onSwipeCancel,
-														eventDetail,
-														{
-															discrete: true,
-														},
-													);
-												}
-												// Prevent click event from triggering on items within the toast when
-												// pointer up is part of a swipe gesture
-												toast.addEventListener(
-													"click",
-													(event) => event.preventDefault(),
-													{
-														once: true,
-													},
-												);
-											}
-										},
-									)}
-								/>
-							</DismissableLayer>
-						</Collection.ItemSlot>,
-						context.viewport,
-					)}
-				</ToastInteractiveProvider>
-			</>
-		);
-	},
-);
-
-/* -----------------------------------------------------------------------------------------------*/
-
-interface ToastAnnounceProps
-	extends Omit<React.ComponentPropsWithoutRef<"div">, "children">,
-		ScopedProps<{ children: string[] }> {}
-
-const ToastAnnounce: React.FC<ToastAnnounceProps> = (
-	props: ScopedProps<ToastAnnounceProps>,
-) => {
-	const { __scopeToast, children, ...announceProps } = props;
-	const context = useToastProviderContext(TOAST_NAME, __scopeToast);
-	const [renderAnnounceText, setRenderAnnounceText] = React.useState(false);
-	const [isAnnounced, setIsAnnounced] = React.useState(false);
-
-	// render text content in the next frame to ensure toast is announced in NVDA
-	useNextFrame(() => setRenderAnnounceText(true));
-
-	// cleanup after announcing
-	React.useEffect(() => {
-		const timer = window.setTimeout(() => setIsAnnounced(true), 1000);
-		return () => window.clearTimeout(timer);
-	}, []);
-
-	return isAnnounced ? null : (
-		<Portal asChild>
-			<VisuallyHidden {...announceProps}>
-				{renderAnnounceText && (
-					<>
-						{context.label} {children}
-					</>
-				)}
-			</VisuallyHidden>
-		</Portal>
-	);
-};
-
-/* -------------------------------------------------------------------------------------------------
- * ToastTitle
- * -----------------------------------------------------------------------------------------------*/
-
-const TITLE_NAME = "ToastTitle";
-
-type ToastTitleElement = React.ComponentRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
-type ToastTitleProps = PrimitiveDivProps;
-
-const ToastTitlePrimitive = React.forwardRef<
-	ToastTitleElement,
-	ToastTitleProps
->((props: ScopedProps<ToastTitleProps>, forwardedRef) => {
-	const { __scopeToast, ...titleProps } = props;
-	return <Primitive.div {...titleProps} ref={forwardedRef} />;
-});
-
-ToastTitlePrimitive.displayName = TITLE_NAME;
-
-/* -------------------------------------------------------------------------------------------------
- * ToastDescription
- * -----------------------------------------------------------------------------------------------*/
-
-const DESCRIPTION_NAME = "ToastDescription";
-
-type ToastDescriptionElement = React.ComponentRef<typeof Primitive.div>;
-type ToastDescriptionProps = PrimitiveDivProps;
-
-const ToastDescriptionPrimitive = React.forwardRef<
-	ToastDescriptionElement,
-	ToastDescriptionProps
->((props: ScopedProps<ToastDescriptionProps>, forwardedRef) => {
-	const { __scopeToast, ...descriptionProps } = props;
-	return <Primitive.div {...descriptionProps} ref={forwardedRef} />;
-});
-
-ToastDescriptionPrimitive.displayName = DESCRIPTION_NAME;
-
-/* -------------------------------------------------------------------------------------------------
- * ToastAction
- * -----------------------------------------------------------------------------------------------*/
-
-const ACTION_NAME = "ToastAction";
-
-type ToastActionElementPrimitive = ToastCloseElement;
-interface ToastActionProps extends ToastCloseProps {
-	/**
-	 * A short description for an alternate way to carry out the action. For screen reader users
-	 * who will not be able to navigate to the button easily/quickly.
-	 * @example <ToastAction altText="Goto account settings to upgrade">Upgrade</ToastAction>
-	 * @example <ToastAction altText="Undo (Alt+U)">Undo</ToastAction>
-	 */
-	altText: string;
-}
-
-const ToastActionPrimitive = React.forwardRef<
-	ToastActionElementPrimitive,
-	ToastActionProps
->((props: ScopedProps<ToastActionProps>, forwardedRef) => {
-	const { altText, ...actionProps } = props;
-
-	if (!altText.trim()) {
-		console.error(
-			`Invalid prop \`altText\` supplied to \`${ACTION_NAME}\`. Expected non-empty \`string\`.`,
-		);
-		return null;
-	}
-
-	return (
-		<ToastAnnounceExclude altText={altText} asChild>
-			<ToastClose {...actionProps} ref={forwardedRef} />
-		</ToastAnnounceExclude>
-	);
-});
-
-ToastActionPrimitive.displayName = ACTION_NAME;
-
-/* -------------------------------------------------------------------------------------------------
- * ToastClose
- * -----------------------------------------------------------------------------------------------*/
-
-const CLOSE_NAME = "ToastClose";
-
-type ToastCloseElement = React.ComponentRef<typeof Primitive.button>;
-type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.button
->;
-type ToastCloseProps = PrimitiveButtonProps;
-
-const ToastClosePrimitive = React.forwardRef<
-	ToastCloseElement,
-	ToastCloseProps
->((props: ScopedProps<ToastCloseProps>, forwardedRef) => {
-	const { __scopeToast, ...closeProps } = props;
-	const interactiveContext = useToastInteractiveContext(
-		CLOSE_NAME,
-		__scopeToast,
-	);
-
-	return (
-		<ToastAnnounceExclude asChild>
-			<Primitive.button
-				type="button"
-				{...closeProps}
-				ref={forwardedRef}
-				onClick={composeEventHandlers(
-					props.onClick,
-					interactiveContext.onClose,
-				)}
-			/>
-		</ToastAnnounceExclude>
-	);
-});
-
-ToastClosePrimitive.displayName = CLOSE_NAME;
-
-/* ---------------------------------------------------------------------------------------------- */
-
-type ToastAnnounceExcludeElement = React.ComponentRef<typeof Primitive.div>;
-interface ToastAnnounceExcludeProps extends PrimitiveDivProps {
-	altText?: string;
-}
-
-const ToastAnnounceExclude = React.forwardRef<
-	ToastAnnounceExcludeElement,
-	ToastAnnounceExcludeProps
->((props: ScopedProps<ToastAnnounceExcludeProps>, forwardedRef) => {
-	const { __scopeToast, altText, ...announceExcludeProps } = props;
-
-	return (
-		<Primitive.div
-			data-squared-toast-announce-exclude=""
-			data-squared-toast-announce-alt={altText || undefined}
-			{...announceExcludeProps}
-			ref={forwardedRef}
-		/>
-	);
-});
-
-function getAnnounceTextContent(container: HTMLElement) {
-	const textContent: string[] = [];
-	const childNodes = Array.from(container.childNodes);
-
-	for (const node of childNodes) {
-		if (node.nodeType === node.TEXT_NODE && node.textContent) {
-			textContent.push(node.textContent);
-		}
-		if (isHTMLElement(node)) {
-			const isHidden =
-				node.ariaHidden || node.hidden || node.style.display === "none";
-			const isExcluded = node.dataset.lokeToastAnnounceExclude === "";
-
-			if (!isHidden) {
-				if (isExcluded) {
-					const altText = node.dataset.lokeToastAnnounceAlt;
-					if (altText) {
-						textContent.push(altText);
-					}
-				} else {
-					textContent.push(...getAnnounceTextContent(node));
-				}
-			}
-		}
-	}
-
-	// We return a collection of text rather than a single concatenated string.
-	// This allows SR VO to naturally pause break between nodes while announcing.
-	return textContent;
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-
-function handleAndDispatchCustomEvent<
-	E extends CustomEvent,
-	ReactEvent extends React.SyntheticEvent,
->(
-	name: string,
-	handler: ((event: E) => void) | undefined,
-	detail: { originalEvent: ReactEvent } & (E extends CustomEvent<infer D>
-		? D
-		: never),
-	{ discrete }: { discrete: boolean },
-) {
-	const currentTarget = detail.originalEvent.currentTarget as HTMLElement;
-	const event = new CustomEvent(name, {
-		bubbles: true,
-		cancelable: true,
-		detail,
-	});
-	if (handler) {
-		currentTarget.addEventListener(name, handler as EventListener, {
-			once: true,
-		});
-	}
-
-	if (discrete) {
-		dispatchDiscreteCustomEvent(currentTarget, event);
-	} else {
-		currentTarget.dispatchEvent(event);
-	}
-}
-
-const isDeltaInDirection = (
-	delta: { x: number; y: number },
-	direction: SwipeDirection,
-	threshold = 0,
-) => {
-	const deltaX = Math.abs(delta.x);
-	const deltaY = Math.abs(delta.y);
-	const isDeltaX = deltaX > deltaY;
-	if (direction === "left" || direction === "right") {
-		return isDeltaX && deltaX > threshold;
-	}
-	return !isDeltaX && deltaY > threshold;
-};
-
-function useNextFrame(callback = () => {}) {
-	const fn = useCallbackRef(callback);
 	useLayoutEffect(() => {
-		let raf1 = 0;
-		let raf2 = 0;
-		raf1 = window.requestAnimationFrame(
-			// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case
-			() => (raf2 = window.requestAnimationFrame(fn)),
-		);
-		return () => {
-			window.cancelAnimationFrame(raf1);
-			window.cancelAnimationFrame(raf2);
-		};
-	}, [fn]);
-}
-
-function isHTMLElement(node: Node): node is HTMLElement {
-	return node.nodeType === node.ELEMENT_NODE;
-}
-
-/**
- * Returns a list of potential tabbable candidates.
- *
- * NOTE: This is only a close approximation. For example it doesn't take into account cases like when
- * elements are not visible. This cannot be worked out easily by just reading a property, but rather
- * necessitate runtime knowledge (computed styles, etc). We deal with these cases separately.
- *
- * See: https://developer.mozilla.org/en-US/docs/Web/API/TreeWalker
- * Credit: https://github.com/discord/focus-layers/blob/master/src/util/wrapFocus.tsx#L1
- */
-function getTabbableCandidates(container: HTMLElement) {
-	const nodes: HTMLElement[] = [];
-	const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, {
-		acceptNode: (node: Node) => {
-			if (!(node instanceof HTMLElement)) {
-				return NodeFilter.FILTER_SKIP;
-			}
-			const isHiddenInput =
-				node.tagName === "INPUT" &&
-				(node as HTMLInputElement).type === "hidden";
-			if ((node as HTMLInputElement).disabled || node.hidden || isHiddenInput) {
-				return NodeFilter.FILTER_SKIP;
-			}
-			// `.tabIndex` is not the same as the `tabindex` attribute. It works on the
-			// runtime's understanding of tabbability, so this automatically accounts
-			// for any kind of element that could be tabbed to.
-			return node.tabIndex >= 0
-				? NodeFilter.FILTER_ACCEPT
-				: NodeFilter.FILTER_SKIP;
-		},
-	});
-	while (walker.nextNode()) {
-		nodes.push(walker.currentNode as HTMLElement);
-	}
-	// we do not take into account the order of nodes with positive `tabIndex` as it
-	// hinders accessibility to have tab order different from visual order.
-	return nodes;
-}
-
-function focusFirst(candidates: HTMLElement[]) {
-	const previouslyFocusedElement = document.activeElement;
-	return candidates.some((candidate) => {
-		// if focus is already where we want to go, we don't want to keep going through the candidates
-		if (candidate === previouslyFocusedElement) {
-			return true;
+		if (listRef.current) {
+			return () => {
+				if (lastFocusedElementRef.current) {
+					lastFocusedElementRef.current.focus({ preventScroll: true });
+					lastFocusedElementRef.current = null;
+					isFocusWithinRef.current = false;
+				}
+			};
 		}
-		candidate.focus();
-		return document.activeElement !== previouslyFocusedElement;
-	});
-}
+	}, [listRef.current]);
 
-const ToastViewport = React.forwardRef<
-	React.ComponentRef<typeof ToastViewportPrimitive>,
-	React.ComponentPropsWithoutRef<typeof ToastViewportPrimitive>
->(({ className, ...props }, ref) => (
-	<ToastViewportPrimitive
-		ref={ref}
-		className={cn(
-			"fixed top-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:top-auto sm:right-0 sm:bottom-0 sm:flex-col md:max-w-[420px]",
-			className,
-		)}
-		{...props}
-	/>
-));
-ToastViewport.displayName = ToastViewportPrimitive.displayName;
+	const lifted = expanded && toasts.length > 1 && !expand;
 
-const toastVariants = cva(
-	"group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--squared-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--squared-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full sm:data-[state=open]:slide-in-from-bottom-full",
-	{
-		variants: {
-			variant: {
-				default: "border bg-background text-foreground",
-				destructive:
-					"destructive group border-destructive bg-destructive text-destructive-foreground",
-			},
-		},
-		defaultVariants: {
-			variant: "default",
-		},
-	},
-);
-
-/**
- * Toast component for displaying notifications
- *
- * The Toast component renders an individual toast notification. It handles its own visibility, duration, and swipe interactions.
- *
- * Key features:
- * - Customizable duration
- * - Swipe-to-dismiss functionality
- * - Keyboard accessibility (Escape to close)
- * - Controlled and uncontrolled modes
- *
- * Usage considerations:
- * - Use within a ToastProvider
- * - Customize the content using ToastTitle, ToastDescription, and ToastAction components
- * - Consider the appropriate type (foreground/background) based on the importance of the notification
- * - Use the onOpenChange callback to perform actions when the toast is dismissed
- */
-const Toast = React.forwardRef<
-	React.ComponentRef<typeof ToastPrimitive>,
-	React.ComponentPropsWithoutRef<typeof ToastPrimitive> &
-		VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
 	return (
-		<ToastPrimitive
-			ref={ref}
-			className={cn(toastVariants({ variant }), className)}
-			{...props}
-		/>
+		// Remove item from normal navigation flow, only available via hotkey
+		<section
+			ref={composedRefs}
+			aria-label={`${containerAriaLabel} ${hotkeyLabel}`}
+			tabIndex={-1}
+			aria-live="polite"
+			aria-relevant="additions text"
+			aria-atomic="false"
+			suppressHydrationWarning
+		>
+			<ol
+				tabIndex={-1}
+				ref={listRef}
+				className={cn(
+					// Base toaster styles
+					"fixed right-[var(--offset-right)] bottom-[var(--offset-bottom)] z-[999999999] m-0 box-border w-[var(--width)] list-none p-0 outline-none transition-transform duration-400 ease-in",
+
+					// Conditional classes
+					lifted && "-translate-y-2 transform md:transform-none",
+
+					// Mobile responsive styles
+					"max-sm:right-[var(--mobile-offset-right)] max-sm:left-[var(--mobile-offset-left)] max-sm:w-full",
+					lifted && "-translate-y-2 md:transform-none",
+				)}
+				style={
+					{
+						"--front-toast-height": `${heights[0]?.height || 0}px`,
+						"--width": `${TOAST_WIDTH}px`,
+						"--gap": `${gap}px`,
+						"--toast-icon-margin-start": "-3px",
+						"--toast-icon-margin-end": "4px",
+						"--toast-svg-margin-start": "-1px",
+						"--toast-svg-margin-end": "0px",
+						"--toast-button-margin-start": "auto",
+						"--toast-button-margin-end": "0",
+						"--toast-close-button-start": "0",
+						"--toast-close-button-end": "unset",
+						"--toast-close-button-transform": "translate(-35%, -35%)",
+						...assignOffset(offset, mobileOffset),
+					} as React.CSSProperties
+				}
+				onBlur={(event) => {
+					if (
+						isFocusWithinRef.current &&
+						!event.currentTarget.contains(event.relatedTarget)
+					) {
+						isFocusWithinRef.current = false;
+						if (lastFocusedElementRef.current) {
+							lastFocusedElementRef.current.focus({
+								preventScroll: true,
+							});
+							lastFocusedElementRef.current = null;
+						}
+					}
+				}}
+				onFocus={(event) => {
+					const isNotDismissible =
+						event.target instanceof HTMLElement &&
+						event.target.dataset.dismissible === "false";
+
+					if (isNotDismissible) return;
+
+					if (!isFocusWithinRef.current) {
+						isFocusWithinRef.current = true;
+						lastFocusedElementRef.current = event.relatedTarget as HTMLElement;
+					}
+				}}
+				onMouseEnter={() => setExpanded(true)}
+				onMouseMove={() => setExpanded(true)}
+				onMouseLeave={() => {
+					// Avoid setting expanded to false when interacting with a toast, e.g. swiping
+					if (!interacting) {
+						setExpanded(false);
+					}
+				}}
+				onDragEnd={() => setExpanded(false)}
+				onPointerDown={(event) => {
+					const isNotDismissible =
+						event.target instanceof HTMLElement &&
+						event.target.dataset.dismissible === "false";
+
+					if (isNotDismissible) return;
+					setInteracting(true);
+				}}
+				onPointerUp={() => setInteracting(false)}
+			>
+				{toasts.map((toast, index) => (
+					<Toast
+						key={toast.id}
+						icons={icons}
+						index={index}
+						toast={toast}
+						duration={toastOptions?.duration ?? duration}
+						visibleToasts={visibleToasts}
+						closeButton={Boolean(toastOptions?.closeButton ?? closeButton)}
+						interacting={interacting}
+						closeButtonAriaLabel={toastOptions?.closeButtonAriaLabel}
+						removeToast={removeToast}
+						toasts={toasts}
+						heights={heights}
+						setHeights={setHeights}
+						expandByDefault={Boolean(expand)}
+						gap={gap}
+						expanded={expanded}
+					/>
+				))}
+			</ol>
+		</section>
 	);
 });
-Toast.displayName = ToastPrimitive.displayName;
 
-/**
- * ToastAction component for actions within a toast
- *
- * This component renders an action button within a toast notification.
- */
-const ToastAction = React.forwardRef<
-	React.ComponentRef<typeof ToastActionPrimitive>,
-	React.ComponentPropsWithoutRef<typeof ToastActionPrimitive>
->(({ className, ...props }, ref) => (
-	<ToastActionPrimitive
-		ref={ref}
-		className={cn(
-			"inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 font-medium text-sm ring-offset-background transition-colors hover:bg-secondary focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 focus:group-[.destructive]:ring-destructive hover:group-[.destructive]:border-destructive/30 hover:group-[.destructive]:bg-destructive hover:group-[.destructive]:text-destructive-foreground",
-			className,
-		)}
-		{...props}
-	/>
-));
-ToastAction.displayName = ToastActionPrimitive.displayName;
-
-/**
- * ToastClose component for closing a toast
- *
- * This component renders a close button for a toast notification.
- */
-const ToastClose = React.forwardRef<
-	React.ComponentRef<typeof ToastClosePrimitive>,
-	React.ComponentPropsWithoutRef<typeof ToastClosePrimitive>
->(({ className, ...props }, ref) => (
-	<ToastClosePrimitive
-		ref={ref}
-		className={cn(
-			"absolute top-2 right-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-hidden focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 focus:group-[.destructive]:ring-red-400 focus:group-[.destructive]:ring-offset-red-600 hover:group-[.destructive]:text-red-50",
-			className,
-		)}
-		toast-close=""
-		{...props}
-	>
-		<X className="size-4" />
-	</ToastClosePrimitive>
-));
-ToastClose.displayName = ToastClosePrimitive.displayName;
-
-/**
- * ToastTitle component for the title of a toast
- *
- * This component renders the title of a toast notification.
- */
-const ToastTitle = React.forwardRef<
-	React.ComponentRef<typeof ToastTitlePrimitive>,
-	React.ComponentPropsWithoutRef<typeof ToastTitlePrimitive>
->(({ className, ...props }, ref) => (
-	<ToastTitlePrimitive
-		ref={ref}
-		className={cn("font-semibold text-sm", className)}
-		{...props}
-	/>
-));
-ToastTitle.displayName = ToastTitlePrimitive.displayName;
-
-/**
- * ToastDescription component for the description of a toast
- *
- * This component renders the main content or description of a toast notification.
- */
-const ToastDescription = React.forwardRef<
-	React.ComponentRef<typeof ToastDescriptionPrimitive>,
-	React.ComponentPropsWithoutRef<typeof ToastDescriptionPrimitive>
->(({ className, ...props }, ref) => (
-	<ToastDescriptionPrimitive
-		ref={ref}
-		className={cn("text-sm opacity-90", className)}
-		{...props}
-	/>
-));
-ToastDescription.displayName = ToastDescriptionPrimitive.displayName;
-
-type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>;
-
-type ToastActionElement = React.ReactElement<typeof ToastAction>;
-
-export {
-	Toast,
-	ToastAction,
-	ToastClose,
-	ToastDescription,
-	//
-	ToastProvider,
-	ToastTitle,
-	ToastViewport,
-	createToastScope,
-};
-export type {
-	ToastActionElement,
-	ToastActionProps,
-	ToastCloseProps,
-	ToastDescriptionProps,
-	ToastProps,
-	ToastProviderProps,
-	ToastTitleProps,
-	ToastViewportProps,
-};
+export { Toaster, useToasts };
+export type { Action, ToastToDismiss, ToastT };

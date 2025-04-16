@@ -1,0 +1,177 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Hooks/useIsDocumentHidden" />
+
+# useIsDocumentHidden Hook
+
+The `useIsDocumentHidden` hook is a utility that tracks the visibility state of the current document using the Page Visibility API. It provides a simple way to determine if the user has switched to a different tab or minimized the browser window.
+
+## Features
+
+- Real-time tracking of document visibility state
+- Simple boolean return value for easy conditional logic
+- Automatic cleanup of event listeners when component unmounts
+- TypeScript support with proper typing
+
+## Installation
+
+```bash
+npm install @squaredmade/ui
+```
+
+## Usage
+
+```tsx
+import { useIsDocumentHidden } from '@squaredmade/ui/use-is-document-hidden';
+
+function MyComponent() {
+  const isHidden = useIsDocumentHidden();
+  
+  return (
+    <div>
+      <p>The document is currently {isHidden ? 'hidden' : 'visible'}</p>
+    </div>
+  );
+}
+```
+
+## API
+
+```typescript
+function useIsDocumentHidden(): boolean
+```
+
+### Parameters
+
+This hook does not accept any parameters.
+
+### Returns
+
+- `boolean`: `true` when the document is hidden (user has switched tabs or minimized the window), `false` when the document is visible.
+
+## Examples
+
+### Pausing Animations When Tab Is Not Visible
+
+```tsx
+import { useIsDocumentHidden } from '@squaredmade/ui/use-is-document-hidden';
+import { useRef, useEffect } from 'react';
+
+function AnimatedComponent() {
+  const isDocumentHidden = useIsDocumentHidden();
+  const animationRef = useRef(null);
+  
+  useEffect(() => {
+    if (isDocumentHidden) {
+      // Pause animation logic
+      cancelAnimationFrame(animationRef.current);
+    } else {
+      // Resume animation logic
+      animationRef.current = requestAnimationFrame(animate);
+    }
+    
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+    };
+  }, [isDocumentHidden]);
+  
+  function animate() {
+    // Animation logic
+    animationRef.current = requestAnimationFrame(animate);
+  }
+  
+  return <canvas ref={canvasRef} />;
+}
+```
+
+### Auto-Refreshing Data When User Returns to Tab
+
+```tsx
+import { useIsDocumentHidden } from '@squaredmade/ui/use-is-document-hidden';
+import { useState, useEffect, useCallback } from 'react';
+
+function DataDashboard() {
+  const isDocumentHidden = useIsDocumentHidden();
+  const [data, setData] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await fetch('/api/data');
+      const json = await response.json();
+      setData(json);
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }, []);
+  
+  useEffect(() => {
+    // Fetch when component mounts
+    fetchData();
+    
+    // Set up interval for periodic refreshes
+    const intervalId = setInterval(() => {
+      if (!isDocumentHidden) {
+        fetchData();
+      }
+    }, 60000); // Refresh every minute when visible
+    
+    return () => clearInterval(intervalId);
+  }, [fetchData, isDocumentHidden]);
+  
+  // Also refresh when tab becomes visible again
+  useEffect(() => {
+    if (!isDocumentHidden && lastUpdated) {
+      const timeSinceLastUpdate = new Date().getTime() - lastUpdated.getTime();
+      // If it's been more than 5 minutes since the last update
+      if (timeSinceLastUpdate > 5 * 60 * 1000) {
+        fetchData();
+      }
+    }
+  }, [isDocumentHidden, lastUpdated, fetchData]);
+  
+  return (
+    <div>
+      {data ? (
+        <div>
+          {/* Render data */}
+          <p>Last updated: {lastUpdated?.toLocaleTimeString()}</p>
+        </div>
+      ) : (
+        <p>Loading data...</p>
+      )}
+    </div>
+  );
+}
+```
+
+## How It Works
+
+The `useIsDocumentHidden` hook leverages the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API) to detect when a document becomes hidden or visible:
+
+1. It initializes state with the current value of `document.hidden`
+2. It sets up an event listener for the `visibilitychange` event
+3. When the visibility state changes, it updates the React state
+4. The hook returns the current visibility state as a boolean
+5. The event listener is properly cleaned up when the component unmounts
+
+## Best Practices
+
+- Use this hook to optimize performance by pausing non-essential operations when the document is hidden
+- Combine with `useEffect` to react to visibility changes
+- Consider using this hook for:
+  - Pausing animations or videos when tab is not visible
+  - Stopping polling or websocket connections when tab is not active
+  - Refreshing stale data when a user returns to your application
+  - Stopping CPU-intensive calculations when the user is not actively viewing the page
+
+## Caveats
+
+- The Page Visibility API does not detect if a window is covered by another window, only if the tab/document is hidden
+- Some older browsers may not support the Page Visibility API, though support is very good in modern browsers
+- On mobile devices, the API behavior can vary based on the browser and OS
+- The hook will always return `false` during server-side rendering since the document object is not available
+
+
+By using the `useIsDocumentHidden` hook, you can create more efficient applications that respect user focus and system resources, improving both performance and battery life on mobile devices.

@@ -104,6 +104,9 @@
 			"@squaredmade/ui/use-direction": ["./src/hooks/use-direction"],
 			"@squaredmade/ui/use-escape-keydown": ["./src/hooks/use-escape-keydown"],
 			"@squaredmade/ui/use-id": ["./src/hooks/use-id"],
+			"@squaredmade/ui/use-is-document-hidden": [
+				"./src/hooks/use-is-document-hidden"
+			],
 			"@squaredmade/ui/use-layout-effect": ["./src/hooks/use-layout-effect"],
 			"@squaredmade/ui/use-previous": ["./src/hooks/use-previous"],
 			"@squaredmade/ui/use-size": ["./src/hooks/use-size"],

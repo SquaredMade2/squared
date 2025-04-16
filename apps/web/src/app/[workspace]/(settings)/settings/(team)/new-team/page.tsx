@@ -125,58 +125,53 @@ export default function CreateTeam() {
 					</CardHeader>
 					<CardContent>
 						<Separator />
-						<Form {...form}>
-							<form
-								onSubmit={form.handleSubmit((values) => onSubmit(values))}
-								className="mt-4 space-y-6"
-							>
-								<FormField
-									control={form.control}
-									name="teamName"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Team Name</FormLabel>
-											<FormControl>
-												<Input placeholder="e.g. Engineering" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="teamIdentifier"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Team identifier</FormLabel>
-											<FormControl>
-												<div className="flex items-center space-x-2">
-													<Input
-														placeholder="e.g. ENG"
-														maxLength={5}
-														className="w-20"
-														{...field}
-														onChange={(e) => {
-															const value = e.target.value.toUpperCase();
-															if (/^[A-Z0-9]*$/.test(value)) {
-																field.onChange(value);
-															}
-														}}
-													/>
-													<FormDescription>
-														This is used as the identifier (e.g. ENG-123) for
-														all tasks of the team. Keep it short and simple.
-													</FormDescription>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<Button type="submit" className="w-full">
-									Create Team
-								</Button>
-							</form>
+						<Form {...form} onSubmit={onSubmit} className="mt-4 space-y-6">
+							<FormField
+								control={form.control}
+								name="teamName"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Team Name</FormLabel>
+										<FormControl>
+											<Input placeholder="e.g. Engineering" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="teamIdentifier"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Team identifier</FormLabel>
+										<FormControl>
+											<div className="flex items-center space-x-2">
+												<Input
+													placeholder="e.g. ENG"
+													maxLength={5}
+													className="w-20"
+													{...field}
+													onChange={(e) => {
+														const value = e.target.value.toUpperCase();
+														if (/^[A-Z0-9]*$/.test(value)) {
+															field.onChange(value);
+														}
+													}}
+												/>
+												<FormDescription>
+													This is used as the identifier (e.g. ENG-123) for all
+													tasks of the team. Keep it short and simple.
+												</FormDescription>
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<Button type="submit" className="w-full">
+								Create Team
+							</Button>
 						</Form>
 					</CardContent>
 				</Card>

@@ -147,75 +147,73 @@ export const NewTaskModal = () => {
 						<DialogTitle className="text-sm">New Task</DialogTitle>
 					</div>
 				</DialogHeader>
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(handleCreateTask)}>
-						<div className="flex space-x-4 ">
-							<div className="w-4/5 space-y-4 ">
-								<FormField
-									control={form.control}
-									name="title"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-xl">Title</FormLabel>
-											<FormControl>
-												<Input
-													{...field}
-													placeholder="Title"
-													className="text-md"
-													tabIndex={0}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="description"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-xl">Description</FormLabel>
-											<FormControl>
-												<Textarea
-													{...field}
-													placeholder="Add Description"
-													className="resize-none text-md"
-													rows={4}
-													tabIndex={0}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
-							<div>
-								<Separator orientation="vertical" />
-							</div>
-							<div className="w-1/5 space-y-4">
-								<StatusDropdownButton />
-								<LabelDropdownButton />
-								<PriorityDropdownButton />
-								<EffortDropdownButton />
-								<DateDropdownButton />
-							</div>
+				<Form {...form} onSubmit={handleCreateTask}>
+					<div className="flex space-x-4 ">
+						<div className="w-4/5 space-y-4 ">
+							<FormField
+								control={form.control}
+								name="title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-xl">Title</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Title"
+												className="text-md"
+												tabIndex={0}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-xl">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="resize-none text-md"
+												rows={4}
+												tabIndex={0}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 						</div>
-						<DialogFooter className="mt-6">
-							<Button
-								onClick={handleDiscard}
-								className="bg-transparent text-foreground hover:cursor-pointer"
-								variant="destructive"
-								type="button"
-							>
-								Discard
-							</Button>
-							<Button
-								type="submit"
-								className="hover:cursor-pointer"
-								disabled={isLoading}
-							>
-								{isLoading ? "Creating..." : "Create Task"}
-							</Button>
-						</DialogFooter>
-					</form>
+						<div>
+							<Separator orientation="vertical" />
+						</div>
+						<div className="w-1/5 space-y-4">
+							<StatusDropdownButton />
+							<LabelDropdownButton />
+							<PriorityDropdownButton />
+							<EffortDropdownButton />
+							<DateDropdownButton />
+						</div>
+					</div>
+					<DialogFooter className="mt-6">
+						<Button
+							onClick={handleDiscard}
+							className="bg-transparent text-foreground hover:cursor-pointer"
+							variant="destructive"
+							type="button"
+						>
+							Discard
+						</Button>
+						<Button
+							type="submit"
+							className="hover:cursor-pointer"
+							disabled={isLoading}
+						>
+							{isLoading ? "Creating..." : "Create Task"}
+						</Button>
+					</DialogFooter>
 				</Form>
 			</DialogContent>
 		</Dialog>

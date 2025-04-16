@@ -57,7 +57,7 @@ export default function ViewsPage() {
 
 	return (
 		<div className="container mx-auto p-4">
-			<div className="mb-6 flex items-center justify-between">
+			<div className="mb-6 flex items-center justify-between pl-12">
 				<h1 className="font-bold text-2xl">Saved Views</h1>
 			</div>
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
