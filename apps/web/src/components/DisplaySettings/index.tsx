@@ -103,14 +103,11 @@ const TopNavBarDisplay = () => {
 			.replace(/^./, (char) => char.toUpperCase());
 	};
 
-	const handleToggleChange = (value: string[]) => {
-		const updatedProperties = Object.keys(displayProperties).reduce(
-			(acc, key) => {
-				acc[key as keyof DisplayProperty] = !value.includes(key);
-				return acc;
-			},
-			{} as DisplayProperty,
-		);
+	const handleToggleChange = (value: keyof DisplayProperty) => {
+		const updatedProperties = {
+			...displayProperties,
+			[value]: !displayProperties[value],
+		};
 		setViewOptions({
 			...currentOptions,
 			displayProperties: updatedProperties,
@@ -376,32 +373,25 @@ const TopNavBarDisplay = () => {
 								<p className="mb-2 py-1 text-foreground text-xs">
 									Display Properties
 								</p>
-								<ToggleGroup
-									type="multiple"
-									className="flex flex-wrap justify-start gap-3"
-									onValueChange={handleToggleChange}
-								>
-									{Object.keys(displayProperties).map((property) => {
-										const typedKey = property as keyof DisplayProperty;
-										const value = displayProperties[typedKey];
-										return (
-											<ToggleGroupItem
-												key={property}
-												value={property}
-												data-state={value ? "on" : "off"}
-												asChild
-											>
+								<div className="flex flex-wrap justify-start gap-3">
+									{Object.keys(displayProperties)
+										.sort()
+										.map((property) => {
+											const typedKey = property as keyof DisplayProperty;
+											const value = displayProperties[typedKey];
+											return (
 												<Button
 													variant={value ? "secondary" : "ghost"}
 													size="sm"
 													className="h-6 px-2 py-0 text-xs"
+													key={property}
+													onClick={() => handleToggleChange(typedKey)}
 												>
 													{formatCamelCaseString(property)}
 												</Button>
-											</ToggleGroupItem>
-										);
-									})}
-								</ToggleGroup>
+											);
+										})}
+								</div>
 							</div>
 						</div>
 					</PopoverContent>

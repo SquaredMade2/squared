@@ -313,11 +313,10 @@ export default function SprintDashboard() {
 									<YAxis hide={true} />
 									<Tooltip
 										contentStyle={{
-											background: "var(--card)",
+											background: "var(--background)",
 											border: "none",
 											borderRadius: "8px",
 										}}
-										labelStyle={{ color: "var(--muted-foreground)" }}
 										formatter={(value) => Math.floor(Number(value))}
 									/>
 									<Line
@@ -331,7 +330,7 @@ export default function SprintDashboard() {
 									<Line
 										type="monotone"
 										dataKey="ideal"
-										stroke="var(--muted)"
+										stroke="var(--muted-foreground)"
 										strokeWidth={2}
 										strokeDasharray="5 5"
 										dot={false}
