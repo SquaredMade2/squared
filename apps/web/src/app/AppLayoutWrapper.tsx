@@ -8,7 +8,7 @@ import {
 	WorkspaceSwitcher,
 } from "@/components/Modals";
 import SearchCommand from "@/components/SearchCommand";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { SquaredStoreProvider } from "@/store";
 import { ClerkProvider } from "@clerk/nextjs";
 import {
@@ -40,7 +40,7 @@ export default function ClientLayoutWrapper({
 							errorMessage = "An unknown error occurred.";
 						}
 						// toast notify user, log as an example
-						console.log(errorMessage);
+						console.error(errorMessage);
 					},
 				}),
 			}),

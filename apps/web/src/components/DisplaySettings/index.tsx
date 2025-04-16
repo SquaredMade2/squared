@@ -1,8 +1,8 @@
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CompletedTaskPeriodOptions } from "@/lib/constants";
 import { useViewStore } from "@/store";
 import {
 	type CompletedTaskPeriod,
-	type DisplayOptions,
 	type DisplayProperty,
 	type TaskGroup,
 	type TaskOrder,
@@ -19,43 +19,40 @@ import {
 	Menu,
 	SlidersVertical,
 } from "@squaredmade/icons";
-import { useEffect } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@squaredmade/ui/dropdown-menu";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { Switch } from "../ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
+} from "@squaredmade/ui/tooltip";
+import { useEffect } from "react";
 
 const TopNavBarDisplay = () => {
-	const {
-		view,
-		setView,
-		displayOptions,
-		setListViewOptions,
-		setGridViewOptions,
-	} = useViewStore((state) => state);
+	const { view, setView, displayOptions, setViewOptions, setDisplayOptions } =
+		useViewStore((state) => state);
 
 	const currentOptions = displayOptions.viewOptions[`${view}Options`];
-	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
 	const { taskOrder, groupTasksBy, showCompletedTasks, groupRowsBy } =
@@ -73,7 +70,7 @@ const TopNavBarDisplay = () => {
 					Status: "Priority",
 					Assignee: "Status",
 				};
-			setOptions({
+			setDisplayOptions({
 				taskOrder: {
 					...taskOrder,
 					orderBy: orderMap[
@@ -106,26 +103,19 @@ const TopNavBarDisplay = () => {
 			.replace(/^./, (char) => char.toUpperCase());
 	};
 
-	const handleToggleChange = (value: string[]) => {
-		const updatedProperties = Object.keys(displayProperties).reduce(
-			(acc, key) => {
-				acc[key as keyof DisplayProperty] = !value.includes(key);
-				return acc;
-			},
-			{} as DisplayProperty,
-		);
-		setOptions({
-			viewOptions: {
-				[`${view}Options`]: {
-					...currentOptions,
-					displayProperties: updatedProperties,
-				},
-			},
-		} as Partial<DisplayOptions>);
+	const handleToggleChange = (value: keyof DisplayProperty) => {
+		const updatedProperties = {
+			...displayProperties,
+			[value]: !displayProperties[value],
+		};
+		setViewOptions({
+			...currentOptions,
+			displayProperties: updatedProperties,
+		});
 	};
 
 	const handleDropdownSelection = (value: CompletedTaskPeriod) => {
-		setOptions({
+		setDisplayOptions({
 			showCompletedTasks: { show: value !== "None", period: value },
 		});
 	};
@@ -135,7 +125,7 @@ const TopNavBarDisplay = () => {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<div className="relative flex h-10 flex-col items-end gap-2 ">
+			<div className="relative flex h-10 flex-col items-end gap-2">
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button variant="ghost" className="gap-2">
@@ -182,12 +172,12 @@ const TopNavBarDisplay = () => {
 										onValueChange={(value: TaskGroup) => {
 											if (value === groupRowsBy) {
 												// Apply the swap
-												setOptions({
+												setDisplayOptions({
 													groupRowsBy: "None",
 													groupTasksBy: value,
 												});
 											} else {
-												setOptions({
+												setDisplayOptions({
 													groupTasksBy: value,
 												});
 											}
@@ -225,13 +215,13 @@ const TopNavBarDisplay = () => {
 										onValueChange={(value: TaskGroup | "None") => {
 											if (value === groupTasksBy) {
 												// Apply the swap
-												setOptions({
+												setDisplayOptions({
 													groupRowsBy: value,
 													groupTasksBy:
 														value === "Status" ? "Priority" : "Status",
 												});
 											} else {
-												setOptions({
+												setDisplayOptions({
 													groupRowsBy: value,
 												});
 											}
@@ -267,7 +257,7 @@ const TopNavBarDisplay = () => {
 								<div className="col-span-3">
 									<Select
 										onValueChange={(value) =>
-											setOptions({
+											setDisplayOptions({
 												taskOrder: {
 													...taskOrder,
 													orderBy: value as TaskOrder,
@@ -304,7 +294,7 @@ const TopNavBarDisplay = () => {
 												variant="outline"
 												size="sm"
 												onClick={() =>
-													setOptions({
+													setDisplayOptions({
 														taskOrder: {
 															...taskOrder,
 															orderAscending: !taskOrder.orderAscending,
@@ -358,7 +348,7 @@ const TopNavBarDisplay = () => {
 								<Switch
 									checked={displayOptions.showSubTasks}
 									onCheckedChange={(checked) =>
-										setOptions({ showSubTasks: checked })
+										setDisplayOptions({ showSubTasks: checked })
 									}
 								/>
 							</div>
@@ -373,46 +363,35 @@ const TopNavBarDisplay = () => {
 									<Switch
 										checked={showEmptyGroups}
 										onCheckedChange={(checked) =>
-											setOptions({
-												viewOptions: {
-													[`${view}Options`]: {
-														...currentOptions,
-														showEmptyGroups: checked,
-													},
-												},
-											} as Partial<DisplayOptions>)
+											setViewOptions({
+												...currentOptions,
+												showEmptyGroups: checked,
+											})
 										}
 									/>
 								</div>
 								<p className="mb-2 py-1 text-foreground text-xs">
 									Display Properties
 								</p>
-								<ToggleGroup
-									type="multiple"
-									className="flex flex-wrap justify-start gap-3"
-									onValueChange={handleToggleChange}
-								>
-									{Object.keys(displayProperties).map((property) => {
-										const typedKey = property as keyof DisplayProperty;
-										const value = displayProperties[typedKey];
-										return (
-											<ToggleGroupItem
-												key={property}
-												value={property}
-												data-state={value ? "on" : "off"}
-												asChild
-											>
+								<div className="flex flex-wrap justify-start gap-3">
+									{Object.keys(displayProperties)
+										.sort()
+										.map((property) => {
+											const typedKey = property as keyof DisplayProperty;
+											const value = displayProperties[typedKey];
+											return (
 												<Button
 													variant={value ? "secondary" : "ghost"}
 													size="sm"
 													className="h-6 px-2 py-0 text-xs"
+													key={property}
+													onClick={() => handleToggleChange(typedKey)}
 												>
 													{formatCamelCaseString(property)}
 												</Button>
-											</ToggleGroupItem>
-										);
-									})}
-								</ToggleGroup>
+											);
+										})}
+								</div>
 							</div>
 						</div>
 					</PopoverContent>

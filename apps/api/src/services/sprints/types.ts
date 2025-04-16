@@ -27,6 +27,7 @@ export type RetroItemReturn = {
 	content: string;
 	type: RetrospectiveItemType;
 	likes: string[];
+	createdAt: Date;
 };
 
 export type RetrospectiveData = {

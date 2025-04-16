@@ -1,19 +1,18 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function JoinWorkspace() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { toast } = useToast();
 	const { organization, isLoaded } = useOrganization();
 
 	const token = searchParams.get("token") || "";
@@ -37,13 +36,11 @@ export default function JoinWorkspace() {
 			}
 		},
 		onSuccess: () => {
-			toast({ title: "Workspace joined successfully" });
+			toast.success("Workspace joined successfully");
 			router.push(`/${organization?.slug}`);
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to join workspace",
-				variant: "destructive",
+			toast.error("Failed to join workspace", {
 				description: parseError(error),
 			});
 		},

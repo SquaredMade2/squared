@@ -5,18 +5,18 @@ import { useModalStore, useTaskStore } from "@/store";
 import type { InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { Pencil } from "@squaredmade/icons";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "../ui/dialog";
-import { Input } from "../ui/input";
-import { useToast } from "../ui/use-toast";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
@@ -25,7 +25,6 @@ export const RenameModal = () => {
 		setShowRename,
 		renameData: task,
 	} = useModalStore((state) => state);
-	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const { user } = useUser();
 
@@ -44,18 +43,16 @@ export const RenameModal = () => {
 					})
 					.then((res) => res.json());
 				updateTask(updatedTask);
-				toast({ title: "Task updated successfully" });
+				toast.success("Task updated successfully");
 			}
 		},
 		onSuccess: () => {
-			toast({ title: "Task updated successfully" });
+			toast.success("Task updated successfully");
 			setShowRename(false);
 		},
 		onError: (error) => {
-			toast({
-				title: "Error Updating Task",
+			toast.error("Error Updating Task", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});

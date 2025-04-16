@@ -1,17 +1,17 @@
 import { PriorityIcon } from "@/components/Icons";
-import { Button } from "@/components/ui/button";
+import { priorityOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatPriority } from "@/utils/formatting";
+import type { Priority } from "@squaredmade/db";
+import { Check } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { priorityOptions } from "@/lib/constants";
-import { useModalStore } from "@/store";
-import { formatPriority } from "@/utils/formatting";
-import type { Priority } from "@squaredmade/db";
-import { Check } from "@squaredmade/icons";
+} from "@squaredmade/ui/dropdown-menu";
 
 export const PriorityDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);

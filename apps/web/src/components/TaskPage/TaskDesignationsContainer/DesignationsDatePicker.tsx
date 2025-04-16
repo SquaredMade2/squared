@@ -1,14 +1,12 @@
 "use client";
 
 import { DatePicker } from "@/components/ui/date-picker";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-
+import { toast } from "sonner";
 const DesignationsDatePicker = () => {
-	const { toast } = useToast();
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
@@ -41,17 +39,12 @@ const DesignationsDatePicker = () => {
 			queryClient.invalidateQueries({
 				queryKey: ["event", "taskEvents", taskId],
 			});
-			toast({
-				title: "Success",
-				description: "Due date updated successfully",
-			});
+			toast.success("Due date updated successfully");
 		},
 		onError: (error) => {
-			toast({
-				title: "Error",
+			toast.error("Error updating due date", {
 				description:
 					error instanceof Error ? error.message : "Failed to update due date",
-				variant: "destructive",
 			});
 		},
 	});

@@ -1,22 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import type { CreateNotificationRequest } from "@/gen/rpc/event";
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { client } from "@/lib/client";
-import { useCommentStore, useModalStore, useTaskStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { handleFormatSlateToComment } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
+import { useModalStore } from "@/store";
 import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
-	getMentionsFromSlate,
 	injectMentionConfirm,
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
-import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
-import { useMutation } from "@tanstack/react-query";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -32,6 +23,7 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
+import { toast } from "sonner";
 import TextEditorMentions from "./Menus/TextEditorMentions";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
@@ -60,23 +52,13 @@ const initialValue: CustomDescendant[] = [
 	},
 ];
 
-const TextEditor = ({ task }: TextEditorProps) => {
-	// State
+const defaultSelectionRange = {
+	anchor: { path: [0, 0], offset: 0 },
+	focus: { path: [0, 0], offset: 0 },
+};
 
+const TextEditor = ({ addAction }: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
-	const setComments = useCommentStore((state) => state.setComments);
-	const currentTask = useTaskStore((state) => state.currentTask);
-	const { memberships } = useOrganization({
-		memberships: {
-			infinite: true,
-			pageSize: 100,
-		},
-	});
-
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
-	const { workspace } = useTaskDashboard();
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -91,80 +73,24 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
-	const { toast } = useToast();
+
 	// Functions
-	const { mutate: addCommentToTask } = useMutation({
-		mutationKey: ["comment", "addComment", task?.id],
-		mutationFn: async () => {
-			if (task) {
-				if (checkIfSlateEmpty(editor)) {
-					return;
-				}
-				const newComment = {
-					comment: handleFormatSlateToComment(editorContent),
-					date: new Date(),
-					taskId: task.id,
-				};
-				setComments(
-					await client.comment.addComment
-						.$post(newComment)
-						.then((res) => res.json()),
-				);
-				const mentions = getMentionsFromSlate(editorContent);
+	function handleSubmitEditor() {
+		if (checkIfSlateEmpty(editor)) {
+			setEditorContent([]);
+			editor.children = initialValue;
+			Transforms.select(editor, defaultSelectionRange);
+			return;
+		}
 
-				if (currentTask && workspace && users) {
-					for (let i = 0; i < mentions.length; i++) {
-						const currentMentionUser = mentions[i];
+		addAction(editorContent);
 
-						const mentionedUser = users.find(
-							(user) => user.firstName === currentMentionUser,
-						);
+		// reset editor
 
-						if (!mentionedUser || !mentionedUser.userId) return;
-
-						const mentionEvent: CreateNotificationRequest = {
-							description: "Task Comment Mention",
-							taskId: currentTask.id,
-							type: "MENTIONED",
-							userId: mentionedUser.userId,
-							workspaceId: workspace.id,
-						};
-						client.notification.createMention.$post(mentionEvent);
-					}
-				} else {
-					toast({
-						title: "Workspace, Task, or User not found.",
-						variant: "destructive",
-					});
-				}
-
-				setEditorContent([]);
-				editor.children = [
-					{
-						type: "paragraph",
-						children: [{ text: "" }],
-					},
-				];
-				Transforms.select(editor, {
-					anchor: { path: [0, 0], offset: 0 },
-					focus: { path: [0, 0], offset: 0 },
-				});
-			} else {
-				toast({
-					title: "Error getting comments",
-					description: "Could not find user data and current task",
-					variant: "destructive",
-				});
-			}
-		},
-		onError: (error) => {
-			toast({
-				title: "Error adding comment",
-				description: parseError(error),
-				variant: "destructive",
-			});
-		},
-	});
+		setEditorContent([]);
+		editor.children = initialValue;
+		Transforms.select(editor, defaultSelectionRange);
+	}
 
 	const handleMentionKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "@") {
@@ -194,11 +120,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const injectLinkContent = (linkName: string, linkUrl: string) => {
 		if (!(linkName && linkUrl)) return;
 		if (!editor.selection) {
-			toast({
-				title: "Place text cursor",
+			toast.error("Place text cursor", {
 				description:
 					"Place a text cursor in the designated area to insert the link",
-				variant: "destructive",
 			});
 			return;
 		}
@@ -466,10 +390,10 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			)}
 
 			<Button
-				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
+				onClick={handleSubmitEditor}
 				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 			>
-				Comment
+				Confirm
 			</Button>
 		</Slate>
 	);

@@ -1,15 +1,15 @@
 "use client";
+import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
+import { useFilterStore } from "@/store";
+import type { SavedFilter } from "@/store/filters";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { useTeams } from "@/hooks/useTeams";
-import { client } from "@/lib/client";
-import { useFilterStore } from "@/store";
-import type { SavedFilter } from "@/store/filters";
+} from "@squaredmade/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -57,7 +57,7 @@ export default function ViewsPage() {
 
 	return (
 		<div className="container mx-auto p-4">
-			<div className="mb-6 flex items-center justify-between">
+			<div className="mb-6 flex items-center justify-between pl-12">
 				<h1 className="font-bold text-2xl">Saved Views</h1>
 			</div>
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

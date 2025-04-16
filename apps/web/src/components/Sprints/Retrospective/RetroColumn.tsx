@@ -1,6 +1,6 @@
 import { Droppable } from "@hello-pangea/dnd";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
 import type { RetrospectiveItemType } from "@squaredmade/db";
@@ -35,16 +35,18 @@ export const RetroColumn = ({
 							ref={provided.innerRef}
 							className="mb-4 min-h-[200px] grow space-y-2"
 						>
-							{items.map((item, index) => {
-								return (
-									<RetroItemCard
-										key={item.id}
-										item={item}
-										index={index}
-										onLikeItem={onLikeItem}
-									/>
-								);
-							})}
+							{items
+								.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+								.map((item, index) => {
+									return (
+										<RetroItemCard
+											key={item.id}
+											item={item}
+											index={index}
+											onLikeItem={onLikeItem}
+										/>
+									);
+								})}
 							{provided.placeholder}
 						</div>
 					)}

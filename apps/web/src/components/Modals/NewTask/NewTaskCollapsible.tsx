@@ -1,19 +1,3 @@
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import {
 	useModalStore,
@@ -24,13 +8,29 @@ import {
 import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { CirclePlus } from "@squaredmade/icons";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+} from "@squaredmade/ui/accordion";
 import { AccordionTrigger } from "@squaredmade/ui/accordion";
+import { Button } from "@squaredmade/ui/button";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -40,7 +40,6 @@ import { StatusDropdownButton } from "./StatusDropdownButton";
 
 export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");
-	const { toast } = useToast();
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const { user } = useUser();
@@ -110,8 +109,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			return createdTask;
 		},
 		onSuccess(data) {
-			toast({
-				title: "Task Created Successfully",
+			toast.success("Task Created Successfully", {
 				description: (
 					<Link
 						href={`/${workspace?.url}/task/${data.identifier}/${formatUrl(data.title)}`}
@@ -125,10 +123,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			setIsOpen("");
 		},
 		onError: (error) => {
-			toast({
-				title: "Error creating Task",
+			toast.error("Error creating Task", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
@@ -150,83 +146,71 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			onValueChange={setIsOpen}
 		>
 			<AccordionItem value="subtask-collapsible">
-				<AccordionTrigger asChild>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						className="my-4 flex w-full items-center"
-					>
-						<CirclePlus className="mr-2 h-4 w-4" />
-						Add Subtask
-					</Button>
+				<AccordionTrigger className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-input bg-transparent px-3 hover:bg-accent hover:text-accent-foreground hover:no-underline">
+					<CirclePlus className="mr-2 h-4 w-4" />
+					Add Subtask
 				</AccordionTrigger>
 				<AccordionContent className="px-1">
-					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit((values) => handleCreateTask(values))}
-							className="space-y-4"
-						>
-							<div className="flex flex-col space-y-4">
-								<FormField
-									control={form.control}
-									name="title"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-lg">Title</FormLabel>
-											<FormControl>
-												<Input
-													{...field}
-													placeholder="Title"
-													className="text-md"
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="description"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-lg">Description</FormLabel>
-											<FormControl>
-												<Textarea
-													{...field}
-													placeholder="Add Description"
-													className="resize-none text-md"
-													rows={4}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
-							<div className="grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
-								<StatusDropdownButton />
-								<LabelDropdownButton />
-								<PriorityDropdownButton />
-								<EffortDropdownButton />
-								<DateDropdownButton />
-							</div>
-							<div className="mt-4 flex justify-end space-x-2">
-								<Button
-									onClick={handleCancel}
-									className="bg-transparent hover:cursor-pointer"
-									variant="outline"
-									type="button"
-								>
-									Cancel
-								</Button>
-								<Button
-									type="submit"
-									className="hover:cursor-pointer"
-									disabled={isPending}
-								>
-									{isPending ? "Creating..." : "Create Task"}
-								</Button>
-							</div>
-						</form>
+					<Form {...form} onSubmit={handleCreateTask} className="space-y-4">
+						<div className="flex flex-col space-y-4">
+							<FormField
+								control={form.control}
+								name="title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-lg">Title</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Title"
+												className="text-md"
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-lg">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="resize-none text-md"
+												rows={4}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
+						<div className="grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
+							<StatusDropdownButton />
+							<LabelDropdownButton />
+							<PriorityDropdownButton />
+							<EffortDropdownButton />
+							<DateDropdownButton />
+						</div>
+						<div className="mt-4 flex justify-end space-x-2">
+							<Button
+								onClick={handleCancel}
+								className="bg-transparent hover:cursor-pointer"
+								variant="outline"
+								type="button"
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								className="hover:cursor-pointer"
+								disabled={isPending}
+							>
+								{isPending ? "Creating..." : "Create Task"}
+							</Button>
+						</div>
 					</Form>
 				</AccordionContent>
 			</AccordionItem>

@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -13,6 +12,7 @@ import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
 import { Check, UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 

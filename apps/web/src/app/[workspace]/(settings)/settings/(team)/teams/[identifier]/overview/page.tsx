@@ -1,6 +1,12 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
+import { useTeamStore } from "@/store";
+import { useOrganization } from "@clerk/nextjs";
+import type { Effort } from "@squaredmade/db";
+import { ChevronDown } from "@squaredmade/icons";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,8 +17,15 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from "@squaredmade/ui/dropdown-menu";
 import {
 	Form,
 	FormControl,
@@ -21,28 +34,15 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { useTeams } from "@/hooks/useTeams";
-import { client } from "@/lib/client";
-import { useTeamStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { Effort } from "@squaredmade/db";
-import { ChevronDown } from "@squaredmade/icons";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuRadioGroup,
-	DropdownMenuRadioItem,
-	DropdownMenuTrigger,
-} from "@squaredmade/ui/dropdown-menu";
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -92,7 +92,6 @@ export default function TeamsSetting() {
 	const [showEffortDropdown, setShowEffortDropdown] = useState(false);
 	const [selectedEffort, setSelectedEffort] =
 		useState<Record<string, number | string | number[]>>();
-	const { toast } = useToast();
 	const router = useRouter();
 	const { organization, isLoaded } = useOrganization();
 	const { team, loading: teamLoading } = useTeams();
@@ -161,14 +160,12 @@ export default function TeamsSetting() {
 						.then((res) => res.json()),
 				);
 				router.refresh();
-				toast({ title: "Team updated successfully" });
+				toast.success("Team updated successfully");
 			}
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to update team",
+			toast.error("Failed to update team", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
@@ -186,13 +183,11 @@ export default function TeamsSetting() {
 		onSuccess: () => {
 			deleteTeam(team.id);
 			router.push(`/${organization?.slug}`);
-			toast({ title: "Team deleted" });
+			toast.success("Team deleted");
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to delete team",
+			toast.error("Failed to delete team", {
 				description: error.message,
-				variant: "destructive",
 			});
 		},
 	});
@@ -229,90 +224,85 @@ export default function TeamsSetting() {
 
 			<Separator className="my-6" />
 
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit((values) => onSubmit(values))}
-					className="space-y-8"
-				>
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-						<FormField
-							control={form.control}
-							name="name"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Team Name</FormLabel>
-									<FormControl>
-										<Input {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="identifier"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Team Identifier</FormLabel>
-									<FormControl>
-										<Input {...field} maxLength={5} />
-									</FormControl>
-									<FormDescription>
-										Used in task IDs. Max 5 characters, uppercase letters and
-										numbers only.
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<div className="flex flex-col">
-							<FormLabel className="mb-2">Effort Type</FormLabel>
-							<DropdownMenu
-								open={showEffortDropdown}
-								onOpenChange={setShowEffortDropdown}
-							>
-								<DropdownMenuTrigger>
-									<menu
-										className="flex h-10 w-40 items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
-										aria-label="Effort style dropdown menu"
-										aria-hidden="true"
-									>
-										{selectedEffort?.dropdownTitle}
-										<ChevronDown
-											className={`${showEffortDropdown ? "rotate-180" : "rotate-0"}`}
-										/>
-									</menu>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="z-10 mt-3 mr-48 w-52 rounded-md p-0">
-									<DropdownMenuRadioGroup
-										value={selectedEffort?.listOption as string}
-										onValueChange={handleEffortSelection}
-										className="z-50 rounded-md bg-secondary hover:cursor-pointer"
-									>
-										{effortType.map((item, index) => (
-											<DropdownMenuRadioItem
-												key={item.id}
-												value={item.dropdownTitle}
-												className="hover:cursor-pointer"
+			<Form {...form} onSubmit={onSubmit} className="space-y-8">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+					<FormField
+						control={form.control}
+						name="name"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Team Name</FormLabel>
+								<FormControl>
+									<Input {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="identifier"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Team Identifier</FormLabel>
+								<FormControl>
+									<Input {...field} maxLength={5} />
+								</FormControl>
+								<FormDescription>
+									Used in task IDs. Max 5 characters, uppercase letters and
+									numbers only.
+								</FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className="flex flex-col">
+						<FormLabel className="mb-2">Effort Type</FormLabel>
+						<DropdownMenu
+							open={showEffortDropdown}
+							onOpenChange={setShowEffortDropdown}
+						>
+							<DropdownMenuTrigger>
+								<menu
+									className="flex h-10 w-40 items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
+									aria-label="Effort style dropdown menu"
+									aria-hidden="true"
+								>
+									{selectedEffort?.dropdownTitle}
+									<ChevronDown
+										className={`${showEffortDropdown ? "rotate-180" : "rotate-0"}`}
+									/>
+								</menu>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="z-10 mt-3 mr-48 w-52 rounded-md p-0">
+								<DropdownMenuRadioGroup
+									value={selectedEffort?.listOption as string}
+									onValueChange={handleEffortSelection}
+									className="z-50 rounded-md bg-secondary hover:cursor-pointer"
+								>
+									{effortType.map((item, index) => (
+										<DropdownMenuRadioItem
+											key={item.id}
+											value={item.dropdownTitle}
+											className="hover:cursor-pointer"
+										>
+											<div
+												className={`${index === 1 ? "border-y-2" : ""} z-10 flex items-center space-x-2 p-3`}
 											>
-												<div
-													className={`${index === 1 ? "border-y-2" : ""} z-10 flex items-center space-x-2 p-3`}
-												>
-													<span className="hover:cursor-pointer">
-														{item.listOption}
-													</span>
-												</div>
-											</DropdownMenuRadioItem>
-										))}
-									</DropdownMenuRadioGroup>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</div>
+												<span className="hover:cursor-pointer">
+													{item.listOption}
+												</span>
+											</div>
+										</DropdownMenuRadioItem>
+									))}
+								</DropdownMenuRadioGroup>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
-					<Button type="submit" disabled={!isFormChanged}>
-						Save Changes
-					</Button>
-				</form>
+				</div>
+				<Button type="submit" disabled={!isFormChanged}>
+					Save Changes
+				</Button>
 			</Form>
 
 			<Separator className="my-6" />

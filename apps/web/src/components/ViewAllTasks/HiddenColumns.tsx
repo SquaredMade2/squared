@@ -2,13 +2,13 @@ import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { Droppable } from "@hello-pangea/dnd";
 import type { Priority, Status, Task } from "@squaredmade/db";
-import { PriorityIcon, StatusIcon } from "../Icons";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "../ui/accordion";
+} from "@squaredmade/ui/accordion";
+import { PriorityIcon, StatusIcon } from "../Icons";
 
 const HiddenColumns = ({
 	getHiddenColumns,
@@ -59,27 +59,29 @@ const HiddenColumns = ({
 								{...provided.droppableProps}
 								className={`${snapshot.isDraggingOver && "h-full"} rounded py-2 pr-2 transition-all duration-500 ease-in-out`}
 							>
-								<div className="rounded-lg bg-card pr-2">
-									<div className="mb-2 flex h-10 flex-row justify-between px-2 font-medium text-sm transition-all">
-										<div className="flex items-center gap-4">
-											<div className="mr-1.5 w-4 lg:mr-2">
-												{groupTasksBy === "Status" ? (
-													<StatusIcon status={column as Status} />
-												) : groupTasksBy === "Priority" ? (
-													<PriorityIcon priority={column as Priority} />
-												) : (
-													""
-												)}
+								<>
+									<div className="rounded-lg bg-card pr-2">
+										<div className="mb-2 flex h-10 flex-row justify-between px-2 font-medium text-sm transition-all">
+											<div className="flex items-center gap-4">
+												<div className="mr-1.5 w-4 lg:mr-2">
+													{groupTasksBy === "Status" ? (
+														<StatusIcon status={column as Status} />
+													) : groupTasksBy === "Priority" ? (
+														<PriorityIcon priority={column as Priority} />
+													) : (
+														""
+													)}
+												</div>
+												<span>{formatColumnTitle(column)}</span>
+												<span className="ml-1 text-muted-foreground">
+													{getTasksForGroup(column).length}
+												</span>
 											</div>
-											<span>{formatColumnTitle(column)}</span>
-											<span className="ml-1 text-muted-foreground">
-												{getTasksForGroup(column).length}
-											</span>
 										</div>
 									</div>
-								</div>
 
-								{provided.placeholder}
+									{provided.placeholder}
+								</>
 							</AccordionContent>
 						)}
 					</Droppable>

@@ -1,34 +1,34 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useCreateTask } from "@/hooks/useCreateTask";
+import { client } from "@/lib/client";
+import { useModalStore, useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
+import { ChevronRight } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@squaredmade/ui/dialog";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { useCreateTask } from "@/hooks/useCreateTask";
-import { client } from "@/lib/client";
-import { useModalStore, useTeamStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { useOrganization } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight } from "@squaredmade/icons";
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -49,7 +49,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const NewTaskModal = () => {
-	const { toast } = useToast();
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
 	const { createTask, isLoading } = useCreateTask();
@@ -88,10 +87,8 @@ export const NewTaskModal = () => {
 
 	const handleCreateTask = (values: FormValues) => {
 		if (!team || !organization) {
-			toast({
-				title: "Error",
+			toast.error("Error", {
 				description: "Team or workspace not found",
-				variant: "destructive",
 			});
 			return;
 		}
@@ -111,18 +108,14 @@ export const NewTaskModal = () => {
 
 		createTask(createTaskParams, {
 			onSuccess: () => {
-				toast({
-					title: "Task Created Successfully",
-				});
+				toast.success("Task Created Successfully");
 				setShowNewTask(false);
 				setNewTaskData({});
 				form.reset();
 			},
 			onError: (error) => {
-				toast({
-					title: "Error creating task",
+				toast.error("Error creating task", {
 					description: parseError(error),
-					variant: "destructive",
 				});
 			},
 		});
@@ -154,75 +147,73 @@ export const NewTaskModal = () => {
 						<DialogTitle className="text-sm">New Task</DialogTitle>
 					</div>
 				</DialogHeader>
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(handleCreateTask)}>
-						<div className="flex space-x-4 ">
-							<div className="w-4/5 space-y-4 ">
-								<FormField
-									control={form.control}
-									name="title"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-xl">Title</FormLabel>
-											<FormControl>
-												<Input
-													{...field}
-													placeholder="Title"
-													className="text-md"
-													tabIndex={0}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="description"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-xl">Description</FormLabel>
-											<FormControl>
-												<Textarea
-													{...field}
-													placeholder="Add Description"
-													className="resize-none text-md"
-													rows={4}
-													tabIndex={0}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
-							<div>
-								<Separator orientation="vertical" />
-							</div>
-							<div className="w-1/5 space-y-4">
-								<StatusDropdownButton />
-								<LabelDropdownButton />
-								<PriorityDropdownButton />
-								<EffortDropdownButton />
-								<DateDropdownButton />
-							</div>
+				<Form {...form} onSubmit={handleCreateTask}>
+					<div className="flex space-x-4 ">
+						<div className="w-4/5 space-y-4 ">
+							<FormField
+								control={form.control}
+								name="title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-xl">Title</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Title"
+												className="text-md"
+												tabIndex={0}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-xl">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="resize-none text-md"
+												rows={4}
+												tabIndex={0}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 						</div>
-						<DialogFooter className="mt-6">
-							<Button
-								onClick={handleDiscard}
-								className="bg-transparent text-foreground hover:cursor-pointer"
-								variant="destructive"
-								type="button"
-							>
-								Discard
-							</Button>
-							<Button
-								type="submit"
-								className="hover:cursor-pointer"
-								disabled={isLoading}
-							>
-								{isLoading ? "Creating..." : "Create Task"}
-							</Button>
-						</DialogFooter>
-					</form>
+						<div>
+							<Separator orientation="vertical" />
+						</div>
+						<div className="w-1/5 space-y-4">
+							<StatusDropdownButton />
+							<LabelDropdownButton />
+							<PriorityDropdownButton />
+							<EffortDropdownButton />
+							<DateDropdownButton />
+						</div>
+					</div>
+					<DialogFooter className="mt-6">
+						<Button
+							onClick={handleDiscard}
+							className="bg-transparent text-foreground hover:cursor-pointer"
+							variant="destructive"
+							type="button"
+						>
+							Discard
+						</Button>
+						<Button
+							type="submit"
+							className="hover:cursor-pointer"
+							disabled={isLoading}
+						>
+							{isLoading ? "Creating..." : "Create Task"}
+						</Button>
+					</DialogFooter>
 				</Form>
 			</DialogContent>
 		</Dialog>

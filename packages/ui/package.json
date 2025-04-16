@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/ui",
-	"version": "2.0.0",
+	"version": "2.0.2",
 	"description": "A design system with individually importable components",
 	"publishConfig": {
 		"access": "public"
@@ -78,12 +78,12 @@
 		},
 		"./calendar": {
 			"import": {
-				"types": "./dist/components/card/index.d.mts",
-				"default": "./dist/components/card/index.mjs"
+				"types": "./dist/components/calendar/index.d.mts",
+				"default": "./dist/components/calendar/index.mjs"
 			},
 			"require": {
-				"types": "./dist/components/card/index.d.ts",
-				"default": "./dist/components/card/index.js"
+				"types": "./dist/components/calendar/index.d.ts",
+				"default": "./dist/components/calendar/index.js"
 			}
 		},
 		"./card": {
@@ -621,7 +621,6 @@
 		"build-storybook": "storybook build",
 		"check-types": "tsc --noEmit",
 		"clean": "find . -type d -name 'dist' -exec rm -rf {} +",
-		"dev": "pnpm storybook",
 		"knip": "knip",
 		"prebuild": "rm -rf dist",
 		"release": "pnpm build && changeset publish",
@@ -656,12 +655,12 @@
 		"@storybook/test": "^8.6.7",
 		"@storybook/test-runner": "^0.22.0",
 		"@types/fs-extra": "^11.0.4",
-		"@types/node": "22.5.4",
+		"@types/node": "22.13.14",
 		"@types/react": "^19.0.1",
 		"@types/react-dom": "^19.0.2",
 		"@types/resize-observer-browser": "^0.1.11",
 		"autoprefixer": "^10.4.7",
-		"esbuild": "^0.24.0",
+		"esbuild": "^0.25.0",
 		"fs-extra": "^11.3.0",
 		"glob": "^11.0.0",
 		"playwright": "^1.51.1",
@@ -676,7 +675,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.2",
-		"@squaredmade/icons": "1.0.0",
+		"@squaredmade/icons": "1.0.3",
 		"aria-hidden": "^1.2.4",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",

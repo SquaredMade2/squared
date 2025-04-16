@@ -1,7 +1,9 @@
 "use client";
 
 import ImageUpload from "@/components/ImageUpload";
-import { Button } from "@/components/ui/button";
+import { getInitials } from "@/utils/formatting";
+import { useUser } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
@@ -10,16 +12,14 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { getInitials } from "@/utils/formatting";
-import { useUser } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
+	useForm,
+} from "@squaredmade/ui/form";
+import { zodResolver } from "@squaredmade/ui/form/resolvers";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -29,7 +29,6 @@ const formSchema = z.object({
 });
 
 export default function Profile() {
-	const { toast } = useToast();
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -64,15 +63,12 @@ export default function Profile() {
 				username: values.username,
 			});
 
-			toast({
-				title: "Profile updated",
+			toast.success("Profile updated", {
 				description: "Your profile information has been successfully updated.",
 			});
 			router.refresh();
 		} catch {
-			toast({
-				variant: "destructive",
-				title: "Error",
+			toast.error("Error updating profile", {
 				description: "Failed to update profile. Please try again.",
 			});
 		} finally {
@@ -85,16 +81,9 @@ export default function Profile() {
 		if (file && user) {
 			try {
 				await user.setProfileImage({ file });
-				toast({
-					title: "Success",
-					description: "Profile picture updated successfully.",
-				});
+				toast.success("Profile picture updated successfully.");
 			} catch {
-				toast({
-					variant: "destructive",
-					title: "Error",
-					description: "Failed to update profile picture. Please try again.",
-				});
+				toast.error("Failed to update profile picture. Please try again.");
 			}
 		}
 	};
@@ -111,70 +100,63 @@ export default function Profile() {
 				<Separator />
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 					<div className="md:col-span-2">
-						<Form {...form}>
-							<form
-								onSubmit={form.handleSubmit(onSubmit)}
-								className="space-y-6"
-							>
-								<div className="space-y-4">
-									<h2 className="font-semibold text-xl">
-										Personal Information
-									</h2>
-									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-										<FormField
-											control={form.control}
-											name="firstName"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>First name</FormLabel>
-													<FormControl>
-														<Input {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="lastName"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Last name</FormLabel>
-													<FormControl>
-														<Input {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
+						<Form {...form} onSubmit={onSubmit} className="space-y-6">
+							<div className="space-y-4">
+								<h2 className="font-semibold text-xl">Personal Information</h2>
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 									<FormField
 										control={form.control}
-										name="username"
+										name="firstName"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Username</FormLabel>
+												<FormLabel>First name</FormLabel>
 												<FormControl>
 													<Input {...field} />
 												</FormControl>
-												<FormDescription>
-													How you want to be called in Squared
-												</FormDescription>
 												<FormMessage />
 											</FormItem>
 										)}
 									/>
-									<FormItem>
-										<FormLabel>Email</FormLabel>
-										<FormDescription>
-											{user.primaryEmailAddress?.emailAddress}
-										</FormDescription>
-									</FormItem>
+									<FormField
+										control={form.control}
+										name="lastName"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Last name</FormLabel>
+												<FormControl>
+													<Input {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
 								</div>
-								<Button type="submit" disabled={isUpdating}>
-									{isUpdating ? "Updating..." : "Update Profile"}
-								</Button>
-							</form>
+								<FormField
+									control={form.control}
+									name="username"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Username</FormLabel>
+											<FormControl>
+												<Input {...field} />
+											</FormControl>
+											<FormDescription>
+												How you want to be called in Squared
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormItem>
+									<FormLabel>Email</FormLabel>
+									<FormDescription>
+										{user.primaryEmailAddress?.emailAddress}
+									</FormDescription>
+								</FormItem>
+							</div>
+							<Button type="submit" disabled={isUpdating}>
+								{isUpdating ? "Updating..." : "Update Profile"}
+							</Button>
 						</Form>
 					</div>
 					<div>

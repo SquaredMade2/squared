@@ -1,19 +1,19 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/utils/cn";
 import type { Team } from "@squaredmade/db";
 import { LayoutGrid } from "@squaredmade/icons";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import AddTeamButton from "../Buttons/AddTeamButton";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "../ui/accordion";
-import { buttonVariants } from "../ui/button";
+} from "@squaredmade/ui/accordion";
+import { buttonVariants } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import AddTeamButton from "../Buttons/AddTeamButton";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {

@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import type { Team } from "@squaredmade/db";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
+import { Table, TableBody, TableCell, TableRow } from "@squaredmade/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,

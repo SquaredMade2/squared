@@ -1,10 +1,10 @@
 import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import { Activity, Copy, Layers3 } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
-import { useToast } from "../ui/use-toast";
+import { toast } from "sonner";
 
 interface NavBarTeamProps {
 	teamIdentifier: string;
@@ -19,7 +19,6 @@ const NavBarTeams = ({
 }: NavBarTeamProps) => {
 	const { organization } = useOrganization();
 	const { teams, setTeam } = useTeamStore((state) => state);
-	const { toast } = useToast();
 
 	const router = useRouter();
 
@@ -28,7 +27,7 @@ const NavBarTeams = ({
 			getTeamOnSelect();
 			router.push(`/${organization?.slug}/team/${teamIdentifier}/${param}`);
 		} else {
-			toast({ title: "Team identifier not found", variant: "destructive" });
+			toast.error("Team identifier not found");
 		}
 	};
 
@@ -52,7 +51,7 @@ const NavBarTeams = ({
 				<Copy className="mr-2 size-4 text-muted-foreground" />
 				<p>Tasks</p>
 			</Button>
-			<div className="my-0.5 ml-4 border-border border-l pl-2">
+			<div className="my-0.5 ml-6 border-border border-l pl-3">
 				<Button
 					variant={currentPage === "active" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("active")}
@@ -80,7 +79,7 @@ const NavBarTeams = ({
 						<Activity className="mr-2 size-4 text-muted-foreground" />
 						<p>Sprints</p>
 					</Button>
-					<div className="my-0.5 ml-4 border-border border-l pl-2">
+					<div className="my-0.5 ml-6 border-border border-l pl-3">
 						<Button
 							variant={
 								currentPage === "current" && active ? "secondary" : "ghost"

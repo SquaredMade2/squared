@@ -16,9 +16,22 @@ export class CommentService implements CommentRpc {
 		this.db = db;
 		this.logger = createCustomLogger("comments");
 	}
-	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment[]> {
+	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment> {
 		this.logger.info("Adding comment with payload", comment);
-		return await this.db.insert(commentsTable).values(comment).returning();
+		return this.db
+			.insert(commentsTable)
+			.values(comment)
+			.returning()
+			.then((res) => {
+				if (!res[0]) {
+					this.logger.error(
+						"Something went wrong while adding comment using:",
+						comment,
+					);
+					throw new Error("Adding Comment Failed");
+				}
+				return res[0];
+			});
 	}
 	async deleteComment({ commentId }: { commentId: string }): Promise<void> {
 		this.logger.info("Deleting comment with id", commentId);

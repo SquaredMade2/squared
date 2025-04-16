@@ -1,4 +1,4 @@
-import { cn } from "@/utils/cn";
+import { cn } from "@squaredmade/ui/cn";
 
 export const high = () => {
 	return (

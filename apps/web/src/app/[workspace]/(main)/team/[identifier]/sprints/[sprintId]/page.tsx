@@ -7,14 +7,22 @@ import {
 	SprintNotFound,
 } from "@/components/Sprints";
 import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { useSprints } from "@/hooks/useSprints";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
+import type { Sprint, Status, Task } from "@squaredmade/db";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Dialog,
 	DialogClose,
@@ -23,17 +31,8 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
-import { useSprints } from "@/hooks/useSprints";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
-import type { Sprint, Status, Task } from "@squaredmade/db";
+} from "@squaredmade/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
@@ -51,6 +50,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { toast } from "sonner";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 
@@ -168,14 +168,12 @@ export default function SprintDashboardPage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to assign tasks to sprint",
+			toast.error("Failed to assign tasks to sprint", {
 				description: parseError(error, "Unknown error"),
-				variant: "destructive",
 			});
 		},
 		onSuccess: (data) => {
-			toast({ title: "Tasks assigned to sprint" });
+			toast.success("Tasks assigned to sprint");
 			setTasks(data);
 		},
 	});
@@ -191,14 +189,12 @@ export default function SprintDashboardPage() {
 				.then((res) => res.json());
 		},
 		onError: (error) => {
-			toast({
-				title: "Failed to end the sprint.",
+			toast.error("Failed to end the sprint.", {
 				description: parseError(error, "Unknown error"),
-				variant: "destructive",
 			});
 		},
 		onSuccess: () => {
-			toast({ title: "Sprint ended successfully" });
+			toast.success("Sprint ended successfully");
 			router.push(`/${organization?.slug}/team/${team?.identifier}/all`);
 		},
 	});
@@ -317,17 +313,17 @@ export default function SprintDashboardPage() {
 								<YAxis hide={true} />
 								<Tooltip
 									contentStyle={{
-										background: "hsl(var(--card))",
+										background: "var(--card)",
 										border: "none",
 										borderRadius: "8px",
 									}}
-									labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+									labelStyle={{ color: "var(--muted-foreground)" }}
 									formatter={(value) => Math.floor(Number(value))}
 								/>
 								<Line
 									type="monotone"
 									dataKey="tasks"
-									stroke="hsl(var(--primary))"
+									stroke="var(--primary)"
 									strokeWidth={2}
 									dot={false}
 									name="Actual"
@@ -335,7 +331,7 @@ export default function SprintDashboardPage() {
 								<Line
 									type="monotone"
 									dataKey="ideal"
-									stroke="hsl(var(--muted))"
+									stroke="var(--muted)"
 									strokeWidth={2}
 									strokeDasharray="5 5"
 									dot={false}
@@ -343,12 +339,12 @@ export default function SprintDashboardPage() {
 								/>
 								<ReferenceLine
 									x={currentDay}
-									stroke="hsl(var(--destructive))"
+									stroke="var(--destructive)"
 									strokeWidth={1}
 									label={{
 										value: "Today",
 										position: "top",
-										fill: "hsl(var(--destructive))",
+										fill: "var(--destructive)",
 									}}
 								/>
 							</LineChart>
@@ -434,7 +430,7 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<div className="scrollbar-thumb-[hsl(var(--border))] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
+				<div className="scrollbar-thumb-[var(--border)] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
 					<TabsContent value="all">
 						<TaskList tasks={sprintTasks} />
 					</TabsContent>

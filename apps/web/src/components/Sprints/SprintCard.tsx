@@ -1,16 +1,16 @@
+import { Progress } from "@/components/ui/progress";
 import type { Sprint, Task } from "@squaredmade/db";
 import { ChevronRight } from "@squaredmade/icons";
-import { format } from "date-fns";
-import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../ui/card";
-import { Progress } from "../ui/progress";
+} from "@squaredmade/ui/card";
+import { format } from "date-fns";
+import Link from "next/link";
 
 interface SprintCardProps {
 	sprint: Sprint;

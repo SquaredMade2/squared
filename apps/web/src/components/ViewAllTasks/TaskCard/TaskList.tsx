@@ -1,20 +1,20 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useViewStore } from "@/store";
+import { formatName, formatUrl, getInitials } from "@/utils/formatting";
+import { UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useViewStore } from "@/store";
-import { formatName, formatUrl, getInitials } from "@/utils/formatting";
-import { UserSearch } from "@squaredmade/icons";
+} from "@squaredmade/ui/tooltip";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { AssigneeBox } from "./AssigneeBox";

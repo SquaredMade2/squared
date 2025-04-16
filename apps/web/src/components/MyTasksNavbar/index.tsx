@@ -2,9 +2,9 @@
 
 import { useOrganization } from "@clerk/nextjs";
 import { ArrowLeft } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Button } from "../ui/button";
 
 const tabs = [
 	{ id: "assigned", label: "Assigned" },
@@ -27,7 +27,7 @@ const MyTasksNavbar = () => {
 		[router, organization?.slug],
 	);
 	return (
-		<div className="my-4 flex items-center justify-start space-x-4">
+		<div className="my-3 flex items-center justify-start space-x-4 pl-12">
 			<Button
 				size="icon"
 				variant="ghost"

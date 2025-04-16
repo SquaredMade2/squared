@@ -99,3 +99,7 @@
 	font-style: italic;
 	font-display: swap;
 }
+
+@theme {
+	--font-sans: "NoirdenSans", sans-serif;
+}

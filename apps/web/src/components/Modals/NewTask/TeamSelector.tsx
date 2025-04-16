@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useTeamStore } from "@/store";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useTeamStore } from "@/store";
+} from "@squaredmade/ui/dropdown-menu";
 import { LayoutGrid } from "lucide-react";
 
 export default function TeamSelector() {

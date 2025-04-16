@@ -1,15 +1,15 @@
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-	Tooltip,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useUsers } from "@/hooks/useUsers";
 import { formatName } from "@/utils/formatting";
 import { Draggable } from "@hello-pangea/dnd";
 import { ThumbsUp } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent } from "@squaredmade/ui/card";
+import {
+	Tooltip,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@squaredmade/ui/tooltip";
 import { TooltipContent } from "@squaredmade/ui/tooltip";
 
 export const RetroItemCard = ({
@@ -39,7 +39,7 @@ export const RetroItemCard = ({
 				>
 					<Card>
 						<CardContent className="flex justify-between p-2">
-							<div className="flex flex-col">
+							<div className="flex flex-col pr-2">
 								<div>{item.content}</div>
 								{author && (
 									<div className="text-muted-foreground">
@@ -50,7 +50,7 @@ export const RetroItemCard = ({
 							{author && (
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger>
+										<TooltipTrigger asChild>
 											<Button
 												variant="outline"
 												className="gap-2"
