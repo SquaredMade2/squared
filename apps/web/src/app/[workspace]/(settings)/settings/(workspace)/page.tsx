@@ -303,16 +303,17 @@ export default function WorkspaceSettings() {
 												</SelectContent>
 											</Select>
 										</FormControl>
+										<FormDescription>
+											Set the default page users of a workspace will load into{" "}
+											<br />
+											<small className="text-xs">
+												*If Sprints is disabled, default view will fall back to{" "}
+												<strong>All Tasks</strong>
+											</small>
+										</FormDescription>
 									</FormItem>
 								)}
 							/>
-							<FormDescription>
-								Set the default page users of a workspace will load into <br />
-								<small className="text-xs">
-									*If Sprints is disabled, default view will fall back to{" "}
-									<strong>All Tasks</strong>
-								</small>
-							</FormDescription>
 						</div>
 					</div>
 					<Button type="submit" disabled={!isFormChanged}>
