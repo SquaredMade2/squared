@@ -93,7 +93,7 @@ export const InviteModal = () => {
 
 	return (
 		<Dialog open={showInvite} onOpenChange={() => setShowInvite(!showInvite)}>
-			<DialogContent className="md:w-[500px]">
+			<DialogContent>
 				<div className="flex flex-col gap-6 px-1">
 					<DialogHeader>
 						<DialogTitle>Invite people to your Workspace</DialogTitle>

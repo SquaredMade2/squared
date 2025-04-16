@@ -458,7 +458,7 @@ export default function SprintDashboardPage() {
 			</Tabs>
 
 			<Dialog open={showEndSprintDialog} onOpenChange={setShowEndSprintDialog}>
-				<DialogContent className="md:w-2/3 xl:w-1/3">
+				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>End Sprint</DialogTitle>
 						<DialogDescription>
