@@ -1,0 +1,175 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Components/Toast/MIGRATION" />
+
+# Toast Component Migration Guide
+
+This document outlines the process for migrating from our previous toast notification system to the new implementation.
+
+## Why We're Migrating
+
+Our new toast system offers several advantages:
+
+- Simplified API requiring less boilerplate code
+- Reduced bundle size (approximately 7kb smaller)
+- Built-in promise handling for async operations
+- Improved animation performance
+- Better accessibility support
+- Simplified styling and customization
+
+## Installation
+
+No additional packages need to be installed. The new toast implementation is already included in our UI component library.
+
+## Usage Comparison
+
+### Previous Implementation
+
+```tsx
+import { useToast } from "@squaredmade/ui/toast"
+
+function MyComponent() {
+  const { toast } = useToast()
+  
+  const handleAction = () => {
+    toast({
+      title: "Success",
+      description: "Your changes have been saved",
+      variant: "default", // or "destructive"
+    })
+  }
+  
+  return <Button onClick={handleAction}>Save Changes</Button>
+}
+```
+
+### New Implementation
+
+```tsx
+import { toast } from "@squaredmade/ui/toast"
+
+function MyComponent() {
+  const handleAction = () => {
+    toast("Success", {
+      description: "Your changes have been saved",
+      // Use type instead of variant
+      type: "default", // "success", "error", "warning", "info"
+    })
+  }
+  
+  return <Button onClick={handleAction}>Save Changes</Button>
+}
+```
+
+## Key Differences
+
+1. **Import and Usage**:
+   - Previous: Import and use the hook with destructuring: `const { toast } = useToast()`
+   - New: Import the function directly: `import { toast } from "@squaredmade/ui/toast"`
+
+2. **API Structure**:
+   - Previous: Single object parameter with `title` and `description` properties
+   - New: First parameter is the title, second parameter is an options object
+
+3. **Variant/Type Names**:
+   - Removed `variant` from the options object and instead can call the toast function with the type of toast you want to show
+   - New type options: "success", "error", "warning", "info", "loading", "action"
+
+## Advanced Features
+
+### Promise Handling
+
+The new toast system can handle promises automatically:
+
+```tsx
+const saveData = async () => {
+  toast.promise(
+    fetch("/api/data", { method: "POST", body: JSON.stringify(data) }),
+    {
+      loading: "Saving changes...",
+      success: "Changes saved successfully!",
+      error: "Failed to save changes",
+    }
+  )
+}
+```
+
+### Dismissing Toasts
+
+```tsx
+// Create a toast with an ID
+const toastId = toast("Processing", { description: "Please wait..." })
+
+// Later, dismiss the specific toast
+toast.dismiss(toastId)
+
+// Or dismiss all toasts
+toast.dismiss()
+```
+
+## Common Migration Patterns
+
+### 1. Basic Toast
+
+**Before:**
+```tsx
+toast({
+  title: "Note",
+  description: "This is a notification"
+})
+```
+
+**After:**
+```tsx
+toast("Note", {
+  description: "This is a notification"
+})
+```
+
+### 2. Toast with Variant
+
+**Before:**
+```tsx
+toast({
+  title: "Error",
+  description: "Something went wrong",
+  variant: "destructive"
+})
+```
+
+**After:**
+```tsx
+toast.error("Error", {
+  description: "Something went wrong",
+})
+```
+
+### 3. Toast with Action
+
+**Before:**
+```tsx
+toast({
+  title: "Notification",
+  description: "Your file was uploaded",
+  action: <ToastAction altText="Undo" onClick={handleUndo}>Undo</ToastAction>
+})
+```
+
+**After:**
+```tsx
+toast("Notification", {
+  description: "Your file was uploaded",
+  action: {
+    label: "Undo",
+    onClick: handleUndo
+  }
+})
+```
+
+## Troubleshooting
+
+If you encounter issues during migration, check for these common problems:
+
+1. **Toast not appearing**: Ensure you're importing from the correct path and that you have a `Toaster` component in your app
+2. **Style inconsistencies**: Check if you have custom CSS overrides that need updating
+3. **TypeScript errors**: Make sure you're using the correct types for the new API

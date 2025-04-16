@@ -302,13 +302,77 @@ export default function WorkspaceSettings() {
 								</FormItem>
 							)}
 						/>
-						<FormDescription>
-							Set the default page users of a workspace will load into <br />
-							<small className="text-xs">
-								*If Sprints is disabled, default view will fall back to{" "}
-								<strong>All Tasks</strong>
-							</small>
-						</FormDescription>
+						<FormField
+							control={form.control}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
+							name="url"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace URL</FormLabel>
+									<FormControl>
+										<div className="flex">
+											<span className="mr-0 inline-flex items-center rounded-l-md border border-input border-r-0 bg-transparent px-3 pr-0 text-muted-foreground text-sm">
+												https://app.squaredmade.com/
+											</span>
+											<Input
+												{...field}
+												className="ml-0 rounded-l-none border-l-0 pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+											/>
+										</div>
+									</FormControl>
+									<FormDescription>
+										This is your workspace's unique URL on our platform.
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
+						<div className="col-span-2">
+							<FormField
+								control={form.control}
+								name="viewPage"
+								render={({ field }) => (
+									<FormItem className="col-span-1 mb-2">
+										<FormLabel>Set Workspace View</FormLabel>
+										<FormControl>
+											<Select
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												value={field.value}
+												defaultValue={defaultSelect ? defaultSelect : ""}
+											>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a page" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{defaultPages.map((page: string) => {
+															return (
+																<SelectItem
+																	key={page}
+																	value={page}
+																>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+															);
+														})}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</FormControl>
+										<FormDescription>
+											Set the default page users of a workspace will load into{" "}
+											<br />
+											<small className="text-xs">
+												*If Sprints is disabled, default view will fall back to{" "}
+												<strong>All Tasks</strong>
+											</small>
+										</FormDescription>
+									</FormItem>
+								)}
+							/>
+						</div>
 					</div>
 				</div>
 				<Button type="submit" disabled={!isFormChanged}>
