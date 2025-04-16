@@ -1075,39 +1075,10 @@ type FieldPathValue<
  * Props for the Form component
  */
 interface FormProps<TFieldValues extends FieldValues = FieldValues>
-	extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> {
+	extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit">,
+		UseFormReturn<TFieldValues> {
 	/** Scope for form context isolation */
 	__scopeForm?: Scope;
-	/** Field registration function from useForm */
-	register?: <TFieldName extends FieldPath<TFieldValues>>(
-		name: TFieldName,
-	) => FieldDefinition<FieldPathValue<TFieldValues, TFieldName>>;
-	/** Form control object from useForm */
-	control?: {
-		_formValues: Partial<TFieldValues>;
-		_fields: Map<string, HTMLElement | null>;
-	};
-	/** Submit handler creator from useForm */
-	handleSubmit?: (
-		onSubmit: (data: TFieldValues) => void,
-	) => (e: React.FormEvent) => void;
-	/** Function to set field values */
-	setValue?: <TFieldName extends FieldPath<TFieldValues>>(
-		name: TFieldName,
-		value: FieldPathValue<TFieldValues, TFieldName>,
-		options?: { shouldValidate?: boolean; shouldDirty?: boolean },
-	) => void;
-	/** Function to get form values */
-	getValues?: {
-		(): TFieldValues;
-		<TFieldName extends FieldPath<TFieldValues>>(
-			name: TFieldName,
-		): FieldPathValue<TFieldValues, TFieldName>;
-	};
-	/** Current form state */
-	formState?: FormStateValues;
-	/** Function to reset the form */
-	reset?: (values?: Partial<TFieldValues>) => void;
 	/** Submit handler for the form */
 	onSubmit?: (data: TFieldValues) => void;
 }
@@ -1163,8 +1134,7 @@ function FormComponent<TFieldValues extends FieldValues = FieldValues>(
 	};
 
 	// Create a submit handler if both handleSubmit and onSubmit are provided
-	const onSubmitHandler =
-		handleSubmit && onSubmit ? handleSubmit(onSubmit) : undefined;
+	const onSubmitHandler = onSubmit ? handleSubmit(onSubmit) : undefined;
 
 	return (
 		<FormProvider scope={__scopeForm} {...formContextValue}>

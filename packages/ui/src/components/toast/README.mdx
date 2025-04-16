@@ -1,18 +1,25 @@
+import { Meta, ArgTypes } from '@storybook/blocks';
+import { Toaster, toast, ExternalToast } from '.';
+
+<Meta title="Components/Toast/README" />
+
 # Toast Component System
 
 ## Overview
 
-The Toast Component System is a comprehensive solution for displaying notifications in React applications. It provides a flexible and accessible way to show temporary messages to users, with features like customizable content, swipe-to-dismiss, and keyboard navigation.
+The Toast Component System is a comprehensive solution for displaying notifications in React applications. It provides a flexible and accessible way to show temporary messages to users, with features like swipe-to-dismiss, dynamic stacking, and keyboard navigation.
 
 ## Features
 
-- Customizable toast content (title, description, actions)
-- Swipe-to-dismiss functionality
-- Keyboard accessibility (Escape to close)
-- Screen reader support
-- Customizable duration and positioning
-- Controlled and uncontrolled modes
-- Styling with Tailwind CSS and class-variance-authority
+- Multiple toast types: success, error, info, warning, loading, and default
+- Swipe-to-dismiss functionality with directional control
+- Promise integration for async operation feedback
+- Keyboard accessibility (Alt+T to focus, Escape to dismiss)
+- Screen reader support with proper ARIA attributes
+- Dynamic stacking with expandable toast list
+- Mobile-responsive design with appropriate positioning
+- Auto-dismiss with configurable duration
+- Interactive pause on hover/focus
 
 ## Installation
 
@@ -27,127 +34,156 @@ npm install @squaredmade/ui
 Here's a basic example of how to use the Toast Component System:
 
 ```jsx
-import {
-  ToastProvider,
-  ToastViewport,
-  Toast,
-  ToastTitle,
-  ToastDescription,
-  ToastAction,
-  ToastClose,
-} from '@squaredmade/ui/toast';
-import { useToast } from '@squaredmade/ui/use-toast';
+import { Toaster, toast } from '@squaredmade/ui/toast';
 
 function App() {
   return (
-    <ToastProvider>
-      <YourApp />
-      <ToastViewport />
-    </ToastProvider>
+    <>
+      <button 
+        onClick={() => toast.success('Operation completed successfully')}
+      >
+        Show Success Toast
+      </button>
+
+      <button 
+        onClick={() => toast.error('An error occurred')}
+      >
+        Show Error Toast
+      </button>
+
+      {/* Place Toaster component at the root level */}
+      <Toaster />
+    </>
   );
 }
+```
 
-function YourApp() {
-  const { toast } = useToast();
+### Using with Promises
 
-  const showToast = () => {
-    toast({
-      title: 'Scheduled: Catch up',
-      description: 'Friday, February 10, 2023 at 5:57 PM',
-      action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-    });
-  };
+```jsx
+import { toast } from '@squaredmade/ui/toast';
 
-  return <button onClick={showToast}>Show Toast</button>;
+function handleAsyncOperation() {
+  const promise = fetch('/api/data');
+  
+  toast.promise(promise, {
+    loading: 'Loading data...',
+    success: (data) => `Successfully loaded ${data.length} items`,
+    error: (err) => `Error: ${err.message}`
+  });
+}
+```
+
+### Advanced Configuration
+
+```jsx
+import { Toaster } from '@squaredmade/ui/toast';
+
+function App() {
+  return (
+    <>
+      <YourApp />
+      
+      <Toaster
+        duration={5000}
+        visibleToasts={3}
+        gap={8}
+        offset="24px"
+        expand={false}
+        closeButton={true}
+        containerAriaLabel="Notifications"
+        hotkey={["altKey", "KeyT"]}
+      />
+    </>
+  );
 }
 ```
 
 ## API
 
-### ToastProvider
+### Toaster Component
 
-The main wrapper component that provides context for the toast system.
-
-#### Props
-
-- `children`: React.ReactNode
-- `duration`: number (default: 5000) - Default duration for toasts in milliseconds
-- `swipeDirection`: 'up' | 'down' | 'left' | 'right' (default: 'right')
-- `swipeThreshold`: number (default: 50) - Swipe distance threshold in pixels
-
-### ToastViewport
-
-Component that renders the container for toasts.
+The container component that displays and manages toast notifications.
 
 #### Props
 
-- `className`: string - Additional CSS classes
-- `hotkey`: string[] (default: ['F8']) - Keyboard shortcut to focus the viewport
-- `label`: string (default: 'Notifications ({hotkey})') - Accessible label for the viewport
+<ArgTypes of={Toaster} />
 
-### Toast
+### Toast API
 
-Individual toast component.
+The `toast` object provides methods for creating different types of notifications.
 
-#### Props
+#### Basic Methods
 
-- `open`: boolean - Controlled open state
-- `defaultOpen`: boolean - Default open state (uncontrolled)
-- `onOpenChange`: (open: boolean) => void - Callback when open state changes
-- `duration`: number - Custom duration for this toast
-- `variant`: 'default' | 'destructive' - Visual variant of the toast
+- `toast(message, options?)` - Create a default toast
+- `toast.success(message, options?)` - Create a success toast
+- `toast.error(message, options?)` - Create an error toast
+- `toast.info(message, options?)` - Create an info toast
+- `toast.warning(message, options?)` - Create a warning toast
+- `toast.loading(message, options?)` - Create a loading toast
 
-### ToastTitle
+#### Advanced Methods
 
-Component for rendering the toast title.
+- `toast.promise(promise, options?)` - Create toasts for promise lifecycle (loading, success, error)
+- `toast.dismiss(id?)` - Dismiss a specific toast or all toasts if no ID is provided
 
-### ToastDescription
+#### Toast Options
 
-Component for rendering the toast description.
+- `id`: string | number - Custom identifier for the toast
+- `type`: "success" | "error" | "info" | "warning" | "loading" | "default" - Toast type
+- `icon`: React.ReactNode - Custom icon to override the default for the selected type
+- `title`: React.ReactNode | (() => React.ReactNode) - Main toast content
+- `description`: React.ReactNode | (() => React.ReactNode) - Secondary content
+- `duration`: number - Time in milliseconds before auto-dismiss (0 or Infinity prevents auto-dismiss)
+- `closeButton`: boolean - Whether to show a close button on this toast
+- `dismissible`: boolean (default: true) - Whether this toast can be dismissed
+- `action`: `{ label: React.ReactNode, onClick: (event) => void }` | React.ReactNode - Primary action
+- `cancel`: `{ label: React.ReactNode, onClick: (event) => void }` | React.ReactNode - Secondary action
+- `onDismiss`: (toast) => void - Callback fired when the toast is dismissed by user action
+- `onAutoClose`: (toast) => void - Callback fired when the toast is auto-closed after duration
 
-### ToastAction
+### useToasts Hook
 
-Component for rendering an action button within a toast.
+Hook for accessing the toast state within components.
 
-#### Props
+```jsx
+import { useToasts } from '@squaredmade/ui/toast';
 
-- `altText`: string - Alternative text for accessibility
-
-### ToastClose
-
-Component for rendering a close button for a toast.
-
-### useToast
-
-Hook for programmatically creating and managing toasts.
-
-#### Returns
-
-- `toast`: (props: ToastProps) => void - Function to create a new toast
-- `dismiss`: (toastId?: string) => void - Function to dismiss a toast
+function Component() {
+  const { toasts } = useToasts();
+  
+  return (
+    <div>
+      {toasts.length > 0 ? (
+        <p>You have {toasts.length} active notifications</p>
+      ) : (
+        <p>No active notifications</p>
+      )}
+    </div>
+  );
+}
+```
 
 ## Accessibility
 
 The Toast Component System is designed with accessibility in mind:
 
-- Proper ARIA attributes are used throughout
-- Keyboard navigation is supported
-- Screen reader announcements for new toasts
-- Alternative text for actions
+- Proper ARIA attributes and roles throughout
+- Keyboard navigation with clear focus management
+- Support for screen readers with live region announcements
+- Pause auto-dismiss when the user is interacting with a toast
+- Visible focus indicators and proper contrast ratios
+- Alternative text for icons and actions
 
 ## Best Practices
 
 1. Keep toast messages concise and informative
-2. Use appropriate variants for different types of notifications
-3. Provide clear actions when necessary
-4. Don't overuse toasts - reserve them for important information
-5. Consider the position of toasts to avoid covering important content
-6. Test thoroughly with keyboard-only and screen reader users
+2. Use appropriate toast types for different kinds of notifications
+3. Set appropriate durations based on content length and importance
+4. Provide clear actions when user interaction is required
+5. Don't overuse toasts - reserve them for important information
+6. Test with keyboard-only and screen reader users to ensure accessibility
 
-## Customization
+## Migration from Previous Version
 
-The Toast components can be customized using Tailwind CSS classes and the `className` prop. The `variant` prop on the Toast component allows for predefined style variations.
-
-## Contributing
-
-For any issues or feature requests related to the Toast Component System, please refer to the main @squaredmade/ui repository and follow its contribution guidelines.
+If you're upgrading from a previous version of the toast component, see the [Migration Guide](./MIGRATION.mdx) for detailed instructions on adapting your code to the new API.

@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 export type RetroItem = Pick<
 	RetrospectiveItem,
-	"id" | "content" | "type" | "authorId" | "likes"
+	"id" | "content" | "type" | "authorId" | "likes" | "createdAt"
 >;
 
 export default function SprintRetrospectivePage() {

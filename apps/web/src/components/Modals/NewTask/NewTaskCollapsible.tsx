@@ -151,71 +151,66 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 					Add Subtask
 				</AccordionTrigger>
 				<AccordionContent className="px-1">
-					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit((values) => handleCreateTask(values))}
-							className="space-y-4"
-						>
-							<div className="flex flex-col space-y-4">
-								<FormField
-									control={form.control}
-									name="title"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-lg">Title</FormLabel>
-											<FormControl>
-												<Input
-													{...field}
-													placeholder="Title"
-													className="text-md"
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="description"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="text-lg">Description</FormLabel>
-											<FormControl>
-												<Textarea
-													{...field}
-													placeholder="Add Description"
-													className="resize-none text-md"
-													rows={4}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
-							<div className="grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
-								<StatusDropdownButton />
-								<LabelDropdownButton />
-								<PriorityDropdownButton />
-								<EffortDropdownButton />
-								<DateDropdownButton />
-							</div>
-							<div className="mt-4 flex justify-end space-x-2">
-								<Button
-									onClick={handleCancel}
-									className="bg-transparent hover:cursor-pointer"
-									variant="outline"
-									type="button"
-								>
-									Cancel
-								</Button>
-								<Button
-									type="submit"
-									className="hover:cursor-pointer"
-									disabled={isPending}
-								>
-									{isPending ? "Creating..." : "Create Task"}
-								</Button>
-							</div>
-						</form>
+					<Form {...form} onSubmit={handleCreateTask} className="space-y-4">
+						<div className="flex flex-col space-y-4">
+							<FormField
+								control={form.control}
+								name="title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-lg">Title</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Title"
+												className="text-md"
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-lg">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="resize-none text-md"
+												rows={4}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
+						<div className="grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
+							<StatusDropdownButton />
+							<LabelDropdownButton />
+							<PriorityDropdownButton />
+							<EffortDropdownButton />
+							<DateDropdownButton />
+						</div>
+						<div className="mt-4 flex justify-end space-x-2">
+							<Button
+								onClick={handleCancel}
+								className="bg-transparent hover:cursor-pointer"
+								variant="outline"
+								type="button"
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								className="hover:cursor-pointer"
+								disabled={isPending}
+							>
+								{isPending ? "Creating..." : "Create Task"}
+							</Button>
+						</div>
 					</Form>
 				</AccordionContent>
 			</AccordionItem>

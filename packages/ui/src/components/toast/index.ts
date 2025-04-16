@@ -1,23 +1,11 @@
-"use client";
 export {
-	createToastScope,
-	//
-	ToastProvider,
-	ToastViewport,
-	Toast,
-	ToastTitle,
-	ToastDescription,
-	ToastAction,
-	ToastClose,
+	Toaster,
+	useToasts,
 } from "./Toast";
-export { Toaster } from "./Toaster";
-export { useToast, toast } from "./useToast";
 export type {
-	ToastProviderProps,
-	ToastViewportProps,
-	ToastProps,
-	ToastTitleProps,
-	ToastDescriptionProps,
-	ToastActionProps,
-	ToastCloseProps,
+	ToastT,
+	ToastToDismiss,
+	Action,
 } from "./Toast";
+export { toast } from "./state";
+export type { ExternalToast } from "./state";

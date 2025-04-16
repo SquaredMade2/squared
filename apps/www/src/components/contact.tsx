@@ -58,7 +58,7 @@ export function ContactForm() {
 	}
 
 	return (
-		<Form {...form}>
+		<Form {...form} onSubmit={onSubmit}>
 			<div className="z-20 mx-auto mt-28 mr-8 w-full max-w-xl">
 				<div>
 					<h1 className="mt-8 font-bold text-4xl text-black leading-9 tracking-tight dark:text-white">
@@ -71,117 +71,115 @@ export function ContactForm() {
 				</div>
 
 				<div className="py-10">
-					<div>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-							<FormField
-								control={form.control}
-								name="name"
-								render={({ field }) => (
-									<FormItem>
-										<label
-											htmlFor="name"
-											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
-										>
-											Full Name
-										</label>
-										<FormControl>
-											<div className="mt-2">
-												<input
-													id="name"
-													type="name"
-													placeholder="Full Name"
-													className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
-													{...field}
-												/>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="email"
-								render={({ field }) => (
-									<FormItem>
-										<label
-											htmlFor="email"
-											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
-										>
-											Email address
-										</label>
-										<FormControl>
-											<div className="mt-2">
-												<input
-													id="email"
-													type="email"
-													placeholder="Email"
-													className="\ block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
-													{...field}
-												/>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="company"
-								render={({ field }) => (
-									<FormItem>
-										<label
-											htmlFor="company"
-											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
-										>
-											Company
-										</label>
-										<FormControl>
-											<div className="mt-2">
-												<input
-													id="company"
-													type="company"
-													placeholder="Company"
-													className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
-													{...field}
-												/>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="message"
-								render={({ field }) => (
-									<FormItem>
-										<label
-											htmlFor="message"
-											className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
-										>
-											Message
-										</label>
-										<FormControl>
-											<div className="mt-2">
-												<textarea
-													rows={5}
-													id="message"
-													placeholder="Enter your message here"
-													className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
-													{...field}
-												/>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
+					<div className="space-y-6">
+						<FormField
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem>
+									<label
+										htmlFor="name"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+									>
+										Full Name
+									</label>
+									<FormControl>
+										<div className="mt-2">
+											<input
+												id="name"
+												type="name"
+												placeholder="Full Name"
+												className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
+												{...field}
+											/>
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="email"
+							render={({ field }) => (
+								<FormItem>
+									<label
+										htmlFor="email"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+									>
+										Email address
+									</label>
+									<FormControl>
+										<div className="mt-2">
+											<input
+												id="email"
+												type="email"
+												placeholder="Email"
+												className="\ block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
+												{...field}
+											/>
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="company"
+							render={({ field }) => (
+								<FormItem>
+									<label
+										htmlFor="company"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+									>
+										Company
+									</label>
+									<FormControl>
+										<div className="mt-2">
+											<input
+												id="company"
+												type="company"
+												placeholder="Company"
+												className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
+												{...field}
+											/>
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="message"
+							render={({ field }) => (
+								<FormItem>
+									<label
+										htmlFor="message"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+									>
+										Message
+									</label>
+									<FormControl>
+										<div className="mt-2">
+											<textarea
+												rows={5}
+												id="message"
+												placeholder="Enter your message here"
+												className="block w-full rounded-xl border-0 bg-neutral-100 px-4 py-1.5 text-black shadow-aceternity placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6 dark:bg-background-darkAccent dark:text-white"
+												{...field}
+											/>
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-							<div>
-								<Button className="w-full rounded-xl">Submit</Button>
-							</div>
-						</form>
+						<div>
+							<Button className="w-full rounded-xl">Submit</Button>
+						</div>
 					</div>
 				</div>
 			</div>

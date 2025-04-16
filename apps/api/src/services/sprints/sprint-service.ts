@@ -202,6 +202,7 @@ export class SprintService implements SprintRpc {
 				type: retrospectiveItemsTable.type,
 				authorId: retrospectiveItemsTable.authorId,
 				likes: retrospectiveItemsTable.likes,
+				createdAt: retrospectiveItemsTable.createdAt,
 			});
 
 		return newItem;
@@ -229,6 +230,7 @@ export class SprintService implements SprintRpc {
 				type: retrospectiveItemsTable.type,
 				authorId: retrospectiveItemsTable.authorId,
 				likes: retrospectiveItemsTable.likes,
+				createdAt: retrospectiveItemsTable.createdAt,
 			});
 
 		return updatedItem;
@@ -270,6 +272,7 @@ export class SprintService implements SprintRpc {
 				type: retrospectiveItemsTable.type,
 				authorId: retrospectiveItemsTable.authorId,
 				likes: retrospectiveItemsTable.likes,
+				createdAt: retrospectiveItemsTable.createdAt,
 			});
 
 		return updatedItem;
