@@ -1,5 +1,11 @@
 # @squaredmade/fonts
 
+## 1.0.5
+
+### Patch Changes
+
+- c12e0cf: Fix up build scripts
+
 ## 1.0.4
 
 ### Patch Changes
