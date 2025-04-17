@@ -3,6 +3,7 @@
 	"extends": ["config:base"],
 	"schedule": ["at any time"],
 	"prConcurrentLimit": 50,
+	"prHourlyLimit": 5,
 	"labels": ["Updates"],
 	"dependencyDashboard": true,
 	"automerge": true,
