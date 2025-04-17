@@ -139,7 +139,7 @@ export const NewTaskModal = () => {
 
 	return (
 		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>
-			<DialogContent className="max-w-full bg-popover">
+			<DialogContent className="md:max-w-4xl">
 				<DialogHeader>
 					<div className="flex items-center">
 						<TeamSelector />
