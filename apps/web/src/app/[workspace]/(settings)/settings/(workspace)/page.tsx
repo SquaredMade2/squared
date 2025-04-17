@@ -298,36 +298,47 @@ export default function WorkspaceSettings() {
 								name="viewPage"
 								render={({ field }) => (
 									<FormItem className="col-span-1 mb-2">
-										<FormLabel>Set Workspace View</FormLabel>
-										<FormControl>
-											{hasDomainManagePermission ? (
-												<Select
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-													value={field.value}
-													defaultValue={defaultSelect ? defaultSelect : ""}
-												>
-													<SelectTrigger className="w-[180px]">
-														<SelectValue placeholder="Select a page" />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectGroup>
-															{defaultPages.map((page: string) => {
-																return (
-																	<SelectItem
-																		key={page}
-																		value={page}
-																	>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
-																);
-															})}
-														</SelectGroup>
-													</SelectContent>
-												</Select>
-											) : (
-												<div>{field.value}</div>
-											)}
-										</FormControl>
+										{hasDomainManagePermission ? (
+											<>
+												<FormLabel>Set Workspace View</FormLabel>
+												<FormControl>
+													<Select
+														onValueChange={(value) => {
+															field.onChange(value);
+														}}
+														value={field.value}
+														defaultValue={defaultSelect ? defaultSelect : ""}
+													>
+														<SelectTrigger className="w-[180px]">
+															<SelectValue placeholder="Select a page" />
+														</SelectTrigger>
+														<SelectContent>
+															<SelectGroup>
+																{defaultPages.map((page: string) => {
+																	return (
+																		<SelectItem
+																			key={page}
+																			value={page}
+																		>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+																	);
+																})}
+															</SelectGroup>
+														</SelectContent>
+													</Select>
+												</FormControl>
+											</>
+										) : (
+											<>
+												<label>Workspace View</label>
+												<div className="w-[180px] rounded-md border border-input px-3 py-2">
+													{defaultSelect?.replace(/^./, (char) =>
+														char.toUpperCase(),
+													)}{" "}
+													Tasks
+												</div>
+											</>
+										)}
+
 										<FormDescription>
 											Set the default page users of a workspace will load into{" "}
 											<br />
