@@ -7,6 +7,7 @@
 	"labels": ["Updates"],
 	"dependencyDashboard": true,
 	"automerge": true,
+	"assignAutomerge": true,
 	"automergeType": "pr",
 	"automergeStrategy": "auto",
 	"requiredStatusChecks": [],
