@@ -22,8 +22,16 @@
 				"github-actions"
 			],
 			"reviewers": ["team:squared-developers"],
-			"stabilityDays": 3,
-			"matchConfidence": ["neutral", "high"]
+			"stabilityDays": 3
+		},
+		{
+			"matchPackagePatterns": ["^@squaredmade/"],
+			"groupName": "squaredmade packages",
+			"schedule": ["at any time"],
+			"minimumReleaseAge": "0",
+			"stabilityDays": 0,
+			"reviewers": ["team:squared-developers"],
+			"prCreation": "immediate"
 		}
 	]
 }
