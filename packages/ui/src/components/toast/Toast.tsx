@@ -506,7 +506,6 @@ const Toast = ({
 
 	useLayoutEffect(() => {
 		if (!mounted) return;
-		// biome-ignore lint/style/noNonNullAssertion: We check mounted state above
 		const toastNode = toastRef.current!;
 		const originalHeight = toastNode.style.height;
 		toastNode.style.height = "auto";
@@ -785,7 +784,6 @@ const Toast = ({
 				let isHighlighted = false;
 
 				if (window.getSelection() && window.getSelection() !== null) {
-					// biome-ignore lint/style/noNonNullAssertion: We check for null above
 					isHighlighted = window.getSelection()!.toString().length > 0;
 				}
 
