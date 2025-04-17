@@ -11,6 +11,7 @@
 	"requiredStatusChecks": [],
 	"platformAutomerge": true,
 	"minimumReleaseAge": "3 days",
+	"reviewers": ["team:squared-developers"],
 	"packageRules": [
 		{
 			"matchManagers": [
@@ -21,17 +22,24 @@
 				"docker-compose",
 				"github-actions"
 			],
-			"reviewers": ["team:squared-developers"],
-			"stabilityDays": 3
+			"description": "Update dependencies",
+			"matchCurrentAge": "3 days"
 		},
 		{
-			"matchPackagePatterns": ["^@squaredmade/"],
-			"groupName": "squaredmade packages",
-			"schedule": ["at any time"],
-			"minimumReleaseAge": "0",
-			"stabilityDays": 0,
-			"reviewers": ["team:squared-developers"],
-			"prCreation": "immediate"
+			"matchPackageNames": [
+				"@squaredmade/builder",
+				"@squaredmade/context",
+				"@squaredmade/db",
+				"@squaredmade/fonts",
+				"@squaredmade/icons",
+				"@squaredmade/logger",
+				"@squaredmade/rpc",
+				"@squaredmade/rpc-client",
+				"@squaredmade/superjson",
+				"@squaredmade/typescript-config",
+				"@squaredmade/ui"
+			],
+			"description": "Internal packages"
 		}
 	]
 }
