@@ -40,19 +40,21 @@ export default function ClientLayoutWrapper({
 						enableSystem
 						disableTransitionOnChange
 					>
-						{mounted && (
-							<>
-								<WorkspaceInviteModal />
-								<SearchCommand />
-								<WorkspaceSwitcher />
-								<TaskSelector />
-								<InviteModal />
-								<NewTaskModal />
-								<ErrorProvider>
-									<LoadingProvider>{children}</LoadingProvider>
-								</ErrorProvider>
-							</>
-						)}
+						<ErrorProvider>
+							<LoadingProvider>
+								{mounted && (
+									<>
+										<WorkspaceInviteModal />
+										<SearchCommand />
+										<WorkspaceSwitcher />
+										<TaskSelector />
+										<InviteModal />
+										<NewTaskModal />
+										{children}
+									</>
+								)}
+							</LoadingProvider>
+						</ErrorProvider>
 					</NextThemesProvider>
 					<Toaster />
 				</SquaredStoreProvider>

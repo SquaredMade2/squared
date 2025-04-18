@@ -38,29 +38,17 @@ export function TaskPageLayout({
 
 	const isRowGroupingActive = groupRowsBy !== "None";
 
-	if (loading) {
-		return (
-			<div className="flex h-full w-full items-center justify-center">
-				<SquaredLoader />
-			</div>
-		);
-	}
-
 	return (
 		<div className="flex h-screen w-full flex-col overflow-hidden">
 			<div className="w-full px-2 sm:px-5">
 				<TopNavBar pageTitle={pageTitle} />
 			</div>
-			{!authorized ? (
-				<div className="flex h-full w-screen flex-col items-center bg-background">
-					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
-						<h1 className="text-2xl">Not Authorized</h1>
-						<p>
-							You are not authorized to access team with identifier{" "}
-							{`"${teamIdentifier}"`}
-						</p>
-					</div>
+			{loading ? (
+				<div className="flex h-full w-full items-center justify-center">
+					<SquaredLoader />
 				</div>
+			) : !authorized ? (
+				<Unauthorized teamIdentifier={teamIdentifier} />
 			) : user && tasks.length === 0 ? (
 				<div className="flex h-full w-full flex-col items-center justify-center gap-4">
 					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
@@ -113,3 +101,15 @@ export function TaskPageLayout({
 		</div>
 	);
 }
+
+const Unauthorized = ({ teamIdentifier }: { teamIdentifier: string }) => (
+	<div className="flex h-full w-screen flex-col items-center bg-background">
+		<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
+			<h1 className="text-2xl">Not Authorized</h1>
+			<p>
+				You are not authorized to access team with identifier{" "}
+				{`"${teamIdentifier}"`}
+			</p>
+		</div>
+	</div>
+);

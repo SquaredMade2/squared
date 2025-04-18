@@ -5,13 +5,13 @@ import { useTaskStore, useViewStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status, Task } from "@squaredmade/db";
+import type { Status } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
+import { useTasks } from "./useTasks";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
-
 export function useTaskDashboard() {
 	const {
 		loading: teamLoading,
@@ -46,45 +46,11 @@ export function useTaskDashboard() {
 
 	const queryClient = useQueryClient();
 
-	// Optimize queries with staleTime and caching strategies
 	const {
-		data: fetchedTasks,
-		isLoading,
+		tasks: fetchedTasks,
+		loading: isLoading,
 		error: tasksError,
-	} = useQuery<Task[], Error>({
-		queryKey: ["task", "getAllTasks", team?.id],
-		queryFn: async () => {
-			if (!team) throw new Error("Team not found");
-
-			const loadingKey = `tasks-${team.id}`;
-			startLoading(loadingKey);
-			clearError(loadingKey);
-
-			try {
-				const res = await client.task.getAllTasks.$get({
-					teamId: team.id,
-				});
-				const teamTasks = await res.json();
-
-				// Only update state if the data has changed
-				const tasksChanged =
-					JSON.stringify(tasks) !== JSON.stringify(teamTasks);
-				if (tasksChanged) {
-					setTasks(teamTasks);
-				}
-
-				return teamTasks;
-			} catch (error) {
-				setError(loadingKey, error as Error);
-				throw error;
-			} finally {
-				stopLoading(loadingKey);
-			}
-		},
-		// Add staleTime to prevent frequent refetches
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		enabled: !!team && !teamLoading && !workspaceLoading,
-	});
+	} = useTasks();
 
 	const allBlockedTaskIdsQuery = useQuery({
 		queryKey: ["task", "allBlockedTasksIds", team?.id],
