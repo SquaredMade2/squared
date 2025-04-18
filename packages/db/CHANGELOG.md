@@ -1,5 +1,11 @@
 # @squaredmade/db
 
+## 1.1.1
+
+### Patch Changes
+
+- c12e0cf: Fix up build scripts
+
 ## 1.1.0
 
 ### Minor Changes

@@ -88,6 +88,7 @@
 			"@squaredmade/ui/sheet": ["./src/components/sheet"],
 			"@squaredmade/ui/slot": ["./src/components/slot"],
 			"@squaredmade/ui/skeleton": ["./src/components/skeleton"],
+			"@squaredmade/ui/spinner": ["./src/components/spinner"],
 			"@squaredmade/ui/stack": ["./src/layout/stack"],
 			"@squaredmade/ui/styles": ["./styles/tailwind.css"],
 			"@squaredmade/ui/switch": ["./src/components/switch"],

@@ -64,7 +64,7 @@ export const NewSprintModal = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Create New Sprint</DialogTitle>
 					<DialogDescription>

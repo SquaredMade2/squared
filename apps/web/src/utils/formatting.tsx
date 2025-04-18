@@ -50,7 +50,7 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 
 export const formatName = (user: PublicUserData | undefined): string => {
 	if (!user) return "Unknown User";
-	return `${user.firstName} ${user.lastName}`;
+	return `${user.firstName} ${user?.lastName}`;
 };
 
 export const getInitials = (name?: string | null): string => {
