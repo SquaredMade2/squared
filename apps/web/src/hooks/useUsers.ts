@@ -1,4 +1,5 @@
 import { useOrganization, useUser } from "@clerk/nextjs";
+import { useMemo } from "react";
 
 export function useUsers() {
 	const { user, isLoaded: userLoaded } = useUser();
@@ -8,9 +9,27 @@ export function useUsers() {
 			pageSize: 100,
 		},
 	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
+
+	// Memoize the users array to prevent regenerating it on every render
+	const users = useMemo(
+		() =>
+			memberships?.data?.map((membership) => membership.publicUserData) || [],
+		[memberships?.data],
 	);
 
-	return { user, users, loading: !userLoaded || !orgLoaded };
+	// Memoize loading state
+	const loading = useMemo(
+		() => !userLoaded || !orgLoaded,
+		[userLoaded, orgLoaded],
+	);
+
+	// Return memoized result
+	return useMemo(
+		() => ({
+			user,
+			users,
+			loading,
+		}),
+		[user, users, loading],
+	);
 }

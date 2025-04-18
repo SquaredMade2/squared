@@ -1,3 +1,5 @@
+import { useError } from "@/context/ErrorContext";
+import { useLoading } from "@/context/LoadingContext";
 import { client } from "@/lib/client";
 import { useTaskStore, useViewStore } from "@/store";
 import { parseError } from "@/utils/parseError";
@@ -31,6 +33,10 @@ export function useTaskDashboard() {
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupRowsBy } = displayOptions;
 
+	// Use the global loading and error contexts if available
+	const { startLoading, stopLoading } = useLoading();
+	const { setError, clearError } = useError();
+
 	const params = useParams();
 	// Memoize parsed identifier to prevent unnecessary parsing
 	const teamIdentifier = useMemo(
@@ -49,12 +55,31 @@ export function useTaskDashboard() {
 		queryKey: ["task", "getAllTasks", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
-			const res = await client.task.getAllTasks.$get({
-				teamId: team.id,
-			});
-			const teamTasks = await res.json();
-			setTasks(teamTasks);
-			return teamTasks;
+
+			const loadingKey = `tasks-${team.id}`;
+			startLoading(loadingKey);
+			clearError(loadingKey);
+
+			try {
+				const res = await client.task.getAllTasks.$get({
+					teamId: team.id,
+				});
+				const teamTasks = await res.json();
+
+				// Only update state if the data has changed
+				const tasksChanged =
+					JSON.stringify(tasks) !== JSON.stringify(teamTasks);
+				if (tasksChanged) {
+					setTasks(teamTasks);
+				}
+
+				return teamTasks;
+			} catch (error) {
+				setError(loadingKey, error as Error);
+				throw error;
+			} finally {
+				stopLoading(loadingKey);
+			}
 		},
 		// Add staleTime to prevent frequent refetches
 		staleTime: 5 * 60 * 1000, // 5 minutes
@@ -65,12 +90,23 @@ export function useTaskDashboard() {
 		queryKey: ["task", "allBlockedTasksIds", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
-			const res = await client.task.getAllBlockedTaskIds.$get({
-				teamId: team.id,
-			});
-			const allIds = await res.json();
-			setAllBlockedTaskIds(allIds);
-			return allIds;
+
+			const loadingKey = `blockedTasks-${team.id}`;
+			startLoading(loadingKey);
+
+			try {
+				const res = await client.task.getAllBlockedTaskIds.$get({
+					teamId: team.id,
+				});
+				const allIds = await res.json();
+				setAllBlockedTaskIds(allIds);
+				return allIds;
+			} catch (error) {
+				setError(loadingKey, error as Error);
+				throw error;
+			} finally {
+				stopLoading(loadingKey);
+			}
 		},
 		// Add staleTime to prevent frequent refetches
 		staleTime: 5 * 60 * 1000, // 5 minutes
@@ -82,16 +118,30 @@ export function useTaskDashboard() {
 			taskId,
 			status,
 		}: { taskId: string; status: Status }) => {
-			const res = await client.task.updateStatus.$post({
-				taskId,
-				status,
-			});
-			const updatedTask = await res.json();
-			updateTask(updatedTask);
-			return updatedTask;
+			const loadingKey = `updateTask-${taskId}`;
+			startLoading(loadingKey);
+			clearError(loadingKey);
+
+			try {
+				const res = await client.task.updateStatus.$post({
+					taskId,
+					status,
+				});
+				const updatedTask = await res.json();
+				updateTask(updatedTask);
+				return updatedTask;
+			} catch (error) {
+				setError(loadingKey, error as Error);
+				throw error;
+			} finally {
+				stopLoading(loadingKey);
+			}
 		},
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ["task", team?.id] });
+			await queryClient.invalidateQueries({
+				queryKey: ["task", team?.id],
+				exact: true, // Only invalidate exact match
+			});
 		},
 	});
 
@@ -146,12 +196,8 @@ export function useTaskDashboard() {
 				taskId: draggedTask.id,
 				status: targetStatus,
 			});
-
-			await queryClient.invalidateQueries({
-				queryKey: ["task", team?.id],
-			});
 		},
-		[tasks, team, groupRowsBy, updateTaskMutation, queryClient, setTasks],
+		[tasks, team, groupRowsBy, updateTaskMutation, setTasks],
 	);
 
 	// Memoize computed values

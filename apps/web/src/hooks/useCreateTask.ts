@@ -1,3 +1,5 @@
+import { useError } from "@/context/ErrorContext";
+import { useLoading } from "@/context/LoadingContext";
 import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, Priority, Status } from "@squaredmade/db";
@@ -22,21 +24,36 @@ export const useCreateTask = () => {
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const queryClient = useQueryClient();
 
+	// Use the global loading and error contexts
+	const { startLoading, stopLoading } = useLoading();
+	const { setError, clearError } = useError();
+
 	const createTaskMutation = useMutation({
 		mutationFn: async (input: CreateTaskInput) => {
-			const res = await client.task.createTask.$post({
-				title: input.title,
-				description: input.description,
-				status: input.status,
-				priority: input.priority,
-				labels: input.labels,
-				dueDate: input.dueDate,
-				effortEstimate: input.effortEstimate,
-				teamId: input.teamId,
-				workspaceId: input.workspaceId,
-				sprintId: input.sprintId,
-			});
-			return await res.json();
+			const loadingKey = `createTask-${input.teamId}`;
+			startLoading(loadingKey);
+			clearError(loadingKey);
+
+			try {
+				const res = await client.task.createTask.$post({
+					title: input.title,
+					description: input.description,
+					status: input.status,
+					priority: input.priority,
+					labels: input.labels,
+					dueDate: input.dueDate,
+					effortEstimate: input.effortEstimate,
+					teamId: input.teamId,
+					workspaceId: input.workspaceId,
+					sprintId: input.sprintId,
+				});
+				return await res.json();
+			} catch (error) {
+				setError(loadingKey, error as Error);
+				throw error;
+			} finally {
+				stopLoading(loadingKey);
+			}
 		},
 		onSuccess: (newTask) => {
 			// Add the new task to the store
