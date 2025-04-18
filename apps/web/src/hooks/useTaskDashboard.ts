@@ -6,35 +6,39 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskDashboard() {
-	const {
-		loading: teamLoading,
-		team,
-		authorized,
-		error: teamError,
-	} = useTeams();
-	const {
-		loading: workspaceLoading,
-		workspace,
-		error: workspaceError,
-	} = useWorkspaces();
+	const params = useParams();
+	const teamIdentifier = parseParams(params.identifier) ?? "";
+
+	const queryClient = useQueryClient();
 	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
 		(state) => state,
 	);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupRowsBy } = displayOptions;
 
-	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier) ?? "";
-
-	const queryClient = useQueryClient();
+	// Get team and workspace data
+	const {
+		team,
+		authorized,
+		loading: teamLoading,
+		error: teamError,
+	} = useTeams();
 
 	const {
+		workspace,
+		loading: workspaceLoading,
+		error: workspaceError,
+	} = useWorkspaces();
+
+	// Fetch tasks with optimized loading conditions
+	const {
 		data: fetchedTasks,
-		isLoading,
+		isLoading: tasksLoading,
 		error: tasksError,
 	} = useQuery<Task[], Error>({
 		queryKey: ["task", "getAllTasks", team?.id],
@@ -43,27 +47,41 @@ export function useTaskDashboard() {
 			const res = await client.task.getAllTasks.$get({
 				teamId: team.id,
 			});
-			const teamTasks = await res.json();
-			setTasks(teamTasks);
-			return teamTasks;
+			return res.json();
 		},
-		enabled: !!team && !teamLoading && !workspaceLoading,
+		enabled: !!team?.id,
+		staleTime: 1 * 60 * 1000, // Consider data fresh for 1 minute
 	});
 
-	const allBlockedTaskIdsQuery = useQuery({
+	// Update task store when fetchedTasks changes
+	useEffect(() => {
+		if (fetchedTasks) {
+			setTasks(fetchedTasks);
+		}
+	}, [fetchedTasks, setTasks]);
+
+	// Fetch blocked task IDs in parallel
+	const { data: blockedTaskIds, isLoading: blockedTasksLoading } = useQuery({
 		queryKey: ["task", "allBlockedTasksIds", team?.id],
 		queryFn: async () => {
 			if (!team) throw new Error("Team not found");
 			const res = await client.task.getAllBlockedTaskIds.$get({
 				teamId: team.id,
 			});
-			const allIds = await res.json();
-			setAllBlockedTaskIds(allIds);
-			return allIds;
+			return res.json();
 		},
 		enabled: !!team?.id,
+		staleTime: 2 * 60 * 1000, // Consider blocked tasks data fresh for 2 minutes
 	});
 
+	// Update blocked tasks in store
+	useEffect(() => {
+		if (blockedTaskIds) {
+			setAllBlockedTaskIds(blockedTaskIds);
+		}
+	}, [blockedTaskIds, setAllBlockedTaskIds]);
+
+	// Task update mutation
 	const updateTaskMutation = useMutation({
 		mutationFn: async ({
 			taskId,
@@ -73,15 +91,17 @@ export function useTaskDashboard() {
 				taskId,
 				status,
 			});
-			const updatedTask = await res.json();
-			updateTask(updatedTask);
-			return updatedTask;
+			return res.json();
 		},
-		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ["task", team?.id] });
+		onSuccess: (updatedTask) => {
+			// Optimistic update
+			updateTask(updatedTask);
+			// Then invalidate to ensure consistency
+			queryClient.invalidateQueries({ queryKey: ["task", team?.id] });
 		},
 	});
 
+	// Drag and drop handler with optimizations
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
 		source,
@@ -98,17 +118,32 @@ export function useTaskDashboard() {
 			draggedTask.parentId &&
 			team
 		) {
-			const items = tasks.filter(
+			// Optimistic update for better UX
+			const currentTasks = [...tasks];
+			const subtasks = currentTasks.filter(
 				(task) => task.parentId === draggedTask.parentId,
 			);
-			const [reorderedItem] = items.splice(source.index, 1);
-			items.splice(destination.index, 0, reorderedItem);
+			const [reorderedItem] = subtasks.splice(source.index, 1);
+			subtasks.splice(destination.index, 0, reorderedItem);
+
+			// Create updated tasks array with the reordered subtasks
+			const updatedTasks = currentTasks.map((task) =>
+				task.parentId === draggedTask.parentId
+					? subtasks.find((s) => s.id === task.id) || task
+					: task,
+			);
+
+			// Update local state immediately for better UX
+			setTasks(updatedTasks);
+
+			// Then perform the server update
 			const teamTasks = await client.task.updateSubtaskOrder
 				.$post({
 					parentId: draggedTask.parentId,
-					newOrder: items.map((item) => item.id),
+					newOrder: subtasks.map((item) => item.id),
 				})
 				.then((res) => res.json());
+
 			setTasks(teamTasks);
 			return;
 		}
@@ -126,29 +161,32 @@ export function useTaskDashboard() {
 			targetStatus = destination.droppableId as Status;
 		}
 
-		// Update the task status
+		// Optimistic update for immediate UI feedback
+		const updatedTasks = tasks.map((task) =>
+			task.id === draggedTask.id ? { ...task, status: targetStatus } : task,
+		);
+		setTasks(updatedTasks);
+
+		// Then perform the actual update
 		updateTaskMutation.mutate({
 			taskId: draggedTask.id,
 			status: targetStatus,
 		});
-
-		await queryClient.invalidateQueries({
-			queryKey: ["task", team?.id],
-		});
 	};
 
-	const loading =
-		teamLoading ||
-		workspaceLoading ||
-		allBlockedTaskIdsQuery.isLoading ||
-		isLoading;
-	const error =
-		teamError ||
-		workspaceError ||
-		allBlockedTaskIdsQuery.error ||
-		parseError(tasksError);
+	// Split loading states for more granular UI updates
+	const initialDataLoading = teamLoading || workspaceLoading;
+	const tasksDataLoading = tasksLoading;
+	const backgroundDataLoading = blockedTasksLoading;
+
+	// Combine loading states for main return value, but prioritize tasks
+	const loading = initialDataLoading || tasksDataLoading;
+
+	// Combine errors
+	const error = teamError || workspaceError || parseError(tasksError);
 
 	return {
+		// Primary states
 		loading,
 		authorized,
 		workspace,
@@ -156,5 +194,14 @@ export function useTaskDashboard() {
 		handleDragEnd,
 		tasks: fetchedTasks || tasks,
 		error: error || null,
+
+		// Additional loading states for more granular UI control
+		initialDataLoading,
+		tasksDataLoading,
+		backgroundDataLoading,
+
+		// Included for completeness
+		blockedTaskIds,
+		team,
 	};
 }

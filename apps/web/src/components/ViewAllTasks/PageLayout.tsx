@@ -8,7 +8,7 @@ import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squaredmade/db";
 import { Clipboard } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
 import { NoTasksNewTaskButton } from "../Modals";
 
@@ -38,7 +38,15 @@ export function TaskPageLayout({
 
 	const isRowGroupingActive = groupRowsBy !== "None";
 
-	if (loading) {
+	useEffect(() => {
+		console.log("TaskPageLayout props updated:", {
+			loading,
+			authorized,
+			tasks: tasks.length,
+		});
+	}, [loading, authorized, tasks.length]);
+
+	if (loading && tasks.length === 0) {
 		return (
 			<div className="flex h-full w-full items-center justify-center">
 				<SquaredLoader />
