@@ -29,7 +29,7 @@ importers:
         version: 9.1.7
       knip:
         specifier: ^5.29.1
-        version: 5.50.3(@types/node@22.14.1)(typescript@5.8.2)
+        version: 5.50.4(@types/node@22.14.1)(typescript@5.8.2)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -6542,8 +6542,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@5.50.3:
-    resolution: {integrity: sha512-0A4G7UPucGTCpNh5vHSfL0+tVQIuKfJKdg8sAq6EC3COKbAchEbM+TeN4w32OrnJW9CesHs71lqftlggMVfW2A==}
+  knip@5.50.4:
+    resolution: {integrity: sha512-In+GjPpd2P3IDZnBBP4QF27vhQOhuBkICiuN9j+DMOf/m/qAFLGcbvuAGxco8IDvf26pvBnfeSmm1f6iNCkgOA==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -15772,7 +15772,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@5.50.3(@types/node@22.14.1)(typescript@5.8.2):
+  knip@5.50.4(@types/node@22.14.1)(typescript@5.8.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 22.14.1
