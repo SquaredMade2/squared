@@ -5,6 +5,7 @@ import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 export function useTeams() {
 	const { organization, isLoaded } = useOrganization();
@@ -16,6 +17,7 @@ export function useTeams() {
 		parseParams(params.identifier) ||
 		parseParams(params.taskIdentifier)?.split("-")[0];
 
+	// Query for authorization check
 	const { data: authorized = true, isLoading: authLoading } = useQuery({
 		queryKey: ["team", "teamAuthorization", teamIdentifier],
 		queryFn: async () => {
@@ -29,42 +31,78 @@ export function useTeams() {
 			return authorized;
 		},
 		enabled: !!teamIdentifier && isLoaded,
+		staleTime: 5 * 60 * 1000, // Consider authorization valid for 5 minutes
 	});
 
+	// Query for teams - separated from users fetch
 	const {
 		data: teamsData,
 		isLoading: teamsLoading,
 		error,
 	} = useQuery({
-		queryKey: ["team", organization?.id, teamIdentifier],
+		queryKey: ["teams", organization?.id],
 		queryFn: async () => {
-			if (!organization) return { teams: [], team: null };
+			if (!organization) return [];
 			const res = await client.team.getUserTeams.$get({
 				workspaceId: organization.id,
 			});
-			const allTeams = await res.json();
-			setTeams(allTeams);
-			const currentTeam = allTeams.find((t) => t.identifier === teamIdentifier);
-			if (currentTeam) {
-				setTeam(currentTeam);
-				const users = await client.user.getTeamUsers
-					.$get({
-						teamId: currentTeam.id,
-					})
-					.then((res) => res.json());
-				setUsers(users);
-			}
-			return { teams: allTeams, team: currentTeam || null };
+			return res.json();
 		},
-		enabled:
-			authorized && !!organization && team?.identifier !== teamIdentifier,
+		enabled: authorized && !!organization,
+		staleTime: 2 * 60 * 1000, // Consider teams data fresh for 2 minutes
 	});
 
+	// Query for current team's users - only runs when needed
+	const { data: usersData, isLoading: usersLoading } = useQuery({
+		queryKey: ["teamUsers", teamIdentifier],
+		queryFn: async () => {
+			const currentTeam = teamsData?.find(
+				(t) => t.identifier === teamIdentifier,
+			);
+			if (!currentTeam) return [];
+
+			const res = await client.user.getTeamUsers.$get({
+				teamId: currentTeam.id,
+			});
+			return res.json();
+		},
+		enabled: !!teamsData && !!teamIdentifier && authorized,
+		staleTime: 2 * 60 * 1000,
+	});
+
+	// Update global state based on query results - outside of queryFn
+	useEffect(() => {
+		if (teamsData) {
+			setTeams(teamsData);
+		}
+	}, [teamsData, setTeams]);
+
+	useEffect(() => {
+		if (teamsData && teamIdentifier) {
+			const currentTeam = teamsData.find(
+				(t) => t.identifier === teamIdentifier,
+			);
+			if (currentTeam) {
+				setTeam(currentTeam);
+			}
+		}
+	}, [teamsData, teamIdentifier, setTeam]);
+
+	useEffect(() => {
+		if (usersData) {
+			setUsers(usersData);
+		}
+	}, [usersData, setUsers]);
+
+	// Determine current team from the data
+	const currentTeam =
+		teamsData?.find((t) => t.identifier === teamIdentifier) || team;
+
 	return {
-		loading: !isLoaded || authLoading || teamsLoading,
-		team: teamsData?.team || team,
+		loading: !isLoaded || authLoading || teamsLoading || usersLoading,
+		team: currentTeam,
 		authorized,
-		teams: teamsData?.teams || teams,
+		teams: teamsData || teams,
 		error: error ? parseError(error, "Failed to fetch teams") : null,
 	};
 }

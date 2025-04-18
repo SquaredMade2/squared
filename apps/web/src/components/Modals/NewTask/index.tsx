@@ -1,7 +1,6 @@
 "use client";
 
 import { useCreateTask } from "@/hooks/useCreateTask";
-import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
@@ -26,7 +25,6 @@ import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { Textarea } from "@squaredmade/ui/textarea";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -52,7 +50,7 @@ export const NewTaskModal = () => {
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
 	const { createTask, isLoading } = useCreateTask();
-	const { team, setTeams, setTeam } = useTeamStore((state) => state);
+	const { team } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
 
 	const {
@@ -120,22 +118,6 @@ export const NewTaskModal = () => {
 			},
 		});
 	};
-
-	useQuery({
-		queryKey: ["team", "getUserTeams", organization?.id],
-		queryFn: async () => {
-			if (!organization) return [];
-			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization.id,
-				})
-				.then((res) => res.json());
-			setTeams(teams);
-			setTeam(teams[0]);
-			return teams;
-		},
-		enabled: !team,
-	});
 
 	return (
 		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>

@@ -19,6 +19,7 @@ import {
 import { HTTPException } from "hono/http-exception";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function ClientLayoutWrapper({
 	children,
@@ -40,9 +41,14 @@ export default function ClientLayoutWrapper({
 							errorMessage = "An unknown error occurred.";
 						}
 						// toast notify user, log as an example
-						console.error(errorMessage);
+						toast.error(errorMessage);
 					},
 				}),
+				defaultOptions: {
+					queries: {
+						staleTime: 5 * 60 * 1000,
+					},
+				},
 			}),
 	);
 
