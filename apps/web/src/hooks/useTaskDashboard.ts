@@ -6,6 +6,7 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { useCallback, useMemo } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 
@@ -16,22 +17,30 @@ export function useTaskDashboard() {
 		authorized,
 		error: teamError,
 	} = useTeams();
+
 	const {
 		loading: workspaceLoading,
 		workspace,
 		error: workspaceError,
 	} = useWorkspaces();
+
 	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
 		(state) => state,
 	);
+
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupRowsBy } = displayOptions;
 
 	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier) ?? "";
+	// Memoize parsed identifier to prevent unnecessary parsing
+	const teamIdentifier = useMemo(
+		() => parseParams(params.identifier) ?? "",
+		[params.identifier],
+	);
 
 	const queryClient = useQueryClient();
 
+	// Optimize queries with staleTime and caching strategies
 	const {
 		data: fetchedTasks,
 		isLoading,
@@ -47,6 +56,8 @@ export function useTaskDashboard() {
 			setTasks(teamTasks);
 			return teamTasks;
 		},
+		// Add staleTime to prevent frequent refetches
+		staleTime: 5 * 60 * 1000, // 5 minutes
 		enabled: !!team && !teamLoading && !workspaceLoading,
 	});
 
@@ -61,6 +72,8 @@ export function useTaskDashboard() {
 			setAllBlockedTaskIds(allIds);
 			return allIds;
 		},
+		// Add staleTime to prevent frequent refetches
+		staleTime: 5 * 60 * 1000, // 5 minutes
 		enabled: !!team?.id,
 	});
 
@@ -82,79 +95,109 @@ export function useTaskDashboard() {
 		},
 	});
 
-	const handleDragEnd: OnDragEndResponder = async ({
-		destination,
-		source,
-		draggableId,
-	}) => {
-		if (!destination) return;
+	// Memoize the drag end handler
+	const handleDragEnd: OnDragEndResponder = useCallback(
+		async ({ destination, source, draggableId }) => {
+			if (!destination) return;
 
-		const draggedTask = tasks.find((task) => task.id === draggableId);
-		if (!draggedTask) return;
+			const draggedTask = tasks.find((task) => task.id === draggableId);
+			if (!draggedTask) return;
 
-		// If the dragged task is in the same droppableId and its a subtask, reorder the subtask
-		if (
-			destination.droppableId === source.droppableId &&
-			draggedTask.parentId &&
-			team
-		) {
-			const items = tasks.filter(
-				(task) => task.parentId === draggedTask.parentId,
-			);
-			const [reorderedItem] = items.splice(source.index, 1);
-			items.splice(destination.index, 0, reorderedItem);
-			const teamTasks = await client.task.updateSubtaskOrder
-				.$post({
-					parentId: draggedTask.parentId,
-					newOrder: items.map((item) => item.id),
-				})
-				.then((res) => res.json());
-			setTasks(teamTasks);
-			return;
-		}
+			// If the dragged task is in the same droppableId and its a subtask, reorder the subtask
+			if (
+				destination.droppableId === source.droppableId &&
+				draggedTask.parentId &&
+				team
+			) {
+				const items = tasks.filter(
+					(task) => task.parentId === draggedTask.parentId,
+				);
+				const [reorderedItem] = items.splice(source.index, 1);
+				items.splice(destination.index, 0, reorderedItem);
+				try {
+					const teamTasks = await client.task.updateSubtaskOrder
+						.$post({
+							parentId: draggedTask.parentId,
+							newOrder: items.map((item) => item.id),
+						})
+						.then((res) => res.json());
+					setTasks(teamTasks);
+				} catch (error) {
+					console.error("Failed to update subtask order:", error);
+				}
+				return;
+			}
 
-		// Handle row grouping - extract the status from composite droppableId
-		let targetStatus: Status;
+			// Handle row grouping - extract the status from composite droppableId
+			let targetStatus: Status;
 
-		// Check if row grouping is active and we have a composite droppableId
-		if (groupRowsBy !== "None" && destination.droppableId.includes("-")) {
-			// Extract just the status part (before the first dash)
-			const [statusPart] = destination.droppableId.split("-");
-			targetStatus = statusPart as Status;
-		} else {
-			// Normal case - the droppableId is directly the status
-			targetStatus = destination.droppableId as Status;
-		}
+			// Check if row grouping is active and we have a composite droppableId
+			if (groupRowsBy !== "None" && destination.droppableId.includes("-")) {
+				// Extract just the status part (before the first dash)
+				const [statusPart] = destination.droppableId.split("-");
+				targetStatus = statusPart as Status;
+			} else {
+				// Normal case - the droppableId is directly the status
+				targetStatus = destination.droppableId as Status;
+			}
 
-		// Update the task status
-		updateTaskMutation.mutate({
-			taskId: draggedTask.id,
-			status: targetStatus,
-		});
+			// Update the task status
+			updateTaskMutation.mutate({
+				taskId: draggedTask.id,
+				status: targetStatus,
+			});
 
-		await queryClient.invalidateQueries({
-			queryKey: ["task", team?.id],
-		});
-	};
+			await queryClient.invalidateQueries({
+				queryKey: ["task", team?.id],
+			});
+		},
+		[tasks, team, groupRowsBy, updateTaskMutation, queryClient, setTasks],
+	);
 
-	const loading =
-		teamLoading ||
-		workspaceLoading ||
-		allBlockedTaskIdsQuery.isLoading ||
-		isLoading;
-	const error =
-		teamError ||
-		workspaceError ||
-		allBlockedTaskIdsQuery.error ||
-		parseError(tasksError);
+	// Memoize computed values
+	const loading = useMemo(
+		() =>
+			teamLoading ||
+			workspaceLoading ||
+			allBlockedTaskIdsQuery.isLoading ||
+			isLoading,
+		[
+			teamLoading,
+			workspaceLoading,
+			allBlockedTaskIdsQuery.isLoading,
+			isLoading,
+		],
+	);
 
-	return {
-		loading,
-		authorized,
-		workspace,
-		teamIdentifier,
-		handleDragEnd,
-		tasks: fetchedTasks || tasks,
-		error: error || null,
-	};
+	const error = useMemo(
+		() =>
+			teamError ||
+			workspaceError ||
+			allBlockedTaskIdsQuery.error ||
+			parseError(tasksError),
+		[teamError, workspaceError, allBlockedTaskIdsQuery.error, tasksError],
+	);
+
+	// Return memoized result to prevent unnecessary rerenders
+	return useMemo(
+		() => ({
+			loading,
+			authorized,
+			workspace,
+			teamIdentifier,
+			handleDragEnd,
+			tasks: fetchedTasks || tasks,
+			error: error || null,
+		}),
+		[
+			loading,
+			authorized,
+			workspace,
+			teamIdentifier,
+			handleDragEnd,
+			fetchedTasks,
+			tasks,
+			error,
+		],
+	);
 }

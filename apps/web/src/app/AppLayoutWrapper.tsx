@@ -9,14 +9,12 @@ import {
 } from "@/components/Modals";
 import SearchCommand from "@/components/SearchCommand";
 import { Toaster } from "@/components/ui/sonner";
+import { ErrorProvider } from "@/context/ErrorContext";
+import { LoadingProvider } from "@/context/LoadingContext";
+import { queryClient } from "@/lib/queryClient";
 import { SquaredStoreProvider } from "@/store";
 import { ClerkProvider } from "@clerk/nextjs";
-import {
-	QueryCache,
-	QueryClient,
-	QueryClientProvider,
-} from "@tanstack/react-query";
-import { HTTPException } from "hono/http-exception";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -26,25 +24,6 @@ export default function ClientLayoutWrapper({
 	children: React.ReactNode;
 }) {
 	const [mounted, setMounted] = useState(false);
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				queryCache: new QueryCache({
-					onError: (err) => {
-						let errorMessage: string;
-						if (err instanceof HTTPException) {
-							errorMessage = err.message;
-						} else if (err instanceof Error) {
-							errorMessage = err.message;
-						} else {
-							errorMessage = "An unknown error occurred.";
-						}
-						// toast notify user, log as an example
-						console.error(errorMessage);
-					},
-				}),
-			}),
-	);
 
 	useEffect(() => {
 		setMounted(true);
@@ -69,7 +48,9 @@ export default function ClientLayoutWrapper({
 								<TaskSelector />
 								<InviteModal />
 								<NewTaskModal />
-								{children}
+								<ErrorProvider>
+									<LoadingProvider>{children}</LoadingProvider>
+								</ErrorProvider>
 							</>
 						)}
 					</NextThemesProvider>

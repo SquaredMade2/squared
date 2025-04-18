@@ -2,6 +2,7 @@ import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, Priority, Status } from "@squaredmade/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 
 type CreateTaskInput = {
 	title: string;
@@ -38,20 +39,41 @@ export const useCreateTask = () => {
 			return await res.json();
 		},
 		onSuccess: (newTask) => {
+			// Add the new task to the store
 			addTask(newTask);
+
+			// Update workspace tasks count
 			if (workspace) {
 				setWorkspace({
 					...workspace,
 					tasksCreated: workspace.tasksCreated + 1,
 				});
 			}
-			queryClient.invalidateQueries({ queryKey: ["task"] });
+
+			// Invalidate queries that depend on task data
+			queryClient.invalidateQueries({
+				queryKey: ["task"],
+				// Make this exact to avoid over-invalidation
+				exact: false,
+			});
 		},
 	});
 
-	return {
-		createTask: createTaskMutation.mutate,
-		isLoading: createTaskMutation.isPending,
-		error: createTaskMutation.error,
-	};
+	// Memoize the createTask callback
+	const createTask = useCallback(
+		(input: CreateTaskInput) => {
+			return createTaskMutation.mutate(input);
+		},
+		[createTaskMutation],
+	);
+
+	// Memoize the return values
+	return useMemo(
+		() => ({
+			createTask,
+			isLoading: createTaskMutation.isPending,
+			error: createTaskMutation.error,
+		}),
+		[createTask, createTaskMutation.isPending, createTaskMutation.error],
+	);
 };
