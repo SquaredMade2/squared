@@ -31,6 +31,6 @@
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.8.1",
 		"typescript": "^5.8.2",
-		"vitest": "^0.34.6"
+		"vitest": "^3.0.0"
 	}
 }
