@@ -18,6 +18,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
+		log.Printf("Raw webhook payload: %s", string(body))
 	}
 	if webhookEvent.Sender.NodeId == os.Getenv("GITHUB_BOT_ID") {
 		return
