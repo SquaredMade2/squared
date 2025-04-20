@@ -14,8 +14,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
 )
 
 var logLevelToPriority = map[LogLevel]syslog.Priority{
@@ -25,7 +23,6 @@ var logLevelToPriority = map[LogLevel]syslog.Priority{
 }
 
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.LoadEnv()
 	integrationSecret := os.Getenv("VERCEL_SIGNATURE")
 	if integrationSecret == "" {
 		log.Println("Missing integration secret")
@@ -71,10 +68,6 @@ func verifyHMAC(body []byte, providedSignature, secret string) bool {
 	h.Write(body)
 	expectedSignature := fmt.Sprintf("%x", h.Sum(nil))
 	return hmac.Equal([]byte(providedSignature), []byte(expectedSignature))
-}
-
-func isStaging(branch string) bool {
-	return !(branch == "main")
 }
 
 func handleLogs(w http.ResponseWriter, body []byte) {
