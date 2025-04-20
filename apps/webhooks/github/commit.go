@@ -15,6 +15,7 @@ func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
+		log.Printf("Raw webhook payload: %s", string(body))
 	}
 
 	commit := webhookEvent.HeadCommit
