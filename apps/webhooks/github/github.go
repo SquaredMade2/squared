@@ -121,15 +121,12 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Processing Github webhook event: %s", headers.XGitHubEvent)
-
 	switch headers.XGitHubEvent {
 	case "pull_request":
 		handlePullRequestEvent(body, githubService, w)
 	case "push":
 		handlePushCommitEvent(body, githubService, w)
 	default:
-		log.Printf("Unsupported event: %s", headers.XGitHubEvent)
 		http.Error(w, "Unsupported event", http.StatusBadRequest)
 		return
 	}

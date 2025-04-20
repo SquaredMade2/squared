@@ -137,7 +137,7 @@ const TopNavBarDisplay = () => {
 					</PopoverTrigger>
 					<PopoverContent>
 						<div className="flex flex-col gap-4">
-							<div className="mb-3 flex w-full items-center justify-between">
+							<div className="mb-3 flex w-full items-center justify-between gap-2">
 								<Button
 									onClick={() => handleValueChange("list")}
 									variant={view === "list" ? "secondary" : "outline"}

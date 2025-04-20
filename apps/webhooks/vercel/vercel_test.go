@@ -135,6 +135,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestHandleRequest(t *testing.T) {
+	os.Setenv("PAPERTRAIL_URL", "logsN.papertrailapp.com:12345")
 	tests := []struct {
 		name            string
 		method          string
@@ -186,6 +187,7 @@ func TestHandleRequest(t *testing.T) {
 }
 
 func TestHandleLogs(t *testing.T) {
+	os.Setenv("PAPERTRAIL_URL", "logsN.papertrailapp.com:12345")
 	tests := []struct {
 		name           string
 		body           string
@@ -226,6 +228,7 @@ func TestHandleLogs(t *testing.T) {
 }
 
 func TestFormatLog(t *testing.T) {
+	os.Setenv("PAPERTRAIL_URL", "logsN.papertrailapp.com:12345")
 	logsToTest := []struct {
 		name     string
 		logData  string
