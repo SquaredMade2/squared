@@ -1,29 +1,31 @@
 package github
 
+import "time"
+
 // A Github User
 type User struct {
-	Name              string `json:"name"`
-	Email             string `json:"email"`
-	Login             string `json:"login"`
-	Id                int    `json:"id"`
-	NodeId            string `json:"node_id"`
-	AvatarUrl         string `json:"avatar_url"`
-	GravatarId        string `json:"gravatar_id"`
-	Url               string `json:"url"`
-	HtmlUrl           string `json:"html_url"`
-	FollowersUrl      string `json:"followers_url"`
-	FollowingUrl      string `json:"following_url"`
-	GistsUrl          string `json:"gists_url"`
-	StarredUrl        string `json:"starred_url"`
-	SubscriptionsUrl  string `json:"subscriptions_url"`
-	OrganizationsUrl  string `json:"organizations_url"`
-	ReposUrl          string `json:"repos_url"`
-	EventsUrl         string `json:"events_url"`
-	ReceivedEventsUrl string `json:"received_events_url"`
-	Type              string `json:"type"`
-	SiteAdmin         bool   `json:"site_admin"`
-	StarredAt         string `json:"starred_at"`
-	UserViewType      string `json:"user_view_type"`
+	Name              string    `json:"name"`
+	Email             string    `json:"email"`
+	Login             string    `json:"login"`
+	Id                int       `json:"id"`
+	NodeId            string    `json:"node_id"`
+	AvatarUrl         string    `json:"avatar_url"`
+	GravatarId        string    `json:"gravatar_id"`
+	Url               string    `json:"url"`
+	HtmlUrl           string    `json:"html_url"`
+	FollowersUrl      string    `json:"followers_url"`
+	FollowingUrl      string    `json:"following_url"`
+	GistsUrl          string    `json:"gists_url"`
+	StarredUrl        string    `json:"starred_url"`
+	SubscriptionsUrl  string    `json:"subscriptions_url"`
+	OrganizationsUrl  string    `json:"organizations_url"`
+	ReposUrl          string    `json:"repos_url"`
+	EventsUrl         string    `json:"events_url"`
+	ReceivedEventsUrl string    `json:"received_events_url"`
+	Type              string    `json:"type"`
+	SiteAdmin         bool      `json:"site_admin"`
+	StarredAt         time.Time `json:"starred_at"`
+	UserViewType      string    `json:"user_view_type"`
 }
 
 type Label struct {
@@ -48,15 +50,15 @@ type Milestone struct {
 	// The state of the milestone. Can be "open" or "closed"
 	State string `json:"state"`
 	// The title of the milestone
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	Creator      User   `json:"creator"`
-	OpenIssues   int    `json:"open_issues"`
-	ClosedIssues int    `json:"closed_issues"`
-	CreatedAt    string `json:"created_at"`
-	UpdatedAt    string `json:"updated_at"`
-	ClosedAt     string `json:"closed_at"`
-	DueOn        string `json:"due_on"`
+	Title        string    `json:"title"`
+	Description  string    `json:"description"`
+	Creator      User      `json:"creator"`
+	OpenIssues   int       `json:"open_issues"`
+	ClosedIssues int       `json:"closed_issues"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	ClosedAt     time.Time `json:"closed_at"`
+	DueOn        time.Time `json:"due_on"`
 }
 
 type Team struct {
@@ -189,10 +191,10 @@ type Repo struct {
 	// Whether the repository is disabled.
 	Disabled bool `json:"disabled"`
 	// The repository visibility: public, private, or internal.
-	Visibility string `json:"visibility"`
-	PushedAt   string `json:"pushed_at"`
-	CreatedAt  int64  `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
+	Visibility string    `json:"visibility"`
+	PushedAt   time.Time `json:"pushed_at"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 	// Whether to allow rebase merges for pull requests.
 	AllowRebaseMerge bool   `json:"allow_rebase_merge"`
 	TempCloneToken   string `json:"temp_clone_token"`
@@ -241,11 +243,11 @@ type Repo struct {
 	// Whether to allow forking this repo
 	AllowForking bool `json:"allow_forking"`
 	// Whether to require contributors to sign off on web-based commits
-	WebCommitSignoffRequired bool   `json:"web_commit_signoff_required"`
-	OpenIssues               int    `json:"open_issues"`
-	Watchers                 int    `json:"watchers"`
-	MasterBranch             string `json:"master_branch"`
-	StarredAt                string `json:"starred_at"`
+	WebCommitSignoffRequired bool      `json:"web_commit_signoff_required"`
+	OpenIssues               int       `json:"open_issues"`
+	Watchers                 int       `json:"watchers"`
+	MasterBranch             string    `json:"master_branch"`
+	StarredAt                time.Time `json:"starred_at"`
 	// Whether anonymous git access is enabled for this repository
 	AnonymousAccessEnabled bool `json:"anonymous_access_enabled"`
 }
@@ -350,10 +352,10 @@ type PullRequest struct {
 	Labels             []Label   `json:"labels"`
 	Milestone          Milestone `json:"milestone"`
 	ActiveLockReason   string    `json:"active_lock_reason"`
-	CreatedAt          string    `json:"created_at"`
-	UpdatedAt          string    `json:"updated_at"`
-	ClosedAt           string    `json:"closed_at"`
-	MergedAt           string    `json:"merged_at"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+	ClosedAt           time.Time `json:"closed_at"`
+	MergedAt           time.Time `json:"merged_at"`
 	MergeCommitSha     string    `json:"merge_commit_sha"`
 	Assignee           User      `json:"assignee"`
 	Assignees          []User    `json:"assignees"`
