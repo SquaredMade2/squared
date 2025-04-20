@@ -303,8 +303,8 @@ type Commit struct {
 	// An array of files removed in the commit. A maximum of 3000 changed files will be reported per commit.
 	Removed []string `json:"removed"`
 	// The ISO 8601 timestamp of the commit.
-	Timestamp string `json:"timestamp"`
-	TreeId    string `json:"tree_id"`
+	Timestamp time.Time `json:"timestamp"`
+	TreeId    string    `json:"tree_id"`
 	// The URL to the commit API resource.
 	Url string `json:"url"`
 }
@@ -473,8 +473,8 @@ type WebhookPullRequest struct {
 
 // Metaproperties for Git author/committer information.
 type Pusher struct {
-	Date  string `json:"date"`
-	Email string `json:"email"`
+	Date  time.Time `json:"date"`
+	Email string    `json:"email"`
 	// The git author's name.
 	Name     string `json:"name"`
 	Username string `json:"username"`

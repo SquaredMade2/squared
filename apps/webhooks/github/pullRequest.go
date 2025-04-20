@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
 	"github.com/google/go-github/v69/github"
@@ -66,7 +67,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
 		Url:       pullRequest.HTMLUrl,
-		Timestamp: pullRequest.CreatedAt,
+		Timestamp: pullRequest.CreatedAt.Format(time.RFC3339),
 	}
 
 	tasks, err := githubService.UpsertPullRequest(context.TODO(), request)
