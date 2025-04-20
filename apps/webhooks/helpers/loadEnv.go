@@ -10,6 +10,12 @@ import (
 )
 
 func LoadEnv() {
+	// Check if SERVER_URL is already set, indicating environment is already configured
+	if os.Getenv("PORT") != "" {
+		log.Println("Environment already configured, skipping .env file loading")
+		return
+	}
+
 	// Start from the current working directory
 	dir, err := os.Getwd()
 	if err != nil {

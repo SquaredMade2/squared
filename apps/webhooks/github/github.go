@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
-	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
 )
 
 // LogLevel controls how verbose the logging is
@@ -31,8 +30,6 @@ func SetLogLevel(level LogLevel) {
 }
 
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.LoadEnv()
-
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
 	if webhookSecret == "" {
 		log.Println("WEBHOOK_SECRET is not set")
@@ -124,15 +121,12 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Processing Github webhook event: %s", headers.XGitHubEvent)
-
 	switch headers.XGitHubEvent {
 	case "pull_request":
 		handlePullRequestEvent(body, githubService, w)
 	case "push":
 		handlePushCommitEvent(body, githubService, w)
 	default:
-		log.Printf("Unsupported event: %s", headers.XGitHubEvent)
 		http.Error(w, "Unsupported event", http.StatusBadRequest)
 		return
 	}
