@@ -331,7 +331,7 @@ export class SprintService implements SprintRpc {
 		const lastSprint = teamSprints[0];
 		const newSprintNumber =
 			(lastSprint ? Number.parseInt(lastSprint.name.split(" ")[1]) : 0) + 1;
-		const startDate = lastSprint ? new Date(lastSprint.endDate) : new Date();
+		const startDate = new Date();
 		const endDate = new Date(startDate);
 		endDate.setDate(endDate.getDate() + team.sprintDuration * 7);
 
