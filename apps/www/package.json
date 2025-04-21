@@ -16,7 +16,7 @@
 		"@prismicio/react": "^3.0.0",
 		"@squaredmade/fonts": "^1.0.4",
 		"@squaredmade/icons": "1.0.3",
-		"@squaredmade/ui": "2.0.2",
+		"@squaredmade/ui": "3.0.0",
 		"@tabler/icons-react": "^3.5.0",
 		"@tailwindcss/typography": "^0.5.13",
 		"class-variance-authority": "^0.7.0",

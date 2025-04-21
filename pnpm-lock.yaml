@@ -179,8 +179,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@squaredmade/ui':
-        specifier: 2.0.2
-        version: 2.0.2(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)
+        specifier: 3.0.0
+        version: 3.0.0(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)
       '@tanstack/react-query':
         specifier: ^5.62.7
         version: 5.71.0(react@19.1.0)
@@ -329,8 +329,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/ui':
-        specifier: 2.0.2
-        version: 2.0.2(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)
+        specifier: 3.0.0
+        version: 3.0.0(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)
       '@tabler/icons-react':
         specifier: ^3.5.0
         version: 3.31.0(react@19.1.0)
@@ -2964,8 +2964,8 @@ packages:
   '@squaredmade/typescript-config@1.0.0':
     resolution: {integrity: sha512-+cYRcw/uvVL+qFMb9wBgK23NpEwsmR4QbjohtCvc6aebooNIi4iwauyRS/S/TkFHBcA3IAVw5F85xea3pNZ65A==}
 
-  '@squaredmade/ui@2.0.2':
-    resolution: {integrity: sha512-vuCkpg2IfoAhmqcMjpTrMHfMwW5iQP+ci6PwnkoHiDtroDfFuK+I9G6zJhg7MatSzukBNkh1RPi8TgvJm6q1oQ==}
+  '@squaredmade/ui@3.0.0':
+    resolution: {integrity: sha512-q8/nFzPM2y4Y4hiCxQjHgl3hgdqhhEklaEdSRXs+Df2Yuv7+pzhDrSfC1Xy4sJEg42b08CLPdZJ1CHi0JQdsdQ==}
     hasBin: true
     peerDependencies:
       '@tailwindcss/postcss': ^4
@@ -11532,7 +11532,7 @@ snapshots:
 
   '@squaredmade/typescript-config@1.0.0': {}
 
-  '@squaredmade/ui@2.0.2(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)':
+  '@squaredmade/ui@3.0.0(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)':
     dependencies:
       '@floating-ui/react-dom': 2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/icons': 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -11555,7 +11555,7 @@ snapshots:
       - '@types/node'
       - '@types/react'
 
-  '@squaredmade/ui@2.0.2(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)':
+  '@squaredmade/ui@3.0.0(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)':
     dependencies:
       '@floating-ui/react-dom': 2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/icons': 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
