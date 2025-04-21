@@ -1,5 +1,11 @@
 # @squaredmade/ui
 
+## 3.0.1
+
+### Patch Changes
+
+- Fix Exports in package.json
+
 ## 3.0.0
 
 ### Major Changes
