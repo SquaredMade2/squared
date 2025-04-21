@@ -67,7 +67,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
 		Url:       pullRequest.HTMLUrl,
-		Timestamp: pullRequest.CreatedAt.Format(time.RFC3339),
+		Timestamp: time.Time(pullRequest.CreatedAt).Format(time.RFC3339),
 	}
 
 	tasks, err := githubService.UpsertPullRequest(context.TODO(), request)
