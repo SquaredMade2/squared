@@ -89,6 +89,10 @@ export const formatStatus = (status: Status) => {
 			return "Done";
 		case Status.canceled:
 			return "Canceled";
+		case Status.duplicated:
+			return "Duplicated";
+		case Status.archived:
+			return "Archived";
 		default:
 			return "Backlog";
 	}
