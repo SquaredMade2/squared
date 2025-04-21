@@ -192,9 +192,9 @@ type Repo struct {
 	Disabled bool `json:"disabled"`
 	// The repository visibility: public, private, or internal.
 	Visibility string    `json:"visibility"`
-	PushedAt   time.Time `json:"pushed_at"`
+	PushedAt   int64 `json:"pushed_at"`
 	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	UpdatedAt  int64 `json:"updated_at"`
 	// Whether to allow rebase merges for pull requests.
 	AllowRebaseMerge bool   `json:"allow_rebase_merge"`
 	TempCloneToken   string `json:"temp_clone_token"`
