@@ -1,5 +1,11 @@
 # @squaredmade/builder
 
+## 1.0.2
+
+### Patch Changes
+
+- 2f56953: Fix Scope Of Package Files
+
 ## 1.0.1
 
 ### Patch Changes

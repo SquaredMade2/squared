@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/ui",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "A design system with individually importable components",
 	"publishConfig": {
 		"access": "public"
