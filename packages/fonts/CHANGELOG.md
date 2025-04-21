@@ -1,5 +1,11 @@
 # @squaredmade/fonts
 
+## 1.0.6
+
+### Patch Changes
+
+- 2f56953: Fix Scope Of Package Files
+
 ## 1.0.5
 
 ### Patch Changes
