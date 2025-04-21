@@ -19,6 +19,7 @@
 			"default": "./dist/index.js"
 		}
 	},
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"scripts": {
 		"build": "ts-node ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules",

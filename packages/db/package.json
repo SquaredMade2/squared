@@ -16,6 +16,7 @@
 			}
 		}
 	},
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"scripts": {
 		"build": "node build.mjs",
 		"db:backup:staging": "dotenv -e .env -- sh -c './src/backup/index.sh $STAGING_READONLY_STRING squared-staging-backup us-east-1'",

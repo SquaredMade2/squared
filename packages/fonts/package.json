@@ -12,7 +12,7 @@
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": ["dist", "src/fonts", "tailwind-plugin.js"],
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"scripts": {
 		"build": "node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules",
