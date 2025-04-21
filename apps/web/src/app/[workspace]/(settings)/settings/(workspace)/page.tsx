@@ -273,12 +273,13 @@ export default function WorkspaceSettings() {
 											</>
 										) : (
 											<div className="rounded-md border border-input px-3 py-2">
-												{" "}
-												https://app.squaredmade.com/
-												{workspace?.url.replace(
-													"https://app.squaredmade.com/",
-													"",
-												)}
+												<p>
+													https://app.squaredmade.com/
+													{workspace?.url.replace(
+														"https://app.squaredmade.com/",
+														"",
+													)}
+												</p>
 											</div>
 										)}
 									</div>
@@ -329,12 +330,14 @@ export default function WorkspaceSettings() {
 											</>
 										) : (
 											<>
-												<label>Workspace View</label>
+												<p className="m-0">Workspace View</p>
 												<div className="w-[180px] rounded-md border border-input px-3 py-2">
-													{defaultSelect?.replace(/^./, (char) =>
-														char.toUpperCase(),
-													)}{" "}
-													Tasks
+													<p>
+														{defaultSelect?.replace(/^./, (char) =>
+															char.toUpperCase(),
+														)}{" "}
+														Tasks
+													</p>
 												</div>
 											</>
 										)}
