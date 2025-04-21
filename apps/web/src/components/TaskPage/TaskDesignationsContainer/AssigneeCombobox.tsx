@@ -7,6 +7,7 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
+	CommandPinnedItem,
 } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUsers } from "@/hooks/useUsers";
@@ -112,7 +113,7 @@ const AssigneeCombobox = () => {
 						<ScrollArea className="h-80 pr-2">
 							<CommandEmpty>No user found.</CommandEmpty>
 							<CommandGroup>
-								<CommandItem onSelect={() => handleSelectAssignee(null)}>
+								<CommandPinnedItem onSelect={() => handleSelectAssignee(null)}>
 									<UserSearch className="mx-1 size-4" />
 									<span className="ml-2 w-2/3 truncate">Unassigned</span>
 									<Check
@@ -121,7 +122,7 @@ const AssigneeCombobox = () => {
 											!currentTask.assigneeId ? "opacity-100" : "opacity-0",
 										)}
 									/>
-								</CommandItem>
+								</CommandPinnedItem>
 								{users
 									?.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
