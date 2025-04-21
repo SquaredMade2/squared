@@ -14,6 +14,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
 )
 
 // MockRPCServer implements a mock server for GitHub RPC calls
@@ -161,6 +163,7 @@ func TestVerifySignature256(t *testing.T) {
 
 func TestWebhookHandler_PullRequest(t *testing.T) {
 	// Load sample pull request payload from file
+	helpers.LoadEnv()
 	pullRequestPayload, err := os.ReadFile("../testdata/pull_request_payload.json")
 	if err != nil {
 		// Use a minimal payload if file not available

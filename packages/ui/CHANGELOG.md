@@ -1,5 +1,15 @@
 # @squaredmade/ui
 
+## 3.0.0
+
+### Major Changes
+
+- e656f66: Upgrade Toast Component to use more sonner-like syntax
+
+### Patch Changes
+
+- c18dac7: Fix on documentation and typings for form component
+
 ## 2.0.2
 
 ### Patch Changes

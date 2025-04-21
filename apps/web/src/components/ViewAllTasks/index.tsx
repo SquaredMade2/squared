@@ -72,7 +72,10 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	// Apply search filtering to tasks and rowGroups if present
 	groupedColumns = groupedColumns
 		.map((column) => {
-			const filteredTasks = filterSearchTasks(column.tasks);
+			let filteredTasks = filterSearchTasks(column.tasks);
+			if (!displayOptions.showSubTasks) {
+				filteredTasks = filteredTasks.filter((task) => !task.parentId);
+			}
 
 			// If we have row groups, filter those as well
 			if (column.rowGroups) {
@@ -97,7 +100,11 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 				showTasks: getColumnVisibility(column.group),
 			};
 		})
-		.filter((column) => column.tasks.length > 0);
+		.filter((column) => {
+			return displayOptions.viewOptions[`${view}Options`].showEmptyGroups
+				? true
+				: column.tasks.length > 0;
+		});
 
 	return (
 		<>

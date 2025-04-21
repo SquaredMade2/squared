@@ -37,7 +37,7 @@ const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 					Add Item
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Add New Item</DialogTitle>
 				</DialogHeader>

@@ -1,29 +1,70 @@
 package github
 
+import (
+	"encoding/json"
+	"fmt"
+	"time"
+)
+
+// GithubTime handles both RFC3339 string format and Unix timestamp formats
+type GithubTime time.Time
+
+// UnmarshalJSON implements the json.Unmarshaler interface
+func (ct *GithubTime) UnmarshalJSON(data []byte) error {
+	// Try parsing as string (RFC3339)
+	var timeStr string
+	if err := json.Unmarshal(data, &timeStr); err == nil {
+		t, err := time.Parse(time.RFC3339, timeStr)
+		if err == nil {
+			*ct = GithubTime(t)
+			return nil
+		}
+	}
+
+	// Try parsing as int64 (Unix timestamp)
+	var timestamp int64
+	if err := json.Unmarshal(data, &timestamp); err == nil {
+		*ct = GithubTime(time.Unix(timestamp, 0))
+		return nil
+	}
+
+	return fmt.Errorf("time format not recognized")
+}
+
+// MarshalJSON implements the json.Marshaler interface
+func (ct GithubTime) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(ct).Format(time.RFC3339))
+}
+
+// Time returns the time.Time representation
+func (ct GithubTime) Time() time.Time {
+	return time.Time(ct)
+}
+
 // A Github User
 type User struct {
-	Name              string `json:"name"`
-	Email             string `json:"email"`
-	Login             string `json:"login"`
-	Id                int    `json:"id"`
-	NodeId            string `json:"node_id"`
-	AvatarUrl         string `json:"avatar_url"`
-	GravatarId        string `json:"gravatar_id"`
-	Url               string `json:"url"`
-	HtmlUrl           string `json:"html_url"`
-	FollowersUrl      string `json:"followers_url"`
-	FollowingUrl      string `json:"following_url"`
-	GistsUrl          string `json:"gists_url"`
-	StarredUrl        string `json:"starred_url"`
-	SubscriptionsUrl  string `json:"subscriptions_url"`
-	OrganizationsUrl  string `json:"organizations_url"`
-	ReposUrl          string `json:"repos_url"`
-	EventsUrl         string `json:"events_url"`
-	ReceivedEventsUrl string `json:"received_events_url"`
-	Type              string `json:"type"`
-	SiteAdmin         bool   `json:"site_admin"`
-	StarredAt         string `json:"starred_at"`
-	UserViewType      string `json:"user_view_type"`
+	Name              string     `json:"name"`
+	Email             string     `json:"email"`
+	Login             string     `json:"login"`
+	Id                int        `json:"id"`
+	NodeId            string     `json:"node_id"`
+	AvatarUrl         string     `json:"avatar_url"`
+	GravatarId        string     `json:"gravatar_id"`
+	Url               string     `json:"url"`
+	HtmlUrl           string     `json:"html_url"`
+	FollowersUrl      string     `json:"followers_url"`
+	FollowingUrl      string     `json:"following_url"`
+	GistsUrl          string     `json:"gists_url"`
+	StarredUrl        string     `json:"starred_url"`
+	SubscriptionsUrl  string     `json:"subscriptions_url"`
+	OrganizationsUrl  string     `json:"organizations_url"`
+	ReposUrl          string     `json:"repos_url"`
+	EventsUrl         string     `json:"events_url"`
+	ReceivedEventsUrl string     `json:"received_events_url"`
+	Type              string     `json:"type"`
+	SiteAdmin         bool       `json:"site_admin"`
+	StarredAt         GithubTime `json:"starred_at"`
+	UserViewType      string     `json:"user_view_type"`
 }
 
 type Label struct {
@@ -48,15 +89,15 @@ type Milestone struct {
 	// The state of the milestone. Can be "open" or "closed"
 	State string `json:"state"`
 	// The title of the milestone
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	Creator      User   `json:"creator"`
-	OpenIssues   int    `json:"open_issues"`
-	ClosedIssues int    `json:"closed_issues"`
-	CreatedAt    string `json:"created_at"`
-	UpdatedAt    string `json:"updated_at"`
-	ClosedAt     string `json:"closed_at"`
-	DueOn        string `json:"due_on"`
+	Title        string     `json:"title"`
+	Description  string     `json:"description"`
+	Creator      User       `json:"creator"`
+	OpenIssues   int        `json:"open_issues"`
+	ClosedIssues int        `json:"closed_issues"`
+	CreatedAt    GithubTime `json:"created_at"`
+	UpdatedAt    GithubTime `json:"updated_at"`
+	ClosedAt     GithubTime `json:"closed_at"`
+	DueOn        GithubTime `json:"due_on"`
 }
 
 type Team struct {
@@ -189,10 +230,10 @@ type Repo struct {
 	// Whether the repository is disabled.
 	Disabled bool `json:"disabled"`
 	// The repository visibility: public, private, or internal.
-	Visibility string `json:"visibility"`
-	PushedAt   string `json:"pushed_at"`
-	CreatedAt  int64  `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
+	Visibility string     `json:"visibility"`
+	PushedAt   GithubTime `json:"pushed_at"`
+	CreatedAt  GithubTime `json:"created_at"`
+	UpdatedAt  GithubTime `json:"updated_at"`
 	// Whether to allow rebase merges for pull requests.
 	AllowRebaseMerge bool   `json:"allow_rebase_merge"`
 	TempCloneToken   string `json:"temp_clone_token"`
@@ -241,11 +282,11 @@ type Repo struct {
 	// Whether to allow forking this repo
 	AllowForking bool `json:"allow_forking"`
 	// Whether to require contributors to sign off on web-based commits
-	WebCommitSignoffRequired bool   `json:"web_commit_signoff_required"`
-	OpenIssues               int    `json:"open_issues"`
-	Watchers                 int    `json:"watchers"`
-	MasterBranch             string `json:"master_branch"`
-	StarredAt                string `json:"starred_at"`
+	WebCommitSignoffRequired bool       `json:"web_commit_signoff_required"`
+	OpenIssues               int        `json:"open_issues"`
+	Watchers                 int        `json:"watchers"`
+	MasterBranch             string     `json:"master_branch"`
+	StarredAt                GithubTime `json:"starred_at"`
 	// Whether anonymous git access is enabled for this repository
 	AnonymousAccessEnabled bool `json:"anonymous_access_enabled"`
 }
@@ -301,8 +342,8 @@ type Commit struct {
 	// An array of files removed in the commit. A maximum of 3000 changed files will be reported per commit.
 	Removed []string `json:"removed"`
 	// The ISO 8601 timestamp of the commit.
-	Timestamp string `json:"timestamp"`
-	TreeId    string `json:"tree_id"`
+	Timestamp GithubTime `json:"timestamp"`
+	TreeId    string     `json:"tree_id"`
 	// The URL to the commit API resource.
 	Url string `json:"url"`
 }
@@ -344,24 +385,24 @@ type PullRequest struct {
 	State  string `json:"state"`
 	Locked bool   `json:"locked"`
 	// The title of the pull request
-	Title              string    `json:"title"`
-	User               User      `json:"user"`
-	Body               string    `json:"body"`
-	Labels             []Label   `json:"labels"`
-	Milestone          Milestone `json:"milestone"`
-	ActiveLockReason   string    `json:"active_lock_reason"`
-	CreatedAt          string    `json:"created_at"`
-	UpdatedAt          string    `json:"updated_at"`
-	ClosedAt           string    `json:"closed_at"`
-	MergedAt           string    `json:"merged_at"`
-	MergeCommitSha     string    `json:"merge_commit_sha"`
-	Assignee           User      `json:"assignee"`
-	Assignees          []User    `json:"assignees"`
-	RequestedReviewers []User    `json:"requested_reviewers"`
-	RequestedTeams     []Team    `json:"requested_teams"`
-	Head               Head      `json:"head"`
-	Base               Base      `json:"base"`
-	Links              Links     `json:"_links"`
+	Title              string     `json:"title"`
+	User               User       `json:"user"`
+	Body               string     `json:"body"`
+	Labels             []Label    `json:"labels"`
+	Milestone          Milestone  `json:"milestone"`
+	ActiveLockReason   string     `json:"active_lock_reason"`
+	CreatedAt          GithubTime `json:"created_at"`
+	UpdatedAt          GithubTime `json:"updated_at"`
+	ClosedAt           GithubTime `json:"closed_at"`
+	MergedAt           GithubTime `json:"merged_at"`
+	MergeCommitSha     string     `json:"merge_commit_sha"`
+	Assignee           User       `json:"assignee"`
+	Assignees          []User     `json:"assignees"`
+	RequestedReviewers []User     `json:"requested_reviewers"`
+	RequestedTeams     []Team     `json:"requested_teams"`
+	Head               Head       `json:"head"`
+	Base               Base       `json:"base"`
+	Links              Links      `json:"_links"`
 	/*
 		How the author is associated with the repository.
 		Can be one of: `COLLABORATOR`, `CONTRIBUTOR`, `FIRST_TIMER`, `FIRST_TIME_CONTRIBUTOR`, `MANNEQUIN`, `MEMBER`, `NONE`, `OWNER`
@@ -471,8 +512,8 @@ type WebhookPullRequest struct {
 
 // Metaproperties for Git author/committer information.
 type Pusher struct {
-	Date  string `json:"date"`
-	Email string `json:"email"`
+	Date  GithubTime `json:"date"`
+	Email string     `json:"email"`
 	// The git author's name.
 	Name     string `json:"name"`
 	Username string `json:"username"`

@@ -43,26 +43,11 @@
 				"enabled": true,
 				"rules": {
 					"recommended": true,
-					"a11y": {
-						"useKeyWithClickEvents": "off",
-						"useButtonType": "off"
-					},
 					"suspicious": {
-						"noExplicitAny": "off",
-						"noArrayIndexKey": "off"
+						"noExplicitAny": "off"
 					},
 					"style": {
 						"noNonNullAssertion": "off"
-					}
-				}
-			}
-		},
-		{
-			"include": ["apps/api/src/api/generated-routes.ts"],
-			"linter": {
-				"rules": {
-					"complexity": {
-						"noBannedTypes": "off"
 					}
 				}
 			}
@@ -81,11 +66,16 @@
 			}
 		},
 		{
-			"include": ["**/*.test.ts", "**/*.test.tsx"],
+			"include": ["**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"],
 			"linter": {
 				"rules": {
 					"suspicious": {
-						"noExplicitAny": "off"
+						"noExplicitAny": "off",
+						"noArrayIndexKey": "off"
+					},
+					"a11y": {
+						"useKeyWithClickEvents": "off",
+						"useButtonType": "off"
 					}
 				}
 			}

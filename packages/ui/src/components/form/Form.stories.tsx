@@ -93,8 +93,7 @@ export function BasicLoginForm() {
 
   // Define the form submission handler
   function onSubmit(values: z.infer<typeof formSchema>) {
-    toast({
-      title: "Login attempted",
+    toast.success("Login attempted", {
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -167,8 +166,7 @@ export function BasicLoginForm() {
 			});
 
 			function onSubmit(values: z.infer<typeof formSchema>) {
-				toast({
-					title: "Login attempted",
+				toast("Login attempted", {
 					description: (
 						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 							<code className="text-white">
@@ -287,8 +285,7 @@ export function ProfileFormExample() {
   });
 
   function onSubmit(values: z.infer<typeof profileFormSchema>) {
-    toast({
-      title: "Profile updated",
+    toast.success("Profile updated", {
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -448,8 +445,7 @@ export function ProfileFormExample() {
 			});
 
 			function onSubmit(values: z.infer<typeof profileFormSchema>) {
-				toast({
-					title: "Profile updated",
+				toast("Profile updated", {
 					description: (
 						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 							<code className="text-white">
@@ -626,8 +622,7 @@ export function RadioGroupFormExample() {
   });
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    toast({
-      title: "You submitted the following values:",
+    toast("You submitted the following values:", {
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
@@ -746,8 +741,7 @@ export function RadioGroupFormExample() {
 			});
 
 			function onSubmit(data: z.infer<typeof formSchema>) {
-				toast({
-					title: "You submitted the following values:",
+				toast("You submitted the following values:", {
 					description: (
 						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 							<code className="text-white">
@@ -923,8 +917,7 @@ export function AsyncSubmissionFormExample() {
     try {
       await simulateApiCall();
       
-      toast({
-        title: "Form submitted successfully",
+      toast("Form submitted successfully", {
         description: (
           <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
             <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -934,10 +927,8 @@ export function AsyncSubmissionFormExample() {
       
       form.reset();
     } catch (error) {
-      toast({
-        title: "Submission failed",
+      toast.error("Submission failed", {
         description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -1044,8 +1035,7 @@ export function AsyncSubmissionFormExample() {
 				try {
 					await simulateApiCall();
 
-					toast({
-						title: "Form submitted successfully",
+					toast("Form submitted successfully", {
 						description: (
 							<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 								<code className="text-white">
@@ -1057,13 +1047,11 @@ export function AsyncSubmissionFormExample() {
 
 					form.reset();
 				} catch (error) {
-					toast({
-						title: "Submission failed",
+					toast.error("Submission failed", {
 						description:
 							error instanceof Error
 								? error.message
 								: "An unknown error occurred",
-						variant: "destructive",
 					});
 				} finally {
 					setIsSubmitting(false);
@@ -1201,8 +1189,7 @@ export function DynamicFieldsFormExample() {
 
   // Handle form submission
   function onSubmit(data: FormValues) {
-    toast({
-      title: 'Form submitted!',
+    toast("Form submitted!", {
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
@@ -1363,8 +1350,7 @@ export function DynamicFieldsFormExample() {
 
 		// Handle form submission
 		function onSubmit(data: FormValues) {
-			toast({
-				title: "Form submitted!",
+			toast("Form submitted!", {
 				description: (
 					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 						<code className="text-white">{JSON.stringify(data, null, 2)}</code>
@@ -1593,8 +1579,7 @@ export function ConditionalFieldsFormExample() {
   const contactMethod = form.watch("contactMethod");
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    toast({
-      title: "You submitted the following values:",
+    toast("You submitted the following values:", {
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -1894,8 +1879,7 @@ export function ConditionalFieldsFormExample() {
 			const contactMethod = form.watch("contactMethod");
 
 			function onSubmit(values: z.infer<typeof formSchema>) {
-				toast({
-					title: "You submitted the following values:",
+				toast("You submitted the following values:", {
 					description: (
 						<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 							<code className="text-white">
@@ -2229,8 +2213,7 @@ export const DeepNestedForm: Story = {
     });
 
     function onSubmit(data: FormValues) {
-      toast({
-        title: 'Form submitted',
+      toast.success("Form submitted", {
         description: 'Check the console for form data',
       });
       console.log('Form data:', data);
@@ -2352,8 +2335,7 @@ export const DeepNestedForm: Story = {
                   const acceptedBody = form.getValues('config.orderingNotificationMessages.ACCEPTED.body');
                   const excludedAreas = form.getValues('settings.base.excludedDeliveryAreaIds');
                   
-                  toast({
-                    title: 'Current Values',
+                  toast.success("Current Values", {
                     description: (
                       <div className="space-y-2 mt-2">
                         <div><strong>Wait Time:</strong> {waitTime} minutes</div>
@@ -2770,8 +2752,7 @@ export const DeepNestedForm: Story = {
 		});
 
 		function onSubmit(data: FormValues) {
-			toast({
-				title: "Form submitted",
+			toast.success("Form submitted", {
 				description: "Check the console for form data",
 			});
 			console.log("Form data:", data);
@@ -2922,8 +2903,7 @@ export const DeepNestedForm: Story = {
 										"settings.base.excludedDeliveryAreaIds",
 									);
 
-									toast({
-										title: "Current Values",
+									toast("Current Values", {
 										description: (
 											<div className="mt-2 space-y-2">
 												<div>
