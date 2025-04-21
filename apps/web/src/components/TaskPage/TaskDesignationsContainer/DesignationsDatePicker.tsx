@@ -2,7 +2,7 @@
 
 import { DatePicker } from "@/components/ui/date-picker";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ const DesignationsDatePicker = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
-	const user = useUserStore((state) => state.user);
+
 	const queryClient = useQueryClient();
 
 	if (!currentTask) return null;
@@ -26,7 +26,6 @@ const DesignationsDatePicker = () => {
 
 	const updateTaskMutation = useMutation({
 		mutationFn: async (date: Date | null) => {
-			if (!user) throw new Error("User not found");
 			const res = await client.task.updateDueDate.$post({
 				taskId: taskId,
 				dueDate: date,
