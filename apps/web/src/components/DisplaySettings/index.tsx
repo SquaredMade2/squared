@@ -1,4 +1,3 @@
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CompletedTaskPeriodOptions } from "@/lib/constants";
 import { useViewStore } from "@/store";
 import {
@@ -137,31 +136,26 @@ const TopNavBarDisplay = () => {
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent>
-						<div className="flex flex-col">
-							<div className="mb-3 flex w-full items-center justify-between">
-								<ToggleGroup
-									type="single"
-									value={view}
-									onValueChange={handleValueChange}
-									className="flex w-full"
+						<div className="flex flex-col gap-4">
+							<div className="mb-3 flex w-full items-center justify-between gap-2">
+								<Button
+									onClick={() => handleValueChange("list")}
+									variant={view === "list" ? "secondary" : "outline"}
+									className="h-14 flex-1 flex-col"
 								>
-									<ToggleGroupItem
-										value="list"
-										className="flex h-14 flex-1 cursor-pointer flex-col gap-1 border-[1px] border-secondary p-1"
-									>
-										<Menu />
-										List
-									</ToggleGroupItem>
-									<ToggleGroupItem
-										value="grid"
-										className="flex h-14 flex-1 cursor-pointer flex-col gap-1 border-[1px] border-secondary p-1"
-									>
-										<LayoutGrid />
-										Grid
-									</ToggleGroupItem>
-								</ToggleGroup>
+									<Menu />
+									List
+								</Button>
+								<Button
+									onClick={() => handleValueChange("grid")}
+									variant={view === "grid" ? "secondary" : "outline"}
+									className="h-14 flex-1 flex-col"
+								>
+									<LayoutGrid />
+									Grid
+								</Button>
 							</div>
-							<Separator className="my-4" />
+							<Separator />
 							<div className="grid grid-cols-6 items-center gap-1">
 								{/* Columns Row */}
 								<span className="col-span-2 text-foreground text-xs">

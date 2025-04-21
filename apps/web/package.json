@@ -30,8 +30,6 @@
 		"@radix-ui/react-hover-card": "^1.1.6",
 		"@radix-ui/react-progress": "^1.1.2",
 		"@radix-ui/react-scroll-area": "^1.2.3",
-		"@radix-ui/react-toggle": "^1.1.2",
-		"@radix-ui/react-toggle-group": "^1.1.2",
 		"@squaredmade/context": "1.0.0",
 		"@squaredmade/fonts": "^1.0.4",
 		"@squaredmade/icons": "1.0.3",
