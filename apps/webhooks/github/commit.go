@@ -25,7 +25,7 @@ func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http
 		Id:        commit.Id,
 		Message:   commit.Message,
 		RepoId:    webhookEvent.Repository.NodeId,
-		Timestamp: commit.Timestamp.Format(time.RFC3339),
+		Timestamp: time.Time(commit.Timestamp).Format(time.RFC3339),
 		Url:       commit.Url,
 	}
 	if _, err := githubService.PushCommit(context.TODO(), request); err != nil {

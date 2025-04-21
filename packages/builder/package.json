@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/builder",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"publishConfig": {
@@ -19,6 +19,7 @@
 			"default": "./dist/index.js"
 		}
 	},
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"scripts": {
 		"build": "ts-node ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules",
