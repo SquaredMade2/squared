@@ -2,6 +2,7 @@
 	"name": "@squaredmade/typescript-config",
 	"version": "1.0.0",
 	"license": "MIT",
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"publishConfig": {
 		"access": "public"
 	}
