@@ -15,10 +15,10 @@ import {
 	AlertDialogTitle,
 } from "@squaredmade/ui/alert-dialog";
 import { buttonVariants } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
-import { toast } from "sonner";
 
 export const DeleteTaskAlertDialog = ({
 	task,

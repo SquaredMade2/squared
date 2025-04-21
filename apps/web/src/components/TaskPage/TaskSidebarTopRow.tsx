@@ -4,6 +4,7 @@ import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import { Copy, GitPullRequestArrow, Link } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/toast";
 import {
 	Tooltip,
 	TooltipContent,
@@ -11,7 +12,6 @@ import {
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
 import { useCallback, useEffect } from "react";
-import { toast } from "sonner";
 
 export const TaskSidebarTopRow = () => {
 	const task = useTaskStore((state) => state.currentTask);

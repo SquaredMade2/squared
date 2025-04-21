@@ -15,9 +15,9 @@ import { useTaskPage } from "@/hooks/useTaskPage";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 

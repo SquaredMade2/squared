@@ -3,9 +3,9 @@
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squaredmade/db";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const SprintDropdown = () => {

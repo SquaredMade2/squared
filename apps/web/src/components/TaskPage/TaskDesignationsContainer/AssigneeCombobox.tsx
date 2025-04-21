@@ -23,9 +23,9 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@squaredmade/ui/popover";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);

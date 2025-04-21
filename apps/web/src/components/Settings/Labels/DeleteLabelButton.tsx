@@ -1,8 +1,8 @@
 import { client } from "@/lib/client";
 import { Button } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
-import { toast } from "sonner";
 
 export const DeleteLabelButton = ({
 	labelName,

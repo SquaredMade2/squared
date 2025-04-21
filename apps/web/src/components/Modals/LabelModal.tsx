@@ -18,10 +18,10 @@ import {
 } from "@squaredmade/ui/form";
 import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
