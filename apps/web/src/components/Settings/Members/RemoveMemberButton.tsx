@@ -1,6 +1,7 @@
 import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { useOrganization } from "@clerk/nextjs";
 import { Ellipsis } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -27,6 +28,7 @@ const RemoveMemberButton = ({
 	refetch: () => void;
 }) => {
 	const currentUser = useUserStore((state) => state.user);
+	const { membership } = useOrganization();
 
 	const { mutate: handleClick } = useMutation({
 		mutationKey: ["workspace", "removeMember", pageId],
@@ -52,7 +54,7 @@ const RemoveMemberButton = ({
 		},
 	});
 
-	if (loggedInUserRole !== "org:admin") {
+	if (membership?.role !== "org:admin") {
 		return null;
 	}
 
