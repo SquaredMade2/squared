@@ -56,7 +56,7 @@ const ManageMembersRoleButton = ({
 		updateRoleMutation.mutate(newRole);
 	};
 
-	if (loggedInUserRole !== "org:admin" && loggedInUserRole !== "org:owner") {
+	if (loggedInUserRole !== "org:admin") {
 		return null;
 	}
 
@@ -79,8 +79,8 @@ const ManageMembersRoleButton = ({
 					<DropdownMenuItem onClick={() => handleClick("org:admin")}>
 						Change user role to Admin
 					</DropdownMenuItem>
-					{loggedInUserRole === "org:owner" && (
-						<DropdownMenuItem onClick={() => handleClick("org:owner")}>
+					{loggedInUserRole === "org:admin" && (
+						<DropdownMenuItem onClick={() => handleClick("org:admin")}>
 							Change user role to Owner
 						</DropdownMenuItem>
 					)}

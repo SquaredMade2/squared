@@ -115,11 +115,7 @@ export function WorkspaceDropdown() {
 					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
-				<Protect
-					condition={(has) =>
-						has({ role: "org:admin" }) || has({ role: "org:owner" })
-					}
-				>
+				<Protect condition={(has) => has({ role: "org:admin" })}>
 					<DropdownMenuItem asChild>
 						<Button
 							onClick={() => setShowInvite(true)}
