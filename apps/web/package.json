@@ -63,7 +63,7 @@
 	"devDependencies": {
 		"@clerk/types": "^4.40.3",
 		"@jest/globals": "^29.7.0",
-		"@squaredmade/db": "workspace:*",
+		"@squaredmade/db": "1.1.2",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@tailwindcss/postcss": "^4.1.4",
 		"@tailwindcss/typography": "^0.5.13",

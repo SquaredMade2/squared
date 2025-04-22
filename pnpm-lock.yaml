@@ -261,8 +261,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/db':
-        specifier: workspace:*
-        version: link:../../packages/db
+        specifier: 1.1.2
+        version: 1.1.2(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -2929,6 +2929,9 @@ packages:
 
   '@squaredmade/context@1.0.0':
     resolution: {integrity: sha512-Pr6Ph+e2Sney58ktzcNOqVsy/ci8TohMtPDFr99JK1K0ppisXV1cTL6mAuzaow698xqaeeg80JE+cOKOY139Gg==}
+
+  '@squaredmade/db@1.1.2':
+    resolution: {integrity: sha512-8dd3d2x6nbGMaZJyn4rJtlW8f1lbk6JkU0qUZLLNK6kR7xYeMsPnkWKAXyNLStWbjwrg9DbZ7F9c49yNje5oXQ==}
 
   '@squaredmade/fonts@1.0.4':
     resolution: {integrity: sha512-O4lBkirAz+f1B6qAfIhYdG5toCmpLhuvD3k9LSnQO4fE2j8omX9IfWWpLtpWz/lcRYOMfZOez/uBUc4pTzHSiA==}
@@ -11365,6 +11368,42 @@ snapshots:
       - yaml
 
   '@squaredmade/context@1.0.0': {}
+
+  '@squaredmade/db@1.1.2(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)':
+    dependencies:
+      '@neondatabase/serverless': 1.0.0
+      drizzle-orm: 0.42.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)
+      ws: 8.18.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@prisma/client'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - utf-8-validate
 
   '@squaredmade/fonts@1.0.4(tailwindcss@4.0.17)':
     dependencies:
