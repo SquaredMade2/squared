@@ -33,39 +33,35 @@ export default function EffortFilterDropDown({
 		useFilterStore((state) => state);
 
 	useEffect(() => {
-		if (selectedEffort !== null) {
+		if (
+			selectedEffort === null &&
+			currentFilterTypes.includes("effortEstimate")
+		) {
+			const effortValues = Number(
+				currentFilters
+					.filter((filter) => filter.field === "effortEstimate")
+					.flatMap((filter) => filter.value),
+			);
+
+			setSelectedEffort(effortValues);
+		}
+	}, [currentFilterTypes, selectedEffort]);
+
+	const handleEffortSelect = (effort: number) => {
+		if (selectedEffort === effort) {
+			setSelectedEffort(null);
+			removeFilter("effortEstimate");
+		} else {
+			setSelectedEffort((prevEffort) =>
+				prevEffort === effort ? null : effort,
+			);
 			removeFilter("effortEstimate");
 			addFilter({
 				field: "effortEstimate",
 				value: selectedEffort,
 				operator: "equals",
 			});
-		} else {
-			if (currentFilterTypes.includes("effortEstimate")) {
-				setSelectedEffort(
-					Number(
-						currentFilters
-							.filter((filter) => filter.field === "effortEstimate")
-							.flatMap((filter) => filter.value),
-					),
-				);
-			} else {
-				removeFilter("effortEstimate");
-			}
 		}
-	}, [selectedEffort, addFilter, removeFilter]);
-
-	useEffect(() => {
-		if (
-			currentFilterTypes.length === 0 ||
-			!currentFilterTypes.includes("effortEstimate")
-		) {
-			setSelectedEffort(null);
-		}
-	}, [currentFilterTypes]);
-
-	const handleEffortSelect = (effort: number) => {
-		setSelectedEffort((prevEffort) => (prevEffort === effort ? null : effort));
 	};
 
 	return (
