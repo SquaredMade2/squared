@@ -249,6 +249,14 @@ export const workspacesTable = pgTable(
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
 		inviteLinks: jsonb().$type<WorkspaceInviteLink[]>().default([]).notNull(),
+		archiveConfig: jsonb()
+			.$type<ArchiveConfig>()
+			.default({
+				enabled: false,
+				daysUntilArchive: 30,
+				lastArchiveRun: null,
+			})
+			.notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
@@ -681,6 +689,11 @@ export type Label = {
 	name: string;
 	description?: string | null;
 	color: string;
+};
+export type ArchiveConfig = {
+	enabled: boolean;
+	daysUntilArchive: number;
+	lastArchiveRun: string | null; // ISO date string of the last archive run
 };
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Project = typeof projectsTable.$inferSelect;
