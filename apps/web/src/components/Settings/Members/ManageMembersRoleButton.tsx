@@ -76,12 +76,9 @@ const ManageMembersRoleButton = ({
 					<DropdownMenuItem onClick={() => handleClick("org:member")}>
 						Change user role to Member
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => handleClick("org:admin")}>
-						Change user role to Admin
-					</DropdownMenuItem>
-					{loggedInUserRole === "org:admin" && (
+					{loggedInUserRole && (
 						<DropdownMenuItem onClick={() => handleClick("org:admin")}>
-							Change user role to Owner
+							Change user role to Admin
 						</DropdownMenuItem>
 					)}
 				</DropdownMenuGroup>
