@@ -16,6 +16,7 @@ import {
 	getFilteredRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CSVLink } from "react-csv";
 
@@ -35,6 +36,7 @@ export function DataTable({
 	data,
 	membershipManagementPermission,
 }: DataTableProps) {
+	const router = useRouter();
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		columns.reduce((init, { id }) => {
@@ -107,7 +109,10 @@ export function DataTable({
 					On the Free plan all members in a workspace are administrators.
 					Upgrade to a paid plan to add the ability to assign or remove
 					administrator roles.{" "}
-					<span className="cursor-pointer text-primary underline-offset-4 hover:underline">
+					<span
+						className="cursor-pointer text-primary underline-offset-4 hover:underline"
+						onClick={() => router.push("https://www.squaredmade.com/pricing")}
+					>
 						Go to Plans →
 					</span>
 				</p>

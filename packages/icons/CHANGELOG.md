@@ -1,5 +1,17 @@
 # @squaredmade/icons
 
+## 1.0.5
+
+### Patch Changes
+
+- 2f56953: Fix Scope Of Package Files
+
+## 1.0.4
+
+### Patch Changes
+
+- Fix Exports
+
 ## 1.0.3
 
 ### Patch Changes
