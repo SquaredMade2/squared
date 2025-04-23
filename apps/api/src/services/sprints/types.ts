@@ -87,4 +87,7 @@ export interface SprintRpc {
 	getRetrospectiveItems: ({
 		sprintId,
 	}: { sprintId: string }) => Promise<RetrospectiveData>;
+	deleteRetrospectiveItem: ({
+		retrospectiveItemId,
+	}: { retrospectiveItemId: string }) => Promise<{ success: boolean }>;
 }

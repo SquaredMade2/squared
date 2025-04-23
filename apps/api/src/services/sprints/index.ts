@@ -131,6 +131,10 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 			}),
 		),
 	},
+	deleteRetrospectiveItem: {
+		input: z.object({ retrospectiveItemId: z.string() }),
+		output: z.object({ success: z.boolean() }),
+	},
 });
 
 export type SprintRpcSchema = typeof sprintRpcSchema;
@@ -150,6 +154,8 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 			sprintService.likeRetrospectiveItem(input),
 		getRetrospectiveItems: (input) =>
 			sprintService.getRetrospectiveItems(input),
+		deleteRetrospectiveItem: (input) =>
+			sprintService.deleteRetrospectiveItem(input),
 	});
 
 export { SprintService } from "./sprint-service";

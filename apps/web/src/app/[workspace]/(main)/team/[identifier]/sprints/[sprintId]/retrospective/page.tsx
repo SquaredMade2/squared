@@ -110,29 +110,58 @@ export default function SprintRetrospectivePage() {
 		};
 	}, [sprintId, fetchData]);
 
-	const { mutate: handleAddItem } = useMutation({
+	const { mutate: handleItem } = useMutation({
 		mutationKey: ["sprint", "retrospective", sprintId],
 		mutationFn: async ({
-			type,
 			content,
-		}: { type: RetrospectiveItemType; content: string }) => {
-			return await client.sprint.addRetroItem
-				.$post({
+			operationType,
+			type,
+			retrospectiveItemId,
+		}: {
+			content: string;
+			operationType: string;
+			type?: RetrospectiveItemType;
+			retrospectiveItemId?: string;
+		}) => {
+			if (operationType === "add" && type) {
+				return await client.sprint.addRetroItem
+					.$post({
+						sprintId,
+						type,
+						content,
+					})
+					.then((res) => res.json());
+			}
+			if (operationType === "edit" && retrospectiveItemId) {
+				return await client.sprint.updateRetroItem
+					.$post({
+						sprintId,
+						retrospectiveItemId,
+						content,
+					})
+					.then((res) => res.json());
+			}
+		},
+		onError: (error, params) => {
+			toast.error(
+				`Failed to ${params.operationType === "add" ? "add" : "edit"} item`,
+				{
+					description: parseError(error),
+				},
+			);
+		},
+		onSuccess: (response, params) => {
+			socket?.emit(
+				`${params.operationType === "add" ? "addItem" : "editItem"}`,
+				{
 					sprintId,
-					type,
-					content,
-				})
-				.then((res) => res.json());
-		},
-		onError: (error) => {
-			toast.error("Failed to add item", {
-				description: parseError(error),
-			});
-		},
-		onSuccess: (response) => {
-			socket?.emit("addItem", { sprintId, ...response });
+					...response,
+				},
+			);
 			fetchData();
-			toast.success("Item added successfully");
+			toast.success(
+				`Item ${params.operationType === "add" ? "added" : "edited"} successfully`,
+			);
 		},
 	});
 	const { mutate: handleLikeItem } = useMutation({
@@ -224,7 +253,19 @@ export default function SprintRetrospectivePage() {
 							title="What Went Well"
 							type="wentWell"
 							items={data.wentWell}
-							onAddItem={(type, content) => handleAddItem({ type, content })}
+							onHandleItem={(
+								content,
+								operationType,
+								type,
+								retrospectiveItemId,
+							) =>
+								handleItem({
+									content,
+									operationType,
+									type,
+									retrospectiveItemId,
+								})
+							}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
 							likedItems={data.likedItems}
 						/>
@@ -232,7 +273,19 @@ export default function SprintRetrospectivePage() {
 							title="To Improve"
 							type="toImprove"
 							items={data.toImprove}
-							onAddItem={(type, content) => handleAddItem({ type, content })}
+							onHandleItem={(
+								content,
+								operationType,
+								type,
+								retrospectiveItemId,
+							) =>
+								handleItem({
+									content,
+									operationType,
+									type,
+									retrospectiveItemId,
+								})
+							}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
 							likedItems={data.likedItems}
 						/>
@@ -240,7 +293,19 @@ export default function SprintRetrospectivePage() {
 							title="Action Items"
 							type="actionItems"
 							items={data.actionItems}
-							onAddItem={(type, content) => handleAddItem({ type, content })}
+							onHandleItem={(
+								content,
+								operationType,
+								type,
+								retrospectiveItemId,
+							) =>
+								handleItem({
+									content,
+									operationType,
+									type,
+									retrospectiveItemId,
+								})
+							}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
 							likedItems={data.likedItems}
 						/>

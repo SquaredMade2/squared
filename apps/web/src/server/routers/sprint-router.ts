@@ -67,6 +67,36 @@ export const sprintRouter = router({
 				}),
 			);
 		}),
+	updateRetroItem: workspaceProcedure
+		.input(
+			z.object({
+				sprintId: z.string(),
+				retrospectiveItemId: z.string(),
+				content: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { sprintService } = ctx;
+			const { sprintId, retrospectiveItemId, content } = input;
+			return c.superjson(
+				await sprintService.updateRetrospectiveItem(TODO, {
+					sprintId,
+					retrospectiveItemId,
+					content,
+				}),
+			);
+		}),
+	deleteRetroItem: workspaceProcedure
+		.input(z.object({ retrospectiveItemId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { sprintService } = ctx;
+			const { retrospectiveItemId } = input;
+			return c.superjson(
+				await sprintService.deleteRetrospectiveItem(TODO, {
+					retrospectiveItemId,
+				}),
+			);
+		}),
 	likeRetroItem: workspaceProcedure
 		.input(
 			z.object({
