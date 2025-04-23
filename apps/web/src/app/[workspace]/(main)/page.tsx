@@ -2,6 +2,7 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
+import { useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ export default function Home() {
 	const params = useParams();
 	const { organization } = useOrganization();
 	const workspaceUrl = parseParams(params.workspace) ?? "";
+	const { team } = useTeamStore((state) => state);
 
 	const { data, isPending } = useQuery({
 		queryKey: ["team", "workspacePage", workspaceUrl],
@@ -23,8 +25,10 @@ export default function Home() {
 					workspaceId: organization.id,
 				})
 				.then((res) => res.json());
-			if (allTeams[0].identifier) {
+			if (!team && allTeams[0].identifier) {
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
+			} else {
+				router.push(`/${workspaceUrl}/team/${team?.identifier}/all`);
 			}
 			return allTeams;
 		},
