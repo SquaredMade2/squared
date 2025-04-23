@@ -731,7 +731,7 @@ export type Label = {
 export type ArchiveConfig = {
 	enabled: boolean;
 	daysUntilArchive: number;
-	lastArchiveRun: string | null; // ISO date string of the last archive run
+	lastArchiveRun: Date | null;
 };
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Project = typeof projectsTable.$inferSelect;

@@ -143,6 +143,11 @@ export const workspaceSchema = createSchema<Workspace>()(
 		labels: z.array(labelSchema),
 		inviteLinks: z.array(workspaceInviteLinkSchema),
 		createdAt: z.date(),
+		archiveConfig: z.object({
+			enabled: z.boolean(),
+			daysUntilArchive: z.number(),
+			lastArchiveRun: z.date().nullable(),
+		}),
 	}),
 );
 
