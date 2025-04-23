@@ -5,10 +5,7 @@
 		"access": "public"
 	},
 	"exports": {
-		".": {
-			"import": "./src/index.ts",
-			"require": "./src/index.ts"
-		}
+		".": "./src/index.ts"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"scripts": {
