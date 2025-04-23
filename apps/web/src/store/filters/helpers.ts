@@ -134,3 +134,8 @@ export function parseFilter(newFilter: SavedFilterType): SavedFilter {
 
 	return parsedFilter;
 }
+
+export const formatDateForComparison = (dateString: string | undefined) => {
+	if (!dateString) return "";
+	return new Date(dateString).toISOString().split("T")[0];
+};

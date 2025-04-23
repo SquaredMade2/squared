@@ -1,0 +1,1 @@
+ALTER TABLE "Workspace" ADD COLUMN "archiveConfig" jsonb DEFAULT '{"enabled":false,"daysUntilArchive":30,"lastArchiveRun":null}'::jsonb NOT NULL;

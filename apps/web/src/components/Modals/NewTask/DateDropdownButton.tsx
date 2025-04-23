@@ -24,7 +24,7 @@ export function DateDropdownButton() {
 	}, [date]);
 
 	return (
-		<Popover>
+		<Popover modal>
 			<PopoverTrigger asChild>
 				<Button
 					variant={"outline"}

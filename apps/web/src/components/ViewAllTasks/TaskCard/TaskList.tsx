@@ -1,9 +1,11 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -72,7 +74,13 @@ const TaskList = ({
 						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{showLabels && <TaskCardLabels labels={taskLabels} />}
 							{showDueDate && (
-								<div className="xs:hidden shrink-0 whitespace-nowrap text-muted-foreground sm:hidden md:flex">
+								<div
+									className={cn(
+										"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex",
+										checkOverdueDate(task.dueDate) &&
+											"border-destructive text-destructive",
+									)}
+								>
 									{task.dueDate
 										? formatDate(new Date(task.dueDate), "MMM dd")
 										: "No Date"}

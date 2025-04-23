@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/icons",
-	"version": "1.0.3",
+	"version": "1.0.5",
 	"exports": {
 		".": {
 			"import": {
@@ -20,6 +20,7 @@
 		"build": "ts-node generateIcons.ts && biome format --write ./components && node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules"
 	},
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.1",
 		"@types/fs-extra": "^11.0.4",

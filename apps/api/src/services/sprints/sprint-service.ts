@@ -7,6 +7,7 @@ import {
 	and,
 	desc,
 	eq,
+	inArray,
 	ne,
 	retrospectiveItemsTable,
 	sprintsTable,
@@ -140,6 +141,20 @@ export class SprintService implements SprintRpc {
 			});
 
 			if (currentSprint) {
+				const updatedTasks = await tx
+					.update(tasksTable)
+					.set({ sprintId: newSprintData.id })
+					.where(
+						and(
+							eq(tasksTable.sprintId, currentSprint.id),
+							ne(tasksTable.status, "done"),
+							ne(tasksTable.status, "canceled"),
+							ne(tasksTable.status, "duplicated"),
+							ne(tasksTable.status, "archived"),
+						),
+					)
+					.returning({ id: tasksTable.id });
+
 				await tx
 					.update(tasksTable)
 					.set({ sprintId: newSprintData.id })
@@ -150,6 +165,10 @@ export class SprintService implements SprintRpc {
 							ne(tasksTable.status, "canceled"),
 							ne(tasksTable.status, "duplicated"),
 							ne(tasksTable.status, "archived"),
+							inArray(
+								tasksTable.parentId,
+								updatedTasks.map((t) => t.id),
+							),
 						),
 					);
 			}
