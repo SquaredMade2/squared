@@ -57,7 +57,8 @@ export type GetNotificationsResponse = {
 			| "inReview"
 			| "done"
 			| "canceled"
-			| "archived";
+			| "archived"
+			| "duplicated";
 		teamId: string;
 		title: string;
 		updatedAt: Date;
@@ -65,6 +66,11 @@ export type GetNotificationsResponse = {
 	};
 	Workspace: {
 		admins: string[];
+		archiveConfig: {
+			daysUntilArchive: number;
+			enabled: boolean;
+			lastArchiveRun: Date | null;
+		};
 		avatarUrl: string | null;
 		companySize: number | null;
 		createdAt: Date;
@@ -127,7 +133,8 @@ export type CreateLogEventRequest = {
 			| "inReview"
 			| "done"
 			| "canceled"
-			| "archived";
+			| "archived"
+			| "duplicated";
 		teamId: string;
 		title: string;
 		updatedAt: Date;
@@ -199,7 +206,8 @@ export type ToggleNotificationResponse = {
 			| "inReview"
 			| "done"
 			| "canceled"
-			| "archived";
+			| "archived"
+			| "duplicated";
 		teamId: string;
 		title: string;
 		updatedAt: Date;
@@ -207,6 +215,11 @@ export type ToggleNotificationResponse = {
 	};
 	Workspace: {
 		admins: string[];
+		archiveConfig: {
+			daysUntilArchive: number;
+			enabled: boolean;
+			lastArchiveRun: Date | null;
+		};
 		avatarUrl: string | null;
 		companySize: number | null;
 		createdAt: Date;
