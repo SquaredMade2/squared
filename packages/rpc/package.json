@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"@squaredmade/context": "1.0.1",
-		"@squaredmade/logger": "1.1.0",
+		"@squaredmade/logger": "1.1.1",
 		"@squaredmade/superjson": "1.0.0",
 		"zod": "^3.23.8"
 	},
