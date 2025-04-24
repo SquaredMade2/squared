@@ -101,6 +101,14 @@ export default function SprintRetrospectivePage() {
 			fetchData();
 		});
 
+		newSocket.on("itemDeleted", () => {
+			fetchData();
+		});
+
+		newSocket.on("itemUpdated", () => {
+			fetchData();
+		});
+
 		setSocket(newSocket);
 
 		fetchData();
@@ -152,7 +160,7 @@ export default function SprintRetrospectivePage() {
 		},
 		onSuccess: (response, params) => {
 			socket?.emit(
-				`${params.operationType === "add" ? "addItem" : "editItem"}`,
+				`${params.operationType === "add" ? "addItem" : "updateItem"}`,
 				{
 					sprintId,
 					...response,
@@ -185,6 +193,29 @@ export default function SprintRetrospectivePage() {
 				userId: response.authorId,
 			});
 			fetchData();
+		},
+	});
+
+	const { mutate: handleItemDeletion } = useMutation({
+		mutationKey: ["delete-retro-item"],
+		mutationFn: async (retrospectiveItemId: string) => {
+			await client.sprint.deleteRetroItem.$post({
+				retrospectiveItemId,
+			});
+		},
+		onSuccess: () => {
+			socket?.emit("itemDeleted", {
+				sprintId,
+			});
+			fetchData();
+			toast.success("Item Deleted", {
+				description: "Retro item has been successfully deleted",
+			});
+		},
+		onError: (error) => {
+			toast.error("Error deleting item", {
+				description: error.message,
+			});
 		},
 	});
 
@@ -267,6 +298,9 @@ export default function SprintRetrospectivePage() {
 								})
 							}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
+							onDeleteItem={(retrospectiveItemId) =>
+								handleItemDeletion(retrospectiveItemId)
+							}
 							likedItems={data.likedItems}
 						/>
 						<RetroColumn
@@ -287,6 +321,9 @@ export default function SprintRetrospectivePage() {
 								})
 							}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
+							onDeleteItem={(retrospectiveItemId) =>
+								handleItemDeletion(retrospectiveItemId)
+							}
 							likedItems={data.likedItems}
 						/>
 						<RetroColumn
@@ -307,6 +344,9 @@ export default function SprintRetrospectivePage() {
 								})
 							}
 							onLikeItem={(itemId) => handleLikeItem(itemId)}
+							onDeleteItem={(retrospectiveItemId) =>
+								handleItemDeletion(retrospectiveItemId)
+							}
 							likedItems={data.likedItems}
 						/>
 					</div>

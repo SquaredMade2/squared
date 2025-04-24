@@ -1,6 +1,5 @@
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
 import { useUsers } from "@/hooks/useUsers";
-import { client } from "@/lib/client";
 import { formatName } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { Draggable } from "@hello-pangea/dnd";
@@ -13,9 +12,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
-import { useMutation } from "@tanstack/react-query";
 import type { Dispatch, SetStateAction } from "react";
-import { toast } from "sonner";
 import type { EditContent } from "./RetroColumn";
 
 export const RetroItemCard = ({
@@ -25,6 +22,7 @@ export const RetroItemCard = ({
 	setEditContent,
 	setIsModalOpen,
 	onLikeItem,
+	onDeleteItem,
 	liked,
 }: {
 	item: RetroItem;
@@ -33,6 +31,7 @@ export const RetroItemCard = ({
 	setEditContent: Dispatch<SetStateAction<EditContent>>;
 	setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 	onLikeItem: (itemId: string) => void;
+	onDeleteItem: (RetrospectiveItemId: string) => void;
 	liked: boolean;
 }) => {
 	const { user } = useUser();
@@ -49,25 +48,6 @@ export const RetroItemCard = ({
 		.map((id) => users?.find((u) => u.userId === id))
 		.map((u) => formatName(u))
 		.join(", ");
-
-	const { mutate: handleItemDeletion } = useMutation({
-		mutationKey: ["delete-retro-item"],
-		mutationFn: async () => {
-			await client.sprint.deleteRetroItem.$post({
-				retrospectiveItemId: item.id,
-			});
-		},
-		onSuccess: () => {
-			toast.success("Item Deleted", {
-				description: "Retro item has been successfully deleted",
-			});
-		},
-		onError: (error) => {
-			toast.error("Error deleting item", {
-				description: error.message,
-			});
-		},
-	});
 
 	return (
 		<Draggable key={item.id} draggableId={item.id} index={index}>
@@ -102,7 +82,7 @@ export const RetroItemCard = ({
 											className="p-2 text-red-500 hover:bg-transparent hover:text-red-500/65"
 											variant={"ghost"}
 											title="Delete Item"
-											onClick={() => handleItemDeletion()}
+											onClick={() => onDeleteItem(item.id)}
 										>
 											<Trash />
 										</Button>

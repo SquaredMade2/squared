@@ -44,9 +44,8 @@ const RetroItemModal = ({
 	editContent,
 	setEditContent,
 }: RetroItemModalProps) => {
-	const [itemContent, setItemContent] = useState(
-		isEditItem ? editContent.content : "",
-	);
+	const initialContentState = isEditItem ? editContent.content : "";
+	const [itemContent, setItemContent] = useState(initialContentState);
 
 	const handleItem = useCallback(() => {
 		const operationType = isEditItem ? "edit" : "add";
@@ -67,7 +66,18 @@ const RetroItemModal = ({
 	}, [itemContent, onHandleItem, type]);
 
 	return (
-		<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+		<Dialog
+			open={isModalOpen}
+			onOpenChange={
+				isEditItem
+					? () => {
+							setIsEditItem(false);
+							setEditContent({ retrospectiveItemId: "", content: "" });
+							setIsModalOpen(false);
+						}
+					: setIsModalOpen
+			}
+		>
 			<DialogTrigger asChild>
 				<Button variant="outline" className="w-full">
 					<CirclePlus className="mr-2 h-4 w-4" />
@@ -76,7 +86,7 @@ const RetroItemModal = ({
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{isEditItem ? "Add New Item" : "Edit Item"}</DialogTitle>
+					<DialogTitle>{isEditItem ? "Edit Item" : "Add New Item"}</DialogTitle>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -86,11 +96,12 @@ const RetroItemModal = ({
 							onChange={(e) => setItemContent(e.target.value)}
 							placeholder="Enter item content"
 							className="col-span-4"
+							autoFocus
 						/>
 					</div>
 				</div>
-				<Button onClick={handleItem} variant="secondary">
-					{isEditItem ? "Add Item" : "Update Item"}
+				<Button onClick={handleItem} variant="secondary" tabIndex={0}>
+					{isEditItem ? "Update Item" : "Add Item"}
 				</Button>
 			</DialogContent>
 		</Dialog>

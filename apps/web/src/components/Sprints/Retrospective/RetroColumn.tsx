@@ -1,9 +1,7 @@
-import { Droppable } from "@hello-pangea/dnd";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
-
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
+import { Droppable } from "@hello-pangea/dnd";
 import type { RetrospectiveItemType } from "@squaredmade/db";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { useState } from "react";
 import { RetroItemCard } from "./RetroItemCard";
 import RetroItemModal from "./RetroItemModal";
@@ -19,6 +17,7 @@ interface RetroColumnProps {
 		retrospectiveItemId?: string,
 	) => void;
 	onLikeItem: (itemId: string) => void;
+	onDeleteItem: (RetrospectiveItemId: string) => void;
 	likedItems: string[];
 }
 
@@ -33,6 +32,7 @@ export const RetroColumn = ({
 	items,
 	onHandleItem,
 	onLikeItem,
+	onDeleteItem,
 	likedItems,
 }: RetroColumnProps) => {
 	const [isEditItem, setIsEditItem] = useState<boolean>(false);
@@ -67,6 +67,7 @@ export const RetroColumn = ({
 											setEditContent={setEditContent}
 											setIsModalOpen={setIsModalOpen}
 											onLikeItem={onLikeItem}
+											onDeleteItem={onDeleteItem}
 											liked={likedItems.includes(item.id)}
 										/>
 									);
