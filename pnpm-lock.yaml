@@ -173,8 +173,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.1.4)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/rpc-client':
         specifier: 1.0.0
         version: 1.0.0
@@ -326,8 +326,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.0.17)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/ui':
         specifier: 2.0.2
         version: 2.0.2(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)
@@ -707,8 +707,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.13
@@ -2937,6 +2937,12 @@ packages:
 
   '@squaredmade/icons@1.0.3':
     resolution: {integrity: sha512-KDsfrib3TNwWGz2AgDtKwsBx4cZb+wcvbwvhriKnI9F2ylke14fgM/dPQ96q6bLLfXy/HaTqjQA2W5dkDzvDfg==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+
+  '@squaredmade/icons@1.0.5':
+    resolution: {integrity: sha512-SSDaM8evnSvm3RY0ynrv0Fk1zgPviRsY8yQ7NqsGII2wzX/oqIQuBA2oLlY9gECuDkvry0VkweVX8TIXHPm/pA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
@@ -11375,6 +11381,11 @@ snapshots:
       tailwindcss: 4.1.4
 
   '@squaredmade/icons@1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@squaredmade/icons@1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
