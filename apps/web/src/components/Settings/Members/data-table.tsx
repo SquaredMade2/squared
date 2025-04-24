@@ -39,12 +39,11 @@ export function DataTable({
 	const router = useRouter();
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		columns.reduce((init, { id }) => {
-			if (id) {
-				init[`${id}`] = Boolean(membershipManagementPermission);
-			}
-			return init;
-		}, {} as VisibilityState),
+		Object.fromEntries(
+			columns
+				.filter((column) => column.id)
+				.map((column) => [column.id, Boolean(membershipManagementPermission)]),
+		),
 	);
 
 	const [searchTerm, setSearchTerm] = useState("");
@@ -167,7 +166,7 @@ export function DataTable({
 						includes names, emails, roles, and much more!
 					</p>
 					<Protect condition={(has) => has({ role: "org:admin" })}>
-						<Button variant={"outline"}>
+						<Button variant={"outline"} disabled={!membersCsv}>
 							{membersCsv && (
 								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
 							)}

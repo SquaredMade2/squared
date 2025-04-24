@@ -26,12 +26,11 @@ export function DataTable({
 }) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-		columns.reduce((init, { id }) => {
-			if (id) {
-				init[`${id}`] = Boolean(workspaceManagePermission);
-			}
-			return init;
-		}, {} as VisibilityState),
+		Object.fromEntries(
+			columns
+				.filter((column) => column.id)
+				.map((column) => [column.id, Boolean(workspaceManagePermission)]),
+		),
 	);
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
