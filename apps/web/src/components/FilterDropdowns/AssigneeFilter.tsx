@@ -7,6 +7,7 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
+	CommandPinnedItem,
 } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUsers } from "@/hooks/useUsers";
@@ -89,7 +90,7 @@ export default function AssigneeFilterDropDown({
 							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"}pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
 						>
 							<CommandGroup>
-								<CommandItem
+								<CommandPinnedItem
 									key="unassigned"
 									onSelect={() => handleAssigneeChange(null)}
 									className="flex h-8 cursor-pointer items-center space-x-2"
@@ -103,7 +104,7 @@ export default function AssigneeFilterDropDown({
 										<UserSearch className="mx-1 mr-2 size-5" />
 										<span className="w-2/3 truncate">Unassigned</span>
 									</div>
-								</CommandItem>
+								</CommandPinnedItem>
 								{filteredAssignees
 									.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (

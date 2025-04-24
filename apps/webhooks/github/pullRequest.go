@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
 	"github.com/google/go-github/v69/github"
@@ -18,6 +19,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
+		log.Printf("Raw webhook payload: %s", string(body))
 	}
 	if webhookEvent.Sender.NodeId == os.Getenv("GITHUB_BOT_ID") {
 		return
@@ -65,7 +67,7 @@ func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w htt
 		State:     pullRequest.State,
 		Title:     pullRequest.Title,
 		Url:       pullRequest.HTMLUrl,
-		Timestamp: pullRequest.CreatedAt,
+		Timestamp: time.Time(pullRequest.CreatedAt).Format(time.RFC3339),
 	}
 
 	tasks, err := githubService.UpsertPullRequest(context.TODO(), request)

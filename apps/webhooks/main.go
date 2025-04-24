@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/github"
+	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
 	"github.com/SquaredMade2/squared/apps/webhooks/vercel"
-	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -28,17 +28,10 @@ func main() {
 		github.SetLogLevel(github.LogLevelBasic)
 	}
 
+	helpers.LoadEnv()
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/github", github.WebhookHandler)
 	http.HandleFunc("/vercel", vercel.WebhookHandler)
-
-	if os.Getenv("PORT") == "" {
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("Error loading .env file")
-			return
-		}
-	}
 
 	port := os.Getenv("PORT")
 	if port == "" {

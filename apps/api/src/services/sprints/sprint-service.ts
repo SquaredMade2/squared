@@ -7,6 +7,7 @@ import {
 	and,
 	desc,
 	eq,
+	inArray,
 	ne,
 	retrospectiveItemsTable,
 	sprintsTable,
@@ -140,6 +141,20 @@ export class SprintService implements SprintRpc {
 			});
 
 			if (currentSprint) {
+				const updatedTasks = await tx
+					.update(tasksTable)
+					.set({ sprintId: newSprintData.id })
+					.where(
+						and(
+							eq(tasksTable.sprintId, currentSprint.id),
+							ne(tasksTable.status, "done"),
+							ne(tasksTable.status, "canceled"),
+							ne(tasksTable.status, "duplicated"),
+							ne(tasksTable.status, "archived"),
+						),
+					)
+					.returning({ id: tasksTable.id });
+
 				await tx
 					.update(tasksTable)
 					.set({ sprintId: newSprintData.id })
@@ -150,6 +165,10 @@ export class SprintService implements SprintRpc {
 							ne(tasksTable.status, "canceled"),
 							ne(tasksTable.status, "duplicated"),
 							ne(tasksTable.status, "archived"),
+							inArray(
+								tasksTable.parentId,
+								updatedTasks.map((t) => t.id),
+							),
 						),
 					);
 			}
@@ -331,7 +350,7 @@ export class SprintService implements SprintRpc {
 		const lastSprint = teamSprints[0];
 		const newSprintNumber =
 			(lastSprint ? Number.parseInt(lastSprint.name.split(" ")[1]) : 0) + 1;
-		const startDate = lastSprint ? new Date(lastSprint.endDate) : new Date();
+		const startDate = new Date();
 		const endDate = new Date(startDate);
 		endDate.setDate(endDate.getDate() + team.sprintDuration * 7);
 

@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/ui",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "A design system with individually importable components",
 	"publishConfig": {
 		"access": "public"
@@ -628,7 +628,7 @@
 		"storybook": "storybook dev -p 6006",
 		"test-storybook": "test-storybook"
 	},
-	"files": ["dist", "README.md"],
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"bin": {
 		"squared-design": "./dist/cli/index.js"
 	},
@@ -675,13 +675,13 @@
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.2",
-		"@squaredmade/icons": "1.0.3",
+		"@squaredmade/icons": "1.0.5",
 		"aria-hidden": "^1.2.4",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"commander": "^13.1.0",
 		"inquirer": "^12.4.2",
-		"lucide-react": "^0.488.0",
+		"lucide-react": "^0.501.0",
 		"react-remove-scroll": "^2.6.0",
 		"tailwind-merge": "^3.0.2"
 	}

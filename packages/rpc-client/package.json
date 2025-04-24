@@ -1,11 +1,12 @@
 {
 	"name": "@squaredmade/rpc-client",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publishConfig": {
 		"access": "public"
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"exports": {
 		".": {
 			"import": {
@@ -27,8 +28,8 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@squaredmade/context": "1.0.0",
-		"@squaredmade/superjson": "1.0.0"
+		"@squaredmade/context": "1.0.1",
+		"@squaredmade/superjson": "1.0.1"
 	},
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.1",

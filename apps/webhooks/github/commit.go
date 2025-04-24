@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
 )
@@ -14,6 +15,7 @@ func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
+		log.Printf("Raw webhook payload: %s", string(body))
 	}
 
 	commit := webhookEvent.HeadCommit
@@ -23,7 +25,7 @@ func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http
 		Id:        commit.Id,
 		Message:   commit.Message,
 		RepoId:    webhookEvent.Repository.NodeId,
-		Timestamp: commit.Timestamp,
+		Timestamp: time.Time(commit.Timestamp).Format(time.RFC3339),
 		Url:       commit.Url,
 	}
 	if _, err := githubService.PushCommit(context.TODO(), request); err != nil {

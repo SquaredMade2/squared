@@ -1,5 +1,11 @@
 # @squaredmade/db
 
+## 1.1.2
+
+### Patch Changes
+
+- 2f56953: Fix Scope Of Package Files
+
 ## 1.1.1
 
 ### Patch Changes
