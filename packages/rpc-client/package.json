@@ -28,7 +28,7 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@squaredmade/context": "1.0.0",
+		"@squaredmade/context": "1.0.1",
 		"@squaredmade/superjson": "1.0.0"
 	},
 	"devDependencies": {
