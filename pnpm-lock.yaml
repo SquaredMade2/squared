@@ -176,8 +176,8 @@ importers:
         specifier: 1.0.5
         version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/rpc-client':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/ui':
         specifier: 2.0.2
         version: 2.0.2(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)
@@ -2956,8 +2956,8 @@ packages:
   '@squaredmade/logger@1.1.1':
     resolution: {integrity: sha512-SY75V9AzgqeXgY8HBNPr+DoFOFTsRqVR0IEApzkMGOgmx0tvTCyho+y2Zegt6OKMzTcoVFPCskR5fg6WA8IlLg==}
 
-  '@squaredmade/rpc-client@1.0.0':
-    resolution: {integrity: sha512-UN/P1hPUQ9cXiUwc/aLWuKJU6nFdfpK9WE8zgbY05w2JUcf4HG3R4eBoxdfAj5Jb5lnI9n1ILivLDPxQHfQPDQ==}
+  '@squaredmade/rpc-client@1.0.1':
+    resolution: {integrity: sha512-eafwetGTZd+FlMsi6yu13CJeOMpRULZF63E3bcPD23ggdp54BxdpFvanXsjbHXRlayX4QYoLpgHalZy3/pAPww==}
 
   '@squaredmade/rpc@1.0.2':
     resolution: {integrity: sha512-FAAft+ujNAKVQQoz09KpGr0jcjESOHspKgPBAsl4/8fx3Da/wDl/thviejUVSj+XW0HmA1ZKg5ex8IfgoaGW7w==}
@@ -11403,7 +11403,7 @@ snapshots:
     dependencies:
       winston: 3.17.0
 
-  '@squaredmade/rpc-client@1.0.0':
+  '@squaredmade/rpc-client@1.0.1':
     dependencies:
       '@squaredmade/context': 1.0.0
       '@squaredmade/superjson': 1.0.0
