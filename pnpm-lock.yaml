@@ -49,11 +49,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/db
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@squaredmade/rpc':
-        specifier: 1.0.1
-        version: 1.0.1(express@5.1.0)
+        specifier: 1.0.2
+        version: 1.0.2(express@5.1.0)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -92,8 +92,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
@@ -167,17 +167,17 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/context':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/fonts':
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.1.4)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/rpc-client':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/ui':
         specifier: 2.0.2
         version: 2.0.2(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)
@@ -326,8 +326,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.0.17)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/ui':
         specifier: 2.0.2
         version: 2.0.2(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)
@@ -579,14 +579,14 @@ importers:
   packages/rpc:
     dependencies:
       '@squaredmade/context':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       express:
         specifier: ^4.18.2 || ^5.0.0
         version: 5.1.0
@@ -622,11 +622,11 @@ importers:
   packages/rpc-client:
     dependencies:
       '@squaredmade/context':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
     devDependencies:
       '@squaredmade/builder':
         specifier: ^1.0.1
@@ -650,8 +650,8 @@ importers:
   packages/seed:
     dependencies:
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -707,8 +707,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.13
@@ -2930,6 +2930,9 @@ packages:
   '@squaredmade/context@1.0.0':
     resolution: {integrity: sha512-Pr6Ph+e2Sney58ktzcNOqVsy/ci8TohMtPDFr99JK1K0ppisXV1cTL6mAuzaow698xqaeeg80JE+cOKOY139Gg==}
 
+  '@squaredmade/context@1.0.1':
+    resolution: {integrity: sha512-scxG0BnTfo/wj2BV1MIjyGp23k7BYlVI/aqryQzHNOwFnE490ChNh3x1EVXEbTgGL4hchbqlFZKk2hTpG0WRWA==}
+
   '@squaredmade/fonts@1.0.4':
     resolution: {integrity: sha512-O4lBkirAz+f1B6qAfIhYdG5toCmpLhuvD3k9LSnQO4fE2j8omX9IfWWpLtpWz/lcRYOMfZOez/uBUc4pTzHSiA==}
     peerDependencies:
@@ -2941,22 +2944,31 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@squaredmade/logger@1.0.0':
-    resolution: {integrity: sha512-Fw6m4atxXrE1WfOJeFqASGiDNscZekyHUTJTjQVSB0nWmC5kZRlm721Y5RdANYE2WPjzVcXWqE9dN46e/nY0eQ==}
+  '@squaredmade/icons@1.0.5':
+    resolution: {integrity: sha512-SSDaM8evnSvm3RY0ynrv0Fk1zgPviRsY8yQ7NqsGII2wzX/oqIQuBA2oLlY9gECuDkvry0VkweVX8TIXHPm/pA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
 
   '@squaredmade/logger@1.1.0':
     resolution: {integrity: sha512-gEGXtj2pPRVNRwrEbt9HACtD/o/T3ZnghO/Ov5ZOoT0i52Tm3P0Pkv6K91a1uVvV5+fv+KOsPs4y2L2RDoOQrQ==}
 
-  '@squaredmade/rpc-client@1.0.0':
-    resolution: {integrity: sha512-UN/P1hPUQ9cXiUwc/aLWuKJU6nFdfpK9WE8zgbY05w2JUcf4HG3R4eBoxdfAj5Jb5lnI9n1ILivLDPxQHfQPDQ==}
+  '@squaredmade/logger@1.1.1':
+    resolution: {integrity: sha512-SY75V9AzgqeXgY8HBNPr+DoFOFTsRqVR0IEApzkMGOgmx0tvTCyho+y2Zegt6OKMzTcoVFPCskR5fg6WA8IlLg==}
 
-  '@squaredmade/rpc@1.0.1':
-    resolution: {integrity: sha512-MSAGzIt0G2gtelzhb0/EH5+fEQGfaoZritt2iJPUkj0muaOCBk02LKpRI9ti7Z2m8A8x/GXd3NfWpAEc2flbDw==}
+  '@squaredmade/rpc-client@1.0.1':
+    resolution: {integrity: sha512-eafwetGTZd+FlMsi6yu13CJeOMpRULZF63E3bcPD23ggdp54BxdpFvanXsjbHXRlayX4QYoLpgHalZy3/pAPww==}
+
+  '@squaredmade/rpc@1.0.2':
+    resolution: {integrity: sha512-FAAft+ujNAKVQQoz09KpGr0jcjESOHspKgPBAsl4/8fx3Da/wDl/thviejUVSj+XW0HmA1ZKg5ex8IfgoaGW7w==}
     peerDependencies:
-      express: ^4.18.2
+      express: ^4.18.2 || ^5.0.0
 
   '@squaredmade/superjson@1.0.0':
     resolution: {integrity: sha512-n/bFIMUWT8Tm8RS6YMUzPQAMF76Tbe+GFSu6+zVZXUrXBeDrzl2kqS6tUvo+MVJ+VvCK3GVxIZbNR87a7/GLTg==}
+
+  '@squaredmade/superjson@1.0.1':
+    resolution: {integrity: sha512-5x+yK4zvqtPb//VXFKzew1AoXwRkPi9u2cBg7nwLtblE48tdbjrCvxGzGNrPqETL2XMVbzfV+Km5WHGdFaZ4Og==}
 
   '@squaredmade/typescript-config@1.0.0':
     resolution: {integrity: sha512-+cYRcw/uvVL+qFMb9wBgK23NpEwsmR4QbjohtCvc6aebooNIi4iwauyRS/S/TkFHBcA3IAVw5F85xea3pNZ65A==}
@@ -11366,6 +11378,8 @@ snapshots:
 
   '@squaredmade/context@1.0.0': {}
 
+  '@squaredmade/context@1.0.1': {}
+
   '@squaredmade/fonts@1.0.4(tailwindcss@4.0.17)':
     dependencies:
       tailwindcss: 4.0.17
@@ -11379,28 +11393,35 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@squaredmade/logger@1.0.0':
+  '@squaredmade/icons@1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      winston: 3.17.0
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   '@squaredmade/logger@1.1.0':
     dependencies:
       winston: 3.17.0
 
-  '@squaredmade/rpc-client@1.0.0':
+  '@squaredmade/logger@1.1.1':
+    dependencies:
+      winston: 3.17.0
+
+  '@squaredmade/rpc-client@1.0.1':
     dependencies:
       '@squaredmade/context': 1.0.0
       '@squaredmade/superjson': 1.0.0
 
-  '@squaredmade/rpc@1.0.1(express@5.1.0)':
+  '@squaredmade/rpc@1.0.2(express@5.1.0)':
     dependencies:
       '@squaredmade/context': 1.0.0
-      '@squaredmade/logger': 1.0.0
+      '@squaredmade/logger': 1.1.0
       '@squaredmade/superjson': 1.0.0
       express: 5.1.0
-      zod: 3.24.2
+      zod: 3.24.3
 
   '@squaredmade/superjson@1.0.0': {}
+
+  '@squaredmade/superjson@1.0.1': {}
 
   '@squaredmade/typescript-config@1.0.0': {}
 
