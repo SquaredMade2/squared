@@ -46,8 +46,8 @@ importers:
         specifier: ^1.24.0
         version: 1.25.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/db':
-        specifier: ^1.1.0
-        version: 1.1.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
+        specifier: workspace:*
+        version: link:../../packages/db
       '@squaredmade/logger':
         specifier: 1.1.0
         version: 1.1.0
@@ -261,8 +261,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/db':
-        specifier: ^1.1.0
-        version: 1.1.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
+        specifier: workspace:*
+        version: link:../../packages/db
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -2930,9 +2930,6 @@ packages:
   '@squaredmade/context@1.0.0':
     resolution: {integrity: sha512-Pr6Ph+e2Sney58ktzcNOqVsy/ci8TohMtPDFr99JK1K0ppisXV1cTL6mAuzaow698xqaeeg80JE+cOKOY139Gg==}
 
-  '@squaredmade/db@1.1.0':
-    resolution: {integrity: sha512-4MuW7P6BLYV2qTG/j6SPX+WyjvEa0vFW9kUYqe37eNCJ+ZMkDNCkMfRrVfrCka8k2BHK+yb+z9J+KYvpR4Y98Q==}
-
   '@squaredmade/fonts@1.0.4':
     resolution: {integrity: sha512-O4lBkirAz+f1B6qAfIhYdG5toCmpLhuvD3k9LSnQO4fE2j8omX9IfWWpLtpWz/lcRYOMfZOez/uBUc4pTzHSiA==}
     peerDependencies:
@@ -4972,95 +4969,6 @@ packages:
   drizzle-kit@0.31.0:
     resolution: {integrity: sha512-pcKVT+GbfPA+bUovPIilgVOoq+onNBo/YQBG86sf3/GFHkN6lRJPm1l7dKN0IMAk57RQoIm4GUllRrasLlcaSg==}
     hasBin: true
-
-  drizzle-orm@0.41.0:
-    resolution: {integrity: sha512-7A4ZxhHk9gdlXmTdPj/lREtP+3u8KvZ4yEN6MYVxBzZGex5Wtdc+CWSbu7btgF6TB0N+MNPrvW7RKBbxJchs/Q==}
-    peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3'
-      '@cloudflare/workers-types': '>=4'
-      '@electric-sql/pglite': '>=0.2.0'
-      '@libsql/client': '>=0.10.0'
-      '@libsql/client-wasm': '>=0.10.0'
-      '@neondatabase/serverless': '>=0.10.0'
-      '@op-engineering/op-sqlite': '>=2'
-      '@opentelemetry/api': ^1.4.1
-      '@planetscale/database': '>=1'
-      '@prisma/client': '*'
-      '@tidbcloud/serverless': '*'
-      '@types/better-sqlite3': '*'
-      '@types/pg': '*'
-      '@types/sql.js': '*'
-      '@vercel/postgres': '>=0.8.0'
-      '@xata.io/client': '*'
-      better-sqlite3: '>=7'
-      bun-types: '*'
-      expo-sqlite: '>=14.0.0'
-      gel: '>=2'
-      knex: '*'
-      kysely: '*'
-      mysql2: '>=2'
-      pg: '>=8'
-      postgres: '>=3'
-      prisma: '*'
-      sql.js: '>=1'
-      sqlite3: '>=5'
-    peerDependenciesMeta:
-      '@aws-sdk/client-rds-data':
-        optional: true
-      '@cloudflare/workers-types':
-        optional: true
-      '@electric-sql/pglite':
-        optional: true
-      '@libsql/client':
-        optional: true
-      '@libsql/client-wasm':
-        optional: true
-      '@neondatabase/serverless':
-        optional: true
-      '@op-engineering/op-sqlite':
-        optional: true
-      '@opentelemetry/api':
-        optional: true
-      '@planetscale/database':
-        optional: true
-      '@prisma/client':
-        optional: true
-      '@tidbcloud/serverless':
-        optional: true
-      '@types/better-sqlite3':
-        optional: true
-      '@types/pg':
-        optional: true
-      '@types/sql.js':
-        optional: true
-      '@vercel/postgres':
-        optional: true
-      '@xata.io/client':
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
-        optional: true
-      expo-sqlite:
-        optional: true
-      gel:
-        optional: true
-      knex:
-        optional: true
-      kysely:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      postgres:
-        optional: true
-      prisma:
-        optional: true
-      sql.js:
-        optional: true
-      sqlite3:
-        optional: true
 
   drizzle-orm@0.42.0:
     resolution: {integrity: sha512-pS8nNJm2kBNZwrOjTHJfdKkaU+KuUQmV/vk5D57NojDq4FG+0uAYGMulXtYT///HfgsMF0hnFFvu1ezI3OwOkg==}
@@ -11458,42 +11366,6 @@ snapshots:
 
   '@squaredmade/context@1.0.0': {}
 
-  '@squaredmade/db@1.1.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)':
-    dependencies:
-      '@neondatabase/serverless': 1.0.0
-      drizzle-orm: 0.41.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)
-      ws: 8.18.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@prisma/client'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - better-sqlite3
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - utf-8-validate
-
   '@squaredmade/fonts@1.0.4(tailwindcss@4.0.17)':
     dependencies:
       tailwindcss: 4.0.17
@@ -13725,16 +13597,6 @@ snapshots:
       esbuild-register: 3.6.0(esbuild@0.25.2)
     transitivePeerDependencies:
       - supports-color
-
-  drizzle-orm@0.41.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1):
-    optionalDependencies:
-      '@neondatabase/serverless': 1.0.0
-      '@opentelemetry/api': 1.9.0
-      '@prisma/client': 6.2.1(prisma@6.2.1)
-      '@types/pg': 8.11.11
-      gel: 2.0.1
-      pg: 8.14.1
-      prisma: 6.2.1
 
   drizzle-orm@0.42.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1):
     optionalDependencies:

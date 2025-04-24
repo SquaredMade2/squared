@@ -75,34 +75,30 @@ const StatusFilterDropDown = ({
 	};
 
 	useEffect(() => {
+		removeFilter("status");
 		if (selectedStatuses.length > 0) {
-			removeFilter("status");
 			addFilter({
 				field: "status",
 				value: selectedStatuses,
 				operator: "arrayIncludesAny",
 			});
-		} else {
-			if (currentFilterTypes.includes("status")) {
-				setSelectedStatuses(
-					currentFilters
-						.filter((filter) => filter.field === "status")
-						.flatMap((filter) => filter.value) as Status[],
-				);
-			} else {
-				removeFilter("status");
-			}
 		}
 	}, [selectedStatuses, addFilter, removeFilter]);
 
 	useEffect(() => {
 		if (
-			currentFilterTypes.length === 0 ||
-			!currentFilterTypes.includes("status")
+			selectedStatuses.length === 0 &&
+			currentFilterTypes.includes("status")
 		) {
-			setSelectedStatuses([]);
+			const statusValues = currentFilters
+				.filter((filter) => filter.field === "status")
+				.flatMap((filter) => filter.value) as Status[];
+
+			if (statusValues.length > 0) {
+				setSelectedStatuses(statusValues);
+			}
 		}
-	}, [currentFilterTypes]);
+	}, [currentFilterTypes, currentFilters]);
 
 	return (
 		<DropdownMenuSub>

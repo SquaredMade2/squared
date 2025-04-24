@@ -12,6 +12,11 @@ export type CreateWorkspaceRequest = {
 
 export type CreateWorkspaceResponse = {
 	admins: string[];
+	archiveConfig: {
+		daysUntilArchive: number;
+		enabled: boolean;
+		lastArchiveRun: Date | null;
+	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
@@ -39,6 +44,11 @@ export type GetWorkspaceRequest = {
 
 export type GetWorkspaceResponse = {
 	admins: string[];
+	archiveConfig: {
+		daysUntilArchive: number;
+		enabled: boolean;
+		lastArchiveRun: Date | null;
+	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
@@ -66,6 +76,11 @@ export type GetWorkspaceByUrlRequest = {
 
 export type GetWorkspaceByUrlResponse = {
 	admins: string[];
+	archiveConfig: {
+		daysUntilArchive: number;
+		enabled: boolean;
+		lastArchiveRun: Date | null;
+	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
@@ -98,6 +113,11 @@ export type UpdateWorkspaceRequest = {
 
 export type UpdateWorkspaceResponse = {
 	admins: string[];
+	archiveConfig: {
+		daysUntilArchive: number;
+		enabled: boolean;
+		lastArchiveRun: Date | null;
+	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
@@ -129,6 +149,11 @@ export type GetUserWorkspacesRequest = {
 
 export type GetUserWorkspacesResponse = {
 	admins: string[];
+	archiveConfig: {
+		daysUntilArchive: number;
+		enabled: boolean;
+		lastArchiveRun: Date | null;
+	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
@@ -162,6 +187,11 @@ export type JoinWorkspaceRequest = {
 
 export type JoinWorkspaceResponse = {
 	admins: string[];
+	archiveConfig: {
+		daysUntilArchive: number;
+		enabled: boolean;
+		lastArchiveRun: Date | null;
+	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
