@@ -52,8 +52,8 @@ importers:
         specifier: 1.1.1
         version: 1.1.1
       '@squaredmade/rpc':
-        specifier: 1.0.2
-        version: 1.0.2(express@5.1.0)
+        specifier: 1.0.1
+        version: 1.0.1(express@5.1.0)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -2950,6 +2950,9 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
 
+  '@squaredmade/logger@1.0.0':
+    resolution: {integrity: sha512-Fw6m4atxXrE1WfOJeFqASGiDNscZekyHUTJTjQVSB0nWmC5kZRlm721Y5RdANYE2WPjzVcXWqE9dN46e/nY0eQ==}
+
   '@squaredmade/logger@1.1.0':
     resolution: {integrity: sha512-gEGXtj2pPRVNRwrEbt9HACtD/o/T3ZnghO/Ov5ZOoT0i52Tm3P0Pkv6K91a1uVvV5+fv+KOsPs4y2L2RDoOQrQ==}
 
@@ -2959,10 +2962,10 @@ packages:
   '@squaredmade/rpc-client@1.0.1':
     resolution: {integrity: sha512-eafwetGTZd+FlMsi6yu13CJeOMpRULZF63E3bcPD23ggdp54BxdpFvanXsjbHXRlayX4QYoLpgHalZy3/pAPww==}
 
-  '@squaredmade/rpc@1.0.2':
-    resolution: {integrity: sha512-FAAft+ujNAKVQQoz09KpGr0jcjESOHspKgPBAsl4/8fx3Da/wDl/thviejUVSj+XW0HmA1ZKg5ex8IfgoaGW7w==}
+  '@squaredmade/rpc@1.0.1':
+    resolution: {integrity: sha512-MSAGzIt0G2gtelzhb0/EH5+fEQGfaoZritt2iJPUkj0muaOCBk02LKpRI9ti7Z2m8A8x/GXd3NfWpAEc2flbDw==}
     peerDependencies:
-      express: ^4.18.2 || ^5.0.0
+      express: ^4.18.2
 
   '@squaredmade/superjson@1.0.0':
     resolution: {integrity: sha512-n/bFIMUWT8Tm8RS6YMUzPQAMF76Tbe+GFSu6+zVZXUrXBeDrzl2kqS6tUvo+MVJ+VvCK3GVxIZbNR87a7/GLTg==}
@@ -11398,6 +11401,10 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
+  '@squaredmade/logger@1.0.0':
+    dependencies:
+      winston: 3.17.0
+
   '@squaredmade/logger@1.1.0':
     dependencies:
       winston: 3.17.0
@@ -11411,13 +11418,13 @@ snapshots:
       '@squaredmade/context': 1.0.0
       '@squaredmade/superjson': 1.0.0
 
-  '@squaredmade/rpc@1.0.2(express@5.1.0)':
+  '@squaredmade/rpc@1.0.1(express@5.1.0)':
     dependencies:
       '@squaredmade/context': 1.0.0
-      '@squaredmade/logger': 1.1.0
+      '@squaredmade/logger': 1.0.0
       '@squaredmade/superjson': 1.0.0
       express: 5.1.0
-      zod: 3.24.3
+      zod: 3.24.2
 
   '@squaredmade/superjson@1.0.0': {}
 
