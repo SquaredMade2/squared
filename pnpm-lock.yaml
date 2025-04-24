@@ -92,8 +92,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
@@ -585,8 +585,8 @@ importers:
         specifier: 1.1.1
         version: 1.1.1
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       express:
         specifier: ^4.18.2 || ^5.0.0
         version: 5.1.0
@@ -625,8 +625,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
     devDependencies:
       '@squaredmade/builder':
         specifier: ^1.0.1
@@ -2966,6 +2966,9 @@ packages:
 
   '@squaredmade/superjson@1.0.0':
     resolution: {integrity: sha512-n/bFIMUWT8Tm8RS6YMUzPQAMF76Tbe+GFSu6+zVZXUrXBeDrzl2kqS6tUvo+MVJ+VvCK3GVxIZbNR87a7/GLTg==}
+
+  '@squaredmade/superjson@1.0.1':
+    resolution: {integrity: sha512-5x+yK4zvqtPb//VXFKzew1AoXwRkPi9u2cBg7nwLtblE48tdbjrCvxGzGNrPqETL2XMVbzfV+Km5WHGdFaZ4Og==}
 
   '@squaredmade/typescript-config@1.0.0':
     resolution: {integrity: sha512-+cYRcw/uvVL+qFMb9wBgK23NpEwsmR4QbjohtCvc6aebooNIi4iwauyRS/S/TkFHBcA3IAVw5F85xea3pNZ65A==}
@@ -11417,6 +11420,8 @@ snapshots:
       zod: 3.24.3
 
   '@squaredmade/superjson@1.0.0': {}
+
+  '@squaredmade/superjson@1.0.1': {}
 
   '@squaredmade/typescript-config@1.0.0': {}
 
