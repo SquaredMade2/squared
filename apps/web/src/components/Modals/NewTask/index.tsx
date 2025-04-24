@@ -1,6 +1,7 @@
 "use client";
 
 import { useCreateTask } from "@/hooks/useCreateTask";
+import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
@@ -25,6 +26,7 @@ import {
 import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -34,6 +36,7 @@ import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import { SprintDropdownButton } from "./SprintDropdownButton";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import TeamSelector from "./TeamSelector";
 export * from "./NewTaskButton";
@@ -49,6 +52,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const NewTaskModal = () => {
+	const { activeSprint, upcomingSprints } = useSprints();
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
 	const { createTask, isLoading } = useCreateTask();
@@ -148,8 +152,8 @@ export const NewTaskModal = () => {
 					</div>
 				</DialogHeader>
 				<Form {...form} onSubmit={handleCreateTask}>
-					<div className="flex space-x-4 ">
-						<div className="w-4/5 space-y-4 ">
+					<div className="flex space-x-4">
+						<div className="w-4/5 space-y-4">
 							<FormField
 								control={form.control}
 								name="title"
@@ -185,6 +189,20 @@ export const NewTaskModal = () => {
 									</FormItem>
 								)}
 							/>
+							{upcomingSprints.length === 0 && activeSprint && (
+								<div className="flex items-center gap-2">
+									<p className="text-foreground">Add task to current sprint</p>
+									<Switch
+										checked={activeSprint.id === newTaskData.sprintId}
+										onCheckedChange={(checked) =>
+											setNewTaskData({
+												...newTaskData,
+												sprintId: checked ? activeSprint.id : null,
+											})
+										}
+									/>
+								</div>
+							)}
 						</div>
 						<div>
 							<Separator orientation="vertical" />
@@ -194,6 +212,12 @@ export const NewTaskModal = () => {
 							<LabelDropdownButton />
 							<PriorityDropdownButton />
 							<EffortDropdownButton />
+							{upcomingSprints.length > 0 && (
+								<SprintDropdownButton
+									activeSprint={activeSprint || null}
+									upcomingSprints={upcomingSprints}
+								/>
+							)}
 							<DateDropdownButton />
 						</div>
 					</div>
