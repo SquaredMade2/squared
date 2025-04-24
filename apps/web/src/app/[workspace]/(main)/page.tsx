@@ -25,10 +25,19 @@ export default function Home() {
 					workspaceId: organization.id,
 				})
 				.then((res) => res.json());
-			if (!team && allTeams[0].identifier) {
+
+			if (team) {
+				const teamBelongsToCurrentWorkspace = allTeams.some(
+					(t) => t.id === team.id,
+				);
+				if (teamBelongsToCurrentWorkspace) {
+					router.push(`/${workspaceUrl}/team/${team.identifier}/all`);
+					return allTeams;
+				}
+			}
+
+			if (allTeams[0]?.identifier) {
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
-			} else {
-				router.push(`/${workspaceUrl}/team/${team?.identifier}/all`);
 			}
 			return allTeams;
 		},
