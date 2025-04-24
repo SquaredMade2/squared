@@ -49,8 +49,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/db
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@squaredmade/rpc':
         specifier: 1.0.1
         version: 1.0.1(express@5.1.0)
@@ -582,8 +582,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@squaredmade/superjson':
         specifier: 1.0.0
         version: 1.0.0
@@ -650,8 +650,8 @@ importers:
   packages/seed:
     dependencies:
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -2955,6 +2955,9 @@ packages:
 
   '@squaredmade/logger@1.1.0':
     resolution: {integrity: sha512-gEGXtj2pPRVNRwrEbt9HACtD/o/T3ZnghO/Ov5ZOoT0i52Tm3P0Pkv6K91a1uVvV5+fv+KOsPs4y2L2RDoOQrQ==}
+
+  '@squaredmade/logger@1.1.1':
+    resolution: {integrity: sha512-SY75V9AzgqeXgY8HBNPr+DoFOFTsRqVR0IEApzkMGOgmx0tvTCyho+y2Zegt6OKMzTcoVFPCskR5fg6WA8IlLg==}
 
   '@squaredmade/rpc-client@1.0.0':
     resolution: {integrity: sha512-UN/P1hPUQ9cXiUwc/aLWuKJU6nFdfpK9WE8zgbY05w2JUcf4HG3R4eBoxdfAj5Jb5lnI9n1ILivLDPxQHfQPDQ==}
@@ -11400,6 +11403,10 @@ snapshots:
       winston: 3.17.0
 
   '@squaredmade/logger@1.1.0':
+    dependencies:
+      winston: 3.17.0
+
+  '@squaredmade/logger@1.1.1':
     dependencies:
       winston: 3.17.0
 
