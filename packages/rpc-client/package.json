@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@squaredmade/context": "1.0.1",
-		"@squaredmade/superjson": "1.0.0"
+		"@squaredmade/superjson": "1.0.1"
 	},
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.1",
