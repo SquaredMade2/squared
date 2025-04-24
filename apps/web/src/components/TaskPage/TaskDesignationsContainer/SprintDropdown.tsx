@@ -14,7 +14,7 @@ const SprintDropdown = () => {
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 	const [assignedSprint, setAssignedSprint] = useState<Sprint | null>(null);
-	const [activeSprints, setActiveSprints] = useState<Sprint | null>(null);
+	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 	const sprints = useRef<Sprint[]>([]);
 
 	const taskId = currentTask?.id ?? "";
@@ -30,7 +30,7 @@ const SprintDropdown = () => {
 					sprints.current.find((s: Sprint) => s.id === currentTask?.sprintId) ??
 						null,
 				);
-				setActiveSprints(
+				setActiveSprint(
 					sprints.current.find((s: Sprint) => s.status === "ACTIVE") ?? null,
 				);
 				return sprints.current;
@@ -84,7 +84,7 @@ const SprintDropdown = () => {
 				assignedSprint?.name ? assignedSprint.name : "No sprint assigned"
 			}
 			emptyText="No sprints found."
-			listItems={activeSprints ? [activeSprints] : []}
+			listItems={activeSprint ? [activeSprint] : []}
 			selectedItemId={assignedSprint?.id ?? ""}
 			selectedItemLabel={assignedSprint?.name ?? ""}
 			itemLabel={(sprint: Sprint) => sprint.name}
