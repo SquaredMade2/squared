@@ -152,7 +152,7 @@ export default function SprintRetrospectivePage() {
 		},
 		onError: (error, params) => {
 			toast.error(
-				`Failed to ${params.operationType === "add" ? "add" : "edit"} item`,
+				`Failed to ${params.operationType === "add" ? "add" : "update"} item`,
 				{
 					description: parseError(error),
 				},
@@ -168,7 +168,7 @@ export default function SprintRetrospectivePage() {
 			);
 			fetchData();
 			toast.success(
-				`Item ${params.operationType === "add" ? "added" : "edited"} successfully`,
+				`Item ${params.operationType === "add" ? "added" : "updated"} successfully`,
 			);
 		},
 	});
