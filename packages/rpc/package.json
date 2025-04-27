@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/rpc",
-	"version": "1.0.2",
+	"version": "1.0.4",
 	"publishConfig": {
 		"access": "public"
 	},
