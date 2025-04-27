@@ -27,7 +27,7 @@ export const router = <T extends Record<string, OperationType<any, any>>>(
 					err.status,
 				);
 			}
-			console.error(err);
+
 			return c.json(
 				{
 					error: "Unknown Error",
