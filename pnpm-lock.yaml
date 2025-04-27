@@ -11411,7 +11411,7 @@ snapshots:
       '@squaredmade/logger': 1.1.1
       '@squaredmade/superjson': 1.0.1
       express: 5.1.0
-      zod: 3.24.3
+      zod: 3.24.2
 
   '@squaredmade/superjson@1.0.1': {}
 
