@@ -52,8 +52,8 @@ importers:
         specifier: 1.1.1
         version: 1.1.1
       '@squaredmade/rpc':
-        specifier: 1.0.2
-        version: 1.0.2(express@5.1.0)
+        specifier: 1.0.3
+        version: 1.0.3(@squaredmade/context@1.0.1)(express@5.1.0)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -176,8 +176,8 @@ importers:
         specifier: 1.0.5
         version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/rpc-client':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 1.0.2
+        version: 1.0.2(@squaredmade/context@1.0.1)
       '@squaredmade/ui':
         specifier: 2.0.2
         version: 2.0.2(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)
@@ -579,7 +579,7 @@ importers:
   packages/rpc:
     dependencies:
       '@squaredmade/context':
-        specifier: 1.0.1
+        specifier: ^1
         version: 1.0.1
       '@squaredmade/logger':
         specifier: 1.1.1
@@ -622,7 +622,7 @@ importers:
   packages/rpc-client:
     dependencies:
       '@squaredmade/context':
-        specifier: 1.0.1
+        specifier: ^1
         version: 1.0.1
       '@squaredmade/superjson':
         specifier: 1.0.1
@@ -2927,9 +2927,6 @@ packages:
     resolution: {integrity: sha512-F5UUXUExkYAHhdg5yEy7ZQ9HMY+klR5GR1zt5PGS3gLsopAiBBb7MJD9TPDLXBHHHAklXzse4hp88ysFfgiKrw==}
     hasBin: true
 
-  '@squaredmade/context@1.0.0':
-    resolution: {integrity: sha512-Pr6Ph+e2Sney58ktzcNOqVsy/ci8TohMtPDFr99JK1K0ppisXV1cTL6mAuzaow698xqaeeg80JE+cOKOY139Gg==}
-
   '@squaredmade/context@1.0.1':
     resolution: {integrity: sha512-scxG0BnTfo/wj2BV1MIjyGp23k7BYlVI/aqryQzHNOwFnE490ChNh3x1EVXEbTgGL4hchbqlFZKk2hTpG0WRWA==}
 
@@ -2956,16 +2953,16 @@ packages:
   '@squaredmade/logger@1.1.1':
     resolution: {integrity: sha512-SY75V9AzgqeXgY8HBNPr+DoFOFTsRqVR0IEApzkMGOgmx0tvTCyho+y2Zegt6OKMzTcoVFPCskR5fg6WA8IlLg==}
 
-  '@squaredmade/rpc-client@1.0.1':
-    resolution: {integrity: sha512-eafwetGTZd+FlMsi6yu13CJeOMpRULZF63E3bcPD23ggdp54BxdpFvanXsjbHXRlayX4QYoLpgHalZy3/pAPww==}
-
-  '@squaredmade/rpc@1.0.2':
-    resolution: {integrity: sha512-FAAft+ujNAKVQQoz09KpGr0jcjESOHspKgPBAsl4/8fx3Da/wDl/thviejUVSj+XW0HmA1ZKg5ex8IfgoaGW7w==}
+  '@squaredmade/rpc-client@1.0.2':
+    resolution: {integrity: sha512-JWv9ZB0OmzIlsS+cbxjP65oUKnSv+TT619+5f00P12K6OAFSn8lRCxzHbR8SqLtaJHwBQmdBBE1GfFjBsmgVJQ==}
     peerDependencies:
-      express: ^4.18.2 || ^5.0.0
+      '@squaredmade/context': ^1
 
-  '@squaredmade/superjson@1.0.0':
-    resolution: {integrity: sha512-n/bFIMUWT8Tm8RS6YMUzPQAMF76Tbe+GFSu6+zVZXUrXBeDrzl2kqS6tUvo+MVJ+VvCK3GVxIZbNR87a7/GLTg==}
+  '@squaredmade/rpc@1.0.3':
+    resolution: {integrity: sha512-FcGUVoJgja2W9puWfDF9IETJVLM46N1OdLU7FnUPEmv0FXbxBnULOk+iDHjaLGtucdq9VG80F2LuujDJSGr/PQ==}
+    peerDependencies:
+      '@squaredmade/context': ^1
+      express: ^4.18.2 || ^5.0.0
 
   '@squaredmade/superjson@1.0.1':
     resolution: {integrity: sha512-5x+yK4zvqtPb//VXFKzew1AoXwRkPi9u2cBg7nwLtblE48tdbjrCvxGzGNrPqETL2XMVbzfV+Km5WHGdFaZ4Og==}
@@ -11376,8 +11373,6 @@ snapshots:
       - typescript
       - yaml
 
-  '@squaredmade/context@1.0.0': {}
-
   '@squaredmade/context@1.0.1': {}
 
   '@squaredmade/fonts@1.0.4(tailwindcss@4.0.17)':
@@ -11406,20 +11401,18 @@ snapshots:
     dependencies:
       winston: 3.17.0
 
-  '@squaredmade/rpc-client@1.0.1':
+  '@squaredmade/rpc-client@1.0.2(@squaredmade/context@1.0.1)':
     dependencies:
-      '@squaredmade/context': 1.0.0
-      '@squaredmade/superjson': 1.0.0
+      '@squaredmade/context': 1.0.1
+      '@squaredmade/superjson': 1.0.1
 
-  '@squaredmade/rpc@1.0.2(express@5.1.0)':
+  '@squaredmade/rpc@1.0.3(@squaredmade/context@1.0.1)(express@5.1.0)':
     dependencies:
-      '@squaredmade/context': 1.0.0
-      '@squaredmade/logger': 1.1.0
-      '@squaredmade/superjson': 1.0.0
+      '@squaredmade/context': 1.0.1
+      '@squaredmade/logger': 1.1.1
+      '@squaredmade/superjson': 1.0.1
       express: 5.1.0
       zod: 3.24.3
-
-  '@squaredmade/superjson@1.0.0': {}
 
   '@squaredmade/superjson@1.0.1': {}
 

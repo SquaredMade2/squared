@@ -1,5 +1,11 @@
 # @squaredmade/rpc
 
+## 1.0.3
+
+### Patch Changes
+
+- Convert Context Package to be a peer dependency in rpc
+
 ## 1.0.2
 
 ### Patch Changes

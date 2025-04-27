@@ -1,3 +1,4 @@
+import { parseError } from "@/utils/parseError";
 import { type Context, Hono, type Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { MiddlewareHandler, Variables } from "hono/types";
@@ -26,10 +27,11 @@ export const router = <T extends Record<string, OperationType<any, any>>>(
 					err.status,
 				);
 			}
+			console.error(err);
 			return c.json(
 				{
 					error: "Unknown Error",
-					message: "An unexpected error occurred",
+					message: parseError(err),
 					type: "UnknownError",
 				},
 				500,
