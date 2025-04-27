@@ -23,6 +23,44 @@ import {
 	statusType,
 } from "./types";
 
+const DEFAULT_LABELS = [
+	{
+		name: "Feature",
+		description: "New functionality or enhancement to the application",
+		color: "#FF5733",
+	},
+	{
+		name: "Bug",
+		description: "Issue that causes unexpected behavior or application failure",
+		color: "#C70039",
+	},
+	{
+		name: "Chore",
+		description: "Routine maintenance task not affecting production code",
+		color: "#900C3F",
+	},
+	{
+		name: "Refactor",
+		description: "Code improvement that doesn't change external behavior",
+		color: "#581845",
+	},
+	{
+		name: "Docs",
+		description: "Improvements or additions to documentation",
+		color: "#FFC300",
+	},
+	{
+		name: "Test",
+		description: "Adding or modifying test cases and testing infrastructure",
+		color: "#DAF7A6",
+	},
+	{
+		name: "Design",
+		description: "UI/UX improvements or visual design elements",
+		color: "#33FFBD",
+	},
+];
+
 export const teamsTable = pgTable(
 	"Team",
 	{
@@ -247,8 +285,16 @@ export const workspacesTable = pgTable(
 		admins: text().array().default([]).notNull(),
 		defaultView: text(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		labels: jsonb().$type<Label[]>().default([]).notNull(),
+		labels: jsonb().$type<Label[]>().default(DEFAULT_LABELS).notNull(),
 		inviteLinks: jsonb().$type<WorkspaceInviteLink[]>().default([]).notNull(),
+		archiveConfig: jsonb()
+			.$type<ArchiveConfig>()
+			.default({
+				enabled: false,
+				daysUntilArchive: 30,
+				lastArchiveRun: null,
+			})
+			.notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
@@ -681,6 +727,11 @@ export type Label = {
 	name: string;
 	description?: string | null;
 	color: string;
+};
+export type ArchiveConfig = {
+	enabled: boolean;
+	daysUntilArchive: number;
+	lastArchiveRun: Date | null;
 };
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Project = typeof projectsTable.$inferSelect;

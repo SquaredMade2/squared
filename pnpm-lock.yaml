@@ -46,14 +46,14 @@ importers:
         specifier: ^1.24.0
         version: 1.25.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/db':
-        specifier: ^1.1.0
-        version: 1.1.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
+        specifier: workspace:*
+        version: link:../../packages/db
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@squaredmade/rpc':
-        specifier: 1.0.1
-        version: 1.0.1(express@5.1.0)
+        specifier: 1.0.4
+        version: 1.0.4(express@5.1.0)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -92,8 +92,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@types/cors':
         specifier: ^2.8.17
         version: 2.8.17
@@ -167,17 +167,17 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/context':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/fonts':
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.1.4)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/rpc-client':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.2
+        version: 1.0.2(@squaredmade/context@1.0.1)
       '@squaredmade/ui':
         specifier: 3.0.1
         version: 3.0.1(@tailwindcss/postcss@4.1.4)(@types/node@22.14.1)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.4))(tailwindcss@4.1.4)(zod@3.24.2)
@@ -258,8 +258,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       '@squaredmade/db':
-        specifier: ^1.1.0
-        version: 1.1.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)
+        specifier: workspace:*
+        version: link:../../packages/db
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -323,8 +323,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(tailwindcss@4.0.17)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/ui':
         specifier: 2.0.2
         version: 2.0.2(@tailwindcss/postcss@4.0.17)(@types/node@22.13.14)(@types/react@19.1.2)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.0.17))(tailwindcss@4.0.17)(zod@3.24.2)
@@ -459,8 +459,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       drizzle-orm:
-        specifier: ^0.42.0
-        version: 0.42.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)
+        specifier: ^0.43.0
+        version: 0.43.1(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)
       ws:
         specifier: ^8.18.0
         version: 8.18.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -576,14 +576,14 @@ importers:
   packages/rpc:
     dependencies:
       '@squaredmade/context':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       express:
         specifier: ^4.18.2 || ^5.0.0
         version: 5.1.0
@@ -619,11 +619,11 @@ importers:
   packages/rpc-client:
     dependencies:
       '@squaredmade/context':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: ^1
+        version: 1.0.1
       '@squaredmade/superjson':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
     devDependencies:
       '@squaredmade/builder':
         specifier: ^1.0.1
@@ -647,8 +647,8 @@ importers:
   packages/seed:
     dependencies:
       '@squaredmade/logger':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.1.1
+        version: 1.1.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -704,8 +704,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/icons':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.0.5
+        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.13
@@ -2924,11 +2924,8 @@ packages:
     resolution: {integrity: sha512-F5UUXUExkYAHhdg5yEy7ZQ9HMY+klR5GR1zt5PGS3gLsopAiBBb7MJD9TPDLXBHHHAklXzse4hp88ysFfgiKrw==}
     hasBin: true
 
-  '@squaredmade/context@1.0.0':
-    resolution: {integrity: sha512-Pr6Ph+e2Sney58ktzcNOqVsy/ci8TohMtPDFr99JK1K0ppisXV1cTL6mAuzaow698xqaeeg80JE+cOKOY139Gg==}
-
-  '@squaredmade/db@1.1.0':
-    resolution: {integrity: sha512-4MuW7P6BLYV2qTG/j6SPX+WyjvEa0vFW9kUYqe37eNCJ+ZMkDNCkMfRrVfrCka8k2BHK+yb+z9J+KYvpR4Y98Q==}
+  '@squaredmade/context@1.0.1':
+    resolution: {integrity: sha512-scxG0BnTfo/wj2BV1MIjyGp23k7BYlVI/aqryQzHNOwFnE490ChNh3x1EVXEbTgGL4hchbqlFZKk2hTpG0WRWA==}
 
   '@squaredmade/fonts@1.0.4':
     resolution: {integrity: sha512-O4lBkirAz+f1B6qAfIhYdG5toCmpLhuvD3k9LSnQO4fE2j8omX9IfWWpLtpWz/lcRYOMfZOez/uBUc4pTzHSiA==}
@@ -2941,22 +2938,30 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@squaredmade/logger@1.0.0':
-    resolution: {integrity: sha512-Fw6m4atxXrE1WfOJeFqASGiDNscZekyHUTJTjQVSB0nWmC5kZRlm721Y5RdANYE2WPjzVcXWqE9dN46e/nY0eQ==}
+  '@squaredmade/icons@1.0.5':
+    resolution: {integrity: sha512-SSDaM8evnSvm3RY0ynrv0Fk1zgPviRsY8yQ7NqsGII2wzX/oqIQuBA2oLlY9gECuDkvry0VkweVX8TIXHPm/pA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
 
   '@squaredmade/logger@1.1.0':
     resolution: {integrity: sha512-gEGXtj2pPRVNRwrEbt9HACtD/o/T3ZnghO/Ov5ZOoT0i52Tm3P0Pkv6K91a1uVvV5+fv+KOsPs4y2L2RDoOQrQ==}
 
-  '@squaredmade/rpc-client@1.0.0':
-    resolution: {integrity: sha512-UN/P1hPUQ9cXiUwc/aLWuKJU6nFdfpK9WE8zgbY05w2JUcf4HG3R4eBoxdfAj5Jb5lnI9n1ILivLDPxQHfQPDQ==}
+  '@squaredmade/logger@1.1.1':
+    resolution: {integrity: sha512-SY75V9AzgqeXgY8HBNPr+DoFOFTsRqVR0IEApzkMGOgmx0tvTCyho+y2Zegt6OKMzTcoVFPCskR5fg6WA8IlLg==}
 
-  '@squaredmade/rpc@1.0.1':
-    resolution: {integrity: sha512-MSAGzIt0G2gtelzhb0/EH5+fEQGfaoZritt2iJPUkj0muaOCBk02LKpRI9ti7Z2m8A8x/GXd3NfWpAEc2flbDw==}
+  '@squaredmade/rpc-client@1.0.2':
+    resolution: {integrity: sha512-JWv9ZB0OmzIlsS+cbxjP65oUKnSv+TT619+5f00P12K6OAFSn8lRCxzHbR8SqLtaJHwBQmdBBE1GfFjBsmgVJQ==}
     peerDependencies:
-      express: ^4.18.2
+      '@squaredmade/context': ^1
 
-  '@squaredmade/superjson@1.0.0':
-    resolution: {integrity: sha512-n/bFIMUWT8Tm8RS6YMUzPQAMF76Tbe+GFSu6+zVZXUrXBeDrzl2kqS6tUvo+MVJ+VvCK3GVxIZbNR87a7/GLTg==}
+  '@squaredmade/rpc@1.0.4':
+    resolution: {integrity: sha512-f+PQPgHDwrdgjcdFjmujHSUdQsaYPSn++4hxPbNVyBLsB4+EQo3A5LKd8Li54ziUP8ui1Y26fxaRWPke5mxzng==}
+    peerDependencies:
+      express: ^4.18.2 || ^5.0.0
+
+  '@squaredmade/superjson@1.0.1':
+    resolution: {integrity: sha512-5x+yK4zvqtPb//VXFKzew1AoXwRkPi9u2cBg7nwLtblE48tdbjrCvxGzGNrPqETL2XMVbzfV+Km5WHGdFaZ4Og==}
 
   '@squaredmade/typescript-config@1.0.0':
     resolution: {integrity: sha512-+cYRcw/uvVL+qFMb9wBgK23NpEwsmR4QbjohtCvc6aebooNIi4iwauyRS/S/TkFHBcA3IAVw5F85xea3pNZ65A==}
@@ -4982,97 +4987,8 @@ packages:
     resolution: {integrity: sha512-pcKVT+GbfPA+bUovPIilgVOoq+onNBo/YQBG86sf3/GFHkN6lRJPm1l7dKN0IMAk57RQoIm4GUllRrasLlcaSg==}
     hasBin: true
 
-  drizzle-orm@0.41.0:
-    resolution: {integrity: sha512-7A4ZxhHk9gdlXmTdPj/lREtP+3u8KvZ4yEN6MYVxBzZGex5Wtdc+CWSbu7btgF6TB0N+MNPrvW7RKBbxJchs/Q==}
-    peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3'
-      '@cloudflare/workers-types': '>=4'
-      '@electric-sql/pglite': '>=0.2.0'
-      '@libsql/client': '>=0.10.0'
-      '@libsql/client-wasm': '>=0.10.0'
-      '@neondatabase/serverless': '>=0.10.0'
-      '@op-engineering/op-sqlite': '>=2'
-      '@opentelemetry/api': ^1.4.1
-      '@planetscale/database': '>=1'
-      '@prisma/client': '*'
-      '@tidbcloud/serverless': '*'
-      '@types/better-sqlite3': '*'
-      '@types/pg': '*'
-      '@types/sql.js': '*'
-      '@vercel/postgres': '>=0.8.0'
-      '@xata.io/client': '*'
-      better-sqlite3: '>=7'
-      bun-types: '*'
-      expo-sqlite: '>=14.0.0'
-      gel: '>=2'
-      knex: '*'
-      kysely: '*'
-      mysql2: '>=2'
-      pg: '>=8'
-      postgres: '>=3'
-      prisma: '*'
-      sql.js: '>=1'
-      sqlite3: '>=5'
-    peerDependenciesMeta:
-      '@aws-sdk/client-rds-data':
-        optional: true
-      '@cloudflare/workers-types':
-        optional: true
-      '@electric-sql/pglite':
-        optional: true
-      '@libsql/client':
-        optional: true
-      '@libsql/client-wasm':
-        optional: true
-      '@neondatabase/serverless':
-        optional: true
-      '@op-engineering/op-sqlite':
-        optional: true
-      '@opentelemetry/api':
-        optional: true
-      '@planetscale/database':
-        optional: true
-      '@prisma/client':
-        optional: true
-      '@tidbcloud/serverless':
-        optional: true
-      '@types/better-sqlite3':
-        optional: true
-      '@types/pg':
-        optional: true
-      '@types/sql.js':
-        optional: true
-      '@vercel/postgres':
-        optional: true
-      '@xata.io/client':
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
-        optional: true
-      expo-sqlite:
-        optional: true
-      gel:
-        optional: true
-      knex:
-        optional: true
-      kysely:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      postgres:
-        optional: true
-      prisma:
-        optional: true
-      sql.js:
-        optional: true
-      sqlite3:
-        optional: true
-
-  drizzle-orm@0.42.0:
-    resolution: {integrity: sha512-pS8nNJm2kBNZwrOjTHJfdKkaU+KuUQmV/vk5D57NojDq4FG+0uAYGMulXtYT///HfgsMF0hnFFvu1ezI3OwOkg==}
+  drizzle-orm@0.43.1:
+    resolution: {integrity: sha512-dUcDaZtE/zN4RV/xqGrVSMpnEczxd5cIaoDeor7Zst9wOe/HzC/7eAaulywWGYXdDEc9oBPMjayVEDg0ziTLJA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -11464,43 +11380,7 @@ snapshots:
       - typescript
       - yaml
 
-  '@squaredmade/context@1.0.0': {}
-
-  '@squaredmade/db@1.1.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)(utf-8-validate@6.0.4)':
-    dependencies:
-      '@neondatabase/serverless': 1.0.0
-      drizzle-orm: 0.41.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1)
-      ws: 8.18.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@prisma/client'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - better-sqlite3
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - utf-8-validate
+  '@squaredmade/context@1.0.1': {}
 
   '@squaredmade/fonts@1.0.4(tailwindcss@4.0.17)':
     dependencies:
@@ -11515,28 +11395,33 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@squaredmade/logger@1.0.0':
+  '@squaredmade/icons@1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      winston: 3.17.0
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   '@squaredmade/logger@1.1.0':
     dependencies:
       winston: 3.17.0
 
-  '@squaredmade/rpc-client@1.0.0':
+  '@squaredmade/logger@1.1.1':
     dependencies:
-      '@squaredmade/context': 1.0.0
-      '@squaredmade/superjson': 1.0.0
+      winston: 3.17.0
 
-  '@squaredmade/rpc@1.0.1(express@5.1.0)':
+  '@squaredmade/rpc-client@1.0.2(@squaredmade/context@1.0.1)':
     dependencies:
-      '@squaredmade/context': 1.0.0
-      '@squaredmade/logger': 1.0.0
-      '@squaredmade/superjson': 1.0.0
+      '@squaredmade/context': 1.0.1
+      '@squaredmade/superjson': 1.0.1
+
+  '@squaredmade/rpc@1.0.4(express@5.1.0)':
+    dependencies:
+      '@squaredmade/context': 1.0.1
+      '@squaredmade/logger': 1.1.1
+      '@squaredmade/superjson': 1.0.1
       express: 5.1.0
       zod: 3.24.2
 
-  '@squaredmade/superjson@1.0.0': {}
+  '@squaredmade/superjson@1.0.1': {}
 
   '@squaredmade/typescript-config@1.0.0': {}
 
@@ -13734,17 +13619,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.41.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1):
-    optionalDependencies:
-      '@neondatabase/serverless': 1.0.0
-      '@opentelemetry/api': 1.9.0
-      '@prisma/client': 6.2.1(prisma@6.2.1)
-      '@types/pg': 8.11.11
-      gel: 2.0.1
-      pg: 8.14.1
-      prisma: 6.2.1
-
-  drizzle-orm@0.42.0(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1):
+  drizzle-orm@0.43.1(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(gel@2.0.1)(pg@8.14.1)(prisma@6.2.1):
     optionalDependencies:
       '@neondatabase/serverless': 1.0.0
       '@opentelemetry/api': 1.9.0
