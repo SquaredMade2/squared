@@ -496,8 +496,8 @@ importers:
   packages/fonts:
     devDependencies:
       '@squaredmade/builder':
-        specifier: 1.0.1
-        version: 1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.1)
+        specifier: 1.0.2
+        version: 1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -2925,6 +2925,10 @@ packages:
 
   '@squaredmade/builder@1.0.1':
     resolution: {integrity: sha512-F5UUXUExkYAHhdg5yEy7ZQ9HMY+klR5GR1zt5PGS3gLsopAiBBb7MJD9TPDLXBHHHAklXzse4hp88ysFfgiKrw==}
+    hasBin: true
+
+  '@squaredmade/builder@1.0.2':
+    resolution: {integrity: sha512-toEE747TBzr5LUTE6TRn7TjJEhizW2CXLyQpCKftZZ7NibflfRGGvxiLcEx60r363zUAaLM56tjlwWPLpLdMvg==}
     hasBin: true
 
   '@squaredmade/context@1.0.1':
@@ -11360,6 +11364,21 @@ snapshots:
   '@squaredmade/builder@1.0.1(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.1)':
     dependencies:
       esbuild: 0.24.2
+      tslib: 2.8.1
+      tsup: 8.4.0(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.1)
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+
+  '@squaredmade/builder@1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(postcss@8.5.3)(typescript@5.8.2)':
+    dependencies:
+      esbuild: 0.25.2
       tslib: 2.8.1
       tsup: 8.4.0(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.1)
     transitivePeerDependencies:
