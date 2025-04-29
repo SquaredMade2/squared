@@ -5,7 +5,7 @@ import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squaredmade/db";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const SprintDropdown = () => {
@@ -15,6 +15,7 @@ const SprintDropdown = () => {
 	const { setEvents } = useEventStore((state) => state);
 	const [assignedSprint, setAssignedSprint] = useState<Sprint | null>(null);
 	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
+	const sprints = useRef<Sprint[]>([]);
 
 	const taskId = currentTask?.id ?? "";
 
@@ -22,14 +23,17 @@ const SprintDropdown = () => {
 		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (team) {
-				const res = await client.sprint.getSprints
+				sprints.current = await client.sprint.getSprints
 					.$get({ teamId: team.id })
 					.then((res) => res.json());
 				setAssignedSprint(
-					res.find((s: Sprint) => s.id === currentTask?.sprintId) ?? null,
+					sprints.current.find((s: Sprint) => s.id === currentTask?.sprintId) ??
+						null,
 				);
-				setActiveSprint(res.find((s: Sprint) => s.status === "ACTIVE") ?? null);
-				return res;
+				setActiveSprint(
+					sprints.current.find((s: Sprint) => s.status === "ACTIVE") ?? null,
+				);
+				return sprints.current;
 			}
 			return [];
 		},
@@ -45,6 +49,10 @@ const SprintDropdown = () => {
 			});
 			const updatedTask = await res.json();
 			setCurrentTask(updatedTask);
+			setAssignedSprint(
+				sprints.current.find((s: Sprint) => s.id === updatedTask?.sprintId) ??
+					null,
+			);
 
 			const eventsRes = await client.event.getEvents.$get({
 				taskId,
