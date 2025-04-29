@@ -58,13 +58,13 @@ export function ContactForm() {
 	}
 
 	return (
-		<Form {...form} onSubmit={onSubmit}>
-			<div className="z-20 mx-auto mt-28 mr-8 w-full max-w-xl">
+		<Form {...form} onSubmit={onSubmit} className="z-999">
+			<div className=" mx-auto mt-28 mr-8 w-full max-w-xl">
 				<div>
 					<h1 className="mt-8 font-bold text-4xl text-black leading-9 tracking-tight dark:text-white">
 						Contact Us
 					</h1>
-					<p className="mt-4 max-w-sm text-muted-foreground text-sm">
+					<p className="mt-4 max-w-sm text-muted-foreground text-sm dark:text-white">
 						We'd love to hear from you! Send us a message, and we'll respond as
 						soon as possible.
 					</p>
@@ -79,7 +79,7 @@ export function ContactForm() {
 								<FormItem>
 									<label
 										htmlFor="name"
-										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-white"
 									>
 										Full Name
 									</label>
@@ -105,7 +105,7 @@ export function ContactForm() {
 								<FormItem>
 									<label
 										htmlFor="email"
-										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-white"
 									>
 										Email address
 									</label>
@@ -131,7 +131,7 @@ export function ContactForm() {
 								<FormItem>
 									<label
 										htmlFor="company"
-										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-white"
 									>
 										Company
 									</label>
@@ -157,7 +157,7 @@ export function ContactForm() {
 								<FormItem>
 									<label
 										htmlFor="message"
-										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-muted-dark"
+										className="block font-medium text-neutral-700 text-sm leading-6 dark:text-white"
 									>
 										Message
 									</label>
