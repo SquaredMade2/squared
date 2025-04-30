@@ -37,7 +37,7 @@ export default function Home() {
 			}
 
 			if (allTeams[0]?.identifier) {
-				setTeam(allTeams);
+				setTeam(allTeams[0]);
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
 			}
 			return allTeams;
