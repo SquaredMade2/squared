@@ -1,9 +1,9 @@
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import type { Task } from "@squaredmade/db";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 import { DesignationComboboxMany } from "./DesignationComboboxMany";
 
 const BlockedByCombobox = () => {

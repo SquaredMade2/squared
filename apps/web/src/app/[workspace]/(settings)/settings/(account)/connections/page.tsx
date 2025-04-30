@@ -6,8 +6,8 @@ import { useUser } from "@clerk/nextjs";
 import { Github } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Separator } from "@squaredmade/ui/separator";
+import { toast } from "@squaredmade/ui/toast";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 const Page = () => {
 	const { user, isLoaded } = useUser();

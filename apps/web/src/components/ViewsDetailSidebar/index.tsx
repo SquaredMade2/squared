@@ -24,10 +24,10 @@ import { Badge } from "@squaredmade/ui/badge";
 import { Button } from "@squaredmade/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import LabelBadge from "../LabelBadges";
 
 interface ViewsDetailSidebarProps {

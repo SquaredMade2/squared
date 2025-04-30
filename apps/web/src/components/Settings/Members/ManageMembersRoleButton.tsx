@@ -10,8 +10,8 @@ import {
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import type { MemberWithRole } from "./data-table";
 
 const ManageMembersRoleButton = ({
