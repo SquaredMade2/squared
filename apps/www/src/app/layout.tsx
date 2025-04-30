@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "@squaredmade/fonts/styles";
+import "@squaredmade/fonts";
 import { ThemeProvider } from "@/context/theme-provider";
 import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
