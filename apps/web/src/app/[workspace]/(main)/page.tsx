@@ -14,7 +14,7 @@ export default function Home() {
 	const params = useParams();
 	const { organization } = useOrganization();
 	const workspaceUrl = parseParams(params.workspace) ?? "";
-	const { team } = useTeamStore((state) => state);
+	const { team, setTeam } = useTeamStore((state) => state);
 
 	const { data, isPending } = useQuery({
 		queryKey: ["team", "workspacePage", workspaceUrl],
@@ -37,6 +37,7 @@ export default function Home() {
 			}
 
 			if (allTeams[0]?.identifier) {
+				setTeam(allTeams);
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
 			}
 			return allTeams;
