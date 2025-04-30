@@ -19,12 +19,7 @@ WORKDIR /app
 
 # Copy the package.json and lockfile of the isolated subworkspace
 COPY --from=builder /app/apps/api /app/apps/api
-COPY --from=builder /app/packages/builder /app/packages/builder
-COPY --from=builder /app/packages/context /app/packages/context
-COPY --from=builder /app/packages/logger /app/packages/logger
-COPY --from=builder /app/packages/rpc /app/packages/rpc
-COPY --from=builder /app/packages/superjson /app/packages/superjson
-COPY --from=builder /app/packages/typescript-config /app/packages/typescript-config
+COPY --from=builder /app/packages/db /app/packages/db
 
 # First install dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
@@ -69,4 +64,4 @@ RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
 
-CMD ["ts-node", "src/api/index.ts"]
+CMD ["tsx", "src/api/index.ts"]
