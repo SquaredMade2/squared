@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat python3 make g++
 
 # Set working directory
 WORKDIR /app
-RUN npm install -g turbo pnpm ts-node tsconfig-paths
+RUN npm install -g turbo pnpm tsx
 COPY . .
 RUN turbo prune api --docker
 
@@ -28,7 +28,7 @@ COPY --from=builder /app/packages/typescript-config /app/packages/typescript-con
 
 # First install dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
-RUN npm install -g turbo pnpm ts-node tsconfig-paths
+RUN npm install -g turbo pnpm tsx
 
 RUN pnpm install
 
@@ -62,7 +62,7 @@ RUN apk add --no-cache openssl
 COPY --from=installer /app .
 WORKDIR /app/apps/api
 
-RUN npm install -g turbo pnpm ts-node tsconfig-paths
+RUN npm install -g turbo pnpm tsx
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 expressjs
