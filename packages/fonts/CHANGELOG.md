@@ -1,5 +1,11 @@
 # @squaredmade/fonts
 
+## 1.0.7
+
+### Patch Changes
+
+- Fix Exports on fonts package
+
 ## 1.0.6
 
 ### Patch Changes

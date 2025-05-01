@@ -31,7 +31,7 @@
 		"@radix-ui/react-progress": "^1.1.2",
 		"@radix-ui/react-scroll-area": "^1.2.3",
 		"@squaredmade/context": "1.0.1",
-		"@squaredmade/fonts": "^1.0.4",
+		"@squaredmade/fonts": "^1.0.7",
 		"@squaredmade/icons": "1.0.5",
 		"@squaredmade/rpc-client": "1.0.2",
 		"@squaredmade/ui": "3.0.1",
