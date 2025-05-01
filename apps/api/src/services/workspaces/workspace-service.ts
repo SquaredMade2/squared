@@ -27,20 +27,6 @@ import type {
 	WorkspaceRpc,
 } from "./types";
 
-const DEFAULT_LABELS = [
-	{ name: "Feature", description: "New feature", color: "#FF5733" },
-	{ name: "Bug", description: "Bug fix", color: "#C70039" },
-	{ name: "Chore", description: "General task", color: "#900C3F" },
-	{ name: "Refactor", description: "Code refactor", color: "#581845" },
-	{ name: "Docs", description: "Documentation", color: "#FFC300" },
-	{ name: "Test", description: "Testing task", color: "#DAF7A6" },
-	{
-		name: "Design",
-		description: "Design related task",
-		color: "#33FFBD",
-	},
-];
-
 export class WorkspaceService implements WorkspaceRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
@@ -92,7 +78,6 @@ export class WorkspaceService implements WorkspaceRpc {
 				.values({
 					...workspace,
 					externalId: organization.id,
-					labels: DEFAULT_LABELS,
 					admins: [userId],
 				})
 				.returning();

@@ -38,6 +38,7 @@ import {
 	DialogTitle,
 } from "@squaredmade/ui/dialog";
 import { Input } from "@squaredmade/ui/input";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
@@ -50,7 +51,6 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { toast } from "sonner";
 export default function SprintDashboard() {
 	const { sprints, sprint, team: currentTeam } = useSprints();
 	const { tasks, setTasks } = useTaskStore((state) => state);

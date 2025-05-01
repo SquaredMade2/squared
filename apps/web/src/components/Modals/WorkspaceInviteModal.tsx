@@ -16,9 +16,9 @@ import {
 import { Label } from "@squaredmade/ui/label";
 import { Separator } from "@squaredmade/ui/separator";
 import { Textarea } from "@squaredmade/ui/textarea";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export const WorkspaceInviteModal = () => {
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(

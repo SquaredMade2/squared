@@ -11,9 +11,9 @@ import {
 	// Calendar, Star, // Not used yet
 	Trash,
 } from "@squaredmade/icons";
+import { toast } from "@squaredmade/ui/toast";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
 import { DeleteTaskAlertDialog } from "../../DeleteTaskAlertDialog";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";

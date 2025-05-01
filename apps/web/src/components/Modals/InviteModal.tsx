@@ -24,9 +24,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@squaredmade/ui/select";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 
 export const InviteModal = () => {
 	const [expirationPeriod, setExpirationPeriod] = useState<string>("7d");

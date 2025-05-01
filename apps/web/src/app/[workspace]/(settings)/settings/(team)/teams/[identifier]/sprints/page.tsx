@@ -43,11 +43,11 @@ import {
 } from "@squaredmade/ui/select";
 import { Separator } from "@squaredmade/ui/separator";
 import { Switch } from "@squaredmade/ui/switch";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
