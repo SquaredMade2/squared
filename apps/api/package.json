@@ -6,7 +6,7 @@
 	"private": true,
 	"scripts": {
 		"check-types": "tsc --pretty --noEmit",
-		"dev": "nodemon src/api/index.ts",
+		"dev": "nodemon --exec tsx src/api/index.ts",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",

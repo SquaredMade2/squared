@@ -3,9 +3,10 @@
 import { DatePicker } from "@/components/ui/date-picker";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+
 const DesignationsDatePicker = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,

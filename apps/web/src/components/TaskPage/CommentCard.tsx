@@ -3,12 +3,12 @@ import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Comment } from "@squaredmade/db";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { toast } from "@squaredmade/ui/toast";
 import { formatDate } from "date-fns/format";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
-import { toast } from "sonner";
 import MentionHover from "../TextEditor/Menus/MentionHover";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";

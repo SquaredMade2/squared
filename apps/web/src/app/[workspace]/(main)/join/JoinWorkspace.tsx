@@ -6,9 +6,9 @@ import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
 
 export default function JoinWorkspace() {
 	const router = useRouter();

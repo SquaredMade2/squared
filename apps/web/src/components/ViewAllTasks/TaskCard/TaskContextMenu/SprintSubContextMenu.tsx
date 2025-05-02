@@ -7,8 +7,8 @@ import {
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import type { ContextMenuProps } from "./interfaces";
 
 const SprintSubContextMenu = ({ task }: ContextMenuProps) => {

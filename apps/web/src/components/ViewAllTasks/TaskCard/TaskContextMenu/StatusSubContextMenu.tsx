@@ -12,8 +12,8 @@ import { statusOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squaredmade/db";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import type { ContextMenuProps } from "./interfaces";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {

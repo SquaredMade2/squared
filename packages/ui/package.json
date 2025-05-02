@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/ui",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "A design system with individually importable components",
 	"publishConfig": {
 		"access": "public"
@@ -574,6 +574,16 @@
 				"default": "./dist/hooks/use-id/index.js"
 			}
 		},
+		"./use-is-document-hidden": {
+			"import": {
+				"types": "./dist/hooks/use-is-document-hidden/index.d.mts",
+				"default": "./dist/hooks/use-is-document-hidden/index.mjs"
+			},
+			"require": {
+				"types": "./dist/hooks/use-is-document-hidden/index.d.ts",
+				"default": "./dist/hooks/use-is-document-hidden/index.js"
+			}
+		},
 		"./use-layout-effect": {
 			"import": {
 				"types": "./dist/hooks/use-layout-effect/index.d.mts",
@@ -655,7 +665,7 @@
 		"@storybook/test": "^8.6.7",
 		"@storybook/test-runner": "^0.22.0",
 		"@types/fs-extra": "^11.0.4",
-		"@types/node": "22.15.2",
+		"@types/node": "22.15.3",
 		"@types/react": "^19.0.1",
 		"@types/react-dom": "^19.0.2",
 		"@types/resize-observer-browser": "^0.1.11",

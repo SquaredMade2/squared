@@ -13,9 +13,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { type JSX, useState } from "react";
-import { toast } from "sonner";
 const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
 
