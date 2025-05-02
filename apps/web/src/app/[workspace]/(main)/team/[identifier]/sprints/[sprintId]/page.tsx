@@ -430,7 +430,7 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<div className="scrollbar-thumb-[var(--border)] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
+				<div className="scrollbar-thumb-[var(--border)] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[45rem] overflow-y-scroll">
 					<TabsContent value="all">
 						<TaskList tasks={sprintTasks} />
 					</TabsContent>
