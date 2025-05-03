@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
 	"github.com/google/go-github/v71/github"
@@ -34,10 +35,16 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Server error", http.StatusInternalServerError)
 		return
 	}
-
 	// Read the request body for logging
 	payload, err := github.ValidatePayload(r, []byte(webhookSecret))
 	if err != nil {
+		errMsg := err.Error()
+		if strings.Contains(errMsg, "invalid byte") {
+			log.Printf("Invalid Sha256 Signature: %v", err)
+			http.Error(w, fmt.Sprintf("Invalid Sha256 Signature: %v", err), http.StatusBadRequest)
+			return
+		}
+
 		log.Printf("Error reading request body: %v", err)
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
@@ -47,6 +54,13 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	event, err := github.ParseWebHook(github.WebHookType(r), payload)
 
 	if err != nil {
+		errMsg := err.Error()
+		if strings.Contains(errMsg, "unsupported") {
+			log.Printf("Invalid webhook event type: %v", err)
+			http.Error(w, fmt.Sprintf("Invalid webhook event type: %v", err), http.StatusBadRequest)
+			return
+		}
+
 		log.Printf("Error parsing webhook: %v", err)
 		http.Error(w, fmt.Sprintf("Error parsing webhook: %v", err), http.StatusInternalServerError)
 		return

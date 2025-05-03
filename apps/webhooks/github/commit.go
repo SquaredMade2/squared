@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
@@ -12,9 +13,16 @@ import (
 
 func handlePushCommitEvent(webhookEvent *github.PushEvent, githubService *rpc.GithubService, w http.ResponseWriter) {
 	commit := webhookEvent.HeadCommit
+
+	// Extract branch from ref (refs/heads/main -> main)
+	branch := webhookEvent.GetRef()
+	if branch != "" && strings.HasPrefix(branch, "refs/heads/") {
+		branch = branch[len("refs/heads/"):]
+	}
+
 	request := rpc.PushCommitRequest{
 		Author:    *commit.Author.Name,
-		Branch:    *commit.TreeID,
+		Branch:    branch, // Use the actual branch name, not tree ID
 		Id:        *commit.ID,
 		Message:   *commit.Message,
 		RepoId:    *webhookEvent.Repo.NodeID,
