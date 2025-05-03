@@ -24,7 +24,7 @@ const Page = () => {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEnd={handleDragEnd}
+			handleDragEndAction={handleDragEnd}
 			pageTitle="Recently Deleted Tasks"
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
