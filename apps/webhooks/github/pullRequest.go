@@ -62,39 +62,52 @@ func handlePullRequestEvent(webhookEvent *github.PullRequestEvent, githubService
 		return
 	}
 
-	// If the action is "edited" and the body has changed, update the PR description
-
-	if err := updatePullRequestDescription(&github.PullRequest{
-		Body:    pullRequest.Body,
-		Number:  pullRequest.Number,
-		State:   pullRequest.State,
-		Title:   pullRequest.Title,
-		HTMLURL: pullRequest.HTMLURL,
-		Base: &github.PullRequestBranch{
-			Repo: &github.Repository{
-				NodeID:      pullRequest.Base.Repo.NodeID,
-				Name:        pullRequest.Base.Repo.Name,
-				URL:         pullRequest.Base.Repo.URL,
-				Description: pullRequest.Base.Repo.Description,
-				Private:     pullRequest.Base.Repo.Private,
-				Owner: &github.User{
-					Login: pullRequest.Base.Repo.Owner.Login,
+	// Handle different webhook actions using switch statement
+	switch *webhookEvent.Action {
+	case "opened", "reopened", "synchronize", "edited":
+		// Update PR description for these actions
+		if err := updatePullRequestDescription(&github.PullRequest{
+			Body:    pullRequest.Body,
+			Number:  pullRequest.Number,
+			State:   pullRequest.State,
+			Title:   pullRequest.Title,
+			HTMLURL: pullRequest.HTMLURL,
+			Base: &github.PullRequestBranch{
+				Repo: &github.Repository{
+					NodeID:      pullRequest.Base.Repo.NodeID,
+					Name:        pullRequest.Base.Repo.Name,
+					URL:         pullRequest.Base.Repo.URL,
+					Description: pullRequest.Base.Repo.Description,
+					Private:     pullRequest.Base.Repo.Private,
+					Owner: &github.User{
+						Login: pullRequest.Base.Repo.Owner.Login,
+					},
 				},
 			},
-		},
-	}, *tasks, *webhookEvent.Installation.ID); err != nil {
+		}, *tasks, *webhookEvent.Installation.ID); err != nil {
+			log.Printf("Error updating pull request description: %v", err)
+			http.Error(w, fmt.Sprintf("Error updating pull request description: %v", err), http.StatusInternalServerError)
+			return
+		}
 
-		log.Printf("Error updating pull request description: %v", err)
-		http.Error(w, fmt.Sprintf("Error updating pull request description: %v", err), http.StatusInternalServerError)
-		return
+		// Add comment only for "opened" action
+		if *webhookEvent.Action == "opened" {
+			if err := addCommentToPR(*pullRequest.Base.Repo.Owner.Login, *pullRequest.Base.Repo.Name, *pullRequest.Number, *tasks, *webhookEvent.Installation.ID); err != nil {
+				log.Printf("Error adding comment to PR: %v", err)
+				http.Error(w, "Error adding comment to PR", http.StatusInternalServerError)
+				return
+			}
+		}
+	case "closed":
+		// Handle closed PRs if needed
+		log.Printf("PR #%d was closed", *pullRequest.Number)
+	case "merged":
+		// Handle merged PRs if needed
+		log.Printf("PR #%d was merged", *pullRequest.Number)
+	default:
+		// Handle other webhook actions if needed
+		log.Printf("Unhandled webhook action: %s", *webhookEvent.Action)
 	}
-
-	if err := addCommentToPR(*pullRequest.Base.Repo.Owner.Login, *pullRequest.Base.Repo.Name, *pullRequest.Number, *tasks, *webhookEvent.Installation.ID); err != nil {
-		log.Printf("Error adding comment to PR: %v", err)
-		http.Error(w, "Error adding comment to PR", http.StatusInternalServerError)
-		return
-	}
-
 }
 
 func updatePullRequestDescription(pr *github.PullRequest, tasks rpc.UpsertPullRequestResponse, installationId int64) error {
