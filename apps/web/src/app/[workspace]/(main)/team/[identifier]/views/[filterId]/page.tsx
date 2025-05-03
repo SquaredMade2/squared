@@ -75,7 +75,7 @@ export default function FilterViewPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEnd={handleDragEnd}
+			handleDragEndAction={handleDragEnd}
 			pageTitle={filter.name}
 		>
 			<div className={`flex grow ${view === "grid" && "mr-4"}`}>
