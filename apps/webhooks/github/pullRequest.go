@@ -2,7 +2,6 @@ package github
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,16 +10,10 @@ import (
 	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v71/github"
 )
 
-func handlePullRequestEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
-	var webhookEvent github.PullRequestEvent
-	err := json.Unmarshal(body, &webhookEvent)
-	if err != nil {
-		log.Printf("Error parsing JSON: %v", err)
-		log.Printf("Raw webhook payload: %s", string(body))
-	}
+func handlePullRequestEvent(webhookEvent *github.PullRequestEvent, githubService *rpc.GithubService, w http.ResponseWriter) {
 	if *webhookEvent.Sender.NodeID == os.Getenv("GITHUB_BOT_ID") {
 		return
 	}
