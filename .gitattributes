@@ -2,3 +2,4 @@
 **/gen/** linguist-generated=true
 apps/api/src/api/generated-routes.ts linguist-generated=true
 packages/icons/components linguist-generated=true
+go.sum linguist-generated=true

@@ -39,5 +39,8 @@
 	},
 	"[dockerfile]": {
 		"editor.defaultFormatter": "ms-azuretools.vscode-docker"
+	},
+	"[properties]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	}
 }
