@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
+	"github.com/google/go-github/v69/github"
 )
 
 func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
-	var webhookEvent WebhookPushCommit
+	var webhookEvent github.PushEvent
 	err := json.Unmarshal(body, &webhookEvent)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
@@ -20,13 +21,13 @@ func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http
 
 	commit := webhookEvent.HeadCommit
 	request := rpc.PushCommitRequest{
-		Author:    commit.Author.Name,
-		Branch:    commit.TreeId,
-		Id:        commit.Id,
-		Message:   commit.Message,
-		RepoId:    webhookEvent.Repository.NodeId,
-		Timestamp: time.Time(commit.Timestamp).Format(time.RFC3339),
-		Url:       commit.Url,
+		Author:    *commit.Author.Name,
+		Branch:    *commit.TreeID,
+		Id:        *commit.ID,
+		Message:   *commit.Message,
+		RepoId:    *webhookEvent.Repo.NodeID,
+		Timestamp: commit.Timestamp.Format(time.RFC3339),
+		Url:       *commit.URL,
 	}
 	if _, err := githubService.PushCommit(context.TODO(), request); err != nil {
 		log.Printf("Error uploading commit: %v", err)

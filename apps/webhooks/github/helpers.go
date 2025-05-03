@@ -35,13 +35,16 @@ func verifySignature256(r *http.Request, secret string, headers GitHubWebhookHea
 	return hmac.Equal([]byte(headers.XHubSignature256), []byte(expectedSignature))
 }
 
-func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if s == item {
-			return true
-		}
-	}
-	return false
+type GitHubWebhookHeaders struct {
+	XGitHubHookID                     string `header:"X-GitHub-Hook-ID"`
+	XGitHubEvent                      string `header:"X-GitHub-Event"`
+	XGitHubDelivery                   string `header:"X-GitHub-Delivery"`
+	XHubSignature                     string `header:"X-Hub-Signature"`
+	XHubSignature256                  string `header:"X-Hub-Signature-256"`
+	UserAgent                         string `header:"github.User-Agent"`
+	XGitHubHookInstallationTargetType string `header:"X-GitHub-Hook-Installation-Target-Type"`
+	XGitHubHookInstallationTargetID   string `header:"X-GitHub-Hook-Installation-Target-ID"`
+	XTestOverride                     string `header:"X-Test-Override"`
 }
 
 func getGitHubWebhookHeaders(r *http.Request) GitHubWebhookHeaders {
