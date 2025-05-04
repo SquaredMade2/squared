@@ -13,8 +13,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@squaredmade/ui/select";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 const PriorityDropdown = () => {
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);

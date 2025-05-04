@@ -14,7 +14,7 @@
 		"@prismicio/client": "^7.15.1",
 		"@prismicio/next": "^2.0.0",
 		"@prismicio/react": "^3.0.0",
-		"@squaredmade/fonts": "^1.0.4",
+		"@squaredmade/fonts": "^1.0.7",
 		"@squaredmade/icons": "1.0.5",
 		"@squaredmade/ui": "2.0.2",
 		"@tabler/icons-react": "^3.5.0",

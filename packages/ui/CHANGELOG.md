@@ -1,12 +1,18 @@
 # @squaredmade/ui
 
-## 3.0.1
+## 3.0.2
 
 ### Patch Changes
 
 - 2f56953: Fix Scope Of Package Files
 - Updated dependencies [2f56953]
   - @squaredmade/icons@1.0.5
+
+## 3.0.1
+
+### Patch Changes
+
+- Fix Exports in package.json
 
 ## 3.0.0
 

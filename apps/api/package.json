@@ -6,12 +6,12 @@
 	"private": true,
 	"scripts": {
 		"check-types": "tsc --pretty --noEmit",
-		"dev": "nodemon src/api/index.ts",
+		"dev": "nodemon --exec tsx src/api/index.ts",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"start": "ts-node src/api/index.ts",
+		"start": "tsx src/api/index.ts",
 		"test": "jest --runInBand",
 		"test:watch": "jest --watch --runInBand",
 		"test:ci": "jest --ci --runInBand"
@@ -32,8 +32,6 @@
 		"socket.io": "^4.8.0",
 		"swagger-jsdoc": "^6.2.8",
 		"swagger-ui-express": "^5.0.0",
-		"ts-node": "^10.9.2",
-		"tsconfig-paths": "^4.2.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
@@ -52,6 +50,7 @@
 		"nodemon": "^3.0.1",
 		"supertest": "^7.0.0",
 		"ts-jest": "^29.1.2",
+		"tsx": "^4.19.4",
 		"typescript": "^5.5.4"
 	}
 }

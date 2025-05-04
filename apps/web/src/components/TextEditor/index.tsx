@@ -8,6 +8,7 @@ import {
 import type { PublicUserData } from "@clerk/types";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
+import { toast } from "@squaredmade/ui/toast";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -23,7 +24,6 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
-import { toast } from "sonner";
 import TextEditorMentions from "./Menus/TextEditorMentions";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
