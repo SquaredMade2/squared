@@ -26,7 +26,7 @@ export default function MyAssignedTasksPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEndAction={handleDragEnd}
+			handleDragEnd={handleDragEnd}
 			pageTitle="Assigned Tasks"
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />

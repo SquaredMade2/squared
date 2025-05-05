@@ -41,7 +41,7 @@ export default function MyAssignedTasksPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEndAction={handleDragEnd}
+			handleDragEnd={handleDragEnd}
 			pageTitle={`Current Sprint - ${sprint.name}`}
 		>
 			<div className={`flex grow overflow-x-auto ${view === "grid" && "mr-4"}`}>

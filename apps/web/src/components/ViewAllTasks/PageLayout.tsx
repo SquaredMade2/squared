@@ -17,7 +17,7 @@ interface TaskPageLayoutProps {
 	authorized: boolean;
 	currentWorkspace: Workspace;
 	teamIdentifier: string;
-	handleDragEndAction: OnDragEndResponder;
+	handleDragEnd: OnDragEndResponder;
 	pageTitle?: string;
 	children: ReactNode;
 }
@@ -27,7 +27,7 @@ export function TaskPageLayout({
 	authorized,
 	currentWorkspace,
 	teamIdentifier,
-	handleDragEndAction: handleDragEnd,
+	handleDragEnd,
 	pageTitle,
 	children,
 }: TaskPageLayoutProps) {

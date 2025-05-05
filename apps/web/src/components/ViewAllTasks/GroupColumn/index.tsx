@@ -68,7 +68,7 @@ const GroupColumn = ({
 						>
 							<div
 								className={cn(
-									"w-full",
+									"w-full overflow-auto",
 									!isRowGroupingActive &&
 										"scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent",
 								)}

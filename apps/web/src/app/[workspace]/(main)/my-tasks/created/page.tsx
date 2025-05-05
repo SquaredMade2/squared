@@ -26,7 +26,7 @@ export default function MyCreatedTasksPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEndAction={handleDragEnd}
+			handleDragEnd={handleDragEnd}
 			pageTitle="Created Tasks"
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
