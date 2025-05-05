@@ -29,7 +29,7 @@ export default function ActiveTasksPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEnd={handleDragEnd}
+			handleDragEndAction={handleDragEnd}
 			pageTitle="Active Tasks"
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />

@@ -23,7 +23,7 @@ export default function AllTasksPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEnd={handleDragEnd}
+			handleDragEndAction={handleDragEnd}
 			pageTitle="All Tasks"
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
