@@ -24,7 +24,7 @@ export default function BacklogTasksPage() {
 			authorized={authorized}
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
-			handleDragEndAction={handleDragEnd}
+			handleDragEnd={handleDragEnd}
 			pageTitle="Backlog"
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
