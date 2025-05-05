@@ -691,7 +691,7 @@
 		"clsx": "^2.1.1",
 		"commander": "^13.1.0",
 		"inquirer": "^12.4.2",
-		"lucide-react": "^0.506.0",
+		"lucide-react": "^0.507.0",
 		"react-remove-scroll": "^2.6.0",
 		"tailwind-merge": "^3.0.2"
 	}

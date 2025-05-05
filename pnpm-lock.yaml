@@ -200,8 +200,8 @@ importers:
         specifier: ^4.6.13
         version: 4.7.8
       lucide-react:
-        specifier: ^0.506.0
-        version: 0.506.0(react@19.1.0)
+        specifier: ^0.507.0
+        version: 0.507.0(react@19.1.0)
       next-mdx-remote:
         specifier: ^5.0.0
         version: 5.0.0(@types/react@19.1.2)(acorn@8.14.1)(react@19.1.0)
@@ -722,8 +722,8 @@ importers:
         specifier: ^12.4.2
         version: 12.6.0(@types/node@22.15.3)
       lucide-react:
-        specifier: ^0.506.0
-        version: 0.506.0(react@19.1.0)
+        specifier: ^0.507.0
+        version: 0.507.0(react@19.1.0)
       react:
         specifier: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
         version: 19.1.0
@@ -6541,8 +6541,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lucide-react@0.506.0:
-    resolution: {integrity: sha512-/2znFFzlXcZKu0ANFCnxUOBV5I2e08m19PGtb6X+BcByRj8ODlGAl3wpe4LNVrDMLJ263JoIkZn7MOGK/5sXtw==}
+  lucide-react@0.507.0:
+    resolution: {integrity: sha512-XfgE6gvAHwAtnbUvWiTTHx4S3VGR+cUJHEc0vrh9Ogu672I1Tue2+Cp/8JJqpytgcBHAB1FVI297W4XGNwc2dQ==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -15441,7 +15441,7 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  lucide-react@0.506.0(react@19.1.0):
+  lucide-react@0.507.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
