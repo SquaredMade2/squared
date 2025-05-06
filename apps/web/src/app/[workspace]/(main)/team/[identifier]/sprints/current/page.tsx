@@ -44,7 +44,7 @@ export default function MyAssignedTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle={`Current Sprint - ${sprint.name}`}
 		>
-			<div className={`flex grow overflow-x-auto ${view === "grid" && "mr-4"}`}>
+			<div className={`flex grow ${view === "grid" && "mr-4 overflow-x-auto"}`}>
 				<ViewAllTasks
 					getGroupedColumns={getGroupedColumns}
 					sprintId={sprint.id}

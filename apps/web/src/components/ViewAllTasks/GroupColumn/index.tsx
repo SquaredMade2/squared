@@ -68,7 +68,9 @@ const GroupColumn = ({
 						>
 							<div
 								className={cn(
-									"w-full overflow-auto",
+									"w-full",
+									// Apply overflow-auto only when NOT in list view
+									!isListView ? "overflow-auto" : "",
 									!isRowGroupingActive &&
 										"scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent",
 								)}
