@@ -320,18 +320,16 @@ export class SprintService implements SprintRpc {
 	}> {
 		this.logger.info("Deleting sprint retro item by ID", retrospectiveItemId);
 
-		return await this.db.transaction(async (tx) => {
-			const result = await tx
-				.delete(retrospectiveItemsTable)
-				.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
-				.returning();
+		const deletedItem = this.db
+			.delete(retrospectiveItemsTable)
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.returning();
 
-			if (result.length === 0) {
-				throw new Error("There was an issue deleting the retrospective item");
-			}
+		if (!deletedItem) {
+			throw new Error("There was an issue deleting the retrospective item");
+		}
 
-			return { success: true };
-		});
+		return { success: true };
 	}
 
 	private sendErrorResponse(status: number, message: string): ErrorResponse {

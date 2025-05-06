@@ -20,9 +20,9 @@ type ColumnType = "wentWell" | "toImprove" | "actionItems";
 
 interface RetroItemModalProps {
 	type: ColumnType;
-	onHandleItem: (
+	onItemChange: (
 		content: string,
-		operationType: string,
+		operationType: "add" | "edit",
 		type?: ColumnType,
 		retrospectiveItemId?: string,
 	) => void;
@@ -36,7 +36,7 @@ interface RetroItemModalProps {
 
 const RetroItemModal = ({
 	type,
-	onHandleItem,
+	onItemChange,
 	isModalOpen,
 	setIsModalOpen,
 	isEditItem,
@@ -50,7 +50,7 @@ const RetroItemModal = ({
 	const handleItem = useCallback(() => {
 		const operationType = isEditItem ? "edit" : "add";
 		if (itemContent.trim()) {
-			onHandleItem(
+			onItemChange(
 				itemContent.trim(),
 				operationType,
 				type,
@@ -63,7 +63,7 @@ const RetroItemModal = ({
 			}
 			setIsModalOpen(false);
 		}
-	}, [itemContent, onHandleItem, type]);
+	}, [itemContent, onItemChange, type]);
 
 	return (
 		<Dialog

@@ -72,16 +72,18 @@ export const RetroItemCard = ({
 									<>
 										<Button
 											className="p-2 text-green-700 hover:bg-transparent hover:text-green-700/65"
-											variant={"ghost"}
+											variant="ghost"
 											title="Edit Item"
+											aria-description="Edit Item"
 											onClick={handleRetroItemEdit}
 										>
 											<Pencil />
 										</Button>
 										<Button
-											className="p-2 text-red-500 hover:bg-transparent hover:text-red-500/65"
-											variant={"ghost"}
+											className="p-2 text-destructive-500 hover:bg-transparent hover:text-destructive-500/65"
+											variant="ghost"
 											title="Delete Item"
+											aria-description="Delete Item"
 											onClick={() => onDeleteItem(item.id)}
 										>
 											<Trash />

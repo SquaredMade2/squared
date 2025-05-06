@@ -127,7 +127,7 @@ export default function SprintRetrospectivePage() {
 			retrospectiveItemId,
 		}: {
 			content: string;
-			operationType: string;
+			operationType: "add" | "edit";
 			type?: RetrospectiveItemType;
 			retrospectiveItemId?: string;
 		}) => {
@@ -151,12 +151,9 @@ export default function SprintRetrospectivePage() {
 			}
 		},
 		onError: (error, params) => {
-			toast.error(
-				`Failed to ${params.operationType === "add" ? "add" : "update"} item`,
-				{
-					description: parseError(error),
-				},
-			);
+			toast.error(`Failed to ${params.operationType} item`, {
+				description: error,
+			});
 		},
 		onSuccess: (response, params) => {
 			socket?.emit(
@@ -167,9 +164,7 @@ export default function SprintRetrospectivePage() {
 				},
 			);
 			fetchData();
-			toast.success(
-				`Item ${params.operationType === "add" ? "added" : "updated"} successfully`,
-			);
+			toast.success(`Item ${params.operationType} successfully`);
 		},
 	});
 	const { mutate: handleLikeItem } = useMutation({
@@ -197,7 +192,7 @@ export default function SprintRetrospectivePage() {
 	});
 
 	const { mutate: handleItemDeletion } = useMutation({
-		mutationKey: ["delete-retro-item"],
+		mutationKey: ["sprint", "retrospective", sprintId],
 		mutationFn: async (retrospectiveItemId: string) => {
 			await client.sprint.deleteRetroItem.$post({
 				retrospectiveItemId,
@@ -284,7 +279,7 @@ export default function SprintRetrospectivePage() {
 							title="What Went Well"
 							type="wentWell"
 							items={data.wentWell}
-							onHandleItem={(
+							onItemChange={(
 								content,
 								operationType,
 								type,
@@ -307,7 +302,7 @@ export default function SprintRetrospectivePage() {
 							title="To Improve"
 							type="toImprove"
 							items={data.toImprove}
-							onHandleItem={(
+							onItemChange={(
 								content,
 								operationType,
 								type,
@@ -330,7 +325,7 @@ export default function SprintRetrospectivePage() {
 							title="Action Items"
 							type="actionItems"
 							items={data.actionItems}
-							onHandleItem={(
+							onItemChange={(
 								content,
 								operationType,
 								type,

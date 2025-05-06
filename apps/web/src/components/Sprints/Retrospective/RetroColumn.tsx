@@ -10,9 +10,9 @@ interface RetroColumnProps {
 	title: string;
 	type: RetrospectiveItemType;
 	items: RetroItem[];
-	onHandleItem: (
+	onItemChange: (
 		content: string,
-		operationType: string,
+		operationType: "add" | "edit",
 		type?: RetrospectiveItemType,
 		retrospectiveItemId?: string,
 	) => void;
@@ -30,7 +30,7 @@ export const RetroColumn = ({
 	title,
 	type,
 	items,
-	onHandleItem,
+	onItemChange,
 	onLikeItem,
 	onDeleteItem,
 	likedItems,
@@ -78,7 +78,7 @@ export const RetroColumn = ({
 				</Droppable>
 				<RetroItemModal
 					type={type}
-					onHandleItem={onHandleItem}
+					onItemChange={onItemChange}
 					isModalOpen={isModalOpen}
 					setIsModalOpen={setIsModalOpen}
 					isEditItem={isEditItem}
