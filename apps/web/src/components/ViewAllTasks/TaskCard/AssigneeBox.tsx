@@ -7,7 +7,7 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 } from "@squaredmade/ui/dropdown-menu";
-import { toast } from "sonner";
+import { toast } from "@squaredmade/ui/toast";
 import type { AssigneeBoxProps } from "./interfaces";
 
 export const AssigneeBox = ({ task }: AssigneeBoxProps) => {

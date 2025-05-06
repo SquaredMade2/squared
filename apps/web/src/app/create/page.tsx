@@ -8,12 +8,12 @@ import { Button } from "@squaredmade/ui/button";
 import { Card } from "@squaredmade/ui/card";
 import { Input } from "@squaredmade/ui/input";
 import { Label } from "@squaredmade/ui/label";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");

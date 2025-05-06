@@ -9,8 +9,8 @@ import {
 	DialogTrigger,
 } from "@squaredmade/ui/dialog";
 import { DialogHeader } from "@squaredmade/ui/dialog";
+import { toast } from "@squaredmade/ui/toast";
 import { useState } from "react";
-import { toast } from "sonner";
 import type { LinkModalProps } from "../interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {

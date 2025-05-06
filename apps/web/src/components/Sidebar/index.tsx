@@ -21,6 +21,7 @@ import {
 	Sun,
 } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/toast";
 import {
 	Tooltip,
 	TooltipContent,
@@ -31,7 +32,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";

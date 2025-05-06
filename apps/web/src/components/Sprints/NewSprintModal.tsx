@@ -12,10 +12,10 @@ import {
 import { Input } from "@squaredmade/ui/input";
 import { Label } from "@squaredmade/ui/label";
 import { Textarea } from "@squaredmade/ui/textarea";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 
 interface NewSprintModalProps {
 	isOpen: boolean;

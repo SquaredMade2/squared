@@ -3,6 +3,7 @@ import { ContactForm } from "@/components/contact";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+	metadataBase: new URL("https://www.squaredmade.com"),
 	title: "Contact Us - Squared",
 	description:
 		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",

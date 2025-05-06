@@ -10,7 +10,6 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSub,
-	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ChevronDown } from "@squaredmade/icons";
@@ -34,7 +33,7 @@ type DocSidebarProps = {
 	structure: DocPage[];
 };
 
-const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
+const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 	page,
 	level,
 }) => {
@@ -66,11 +65,9 @@ const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
 				<CollapsibleContent>
 					<SidebarMenuSub>
 						{page.children.map((childPage) => (
-							<DocSidebarItem
-								key={childPage.id}
-								page={childPage}
-								level={level + 1}
-							/>
+							<SidebarMenuSubItem key={childPage.id}>
+								<DocSidebarItemContent page={childPage} level={level + 1} />
+							</SidebarMenuSubItem>
 						))}
 					</SidebarMenuSub>
 				</CollapsibleContent>
@@ -79,16 +76,14 @@ const DocSidebarItem: React.FC<{ page: DocPage; level: number }> = ({
 	}
 
 	return (
-		<SidebarMenuSubItem>
-			<SidebarMenuSubButton asChild isActive={isActive}>
-				<Link
-					href={`/docs/${page.uid}`}
-					className={`h-fit ${isActive && "bg-accent text-accent-foreground"} w-full`}
-				>
-					{page.title}
-				</Link>
-			</SidebarMenuSubButton>
-		</SidebarMenuSubItem>
+		<SidebarMenuButton asChild isActive={isActive}>
+			<Link
+				href={`/docs/${page.uid}`}
+				className={`h-fit ${isActive && "bg-accent text-accent-foreground"} w-full`}
+			>
+				{page.title}
+			</Link>
+		</SidebarMenuButton>
 	);
 };
 
@@ -102,7 +97,7 @@ export const DocSidebar: React.FC<DocSidebarProps> = ({ structure }) => {
 						<SidebarMenu>
 							{structure.map((page) => (
 								<SidebarMenuItem key={page.id}>
-									<DocSidebarItem page={page} level={0} />
+									<DocSidebarItemContent page={page} level={0} />
 								</SidebarMenuItem>
 							))}
 						</SidebarMenu>
