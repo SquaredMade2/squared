@@ -33,6 +33,7 @@ import {
 	DialogTitle,
 } from "@squaredmade/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
@@ -50,7 +51,6 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { toast } from "sonner";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
 

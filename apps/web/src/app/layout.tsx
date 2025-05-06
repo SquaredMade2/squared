@@ -1,5 +1,5 @@
 import "./globals.css";
-import "@squaredmade/fonts/styles";
+import "@squaredmade/fonts";
 import type { Metadata } from "next";
 import ClientLayoutWrapper from "./AppLayoutWrapper";
 

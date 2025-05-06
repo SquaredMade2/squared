@@ -24,8 +24,8 @@ import {
 	SelectValue,
 } from "@squaredmade/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
+import { toast } from "@squaredmade/ui/toast";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
 

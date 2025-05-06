@@ -2,9 +2,9 @@ import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import { Activity, Copy, Layers3 } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 interface NavBarTeamProps {
 	teamIdentifier: string;
