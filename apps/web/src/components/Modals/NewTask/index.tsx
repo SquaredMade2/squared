@@ -8,6 +8,7 @@ import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -26,7 +27,6 @@ import {
 import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
-import { Switch } from "@squaredmade/ui/switch";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
@@ -191,8 +191,7 @@ export const NewTaskModal = () => {
 							/>
 							{upcomingSprints.length === 0 && activeSprint && (
 								<div className="flex items-center gap-2">
-									<p className="text-foreground">Add task to current sprint</p>
-									<Switch
+									<Checkbox
 										checked={activeSprint.id === newTaskData.sprintId}
 										onCheckedChange={(checked) =>
 											setNewTaskData({
@@ -201,6 +200,7 @@ export const NewTaskModal = () => {
 											})
 										}
 									/>
+									<p className="text-foreground">Add task to current sprint</p>
 								</div>
 							)}
 						</div>
