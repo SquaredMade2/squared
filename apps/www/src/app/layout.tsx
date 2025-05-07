@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "@squaredmade/fonts/styles";
+import "@squaredmade/fonts";
 import { ThemeProvider } from "@/context/theme-provider";
 import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { ViewTransitions } from "next-view-transitions";
 
 export const metadata: Metadata = {
+	metadataBase: new URL("https://www.squaredmade.com"),
 	title: "Squared",
 	description:
 		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",

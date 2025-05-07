@@ -1,5 +1,11 @@
 # @squaredmade/rpc-client
 
+## 1.0.2
+
+### Patch Changes
+
+- Convert Context Package to be a peer dependency in rpc
+
 ## 1.0.1
 
 ### Patch Changes

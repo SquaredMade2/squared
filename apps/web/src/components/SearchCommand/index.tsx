@@ -13,10 +13,10 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFilterStore, useModalStore, useViewStore } from "@/store";
 import { DialogTitle } from "@squaredmade/ui/dialog";
+import { toast } from "@squaredmade/ui/toast";
 import { useId } from "@squaredmade/ui/use-id";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";
 

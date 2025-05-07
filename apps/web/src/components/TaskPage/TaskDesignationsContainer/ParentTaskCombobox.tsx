@@ -2,9 +2,9 @@
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import type { Task, TaskEvent } from "@squaredmade/db";
+import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const ParentTaskCombobox = () => {

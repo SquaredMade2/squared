@@ -78,6 +78,13 @@
 			"when": 1745223007992,
 			"tag": "0010_add_task_archive",
 			"breakpoints": true
+		},
+		{
+			"idx": 11,
+			"version": "7",
+			"when": 1745368733579,
+			"tag": "0011_update_label_defaults",
+			"breakpoints": true
 		}
 	]
 }

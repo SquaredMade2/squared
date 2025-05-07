@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import type React from "react"; // Added import for React
 
 export const metadata: Metadata = {
+	metadataBase: new URL("https://www.squaredmade.com"),
 	title: "Squared Documentation",
 	description:
 		"Documentation for Squared, a platform to help organize software development projects.",

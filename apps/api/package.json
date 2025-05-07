@@ -6,12 +6,12 @@
 	"private": true,
 	"scripts": {
 		"check-types": "tsc --pretty --noEmit",
-		"dev": "nodemon src/api/index.ts",
+		"dev": "nodemon --exec tsx src/api/index.ts",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"start": "ts-node src/api/index.ts",
+		"start": "tsx src/api/index.ts",
 		"test": "jest --runInBand",
 		"test:watch": "jest --watch --runInBand",
 		"test:ci": "jest --ci --runInBand"
@@ -22,8 +22,8 @@
 	"dependencies": {
 		"@clerk/backend": "^1.24.0",
 		"@squaredmade/db": "workspace:*",
-		"@squaredmade/logger": "1.1.0",
-		"@squaredmade/rpc": "1.0.1",
+		"@squaredmade/logger": "1.1.1",
+		"@squaredmade/rpc": "1.0.4",
 		"cors": "^2.8.5",
 		"date-fns": "^4.0.0",
 		"dotenv": "^16.4.1",
@@ -32,13 +32,11 @@
 		"socket.io": "^4.8.0",
 		"swagger-jsdoc": "^6.2.8",
 		"swagger-ui-express": "^5.0.0",
-		"ts-node": "^10.9.2",
-		"tsconfig-paths": "^4.2.0",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@jest/globals": "^29.7.0",
-		"@squaredmade/superjson": "1.0.0",
+		"@squaredmade/superjson": "1.0.1",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
@@ -52,6 +50,7 @@
 		"nodemon": "^3.0.1",
 		"supertest": "^7.0.0",
 		"ts-jest": "^29.1.2",
+		"tsx": "^4.19.4",
 		"typescript": "^5.5.4"
 	}
 }
