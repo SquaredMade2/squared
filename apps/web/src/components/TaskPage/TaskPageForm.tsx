@@ -25,6 +25,10 @@ export const TaskPageForm = () => {
 	const queryClient = useQueryClient();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
+	const [characterCount, setCharacterCount] = useState<number>(
+		task?.title?.length ?? 0,
+	);
+	const [isTitleFocused, setIsTitleFocused] = useState(false);
 	const [updatedDescription, setUpdatedDescription] = useState(
 		task?.description ?? null,
 	);
@@ -64,6 +68,7 @@ export const TaskPageForm = () => {
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(e.target.value);
+		setCharacterCount(e.target.value.length);
 	};
 
 	const handleDescriptionChange = (
@@ -74,6 +79,7 @@ export const TaskPageForm = () => {
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
+		setIsTitleFocused(false);
 		setIsDescriptionFocused(false);
 		const { transformedInput: transformedTitleInput } =
 			transformingMentionInputs(updatedTitle);
@@ -90,16 +96,22 @@ export const TaskPageForm = () => {
 		}
 	};
 
+	const handleTitleEdit = () => {
+		setIsTitleFocused(true);
+	};
+
 	return (
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
 			<div className="space-y-2">
 				<Input
-					className="mt-2 rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-hidden"
+					className="mt-2 truncate rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-hidden"
 					value={updatedTitle}
 					onChange={handleTitleChange}
 					onBlur={handleSubmit}
+					onFocus={handleTitleEdit}
 					placeholder="Title"
 					name="title"
+					maxLength={50}
 					style={{
 						border: "none",
 						boxShadow: "none",
@@ -108,6 +120,13 @@ export const TaskPageForm = () => {
 						minHeight: "1.2em",
 					}}
 				/>
+
+				<p
+					className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isTitleFocused && "opacity-100"}`}
+				>
+					{characterCount} / 50
+				</p>
+
 				{parentTask && (
 					<div className="flex items-center gap-1 text-muted-foreground text-sm">
 						Subtask of
