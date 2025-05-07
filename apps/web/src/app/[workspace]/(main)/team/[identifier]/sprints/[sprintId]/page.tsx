@@ -246,8 +246,6 @@ export default function SprintDashboardPage() {
 		);
 	}
 
-	console.log(getTaskStatusData());
-
 	return (
 		<div className="container mx-auto space-y-8 p-4">
 			<h1 className="ml-10 font-bold text-3xl">Sprint: {sprint.name}</h1>
