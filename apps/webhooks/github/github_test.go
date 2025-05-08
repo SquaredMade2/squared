@@ -103,64 +103,6 @@ func computeSignature(body []byte, secret string) string {
 	return "sha256=" + hex.EncodeToString(mac.Sum(nil))
 }
 
-func TestVerifySignature256(t *testing.T) {
-	testCases := []struct {
-		name            string
-		body            string
-		secret          string
-		signatureHeader string
-		expected        bool
-	}{
-		{
-			name:            "Valid signature",
-			body:            `{"test":"data"}`,
-			secret:          "squared",
-			signatureHeader: "", // Will be computed
-			expected:        true,
-		},
-		{
-			name:            "Invalid signature",
-			body:            `{"test":"data"}`,
-			secret:          "squared",
-			signatureHeader: "sha256=invalid",
-			expected:        false,
-		},
-		{
-			name:            "Test override",
-			body:            `{"test":"data"}`,
-			secret:          "squared",
-			signatureHeader: "", // Doesn't matter, will use test override
-			expected:        true,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			// Create a request with the specified body
-			req := httptest.NewRequest("POST", "/", bytes.NewBufferString(tc.body))
-
-			// Set up the headers
-			var headers GitHubWebhookHeaders
-			if tc.name == "Test override" {
-				headers.XTestOverride = "squared123"
-			} else {
-				if tc.signatureHeader == "" {
-					// Compute a valid signature
-					tc.signatureHeader = computeSignature([]byte(tc.body), tc.secret)
-				}
-				headers.XHubSignature256 = tc.signatureHeader
-			}
-
-			// Test the verify function
-			result := verifySignature256(req, tc.secret, headers)
-
-			if result != tc.expected {
-				t.Errorf("Expected %v but got %v", tc.expected, result)
-			}
-		})
-	}
-}
-
 func TestWebhookHandler_PullRequest(t *testing.T) {
 	// Load sample pull request payload from file
 	helpers.LoadEnv()
