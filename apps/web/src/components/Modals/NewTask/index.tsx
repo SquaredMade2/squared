@@ -17,6 +17,7 @@ import {
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -28,7 +29,7 @@ import { Separator } from "@squaredmade/ui/separator";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -40,9 +41,12 @@ export * from "./NewTaskButton";
 export * from "./NewTaskCollapsible";
 
 const formSchema = z.object({
-	title: z.string().min(2, {
-		message: "Title must be at least 2 characters.",
-	}),
+	title: z
+		.string()
+		.min(2, {
+			message: "Title must be at least 2 characters.",
+		})
+		.max(51, { message: "Title must be less than 50 characters." }),
 	description: z.string().optional(),
 });
 
@@ -54,6 +58,7 @@ export const NewTaskModal = () => {
 	const { createTask, isLoading } = useCreateTask();
 	const { team, setTeams, setTeam } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
 
 	const {
 		status,
@@ -73,6 +78,8 @@ export const NewTaskModal = () => {
 			description: "",
 		},
 	});
+
+	const titleValue = form.watch("title");
 
 	useEffect(() => {
 		if (title) form.setValue("title", title);
@@ -148,8 +155,8 @@ export const NewTaskModal = () => {
 					</div>
 				</DialogHeader>
 				<Form {...form} onSubmit={handleCreateTask}>
-					<div className="flex space-x-4 ">
-						<div className="w-4/5 space-y-4 ">
+					<div className="flex space-x-4">
+						<div className="w-4/5 space-y-4">
 							<FormField
 								control={form.control}
 								name="title"
@@ -161,9 +168,17 @@ export const NewTaskModal = () => {
 												{...field}
 												placeholder="Title"
 												className="text-md"
+												onFocus={() => setIsEditingTitle(true)}
+												onBlur={() => setIsEditingTitle(false)}
+												maxLength={50}
 												tabIndex={0}
 											/>
 										</FormControl>
+										<FormDescription
+											className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isEditingTitle && "opacity-100"}`}
+										>
+											{titleValue?.length ?? 0} / 50
+										</FormDescription>
 									</FormItem>
 								)}
 							/>
