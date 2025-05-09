@@ -139,7 +139,7 @@ export const NewTaskModal = () => {
 
 	return (
 		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>
-			<DialogContent className="md:max-w-4xl">
+			<DialogContent tabIndex={undefined} className="md:max-w-4xl">
 				<DialogHeader>
 					<div className="flex items-center">
 						<TeamSelector />
@@ -161,7 +161,6 @@ export const NewTaskModal = () => {
 												{...field}
 												placeholder="Title"
 												className="text-md"
-												tabIndex={0}
 											/>
 										</FormControl>
 									</FormItem>
@@ -179,7 +178,6 @@ export const NewTaskModal = () => {
 												placeholder="Add Description"
 												className="resize-none text-md"
 												rows={4}
-												tabIndex={0}
 											/>
 										</FormControl>
 									</FormItem>
