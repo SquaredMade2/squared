@@ -2,31 +2,32 @@ package github
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
+	"github.com/google/go-github/v71/github"
 )
 
-func handlePushCommitEvent(body []byte, githubService *rpc.GithubService, w http.ResponseWriter) {
-	var webhookEvent WebhookPushCommit
-	err := json.Unmarshal(body, &webhookEvent)
-	if err != nil {
-		log.Printf("Error parsing JSON: %v", err)
-		log.Printf("Raw webhook payload: %s", string(body))
+func handlePushCommitEvent(webhookEvent *github.PushEvent, githubService *rpc.GithubService, w http.ResponseWriter) {
+	commit := webhookEvent.HeadCommit
+
+	// Extract branch from ref (refs/heads/main -> main)
+	branch := webhookEvent.GetRef()
+	if branch != "" && strings.HasPrefix(branch, "refs/heads/") {
+		branch = branch[len("refs/heads/"):]
 	}
 
-	commit := webhookEvent.HeadCommit
 	request := rpc.PushCommitRequest{
-		Author:    commit.Author.Name,
-		Branch:    commit.TreeId,
-		Id:        commit.Id,
-		Message:   commit.Message,
-		RepoId:    webhookEvent.Repository.NodeId,
-		Timestamp: time.Time(commit.Timestamp).Format(time.RFC3339),
-		Url:       commit.Url,
+		Author:    *commit.Author.Name,
+		Branch:    branch, // Use the actual branch name, not tree ID
+		Id:        *commit.ID,
+		Message:   *commit.Message,
+		RepoId:    *webhookEvent.Repo.NodeID,
+		Timestamp: commit.Timestamp.Format(time.RFC3339),
+		Url:       *commit.URL,
 	}
 	if _, err := githubService.PushCommit(context.TODO(), request); err != nil {
 		log.Printf("Error uploading commit: %v", err)

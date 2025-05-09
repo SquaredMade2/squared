@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/bradleyfalzon/ghinstallation/v2"
-	"github.com/google/go-github/v69/github"
+	"github.com/google/go-github/v71/github"
 )
 
 func createGitHubInstallationClient(installationId int64) (*github.Client, error) {
