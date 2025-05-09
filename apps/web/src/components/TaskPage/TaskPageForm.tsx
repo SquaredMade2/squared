@@ -25,10 +25,7 @@ export const TaskPageForm = () => {
 	const queryClient = useQueryClient();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
-	const [characterCount, setCharacterCount] = useState<number>(
-		task?.title?.length ?? 0,
-	);
-	const [isTitleFocused, setIsTitleFocused] = useState(false);
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
 	const [updatedDescription, setUpdatedDescription] = useState(
 		task?.description ?? null,
 	);
@@ -67,8 +64,8 @@ export const TaskPageForm = () => {
 	});
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setUpdatedTitle(e.target.value);
-		setCharacterCount(e.target.value.length);
+		const newValue = e.target.value.slice(0, 50);
+		setUpdatedTitle(newValue);
 	};
 
 	const handleDescriptionChange = (
@@ -79,7 +76,7 @@ export const TaskPageForm = () => {
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		setIsTitleFocused(false);
+		setIsEditingTitle(false);
 		setIsDescriptionFocused(false);
 		const { transformedInput: transformedTitleInput } =
 			transformingMentionInputs(updatedTitle);
@@ -96,10 +93,6 @@ export const TaskPageForm = () => {
 		}
 	};
 
-	const handleTitleEdit = () => {
-		setIsTitleFocused(true);
-	};
-
 	return (
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
 			<div className="space-y-2">
@@ -108,7 +101,7 @@ export const TaskPageForm = () => {
 					value={updatedTitle}
 					onChange={handleTitleChange}
 					onBlur={handleSubmit}
-					onFocus={handleTitleEdit}
+					onFocus={() => setIsEditingTitle(true)}
 					placeholder="Title"
 					name="title"
 					maxLength={50}
@@ -122,9 +115,9 @@ export const TaskPageForm = () => {
 				/>
 
 				<p
-					className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isTitleFocused && "opacity-100"}`}
+					className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isEditingTitle && "opacity-100"}`}
 				>
-					{characterCount} / 50
+					{updatedTitle.length ?? 0} / 50
 				</p>
 
 				{parentTask && (
