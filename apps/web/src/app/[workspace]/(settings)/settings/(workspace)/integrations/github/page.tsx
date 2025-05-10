@@ -46,7 +46,9 @@ const GithubSettings: React.FC = () => {
 		`${process.env.NEXT_PUBLIC_URL}/api/callback/github`,
 	);
 
-	const isNotAdmin = membership?.role !== "org:admin";
+	const clerkHasNoPermission = !membership?.permissions.includes(
+		"org:sys_profile:manage",
+	);
 
 	return (
 		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
@@ -97,13 +99,13 @@ const GithubSettings: React.FC = () => {
 										</Protect>
 										<DropdownMenuContent align="end">
 											<DropdownMenuItem
-												disabled={isNotAdmin}
+												disabled={clerkHasNoPermission}
 												onSelect={() => console.log("Configure")}
 											>
 												Configure
 											</DropdownMenuItem>
 											<DropdownMenuItem
-												disabled={isNotAdmin}
+												disabled={clerkHasNoPermission}
 												onSelect={() => console.log("Disconnect")}
 											>
 												Disconnect
@@ -118,7 +120,7 @@ const GithubSettings: React.FC = () => {
 									<Button
 										className="mt-4"
 										variant="ghost"
-										disabled={isNotAdmin}
+										disabled={clerkHasNoPermission}
 										onClick={() =>
 											window.open(
 												`https://github.com/apps/squaredmadeapp/installations/new?state=${organization?.id}&redirect_uri=${callbackUrl}`,

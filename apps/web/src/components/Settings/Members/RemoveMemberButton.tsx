@@ -54,7 +54,7 @@ const RemoveMemberButton = ({
 		},
 	});
 
-	if (membership?.role !== "org:admin") {
+	if (!membership?.permissions.includes("org:sys_memberships:manage")) {
 		return null;
 	}
 
