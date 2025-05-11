@@ -44,6 +44,12 @@ export function useSprints(sprintId?: string) {
 		enabled: !!teamQuery.data,
 	});
 
+	const activeSprint =
+		sprintsQuery.data?.find((s) => s.status === "ACTIVE") ?? null;
+
+	const upcomingSprints =
+		sprintsQuery.data?.filter((s) => s.status === "PLANNED") ?? [];
+
 	const sprintQuery = useQuery({
 		queryKey: ["sprint", sprintsQuery.data, sprintId],
 		queryFn: async () => {
@@ -104,5 +110,7 @@ export function useSprints(sprintId?: string) {
 		setSprint,
 		loading: isLoading,
 		error: error,
+		activeSprint,
+		upcomingSprints,
 	};
 }
