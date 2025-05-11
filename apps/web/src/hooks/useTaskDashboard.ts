@@ -6,6 +6,7 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@squaredmade/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 
@@ -31,6 +32,30 @@ export function useTaskDashboard() {
 	const teamIdentifier = parseParams(params.identifier) ?? "";
 
 	const queryClient = useQueryClient();
+	const prevTeamIdRef = useRef<string | null>(null);
+
+	useEffect(() => {
+		let prevTeam = prevTeamIdRef.current;
+		if (teamLoading || (team?.id && team.id !== prevTeam)) {
+			setTasks([]);
+
+			if (prevTeam) {
+				queryClient.invalidateQueries({
+					queryKey: ["task", "getAllTasks", prevTeam],
+				});
+				queryClient.removeQueries({
+					queryKey: ["task", "getAllTasks", prevTeam],
+				});
+				queryClient.invalidateQueries({
+					queryKey: ["task", "allBlockedTasksIds", prevTeam],
+				});
+				queryClient.removeQueries({
+					queryKey: ["task", "allBlockedTasksIds", prevTeam],
+				});
+			}
+			prevTeam = team?.id ?? null;
+		}
+	}, [teamLoading, team?.id, queryClient]);
 
 	const {
 		data: fetchedTasks,
@@ -47,7 +72,9 @@ export function useTaskDashboard() {
 			setTasks(teamTasks);
 			return teamTasks;
 		},
-		enabled: !!team && !teamLoading && !workspaceLoading,
+		enabled: !!team?.id && !teamLoading && !workspaceLoading,
+		staleTime: 0,
+		gcTime: 0,
 	});
 
 	const allBlockedTaskIdsQuery = useQuery({
@@ -61,7 +88,9 @@ export function useTaskDashboard() {
 			setAllBlockedTaskIds(allIds);
 			return allIds;
 		},
-		enabled: !!team?.id,
+		enabled: !!team?.id && !teamLoading && !workspaceLoading,
+		staleTime: 0,
+		gcTime: 0,
 	});
 
 	const updateTaskMutation = useMutation({
@@ -141,7 +170,8 @@ export function useTaskDashboard() {
 		teamLoading ||
 		workspaceLoading ||
 		allBlockedTaskIdsQuery.isLoading ||
-		isLoading;
+		isLoading ||
+		!team?.id;
 	const error =
 		teamError ||
 		workspaceError ||
