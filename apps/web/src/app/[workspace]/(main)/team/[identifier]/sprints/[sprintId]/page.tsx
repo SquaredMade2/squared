@@ -52,8 +52,6 @@ import {
 	YAxis,
 } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#EF4444"];
-
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const router = useRouter();
@@ -150,9 +148,21 @@ export default function SprintDashboardPage() {
 			{} as Record<string, number>,
 		);
 
+		const statusColorMap: Record<Status, string> = {
+			todo: "var(--color-blue-500)",
+			inProgress: "var(--color-yellow-500)",
+			inReview: "var(--color-purple-500)",
+			done: "var(--color-green-500)",
+			backlog: "var(--color-gray-500)",
+			canceled: "var(--color-red-500)",
+			duplicated: "var(--color-indigo-500)",
+			archived: "var(--color-gray-400)",
+		};
+
 		return Object.entries(statusCounts).map(([status, count]) => ({
 			name: formatStatus(status as Status),
 			value: count,
+			color: statusColorMap[status as Status],
 		}));
 	};
 
@@ -370,10 +380,10 @@ export default function SprintDashboardPage() {
 										`${name} ${(percent * 100).toFixed(0)}%`
 									}
 								>
-									{getTaskStatusData().map((entry, index) => (
+									{getTaskStatusData().map((entry) => (
 										<Cell
 											key={`cell-${entry.name}-${entry.value}`}
-											fill={COLORS[index % COLORS.length]}
+											fill={entry.color}
 										/>
 									))}
 								</Pie>
@@ -430,7 +440,7 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<div className="scrollbar-thumb-[var(--border)] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[20rem] overflow-y-scroll">
+				<div className="scrollbar-thumb-[var(--border)] scrollbar-thumb-rounded-lg scrollbar-thin scrollbar-track-transparent h-[45rem] overflow-y-scroll">
 					<TabsContent value="all">
 						<TaskList tasks={sprintTasks} />
 					</TabsContent>
