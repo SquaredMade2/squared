@@ -41,15 +41,9 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 			const role = row.original.role;
 			if (!userId) return null;
 			if (role === "org:member") return null;
-			const { pageId, membersWithRoles } = column.columnDef.meta || {};
+			const { pageId } = column.columnDef.meta || {};
 
-			return (
-				<ManageMembersRoleButton
-					userId={userId}
-					pageId={pageId}
-					membersWithRoles={membersWithRoles}
-				/>
-			);
+			return <ManageMembersRoleButton userId={userId} pageId={pageId} />;
 		},
 	},
 	{

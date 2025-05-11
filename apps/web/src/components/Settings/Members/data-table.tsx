@@ -165,7 +165,7 @@ export function DataTable({
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!
 					</p>
-					<Protect condition={(has) => has({ role: "org:admin" })}>
+					<Protect permission="org:sys_memberships:manage">
 						<Button variant={"outline"} disabled={!membersCsv}>
 							{membersCsv && (
 								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
