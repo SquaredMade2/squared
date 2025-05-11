@@ -227,14 +227,12 @@ function IconButton({
 						{label}
 					</span>
 				</div>
-				<div>
-					{!!(notificationCount && notificationCount > 0) && (
-						<div
-							className=" h-2 w-2 rounded-full bg-primary"
-							aria-hidden="true"
-						/>
-					)}
-				</div>
+				{!!(notificationCount && notificationCount > 0) && (
+					<div
+						className=" h-2 w-2 rounded-full bg-primary"
+						aria-hidden="true"
+					/>
+				)}
 			</Button>
 		);
 	}
