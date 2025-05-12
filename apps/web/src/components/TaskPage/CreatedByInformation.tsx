@@ -14,13 +14,23 @@ export const CreatedByInformation = () => {
 		(user) => user.userId === currentTask?.authorId,
 	);
 
+	const formatDateSpans = (date: Date | string | null | undefined) => {
+		if (!date) return null;
+		const d = new Date(date);
+		if (Number.isNaN(d.getTime())) return null;
+		return (
+			<>
+				<span className="w-[2ch] text-right">{formatDate(d, "dd")}</span>
+				<span className="w-[3ch] text-left">{formatDate(d, "MMM")}</span>
+				<span className="w-[4ch] text-left">{formatDate(d, "yyyy")}</span>
+			</>
+		);
+	};
+
 	const displayDate = () => {
-		if (currentTask) {
-			// Assigning it as a new Date automatically makes it a local date
-			const currentTaskDate = currentTask.dateCreated;
-			const formattedDate = formatDate(currentTaskDate, "dd MMM yyyy");
-			return formattedDate;
-		}
+		if (!currentTask) return null;
+		const currentDate = currentTask.dateCreated;
+		return formatDateSpans(currentDate);
 	};
 
 	const getEventTime = (event: TaskEvent | GithubCommit) => {
@@ -55,31 +65,44 @@ export const CreatedByInformation = () => {
 					});
 					return (
 						<div key={event.id} className="flex items-center px-8">
-							<div className="mr-4 text-muted-foreground">
-								{formatDate(new Date(getEventTime(event)), "dd MMM yyyy")}
+							<div className="mr-4 flex w-[10%] gap-1 text-left text-muted-foreground">
+								{formatDateSpans(getEventTime(event))}
 							</div>
-							<Avatar className="size-6 text-xxs">
-								<AvatarImage src={eventAuthor?.imageUrl ?? ""} />
-								<AvatarFallback>
-									{getInitials(getName(eventAuthor))}
-								</AvatarFallback>
-							</Avatar>
-							<p className="mr-4 ml-2 text-foreground">
+							<div className="w-[5%]">
+								<Avatar className="size-6 text-xxs">
+									<AvatarImage src={eventAuthor?.imageUrl ?? ""} />
+									<AvatarFallback>
+										{getInitials(getName(eventAuthor))}
+									</AvatarFallback>
+								</Avatar>
+							</div>
+							<p className="mr-4 ml-2 w-[15%] text-foreground">
 								{getName(eventAuthor)}
 							</p>
-							<p className="text-muted-foreground text-sm">{event.message}</p>
+							<p className="w-[70%] text-muted-foreground text-sm">
+								{event.message}
+							</p>
 						</div>
 					);
 				})}
 			{/* Created by information */}
 			<div className="flex items-center px-8">
-				<div className="mr-4 text-muted-foreground">{displayDate()}</div>
-				<Avatar className="size-6 text-xxs">
-					<AvatarImage src={foundUser?.imageUrl ?? ""} />
-					<AvatarFallback>{getInitials(getName(foundUser))}</AvatarFallback>
-				</Avatar>
-				<p className="mr-4 ml-2 text-foreground">{getName(foundUser)}</p>
-				<p className="text-muted-foreground text-sm">created the task</p>
+				<div className="mr-4 flex w-[10%] gap-1 text-left text-muted-foreground">
+					{displayDate()}
+				</div>
+
+				<div className="w-[5%]">
+					<Avatar className="size-6 text-xxs">
+						<AvatarImage src={foundUser?.imageUrl ?? ""} />
+						<AvatarFallback>{getInitials(getName(foundUser))}</AvatarFallback>
+					</Avatar>
+				</div>
+				<p className="mr-4 ml-2 w-[15%] text-foreground">
+					{getName(foundUser)}
+				</p>
+				<p className="w-[70%] text-muted-foreground text-sm">
+					created the task
+				</p>
 			</div>
 		</div>
 	);
