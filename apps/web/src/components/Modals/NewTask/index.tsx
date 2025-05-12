@@ -30,7 +30,7 @@ import { Separator } from "@squaredmade/ui/separator";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -141,20 +141,9 @@ export const NewTaskModal = () => {
 		enabled: !team,
 	});
 
-	const titleRef = useRef(null);
-
 	return (
 		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>
-			<DialogContent
-				tabIndex={undefined}
-				className="md:max-w-4xl"
-				onOpenAutoFocus={(e) => {
-					e.preventDefault();
-					if (titleRef.current) {
-						(titleRef.current as HTMLInputElement).focus();
-					}
-				}}
-			>
+			<DialogContent tabIndex={undefined} className="md:max-w-4xl">
 				<DialogHeader>
 					<div className="flex items-center">
 						<TeamSelector />
@@ -174,7 +163,7 @@ export const NewTaskModal = () => {
 										<FormControl>
 											<Input
 												{...field}
-												ref={titleRef}
+												autoFocus
 												placeholder="Title"
 												className="text-md"
 											/>
