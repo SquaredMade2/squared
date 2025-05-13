@@ -11,11 +11,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code
-COPY main.go .
-COPY gen/ ./gen/
-COPY github/ ./github/
-COPY vercel/ ./vercel/
-COPY helpers/ ./helpers/
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
 
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o main .
@@ -33,4 +30,4 @@ COPY --from=builder /app/main .
 EXPOSE 3131
 
 # Command to run the executable
-CMD ["./main"]
+CMD ["./cmd/webhooks/main"]
