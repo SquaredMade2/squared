@@ -163,6 +163,7 @@ export const NewTaskModal = () => {
 										<FormControl>
 											<Input
 												{...field}
+												autoFocus
 												placeholder="Title"
 												className="text-md"
 											/>
