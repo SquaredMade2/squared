@@ -123,7 +123,6 @@ Creates a notification related to a task for a specific user.
 - **`dotenv`**: Loads environment variables from a `.env` file.
 - **`@faker-js/faker`**: Generates random data for seeding the database.
 - **`bcryptjs`**: Used for hashing passwords for users.
-- **`cross-env`**: Helps set environment variables in a cross-platform way.
 - **`ts-node`**: Enables running TypeScript files directly for database seeding.
 
 ### Development Dependencies

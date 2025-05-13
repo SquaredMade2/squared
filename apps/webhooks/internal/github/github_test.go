@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
+	"github.com/SquaredMade2/squared/apps/webhooks/internal/config"
 )
 
 // MockRPCServer implements a mock server for GitHub RPC calls
@@ -105,13 +105,13 @@ func computeSignature(body []byte, secret string) string {
 
 func TestWebhookHandler_PullRequest(t *testing.T) {
 	// Load sample pull request payload from file
-	helpers.LoadEnv()
-	pullRequestPayload, err := os.ReadFile("../testdata/pull_request_payload.json")
+	config.LoadEnv()
+	pullRequestPayload, err := os.ReadFile("./testdata/pull_request_payload.json")
 	if err != nil {
-		// Use a minimal payload if file not available
-		pullRequestPayload = []byte(`{"action":"opened","pull_request":{"number":1138,"html_url":"https://github.com/org/repo/pull/1138","title":"Test PR","body":"Test body","user":{"login":"testuser"},"head":{"ref":"feature-branch"},"base":{"repo":{"node_id":"R123","name":"repo","url":"https://api.github.com/repos/org/repo","description":"Test description","private":true}}},"repository":{"node_id":"R123","name":"repo"},"organization":{"node_id":"O123","login":"org"},"installation":{"id":12345}}`)
+		fmt.Println("Error reading pull request payload:", err)
+		t.Fatalf("Error reading pull request payload: %v", err)
+		return
 	}
-
 	// Set up mock RPC server
 	mockServer := NewMockRPCServer()
 	defer mockServer.Close()
@@ -145,7 +145,7 @@ func TestWebhookHandler_PullRequest(t *testing.T) {
 
 func TestWebhookHandler_PushCommit(t *testing.T) {
 	// Load sample push commit payload from file
-	pushPayload, err := os.ReadFile("../testdata/push_payload.json")
+	pushPayload, err := os.ReadFile("./testdata/push_payload.json")
 	if err != nil {
 		// Use a minimal payload if file not available
 		pushPayload = []byte(`{"ref":"refs/heads/main","commits":[{"id":"abc123","message":"Test commit","timestamp":"2025-03-01T17:12:38+11:00","author":{"name":"Test User","email":"test@example.com"},"url":"https://github.com/org/repo/commit/abc123","tree_id":"def456"}],"repository":{"id":123,"node_id":"R123","name":"repo","created_at":1721593293},"head_commit":{"id":"abc123","message":"Test commit","timestamp":"2025-03-01T17:12:38+11:00","author":{"name":"Test User"},"tree_id":"def456"},"installation":{"id":12345}}`)
@@ -220,156 +220,5 @@ func TestWebhookHandler_UnsupportedEvent(t *testing.T) {
 	// Check response status - should be bad request
 	if status := rr.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusBadRequest)
-	}
-}
-
-// Create test directories and files
-func init() {
-	// Create testdata directory if it doesn't exist
-	if _, err := os.Stat("../testdata"); os.IsNotExist(err) {
-		os.MkdirAll("../testdata", 0755)
-	}
-
-	// Create sample pull request payload file
-	pullRequestPayload := `{
-    "action": "opened",
-    "number": 1138,
-    "pull_request": {
-        "url": "https://api.github.com/repos/SquaredMade2/squared/pulls/1138",
-        "id": 2365680690,
-        "node_id": "PR_kwDOMZUqa86NAWwy",
-        "html_url": "https://github.com/SquaredMade2/squared/pull/1138",
-        "number": 1138,
-        "state": "open",
-        "title": "feat: log webhook event payload for debugging",
-        "user": {
-            "login": "THEjacob1000",
-            "id": 76940960,
-            "node_id": "MDQ6VXNlcjc2OTQwOTYw"
-        },
-        "body": "# Pull Request\\r\\n\\r\\n## Description\\r\\n\\r\\nPlease include a summary of the change and which issue is fixed.",
-        "created_at": "2025-03-01T02:01:26Z",
-        "updated_at": "2025-03-01T02:01:26Z",
-        "head": {
-            "label": "SquaredMade2:feature/testing-for-webhooks",
-            "ref": "feature/testing-for-webhooks",
-            "sha": "135b80a8f4428187957941f0b091228ef466ddbd",
-            "repo": {
-                "id": 831859307,
-                "node_id": "R_kgDOMZUqaw",
-                "name": "squared",
-                "full_name": "SquaredMade2/squared",
-                "private": true,
-                "description": null
-            }
-        },
-        "base": {
-            "label": "SquaredMade2:develop",
-            "ref": "develop",
-            "sha": "1bd5006891ce3c7c35659fdcec1dfed9b7240748",
-            "repo": {
-                "id": 831859307,
-                "node_id": "R_kgDOMZUqaw",
-                "name": "squared",
-                "full_name": "SquaredMade2/squared",
-                "private": true,
-                "description": null
-            }
-        }
-    },
-    "repository": {
-        "id": 831859307,
-        "node_id": "R_kgDOMZUqaw",
-        "name": "squared",
-        "full_name": "SquaredMade2/squared"
-    },
-    "organization": {
-        "login": "SquaredMade2",
-        "id": 177484624,
-        "node_id": "O_kgDOCpQzUA"
-    },
-    "installation": {
-        "id": 63527956,
-        "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNjEyMzA5NTM="
-    }
-}`
-
-	if _, err := os.Stat("../testdata/pull_request_payload.json"); os.IsNotExist(err) {
-		os.WriteFile("../testdata/pull_request_payload.json", []byte(pullRequestPayload), 0644)
-	}
-
-	// Create sample push payload file
-	pushPayload := `{
-    "ref": "refs/heads/feature/testing-for-webhooks",
-    "before": "8082e210b56e6e6d7e5e608c9a5b421a6936a774",
-    "after": "4b5f33b5e9af104097d73d94598b4724da7294bf",
-    "repository": {
-        "id": 831859307,
-        "node_id": "R_kgDOMZUqaw",
-        "name": "squared",
-        "full_name": "SquaredMade2/squared",
-        "private": true,
-        "created_at": 1721593293
-    },
-    "pusher": {
-        "name": "THEjacob1000",
-        "email": "jacob@jacobdevelops.com"
-    },
-    "commits": [
-        {
-            "id": "4b5f33b5e9af104097d73d94598b4724da7294bf",
-            "tree_id": "fec7b4407b7893c35b4e95877d83843336c4a924",
-            "distinct": true,
-            "message": "fix: add missing newline in main.go for code clarity",
-            "timestamp": "2025-03-01T17:12:38+11:00",
-            "url": "https://github.com/SquaredMade2/squared/commit/4b5f33b5e9af104097d73d94598b4724da7294bf",
-            "author": {
-                "name": "THEjacob1000",
-                "email": "jacob@jacobdevelops.com",
-                "username": "THEjacob1000"
-            },
-            "committer": {
-                "name": "THEjacob1000",
-                "email": "jacob@jacobdevelops.com",
-                "username": "THEjacob1000"
-            },
-            "added": [],
-            "removed": [],
-            "modified": [
-                "apps/webhooks/main.go"
-            ]
-        }
-    ],
-    "head_commit": {
-        "id": "4b5f33b5e9af104097d73d94598b4724da7294bf",
-        "tree_id": "fec7b4407b7893c35b4e95877d83843336c4a924",
-        "distinct": true,
-        "message": "fix: add missing newline in main.go for code clarity",
-        "timestamp": "2025-03-01T17:12:38+11:00",
-        "url": "https://github.com/SquaredMade2/squared/commit/4b5f33b5e9af104097d73d94598b4724da7294bf",
-        "author": {
-            "name": "THEjacob1000",
-            "email": "jacob@jacobdevelops.com",
-            "username": "THEjacob1000"
-        },
-        "committer": {
-            "name": "THEjacob1000",
-            "email": "jacob@jacobdevelops.com",
-            "username": "THEjacob1000"
-        },
-        "added": [],
-        "removed": [],
-        "modified": [
-            "apps/webhooks/main.go"
-        ]
-    },
-    "installation": {
-        "id": 63527956,
-        "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uNjEyMzA5NTM="
-    }
-}`
-
-	if _, err := os.Stat("../testdata/push_payload.json"); os.IsNotExist(err) {
-		os.WriteFile("../testdata/push_payload.json", []byte(pushPayload), 0644)
 	}
 }
