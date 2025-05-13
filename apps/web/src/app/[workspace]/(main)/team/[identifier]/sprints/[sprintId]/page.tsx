@@ -71,7 +71,7 @@ export default function SprintDashboardPage() {
 	const [newSprint, setNewSprint] = useState(false);
 
 	useEffect(() => {
-		const currentSprint = sprints.find((s) => s.id === sprintId);
+		const currentSprint = sprints.find((s: Sprint) => s.id === sprintId);
 		setSprint(currentSprint || null);
 		if (currentSprint) {
 			setUnassignedTasks(tasks.filter((task) => !task.sprintId));
@@ -84,7 +84,7 @@ export default function SprintDashboardPage() {
 	const calculateProgress = () => {
 		if (!sprint) return 0;
 		const completedTasks = sprintTasks.filter(
-			(task) => task.status === "done" || task.status === "canceled",
+			(task: Task) => task.status === "done" || task.status === "canceled",
 		);
 		return sprintTasks.length > 0
 			? (completedTasks.length / sprintTasks.length) * 100
@@ -111,7 +111,7 @@ export default function SprintDashboardPage() {
 
 			if (i <= currentSprintDay) {
 				completedTasksCount = sprintTasks.filter(
-					(task) =>
+					(task: Task) =>
 						(task.status === "done" || task.status === "canceled") &&
 						new Date(task.updatedAt) <= date,
 				).length;
@@ -141,7 +141,7 @@ export default function SprintDashboardPage() {
 
 	const getTaskStatusData = () => {
 		const statusCounts = sprintTasks.reduce(
-			(acc, task) => {
+			(acc: { [x: string]: number }, task: Task) => {
 				acc[task.status] = (acc[task.status] || 0) + 1;
 				return acc;
 			},
@@ -170,12 +170,14 @@ export default function SprintDashboardPage() {
 		mutationKey: ["sprint", "sprintAssign", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
+			if (sprint.status === "COMPLETED")
+				throw new Error("Cannot add tasks to completed sprint");
 			return await client.sprint.addSprintTasks
 				.$post({
 					sprintId: sprint.id,
 					taskIds: selectedTasks.map((t) => t.id),
 				})
-				.then((res) => res.json());
+				.then((res: Response) => res.json());
 		},
 		onError: (error) => {
 			toast.error("Failed to assign tasks to sprint", {
@@ -192,11 +194,12 @@ export default function SprintDashboardPage() {
 		mutationKey: ["sprint", "sprintEnd", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
+			if (sprint.status !== "ACTIVE") throw new Error("Sprint is not active");
 			return await client.sprint.endSprint
 				.$post({
 					sprintId: sprint.id,
 				})
-				.then((res) => res.json());
+				.then((res: Response) => res.json());
 		},
 		onError: (error) => {
 			toast.error("Failed to end the sprint.", {
@@ -280,7 +283,7 @@ export default function SprintDashboardPage() {
 								<p className="font-bold text-3xl">
 									{
 										sprintTasks.filter(
-											(task) =>
+											(task: Task) =>
 												task.status === "done" || task.status === "canceled",
 										).length
 									}
@@ -291,7 +294,7 @@ export default function SprintDashboardPage() {
 								<p className="font-bold text-3xl">
 									{
 										sprintTasks.filter(
-											(task) =>
+											(task: Task) =>
 												task.status === "inProgress" ||
 												task.status === "inReview",
 										).length
@@ -301,7 +304,10 @@ export default function SprintDashboardPage() {
 							<div>
 								<h3 className="font-semibold text-lg">To Do</h3>
 								<p className="font-bold text-3xl">
-									{sprintTasks.filter((task) => task.status === "todo").length}
+									{
+										sprintTasks.filter((task: Task) => task.status === "todo")
+											.length
+									}
 								</p>
 							</div>
 						</div>
@@ -393,37 +399,41 @@ export default function SprintDashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-			<div className="flex items-center justify-between space-x-4">
-				<Button
-					onClick={() => handleButtonClick(false)}
-					variant="outline"
-					className="flex-1 border-destructive"
-				>
-					End Sprint
-				</Button>
-				<Link
-					href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
-					className="flex-1"
-					passHref
-				>
-					<Button className="w-full">Start Sprint Retrospective</Button>
-				</Link>
-				<Button onClick={() => handleButtonClick(true)} className="flex-1">
-					Start Next Sprint
-				</Button>
-			</div>
+			{sprint.status === "ACTIVE" && (
+				<div className="flex items-center justify-between space-x-4">
+					<Button
+						onClick={() => handleButtonClick(false)}
+						variant="outline"
+						className="flex-1 border-destructive"
+					>
+						End Sprint
+					</Button>
+					<Link
+						href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
+						className="flex-1"
+						passHref
+					>
+						<Button className="w-full">Start Sprint Retrospective</Button>
+					</Link>
+					<Button onClick={() => handleButtonClick(true)} className="flex-1">
+						Start Next Sprint
+					</Button>
+				</div>
+			)}
 			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-2xl">Sprint Tasks</h2>
-				<div className="space-x-4">
-					<AssignTasksDialog
-						activeSprint={sprint}
-						handleBulkAssign={() => handleBulkAssign()}
-						selectedTasks={selectedTasks}
-						setSelectedTasks={setSelectedTasks}
-						unassignedTasks={unassignedTasks}
-						upcomingSprints={[]}
-					/>
-				</div>
+				{sprint.status !== "COMPLETED" && (
+					<div className="space-x-4">
+						<AssignTasksDialog
+							activeSprint={sprint}
+							handleBulkAssign={() => handleBulkAssign()}
+							selectedTasks={selectedTasks}
+							setSelectedTasks={setSelectedTasks}
+							unassignedTasks={unassignedTasks}
+							upcomingSprints={[]}
+						/>
+					</div>
+				)}
 			</div>
 			<Tabs defaultValue="all" className="w-full">
 				<TabsList className="w-full">
@@ -446,13 +456,13 @@ export default function SprintDashboardPage() {
 					</TabsContent>
 					<TabsContent value="todo">
 						<TaskList
-							tasks={sprintTasks.filter((task) => task.status === "todo")}
+							tasks={sprintTasks.filter((task: Task) => task.status === "todo")}
 						/>
 					</TabsContent>
 					<TabsContent value="inProgress">
 						<TaskList
 							tasks={sprintTasks.filter(
-								(task) =>
+								(task: Task) =>
 									task.status === "inProgress" || task.status === "inReview",
 							)}
 						/>
@@ -460,7 +470,8 @@ export default function SprintDashboardPage() {
 					<TabsContent value="done">
 						<TaskList
 							tasks={sprintTasks.filter(
-								(task) => task.status === "done" || task.status === "canceled",
+								(task: Task) =>
+									task.status === "done" || task.status === "canceled",
 							)}
 						/>
 					</TabsContent>
