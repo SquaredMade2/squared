@@ -14,8 +14,8 @@ RUN go mod download
 COPY cmd/ ./cmd/
 COPY internal/ ./internal/
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -o main .
+# Build the application (changed this line)
+RUN CGO_ENABLED=0 GOOS=linux go build -a -o main ./cmd/webhooks
 
 # Final stage
 FROM gcr.io/distroless/static-debian12:latest-amd64
@@ -29,5 +29,5 @@ COPY --from=builder /app/main .
 # Expose the port the app runs on
 EXPOSE 3131
 
-# Command to run the executable
-CMD ["./cmd/webhooks/main"]
+# Command to run the executable (simplified this line)
+CMD ["./main"]
