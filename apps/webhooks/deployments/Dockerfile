@@ -11,14 +11,11 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code
-COPY main.go .
-COPY gen/ ./gen/
-COPY github/ ./github/
-COPY vercel/ ./vercel/
-COPY helpers/ ./helpers/
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -o main .
+# Build the application (changed this line)
+RUN CGO_ENABLED=0 GOOS=linux go build -a -o main ./cmd/webhooks
 
 # Final stage
 FROM gcr.io/distroless/static-debian12:latest-amd64
@@ -32,5 +29,5 @@ COPY --from=builder /app/main .
 # Expose the port the app runs on
 EXPOSE 3131
 
-# Command to run the executable
+# Command to run the executable (simplified this line)
 CMD ["./main"]
