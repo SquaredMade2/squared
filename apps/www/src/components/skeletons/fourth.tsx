@@ -3,7 +3,7 @@ import { cn } from "@squaredmade/ui/cn";
 import { Globe } from "../globe";
 export const SkeletonFour = () => {
 	return (
-		<div className="relative mt-10 flex h-full flex-col items-center bg-white dark:bg-background">
+		<div className="relative mt-10 flex h-full flex-col items-center bg-background">
 			<InfiniteMovingCards speed="fast" direction="left">
 				<MovingGrid />
 			</InfiniteMovingCards>
@@ -24,7 +24,7 @@ const MovingGrid = () => {
 		<div className="relative z-40 mb-4 flex shrink-0 space-x-4 p-2">
 			<span
 				className={cn(
-					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-card p-3 px-2 py-1 text-sm",
 				)}
 			>
 				<svg
@@ -45,7 +45,7 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-card p-3 px-2 py-1 text-sm",
 				)}
 			>
 				<svg
@@ -67,7 +67,7 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-card p-3 px-2 py-1 text-sm",
 				)}
 			>
 				<svg
@@ -132,21 +132,21 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					" flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
+					" flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-card p-3 px-2 py-1 text-sm",
 				)}
 			>
 				<VercelLogo /> <span>Vercel</span>
 			</span>
 			<span
 				className={cn(
-					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-card p-3 px-2 py-1 text-sm",
 				)}
 			>
 				<AWSLogo /> <span>AWS</span>
 			</span>
 			<span
 				className={cn(
-					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-neutral-100 p-3 px-2 py-1 text-sm dark:bg-background-darkSecondary",
+					"flex min-w-24 items-center justify-center space-x-1 rounded-xl bg-card p-3 px-2 py-1 text-sm",
 				)}
 			>
 				<GitHubLogo /> <span>GitHub</span>

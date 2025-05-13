@@ -11,7 +11,7 @@ export const Badge: React.FC<
 			<span className="absolute inset-0 overflow-hidden rounded-full">
 				<span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 			</span>
-			<div className="relative z-10 flex items-center space-x-2 rounded-full bg-neutral-100 px-4 py-1.5 ring-1 ring-white/10 dark:bg-background-darkAccent ">
+			<div className="relative z-10 flex items-center space-x-2 rounded-full bg-neutral-100 px-4 py-1.5 ring-1 ring-white/10 dark:bg-background-dark-accent ">
 				<span>{children}</span>
 				<svg
 					fill="none"
