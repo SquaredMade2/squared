@@ -55,10 +55,10 @@ export const CreatedByInformation = () => {
 					});
 					return (
 						<div key={event.id} className="flex items-center px-8">
-							<div className="mr-4 w-[10%] text-muted-foreground">
+							<div className="w-[calc(10%+1rem)] gap-1 text-muted-foreground">
 								{formatDate(getEventTime(event), "dd MMM yyyy")}
 							</div>
-							<div className="w-[5%]">
+							<div className="w-[calc(5%+0.1rem)]">
 								<Avatar className="size-6 text-xxs">
 									<AvatarImage src={eventAuthor?.imageUrl ?? ""} />
 									<AvatarFallback>
@@ -66,10 +66,10 @@ export const CreatedByInformation = () => {
 									</AvatarFallback>
 								</Avatar>
 							</div>
-							<p className="mr-4 ml-2 w-[15%] text-foreground">
+							<p className="w-[calc(15%+0.25rem)] text-foreground">
 								{getName(eventAuthor)}
 							</p>
-							<p className="w-[70%] text-muted-foreground text-sm">
+							<p className="w-[calc(70%+1rem)] text-muted-foreground text-sm">
 								{event.message}
 							</p>
 						</div>
@@ -77,20 +77,20 @@ export const CreatedByInformation = () => {
 				})}
 			{/* Created by information */}
 			<div className="flex items-center px-8">
-				<div className="mr-4 flex w-[10%] gap-1 overflow-hidden text-muted-foreground">
+				<div className="flex w-[calc(10%+1rem)] gap-1 overflow-hidden text-muted-foreground">
 					{displayDate()}
 				</div>
 
-				<div className="w-[5%]">
+				<div className="w-[calc(5%+0.1rem)]">
 					<Avatar className="size-6 text-xxs">
 						<AvatarImage src={foundUser?.imageUrl ?? ""} />
 						<AvatarFallback>{getInitials(getName(foundUser))}</AvatarFallback>
 					</Avatar>
 				</div>
-				<p className="mr-4 ml-2 w-[15%] text-foreground">
+				<p className="w-[calc(15%+0.25rem)] text-foreground">
 					{getName(foundUser)}
 				</p>
-				<p className="w-[70%] text-muted-foreground text-sm">
+				<p className="w-[calc(70%+1rem)] text-muted-foreground text-sm">
 					created the task
 				</p>
 			</div>
