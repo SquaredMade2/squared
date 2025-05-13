@@ -1,6 +1,6 @@
 import { client } from "@/lib/client";
 import { useModalStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
+import { Protect, useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import type { Team } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type VisibilityState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -26,12 +27,25 @@ export type MemberWithRole = PublicUserData & {
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
+	membershipManagementPermission: boolean | undefined;
 	team: Team | null;
 }
 
-export function DataTable({ columns, data }: DataTableProps) {
+export function DataTable({
+	columns,
+	data,
+	membershipManagementPermission,
+}: DataTableProps) {
 	const router = useRouter();
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		Object.fromEntries(
+			columns
+				.filter((column) => column.id)
+				.map((column) => [column.id, Boolean(membershipManagementPermission)]),
+		),
+	);
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
 	const { memberships, organization } = useOrganization({
@@ -54,9 +68,11 @@ export function DataTable({ columns, data }: DataTableProps) {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		onColumnFiltersChange: setColumnFilters,
+		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
 		state: {
 			columnFilters,
+			columnVisibility,
 		},
 	});
 
@@ -109,7 +125,9 @@ export function DataTable({ columns, data }: DataTableProps) {
 						className="max-w-xs"
 					/>
 					<div className="flex items-center justify-center gap-2">
-						<Button onClick={handleWorkspaceInvite}>Invite People</Button>
+						<Protect permission={"org:sys_memberships:manage"}>
+							<Button onClick={handleWorkspaceInvite}>Invite People</Button>
+						</Protect>
 					</div>
 				</div>
 				<Table>
@@ -147,11 +165,13 @@ export function DataTable({ columns, data }: DataTableProps) {
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!
 					</p>
-					<Button variant={"outline"}>
-						{membersCsv && (
-							<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
-						)}
-					</Button>
+					<Protect permission="org:sys_memberships:manage">
+						<Button variant={"outline"} disabled={!membersCsv}>
+							{membersCsv && (
+								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+							)}
+						</Button>
+					</Protect>
 				</div>
 			</div>
 		</div>

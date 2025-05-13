@@ -37,6 +37,7 @@ export const columns: ColumnDef<Label>[] = [
 	},
 	{
 		accessorKey: "edit",
+		id: "edit",
 		cell: ({ row }) => {
 			const label = row.original;
 			return (
@@ -48,6 +49,7 @@ export const columns: ColumnDef<Label>[] = [
 	},
 	{
 		accessorKey: "delete",
+		id: "delete",
 		cell: ({ row, column }) => {
 			const labelName = row.original.name;
 			const { pageId, refetch } = column.columnDef.meta || {};
