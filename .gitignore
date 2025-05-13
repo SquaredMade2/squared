@@ -8,10 +8,24 @@ node_modules
 # testing
 coverage
 
+# Go testing
+*.out
+*.test
+coverage.html
+coverage.txt
+
 # next.js
 .next/
 out/
 build
+
+# Go build outputs
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
 # other
 dist/
@@ -19,6 +33,11 @@ dist/
 # misc
 .DS_Store
 *.pem
+
+# Go misc
+*.swp
+*.swo
+*~
 
 # env
 .env
@@ -45,6 +64,13 @@ error.log*
 .elasticbeanstalk
 generated
 
+# Go vendor (if not using modules)
+vendor/
+
+# Go IDE files
+.idea/
+*.code-workspace
+
 # squared
 .squared
 
@@ -53,3 +79,17 @@ generated
 
 # Storybook
 storybook-static/
+
+# Air (Go live reload tool)
+tmp/
+
+# Go mod cache (usually in GOPATH, but just in case)
+go.sum
+!go.mod
+
+# OS generated files
+Thumbs.db
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

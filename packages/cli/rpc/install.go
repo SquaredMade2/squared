@@ -186,7 +186,7 @@ func generateGoFile(service Service) {
 		return
 	}
 
-	genDir := filepath.Join(cwd, "gen", "rpc")
+	genDir := filepath.Join(cwd, "internal", "rpc")
 	err = os.MkdirAll(genDir, 0755)
 	if err != nil {
 		fmt.Printf("Error creating directory: %v\n", err)
