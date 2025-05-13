@@ -203,6 +203,12 @@ describe("stringify & parse", () => {
 					e: ["Error"],
 				},
 			},
+			customExpectations: (untransformed: any) => {
+				expect(untransformed.e).toBeInstanceOf(Error);
+				expect(untransformed.e.message).toBe("epic fail");
+				expect(untransformed.e.name).toBe("Error");
+			},
+			dontExpectEquality: true,
 		},
 
 		"works for regex": {
@@ -923,7 +929,7 @@ test("regression #83: negative zero", () => {
 
 	const stringified = SuperJSON.stringify(input);
 	expect(stringified).toMatchInlineSnapshot(
-		`"{\\"json\\":\\"-0\\",\\"meta\\":{\\"values\\":[\\"number\\"]}}"`,
+		`"{\"json\":\"-0\",\"meta\":{\"values\":[\"number\"]}}"`,
 	);
 
 	const parsed: number = SuperJSON.parse(stringified);
@@ -1057,7 +1063,7 @@ test("prototype pollution - __proto__", () => {
 			}),
 		);
 	}).toThrowErrorMatchingInlineSnapshot(
-		`"__proto__ is not allowed as a property"`,
+		"[Error: __proto__ is not allowed as a property]",
 	);
 	expect((Object.prototype as any).x).toBeUndefined();
 });
@@ -1077,7 +1083,7 @@ test("prototype pollution - prototype", () => {
 			}),
 		);
 	}).toThrowErrorMatchingInlineSnapshot(
-		`"prototype is not allowed as a property"`,
+		"[Error: prototype is not allowed as a property]",
 	);
 });
 
@@ -1096,7 +1102,7 @@ test("prototype pollution - constructor", () => {
 			}),
 		);
 	}).toThrowErrorMatchingInlineSnapshot(
-		`"prototype is not allowed as a property"`,
+		"[Error: prototype is not allowed as a property]",
 	);
 
 	expect((Object.prototype as any).x).toBeUndefined();

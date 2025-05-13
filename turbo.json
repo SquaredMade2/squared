@@ -5,7 +5,24 @@
 			"dependsOn": ["^build"],
 			"env": ["NEXT_PUBLIC_API_HOST"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**", "public/dist/**"]
+			"outputs": [
+				"dist/**",
+				".next/**",
+				"!.next/cache/**",
+				"public/dist/**",
+				"bin/**"
+			]
+		},
+		"build:go": {
+			"dependsOn": ["^build:go"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"cmd/**/*.go",
+				"internal/**/*.go",
+				"pkg/**/*.go",
+				"*.go"
+			],
+			"outputs": ["bin/**"]
 		},
 		"check-types": {
 			"dependsOn": ["^check-types"]

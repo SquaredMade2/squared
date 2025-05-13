@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
+	"github.com/SquaredMade2/squared/apps/webhooks/internal/rpc"
 )
 
 type OrgInstallationInfo struct {

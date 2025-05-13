@@ -147,12 +147,6 @@ export default function Profile() {
 										</FormItem>
 									)}
 								/>
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormDescription>
-										{user.primaryEmailAddress?.emailAddress}
-									</FormDescription>
-								</FormItem>
 							</div>
 							<Button type="submit" disabled={isUpdating}>
 								{isUpdating ? "Updating..." : "Update Profile"}
