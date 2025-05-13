@@ -14,23 +14,13 @@ export const CreatedByInformation = () => {
 		(user) => user.userId === currentTask?.authorId,
 	);
 
-	const formatDateSpans = (date: Date | string | null | undefined) => {
-		if (!date) return null;
-		const d = new Date(date);
-		if (Number.isNaN(d.getTime())) return null;
-		return (
-			<>
-				<span className="w-[2ch] text-right">{formatDate(d, "dd")}</span>
-				<span className="w-[3ch] text-left">{formatDate(d, "MMM")}</span>
-				<span className="w-[4ch] text-left">{formatDate(d, "yyyy")}</span>
-			</>
-		);
-	};
-
 	const displayDate = () => {
-		if (!currentTask) return null;
-		const currentDate = currentTask.dateCreated;
-		return formatDateSpans(currentDate);
+		if (currentTask) {
+			// Assigning it as a new Date automatically makes it a local date
+			const currentTaskDate = currentTask.dateCreated;
+			const formattedDate = formatDate(currentTaskDate, "dd MMM yyyy");
+			return formattedDate;
+		}
 	};
 
 	const getEventTime = (event: TaskEvent | GithubCommit) => {
@@ -65,8 +55,8 @@ export const CreatedByInformation = () => {
 					});
 					return (
 						<div key={event.id} className="flex items-center px-8">
-							<div className="mr-4 flex w-[10%] gap-1 text-left text-muted-foreground">
-								{formatDateSpans(getEventTime(event))}
+							<div className="mr-4 w-[10%] text-muted-foreground">
+								{formatDate(getEventTime(event), "dd MMM yyyy")}
 							</div>
 							<div className="w-[5%]">
 								<Avatar className="size-6 text-xxs">
@@ -87,7 +77,7 @@ export const CreatedByInformation = () => {
 				})}
 			{/* Created by information */}
 			<div className="flex items-center px-8">
-				<div className="mr-4 flex w-[10%] gap-1 text-left text-muted-foreground">
+				<div className="mr-4 flex w-[10%] gap-1 overflow-hidden text-muted-foreground">
 					{displayDate()}
 				</div>
 
