@@ -3,7 +3,7 @@
 	"private": true,
 	"version": "0.0.0",
 	"scripts": {
-		"dev": "ENVIRONMENT=development go run cmd/webhooks/main.go",
+		"dev": "cross-env ENVIRONMENT=development go run cmd/webhooks/main.go",
 		"build": "go build -o bin/webhooks cmd/webhooks/main.go",
 		"test": "go test -v ./...",
 		"clean": "rm -rf bin/ coverage.out",
