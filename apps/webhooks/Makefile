@@ -75,18 +75,7 @@ fmt:
 # Run golint (assumes golint is installed)
 .PHONY: lint
 lint:
-	golint -set_exit_status ./...
-
-# Run staticcheck (assumes staticcheck is installed)
-.PHONY: staticcheck
-staticcheck:
 	staticcheck ./...
-
-# Install golangci-lint and run it
-.PHONY: golangci-lint
-golangci-lint:
-	@which golangci-lint > /dev/null || (echo "Installing golangci-lint..." && go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest)
-	golangci-lint run
 
 # Run the application with environment variables
 .PHONY: run
