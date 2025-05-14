@@ -287,6 +287,7 @@ const TopNavBarDisplay = () => {
 											<Button
 												variant="outline"
 												size="sm"
+												className="h-10 px-2.5"
 												onClick={() =>
 													setDisplayOptions({
 														taskOrder: {
