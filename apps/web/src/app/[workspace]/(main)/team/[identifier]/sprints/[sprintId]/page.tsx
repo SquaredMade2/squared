@@ -69,6 +69,8 @@ export default function SprintDashboardPage() {
 	const [showNextSprint, setShowNextSprint] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
 	const [newSprint, setNewSprint] = useState(false);
+	const isSprintActive: boolean = sprint?.status === "ACTIVE";
+	const isSprintCompleted: boolean = sprint?.status === "COMPLETED";
 
 	useEffect(() => {
 		const currentSprint = sprints.find((s: Sprint) => s.id === sprintId);
@@ -170,7 +172,7 @@ export default function SprintDashboardPage() {
 		mutationKey: ["sprint", "sprintAssign", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
-			if (sprint.status === "COMPLETED")
+			if (isSprintCompleted)
 				throw new Error("Cannot add tasks to completed sprint");
 			return await client.sprint.addSprintTasks
 				.$post({
@@ -194,7 +196,7 @@ export default function SprintDashboardPage() {
 		mutationKey: ["sprint", "sprintEnd", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
-			if (sprint.status !== "ACTIVE") throw new Error("Sprint is not active");
+			if (!isSprintActive) throw new Error("Sprint is not active");
 			return await client.sprint.endSprint
 				.$post({
 					sprintId: sprint.id,
@@ -399,7 +401,7 @@ export default function SprintDashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-			{sprint.status === "ACTIVE" && (
+			{isSprintActive && (
 				<div className="flex items-center justify-between space-x-4">
 					<Button
 						onClick={() => handleButtonClick(false)}
@@ -422,7 +424,7 @@ export default function SprintDashboardPage() {
 			)}
 			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-2xl">Sprint Tasks</h2>
-				{sprint.status !== "COMPLETED" && (
+				{!isSprintCompleted && (
 					<div className="space-x-4">
 						<AssignTasksDialog
 							activeSprint={sprint}
