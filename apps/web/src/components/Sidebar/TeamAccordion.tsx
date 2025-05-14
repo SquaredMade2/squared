@@ -69,11 +69,13 @@ export function TeamAccordion({
 								className={cn(
 									buttonVariants({ variant: "ghost" }),
 									"justify-between",
+									"pl-3",
+									"pr-2",
 								)}
 							>
-								<div className="flex items-center gap-2">
+								<div className="flex items-center">
 									<LayoutGrid className="h-4 w-4 text-primary" />
-									<span className="font-medium text-sm">{team.name}</span>
+									<span className="ml-2 font-medium text-sm">{team.name}</span>
 								</div>
 							</AccordionTrigger>
 							<AccordionContent className="pt-1 pl-6">
