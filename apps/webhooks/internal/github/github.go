@@ -62,6 +62,8 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		handlePullRequestEvent(event, githubService, w)
 	case *github.PushEvent:
 		handlePushCommitEvent(event, githubService, w)
+	case *github.InstallationEvent:
+		handleInstallEvent(githubService, r, w)
 	default:
 		http.Error(w, "Unsupported event", http.StatusBadRequest)
 		return
