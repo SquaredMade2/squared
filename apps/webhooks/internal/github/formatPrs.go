@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SquaredMade2/squared/apps/webhooks/data"
 	"github.com/google/go-github/v72/github"
 )
 
@@ -32,9 +33,9 @@ func formatReviewers(reviewers []*github.User) string {
 
 	for _, reviewer := range reviewers {
 		exists := false
-		// slackUser, exists := data.GetSlackByGitHub(*reviewer.Login)
+		discordUser, exists := data.GetDiscordByGitHub(*reviewer.Login)
 		if exists {
-			// reviewerNames = append(reviewerNames, fmt.Sprintf("@%s", slackUser))
+			reviewerNames = append(reviewerNames, fmt.Sprintf("<@%s>", discordUser))
 		} else {
 			reviewerNames = append(reviewerNames, fmt.Sprintf("@%s", *reviewer.Login))
 		}

@@ -8,10 +8,10 @@ import (
 )
 
 func createDiscordClient() (*discordgo.Session, error) {
-	token := os.Getenv("DISCORD_BOT_TOKEN")
+	token := os.Getenv("DISCORD_TOKEN")
 
 	if token == "" {
-		return nil, fmt.Errorf("DISCORD_BOT_TOKEN is not set")
+		return nil, fmt.Errorf("DISCORD_TOKEN is not set")
 	}
 
 	discord, err := discordgo.New("Bot " + token)

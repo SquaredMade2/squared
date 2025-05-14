@@ -12,14 +12,14 @@ import (
 func RunStandupPrNotification() error {
 	start := time.Now()
 	fmt.Println("Running Standup PR Notification...")
-	prs, err := github.GetPrs()
+	repos, err := github.GetPrs()
 
 	if err != nil {
 		log.Fatalf("Failed to get PRs: %v", err)
 		return err
 	}
 
-	filteredPrs := github.FilterPrs(prs)
+	filteredPrs := github.FilterPrs(repos)
 
 	client, err := createDiscordClient()
 	if err != nil {
@@ -33,8 +33,10 @@ func RunStandupPrNotification() error {
 			suffix = ""
 		}
 		repoString := fmt.Sprintf("## %s\n%s%s", repo.Repository, github.FormatPrs(repo.PullRequests), suffix)
-		client.ChannelMessageSend(os.Getenv("DISCORD_CHANNEL"), repoString)
-		// fmt.Println(repoString)
+		_, err := client.ChannelMessageSend(os.Getenv("DISCORD_CHANNEL"), repoString)
+		if err != nil {
+			return fmt.Errorf("failed to send message to Discord: %w", err)
+		}
 	}
 
 	fmt.Printf("Total time taken: %v\n", time.Since(start))

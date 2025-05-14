@@ -7,30 +7,52 @@ ifneq (,$(wildcard ./.env))
 endif
 
 # Variables
-APP_NAME = webhooks
-APP_PATH = cmd/webhooks
+WEBHOOKS_APP_NAME = webhooks
+WEBHOOKS_APP_PATH = cmd/webhooks
+BOT_APP_NAME = bot
+BOT_APP_PATH = cmd/bot
 GO_CMD = go
 GO_BUILD = $(GO_CMD) build
 GO_CLEAN = $(GO_CMD) clean
 GO_TEST = $(GO_CMD) test
 GO_GET = $(GO_CMD) get
 GO_MOD = $(GO_CMD) mod
-BINARY_NAME = $(APP_NAME)
-BINARY_UNIX = $(BINARY_NAME)_unix
+WEBHOOKS_BINARY = $(WEBHOOKS_APP_NAME)
+BOT_BINARY = $(BOT_APP_NAME)
+WEBHOOKS_BINARY_UNIX = $(WEBHOOKS_APP_NAME)_unix
+BOT_BINARY_UNIX = $(BOT_APP_NAME)_unix
 
 # Default target
 .PHONY: all
 all: test build
 
-# Build the binary
+# Build both applications
 .PHONY: build
-build:
-	$(GO_BUILD) -o $(BINARY_NAME) $(APP_PATH)
+build: build-webhooks build-bot
+
+# Build webhooks app
+.PHONY: build-webhooks
+build-webhooks:
+	$(GO_BUILD) -o $(WEBHOOKS_BINARY) $(WEBHOOKS_APP_PATH)
+
+# Build bot app
+.PHONY: build-bot
+build-bot:
+	$(GO_BUILD) -o $(BOT_BINARY) $(BOT_APP_PATH)
 
 # Build for multiple platforms
 .PHONY: build-linux
-build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO_BUILD) -o $(BINARY_UNIX) $(APP_PATH)
+build-linux: build-webhooks-linux build-bot-linux
+
+# Build webhooks for Linux
+.PHONY: build-webhooks-linux
+build-webhooks-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO_BUILD) -o $(WEBHOOKS_BINARY_UNIX) $(WEBHOOKS_APP_PATH)
+
+# Build bot for Linux
+.PHONY: build-bot-linux
+build-bot-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO_BUILD) -o $(BOT_BINARY_UNIX) $(BOT_APP_PATH)
 
 # Test the project
 .PHONY: test
@@ -52,8 +74,10 @@ test-race:
 .PHONY: clean
 clean:
 	$(GO_CLEAN)
-	rm -f $(BINARY_NAME)
-	rm -f $(BINARY_UNIX)
+	rm -f $(WEBHOOKS_BINARY)
+	rm -f $(BOT_BINARY)
+	rm -f $(WEBHOOKS_BINARY_UNIX)
+	rm -f $(BOT_BINARY_UNIX)
 	rm -f coverage.out
 
 # Install dependencies
@@ -72,15 +96,24 @@ tidy:
 fmt:
 	$(GO_CMD) fmt ./...
 
-# Run golint (assumes golint is installed)
+# Run staticcheck (replaces golint which is deprecated)
 .PHONY: lint
 lint:
 	staticcheck ./...
 
-# Run the application with environment variables
+# Run webhooks application
+.PHONY: run-webhooks
+run-webhooks:
+	$(GO_CMD) run $(WEBHOOKS_APP_PATH)/main.go
+
+# Run bot application
+.PHONY: run-bot
+run-bot:
+	$(GO_CMD) run $(BOT_APP_PATH)/main.go
+
+# Legacy run command (runs bot for backward compatibility)
 .PHONY: run
-run:
-	$(GO_CMD) run cmd/bot/main.go
+run: run-bot
 
 # Run with explicit environment file
 .PHONY: run-with-env
@@ -88,35 +121,81 @@ run-with-env:
 	@if [ ! -f .env ]; then echo "Warning: .env file not found"; fi
 	$(MAKE) run
 
-# Run in development mode with environment
-.PHONY: dev
-dev:
+# Run webhooks in development mode with hot reload
+.PHONY: dev-webhooks
+dev-webhooks:
 	@which air > /dev/null || (echo "Installing air..." && go install github.com/air-verse/air@latest)
-	air
+	air -c .air.webhooks.toml
 
-# Start the server in background
+# Run bot in development mode with hot reload
+.PHONY: dev-bot
+dev-bot:
+	@which air > /dev/null || (echo "Installing air..." && go install github.com/air-verse/air@latest)
+	air -c .air.bot.toml
+
+# Legacy dev command (runs webhooks dev for backward compatibility)
+.PHONY: dev
+dev: dev-webhooks
+
+# Start webhooks server in background
+.PHONY: start-webhooks
+start-webhooks: build-webhooks
+	./$(WEBHOOKS_BINARY) &
+
+# Start bot in background
+.PHONY: start-bot
+start-bot: build-bot
+	./$(BOT_BINARY) &
+
+# Legacy start command (starts bot)
 .PHONY: start
-start: build
-	./$(BINARY_NAME) &
+start: start-bot
 
-# Stop a running server
+# Stop webhooks server
+.PHONY: stop-webhooks
+stop-webhooks:
+	pkill -f $(WEBHOOKS_BINARY) || true
+
+# Stop bot
+.PHONY: stop-bot
+stop-bot:
+	pkill -f $(BOT_BINARY) || true
+
+# Stop all applications
 .PHONY: stop
-stop:
-	pkill -f $(BINARY_NAME) || true
+stop: stop-webhooks stop-bot
 
-# Restart the server
+# Restart webhooks server
+.PHONY: restart-webhooks
+restart-webhooks: stop-webhooks start-webhooks
+
+# Restart bot
+.PHONY: restart-bot
+restart-bot: stop-bot start-bot
+
+# Restart all applications
 .PHONY: restart
-restart: stop start
+restart: stop start-webhooks start-bot
 
-# Check if server is running
+# Check if webhooks is running
+.PHONY: status-webhooks
+status-webhooks:
+	pgrep -f $(WEBHOOKS_BINARY) || echo "Webhooks server not running"
+
+# Check if bot is running
+.PHONY: status-bot
+status-bot:
+	pgrep -f $(BOT_BINARY) || echo "Bot not running"
+
+# Check status of all applications
 .PHONY: status
-status:
-	pgrep -f $(BINARY_NAME) || echo "Server not running"
+status: status-webhooks status-bot
 
-# Create a release build
+# Create a release build for both apps
 .PHONY: release
 release: clean test
-	CGO_ENABLED=0 $(GO_BUILD) -ldflags="-w -s" -o $(BINARY_NAME) -v ./...
+	CGO_ENABLED=0 $(GO_BUILD) -ldflags="-w -s" -o $(WEBHOOKS_BINARY) -v $(WEBHOOKS_APP_PATH)
+	CGO_ENABLED=0 $(GO_BUILD) -ldflags="-w -s" -o $(BOT_BINARY) -v $(BOT_APP_PATH)
 
 # Generate documentation
 .PHONY: docs
@@ -126,7 +205,7 @@ docs:
 	@which pkgsite > /dev/null || (echo "Installing pkgsite..." && go install golang.org/x/pkgsite/cmd/pkgsite@latest)
 	pkgsite -http=:6060
 
-# Security check with gosec (assumes gosec is installed)
+# Security check with gosec
 .PHONY: security
 security:
 	@which gosec > /dev/null || (echo "Installing gosec..." && go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest)
@@ -138,26 +217,72 @@ update:
 	$(GO_GET) -u ./...
 	$(GO_MOD) tidy
 
+# Install both binaries to GOPATH/bin
+.PHONY: install
+install: build
+	$(GO_CMD) install $(WEBHOOKS_APP_PATH)
+	$(GO_CMD) install $(BOT_APP_PATH)
+
+# Docker targets
+.PHONY: docker-build-webhooks
+docker-build-webhooks:
+	docker build --build-arg APP=webhooks -t $(WEBHOOKS_APP_NAME) .
+
+.PHONY: docker-build-bot
+docker-build-bot:
+	docker build --build-arg APP=bot -t $(BOT_APP_NAME) .
+
+.PHONY: docker-build
+docker-build: docker-build-webhooks docker-build-bot
+
+.PHONY: docker-up
+docker-up:
+	docker-compose up -d
+
+.PHONY: docker-down
+docker-down:
+	docker-compose down
+
 # Show help
 .PHONY: help
 help:
 	@echo "Available targets:"
-	@echo "  all           - Run tests and build"
-	@echo "  build         - Build the binary"
-	@echo "  build-linux   - Build for Linux"
-	@echo "  test          - Run tests"
-	@echo "  test-coverage - Run tests with coverage"
-	@echo "  test-race     - Run tests with race detector"
-	@echo "  clean         - Clean build artifacts"
-	@echo "  deps          - Download dependencies"
-	@echo "  tidy          - Tidy go modules"
-	@echo "  fmt           - Format code"
-	@echo "  lint          - Run lint"
-	@echo "  run           - Run the application"
-	@echo "  dev           - Run with hot reload"
-	@echo "  install       - Install the binary"
-	@echo "  release       - Create a release build"
-	@echo "  docs          - Generate documentation"
-	@echo "  security      - Run security check"
-	@echo "  update        - Update all dependencies"
-	@echo "  help          - Show this help message"
+	@echo "  all               - Run tests and build both apps"
+	@echo "  build             - Build both applications"
+	@echo "  build-webhooks    - Build webhooks app"
+	@echo "  build-bot         - Build bot app"
+	@echo "  build-linux       - Build both apps for Linux"
+	@echo "  build-webhooks-linux - Build webhooks for Linux"
+	@echo "  build-bot-linux   - Build bot for Linux"
+	@echo "  test              - Run tests"
+	@echo "  test-coverage     - Run tests with coverage"
+	@echo "  test-race         - Run tests with race detector"
+	@echo "  clean             - Clean build artifacts"
+	@echo "  deps              - Download dependencies"
+	@echo "  tidy              - Tidy go modules"
+	@echo "  fmt               - Format code"
+	@echo "  lint              - Run staticcheck"
+	@echo "  run-webhooks      - Run webhooks application"
+	@echo "  run-bot           - Run bot application"
+	@echo "  run               - Run bot (legacy, same as run-bot)"
+	@echo "  dev-webhooks      - Run webhooks with hot reload"
+	@echo "  dev-bot           - Run bot with hot reload"
+	@echo "  dev               - Run bot with hot reload (legacy)"
+	@echo "  start-webhooks    - Start webhooks in background"
+	@echo "  start-bot         - Start bot in background"
+	@echo "  start             - Start bot in background (legacy)"
+	@echo "  stop-webhooks     - Stop webhooks server"
+	@echo "  stop-bot          - Stop bot"
+	@echo "  stop              - Stop all applications"
+	@echo "  restart-webhooks  - Restart webhooks"
+	@echo "  restart-bot       - Restart bot"
+	@echo "  restart           - Restart all applications"
+	@echo "  status-webhooks   - Check webhooks status"
+	@echo "  status-bot        - Check bot status"
+	@echo "  status            - Check status of all apps"
+	@echo "  install           - Install both binaries"
+	@echo "  release           - Create release builds"
+	@echo "  docs              - Generate documentation"
+	@echo "  security          - Run security check"
+	@echo "  update            - Update all dependencies"
+	@echo "  help              - Show this help message"

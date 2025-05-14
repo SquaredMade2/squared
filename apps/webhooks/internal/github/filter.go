@@ -25,7 +25,7 @@ func FilterPrs(repos []*PrsByRepository) []*PrsByRepository {
 
 		// Filter PRs that are open and have requested reviewers
 		for _, pr := range repo.PullRequests {
-			if pr.State != nil && *pr.State == "open" && len(pr.RequestedReviewers) > 0 && pr.User != nil && pr.User.GetType() != "Bot" && pr.GetUpdatedAt().After(MAX_AGE) {
+			if pr.State != nil && *pr.State == "open" && len(pr.RequestedReviewers) > 0 && pr.User != nil && pr.GetUpdatedAt().After(MAX_AGE) {
 				filteredPrs = append(filteredPrs, pr)
 			}
 		}
