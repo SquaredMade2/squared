@@ -135,13 +135,15 @@ function SidebarContent() {
 				</div>
 			</SidebarHeader>
 			{state === "expanded" && organization?.slug && (
-				<SidebarContainer className="px-2">
-					<TeamAccordion
-						teams={teams}
-						currentTeam={team}
-						workspaceUrl={organization.slug}
-					/>
-				</SidebarContainer>
+				<div className="px-2">
+					<SidebarContainer>
+						<TeamAccordion
+							teams={teams}
+							currentTeam={team}
+							workspaceUrl={organization.slug}
+						/>
+					</SidebarContainer>
+				</div>
 			)}
 			<SidebarFooter
 				className={`mt-auto space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
@@ -217,15 +219,17 @@ function IconButton({
 				size={state === "expanded" ? "sm" : "icon"}
 				aria-label={label}
 				onClick={onClick}
-				className="relative w-full justify-start"
+				className="relative w-full justify-between px-3"
 			>
-				<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-				<span className="ml-2 w-auto opacity-100 transition-all duration-300">
-					{label}
-				</span>
+				<div className="flex items-center">
+					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+					<span className="ml-2 w-auto opacity-100 transition-all duration-300">
+						{label}
+					</span>
+				</div>
 				{!!(notificationCount && notificationCount > 0) && (
 					<div
-						className="absolute top-3 right-3 h-2 w-2 rounded-full bg-primary"
+						className=" h-2 w-2 rounded-full bg-primary"
 						aria-hidden="true"
 					/>
 				)}
