@@ -15,6 +15,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -27,6 +28,7 @@ export function WorkspaceDropdown() {
 	});
 	const { state } = useSidebar();
 	const { setShowInvite } = useModalStore((state) => state);
+	const queryClient = useQueryClient();
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -42,10 +44,17 @@ export function WorkspaceDropdown() {
 		}
 	};
 
-	const updateActiveWorkspace = (org: OrganizationResource) => {
-		setActive?.({ organization: org }).then(() => {
-			updatePathWithWorkspace(org.slug);
-		});
+	const updateActiveWorkspace = async (org: OrganizationResource) => {
+		await setActive?.({ organization: org });
+		updatePathWithWorkspace(org.slug);
+
+		const keysToRemove = ["task", "tasks", "team"];
+		for (const key of keysToRemove) {
+			queryClient.removeQueries({ queryKey: [key], exact: false });
+		}
+		for (const key of keysToRemove) {
+			queryClient.invalidateQueries({ queryKey: [key], refetchType: "active" });
+		}
 	};
 
 	useEffect(() => {
