@@ -33,7 +33,7 @@ export interface CronJobConfig {
 /**
  * Generic context passed to jobs during execution
  */
-export interface JobContext {
+export interface JobContext<T = unknown> {
 	/**
 	 * Timestamp when the job started
 	 */
@@ -45,15 +45,15 @@ export interface JobContext {
 	jobName: string;
 
 	/**
-	 * Any additional data for the job
+	 * Optional data payload
 	 */
-	[key: string]: any;
+	data?: T;
 }
 
 /**
  * Result of a job execution
  */
-export interface JobResult {
+export interface JobResult<T = unknown> {
 	/**
 	 * Whether the job succeeded
 	 */
@@ -62,7 +62,7 @@ export interface JobResult {
 	/**
 	 * Any data returned by the job
 	 */
-	data?: any;
+	data?: T;
 
 	/**
 	 * Error message if the job failed
@@ -78,7 +78,7 @@ export interface JobResult {
 /**
  * Registered job with its task instance
  */
-export interface RegisteredJob {
+export interface RegisteredJob<T = unknown> {
 	/**
 	 * Job configuration
 	 */
@@ -97,10 +97,12 @@ export interface RegisteredJob {
 	/**
 	 * Last execution result
 	 */
-	lastResult?: JobResult;
+	lastResult?: JobResult<T>;
 }
 
 /**
  * Handler function for a CRON job
  */
-export type JobHandler = (context: JobContext) => Promise<any>;
+export type JobHandler<T = unknown> = (
+	context: JobContext<T>,
+) => Promise<JobResult<T>>;

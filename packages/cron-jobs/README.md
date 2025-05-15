@@ -10,67 +10,99 @@ pnpm add @squaredmade/cron-jobs
 
 ## Usage
 
-### Creating a new CRON job
+### Creating a CRON Job
 
-1. Create a new file in `src/jobs/your-job-name.ts`:
+Create a file for your job:
 
 ```typescript
-import { jobManager, JobContext, CronJobConfig } from '../index';
+// my-job.ts
+import { jobManager, type JobContext, type CronJobConfig, type JobResult } from '@squaredmade/cron-jobs';
 
-export const yourJobConfig: CronJobConfig = {
-  name: 'your-job-name',
-  schedule: '0 0 * * *', // CRON schedule (runs daily at midnight)
-  timezone: 'UTC',
-  runOnInit: false,
-  timeout: 60000, // 60 seconds
+// Define job-specific context (optional)
+interface MyJobContext {
+  environmentName: string;
+}
+
+// Define job-specific result data (optional)
+interface MyJobResult {
+  processed: number;
+  status: string;
+}
+
+// Configure your job
+const config: CronJobConfig = {
+  name: 'my-job',
+  schedule: '0 0 * * *', // Run daily at midnight (CRON syntax)
+  timezone: 'UTC',       // Timezone for the job
+  runOnInit: false,      // Don't run immediately when registered
+  timeout: 60000,        // Timeout after 60 seconds
 };
 
-export async function yourJobHandler(context: JobContext): Promise<any> {
-  // Your job logic here
-  console.log(`Job ${context.jobName} started at ${context.startTime}`);
+// Create the job handler
+async function myJobHandler(
+  context: JobContext<MyJobContext>
+): Promise<JobResult<MyJobResult>> {
+  // Access job context
+  console.log(`Job started at ${context.startTime}`);
+  console.log(`Environment: ${context.data?.environmentName || 'production'}`);
   
-  // Return any data
-  return {
-    message: 'Job completed successfully',
-    timestamp: new Date().toISOString(),
-  };
+  try {
+    // Your job logic here
+    // ...
+    
+    // Return success result
+    return {
+      success: true,
+      data: {
+        processed: 42,
+        status: 'completed',
+      },
+    };
+  } catch (error) {
+    // Return failure result
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
-export function registerYourJob(): void {
-  jobManager.register(yourJobConfig, yourJobHandler);
+// Register the job
+export function registerMyJob(): void {
+  jobManager.register<MyJobContext>(config, myJobHandler);
 }
 ```
 
-2. Add your job to `src/jobs/index.ts`:
+### Registering and Running Jobs
+
+Create a file to manage all your jobs:
 
 ```typescript
-// Import and export your job
-export * from './your-job-name';
-
-// Import registration function
-import { registerYourJob } from './your-job-name';
+// jobs.ts
+import { registerMyJob } from './my-job';
+import { registerOtherJob } from './other-job';
 
 export function registerAllJobs(): void {
-  // Add your job registration
-  registerYourJob();
+  registerMyJob();
+  registerOtherJob();
+  // Add more job registrations here
 }
 ```
 
-### Running CRON jobs
-
-Create a file to start your CRON jobs:
+### Starting the CRON Service
 
 ```typescript
+// cron-service.ts
 import { jobManager } from '@squaredmade/cron-jobs';
-import { registerAllJobs } from '@squaredmade/cron-jobs/jobs';
+import { registerAllJobs } from './jobs';
 
-// Register all available jobs
+// Register all jobs
 registerAllJobs();
 
 // Start all jobs
 jobManager.startAll();
 
-// Keep process running
+// Handle shutdown gracefully
 process.on('SIGINT', () => {
   console.log('Stopping all jobs...');
   jobManager.stopAll();
@@ -78,26 +110,49 @@ process.on('SIGINT', () => {
 });
 ```
 
-## API
+### Using the CLI
+
+You can also use the included CLI to run your jobs. Create a script that registers your jobs and then runs the CLI:
+
+```typescript
+// start-cron.ts
+import { jobManager } from '@squaredmade/cron-jobs';
+import { registerAllJobs } from './jobs';
+
+// Register your jobs
+registerAllJobs();
+
+// Import the CLI (this will start the service)
+import '@squaredmade/cron-jobs/dist/bin/cli';
+```
+
+Then run:
+
+```bash
+ts-node start-cron.ts
+```
+
+## API Reference
 
 ### JobManager
 
 The main class for managing CRON jobs.
 
-Methods:
-- `register(config, handler)`: Register a new job
+**Methods:**
+
+- `register<T>(config, handler)`: Register a new job
 - `start(jobName)`: Start a specific job
 - `stop(jobName)`: Stop a specific job
 - `startAll()`: Start all registered jobs
 - `stopAll()`: Stop all running jobs
-- `runNow(jobName)`: Run a job immediately
+- `runNow<T>(jobName)`: Run a job immediately
 - `getAllJobs()`: Get all registered jobs
-- `getJob(jobName)`: Get a specific job
+- `getJob<T>(jobName)`: Get a specific job
 - `hasJob(jobName)`: Check if a job exists
 
-### CronJobConfig
+### Types
 
-Configuration options for a CRON job:
+#### CronJobConfig
 
 ```typescript
 interface CronJobConfig {
@@ -109,27 +164,53 @@ interface CronJobConfig {
 }
 ```
 
-### JobContext
-
-Context passed to job handlers:
+#### JobContext
 
 ```typescript
-interface JobContext {
+interface JobContext<T = unknown> {
   startTime: Date;       // Timestamp when job started
   jobName: string;       // Name of the job
-  [key: string]: any;    // Additional job-specific data
+  data?: T;              // Additional job-specific data
 }
 ```
 
-### JobResult
-
-Result of a job execution:
+#### JobResult
 
 ```typescript
-interface JobResult {
+interface JobResult<T = unknown> {
   success: boolean;      // Whether job succeeded
-  data?: any;            // Data returned by the job
+  data?: T;              // Data returned by the job
   error?: string;        // Error message if job failed
   duration: number;      // Duration in milliseconds
 }
 ```
+
+### CRON Schedule Syntax
+
+The `schedule` property uses standard CRON syntax:
+
+```sh
+┌───────────── minute (0 - 59)
+│ ┌───────────── hour (0 - 23)
+│ │ ┌───────────── day of the month (1 - 31)
+│ │ │ ┌───────────── month (1 - 12)
+│ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+│ │ │ │ │
+* * * * *
+```
+
+Examples:
+
+- `* * * * *`: Every minute
+- `0 * * * *`: Every hour at minute 0
+- `0 0 * * *`: Every day at midnight
+- `0 12 * * MON-FRI`: Weekdays at noon
+- `0 0 1 * *`: First day of every month
+
+## Best Practices
+
+1. **Idempotency**: Design your jobs to be idempotent so they can be safely retried.
+2. **Error Handling**: Always include error handling in your job handler.
+3. **Logging**: Log start, completion, and any errors for better monitoring.
+4. **Job Duration**: Keep jobs short; if a job needs to run for a long time, consider breaking it into smaller steps.
+5. **Timeouts**: Set appropriate timeouts to prevent jobs from running indefinitely.

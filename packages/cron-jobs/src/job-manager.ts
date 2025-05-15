@@ -12,8 +12,12 @@ import type {
  * Manages the registration and execution of CRON jobs
  */
 export class JobManager {
-	private jobs: Map<string, RegisteredJob> = new Map();
-	private handlers: Map<string, JobHandler> = new Map();
+	private jobs: Map<string, RegisteredJob<unknown>> = new Map();
+	private handlers: Map<
+		string,
+		// biome-ignore lint/suspicious/noExplicitAny: Any is used to allow the handler to be a function that can return any type
+		(context: JobContext<any>) => Promise<JobResult<any>>
+	> = new Map();
 	private logger: Logger;
 
 	constructor() {
@@ -26,24 +30,28 @@ export class JobManager {
 	 * @param handler Function to execute when the job runs
 	 * @returns The name of the registered job
 	 */
-	register(config: CronJobConfig, handler: JobHandler): string {
+	register<T = unknown>(config: CronJobConfig, handler: JobHandler<T>): string {
 		if (this.jobs.has(config.name)) {
 			throw new Error(`Job with name '${config.name}' already exists`);
 		}
 
-		const jobContext: JobContext = {
-			startTime: new Date(),
-			jobName: config.name,
-		};
-
 		// Create wrapper function that adds timing and error handling
 		const wrappedHandler = async (): Promise<void> => {
 			const startTime = new Date();
-			jobContext.startTime = startTime;
+
+			// Create the base context properties
+			const baseContext = {
+				startTime,
+				jobName: config.name,
+			};
+
+			// Cast to JobContext<T> since we can't know what T contains at runtime
+			// The handler is responsible for providing any additional T properties if needed
+			const jobContext = baseContext;
 
 			this.logger.info(`Starting job: ${config.name}`);
 
-			let result: JobResult;
+			let result: JobResult<T>;
 
 			try {
 				// Add timeout if specified
@@ -52,7 +60,7 @@ export class JobManager {
 				if (config.timeout && config.timeout > 0) {
 					jobPromise = Promise.race([
 						jobPromise,
-						new Promise((_, reject) => {
+						new Promise<JobResult<T>>((_, reject) => {
 							setTimeout(
 								() =>
 									reject(new Error(`Job timed out after ${config.timeout}ms`)),
@@ -62,13 +70,13 @@ export class JobManager {
 					]);
 				}
 
-				const data = await jobPromise;
+				const jobResult = await jobPromise;
 				const endTime = new Date();
 				const duration = endTime.getTime() - startTime.getTime();
 
 				result = {
+					...jobResult,
 					success: true,
-					data,
 					duration,
 				};
 
@@ -190,7 +198,7 @@ export class JobManager {
 	 * Run a job immediately, regardless of its schedule
 	 * @param jobName Name of the job to run
 	 */
-	async runNow(jobName: string): Promise<JobResult> {
+	async runNow<T = unknown>(jobName: string): Promise<JobResult<T>> {
 		const job = this.jobs.get(jobName);
 		const handler = this.handlers.get(jobName);
 
@@ -198,24 +206,24 @@ export class JobManager {
 			throw new Error(`Job '${jobName}' not found`);
 		}
 
-		const jobContext: JobContext = {
+		const jobContext: JobContext<T> = {
 			startTime: new Date(),
 			jobName: job.config.name,
 		};
 
 		this.logger.info(`Manually running job: ${jobName}`);
 
-		let result: JobResult;
+		let result: JobResult<T>;
 
 		const startTime = new Date();
 		try {
-			const data = await handler(jobContext);
+			const jobResult = await handler(jobContext);
 			const endTime = new Date();
 			const duration = endTime.getTime() - startTime.getTime();
 
 			result = {
+				...jobResult,
 				success: true,
-				data,
 				duration,
 			};
 
@@ -243,7 +251,7 @@ export class JobManager {
 	 * Get all registered jobs
 	 * @returns Array of registered jobs
 	 */
-	getAllJobs(): RegisteredJob[] {
+	getAllJobs(): Array<RegisteredJob<unknown>> {
 		return Array.from(this.jobs.values());
 	}
 
@@ -252,8 +260,8 @@ export class JobManager {
 	 * @param jobName Name of the job
 	 * @returns Job if found, undefined otherwise
 	 */
-	getJob(jobName: string): RegisteredJob | undefined {
-		return this.jobs.get(jobName);
+	getJob<T = unknown>(jobName: string): RegisteredJob<T> | undefined {
+		return this.jobs.get(jobName) as RegisteredJob<T> | undefined;
 	}
 
 	/**
