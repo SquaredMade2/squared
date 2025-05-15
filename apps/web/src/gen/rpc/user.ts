@@ -223,6 +223,10 @@ export type IsUserAuthorizedRequest = {
 
 export type IsUserAuthorizedResponse = boolean;
 
+export type DeleteUserRequest = {
+	userId: string;
+};
+
 /**
  * user service
  */
@@ -346,5 +350,11 @@ export class UserService extends RPCContextClient {
 		req: IsUserAuthorizedRequest,
 	): Promise<IsUserAuthorizedResponse> {
 		return this.request(ctx, "isUserAuthorized", req);
+	}
+	/**
+	 * deleteUser method
+	 */
+	deleteUser(ctx: Context, req: DeleteUserRequest): Promise<void> {
+		return this.request(ctx, "deleteUser", req);
 	}
 }

@@ -4,7 +4,10 @@
 		"rootDir": ".",
 		"outDir": "./dist",
 		"declaration": true,
-		"types": ["node"]
+		"types": ["node"],
+		"paths": {
+			"@db/*": ["packages/db/src/*"]
+		}
 	},
 	"exclude": ["node_modules", "dist"]
 }

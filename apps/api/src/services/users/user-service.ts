@@ -45,6 +45,15 @@ export class UserService implements UserRpc {
 			.returning()
 			.then((user) => user[0]);
 	}
+	//Only deletes the user from the database and not from the auth provider. Need to update later
+	async deleteUser({ userId }: { userId: string }) {
+		this.logger.info("Deleting user with id: ", userId);
+		await this.db
+			.delete(usersTable)
+			.where(eq(usersTable.externalId, userId))
+			.returning()
+			.then((user) => user[0]);
+	}
 
 	async updateUserAvatar({
 		userId,

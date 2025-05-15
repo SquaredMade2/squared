@@ -183,6 +183,7 @@ export const userSchema = createSchema<User>()(
 		subscribedTasks: z.array(z.string()),
 		githubUsername: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
+		deleted: z.boolean(),
 	}),
 );
 

@@ -22,6 +22,7 @@ export interface UserRpc {
 		notificationIds: string[];
 	}) => Promise<User>;
 	getUser: (args: { userId: string }) => Promise<User | null>;
+	deleteUser: (args: { userId: string }) => Promise<void>;
 	getWorkspaceUsers: (args: { workspaceId: string }) => Promise<User[]>;
 	getTeamUsers: (args: { teamId: string }) => Promise<User[]>;
 	getUserAvatars: (args: { workspaceId: string }) => Promise<UserAvatar[]>;

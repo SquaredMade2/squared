@@ -1,6 +1,8 @@
 "use client";
 
 import ImageUpload from "@/components/ImageUpload";
+import { DeleteUserConfirmationModal } from "@/components/Modals/DeleteUserConfirmationModal";
+import { client } from "@/lib/client";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
@@ -18,6 +20,7 @@ import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { toast } from "@squaredmade/ui/toast";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as z from "zod";
@@ -42,6 +45,18 @@ export default function Profile() {
 		},
 	});
 
+	const { mutate: deleteUser } = useMutation({
+		mutationFn: async (userId: string) => {
+			return client.user.deleteUser.$post({ userId });
+		},
+		onSuccess: () => {
+			console.log("Deleted successfully");
+		},
+		onError: () => {
+			console.log("ERROR");
+		},
+	});
+
 	useEffect(() => {
 		if (isLoaded && user) {
 			form.reset({
@@ -50,7 +65,7 @@ export default function Profile() {
 				username: user.username ?? "",
 			});
 		}
-	}, [isLoaded, user, form]);
+	}, [isLoaded, user]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		if (!user) return;
@@ -174,6 +189,7 @@ export default function Profile() {
 						Member Since:{" "}
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
+					<DeleteUserConfirmationModal handleDelete={deleteUser} />
 				</div>
 			</div>
 		</div>

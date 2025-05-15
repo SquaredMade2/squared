@@ -320,6 +320,7 @@ export const usersTable = pgTable(
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		lastViewedTaskId: uuid(),
 		externalId: text().unique().notNull(),
+		deleted: boolean().default(false).notNull(),
 	},
 	(table) => [
 		uniqueIndex("User_email_key").using(

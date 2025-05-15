@@ -45,4 +45,11 @@ export const userRouter = router({
 		const { userService, workspaceId } = ctx;
 		return c.json(await userService.getUserAvatars(TODO, { workspaceId }));
 	}),
+	deleteUser: privateProcedure.mutation(async ({ c, ctx }) => {
+		const { userService, userId } = ctx;
+
+		await userService.deleteUser(TODO, { userId });
+
+		return c.json({ success: true, message: "User was deleted" });
+	}),
 });
