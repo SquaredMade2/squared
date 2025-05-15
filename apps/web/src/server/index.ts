@@ -42,10 +42,6 @@ const appRouter = j.mergeRouters(api, {
 	workspace: workspaceRouter,
 });
 
-/**
- * This is the main router for your server.
- * All routers in /server/routers should be added here manually.
- */
 export type AppRouter = typeof appRouter;
 
 export default appRouter;
