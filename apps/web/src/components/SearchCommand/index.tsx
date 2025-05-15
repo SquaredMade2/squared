@@ -99,7 +99,7 @@ export default function SearchCommand() {
 			<VisuallyHidden>
 				<DialogTitle>Search</DialogTitle>
 			</VisuallyHidden>
-			<CommandInput placeholder="Type a command or search..." />
+			<CommandInput placeholder="Type a command or search..." autoFocus />
 			<CommandList>
 				<ScrollArea className="h-[300px]">
 					<CommandEmpty>No results found.</CommandEmpty>
