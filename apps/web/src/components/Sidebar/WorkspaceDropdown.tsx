@@ -1,6 +1,7 @@
 "use client";
 
 import { useSidebar } from "@/components/ui/sidebar";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
@@ -15,7 +16,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
-import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -23,12 +23,12 @@ export function WorkspaceDropdown() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const { organization } = useOrganization();
-	const { userMemberships, setActive } = useOrganizationList({
+	const { userMemberships } = useOrganizationList({
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
 	const { setShowInvite } = useModalStore((state) => state);
-	const queryClient = useQueryClient();
+	const { switchWorkspace } = useWorkspaces();
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -45,16 +45,8 @@ export function WorkspaceDropdown() {
 	};
 
 	const updateActiveWorkspace = async (org: OrganizationResource) => {
-		await setActive?.({ organization: org });
+		await switchWorkspace(org);
 		updatePathWithWorkspace(org.slug);
-
-		const keysToRemove = ["task", "tasks", "team"];
-		for (const key of keysToRemove) {
-			queryClient.removeQueries({ queryKey: [key], exact: false });
-		}
-		for (const key of keysToRemove) {
-			queryClient.invalidateQueries({ queryKey: [key], refetchType: "active" });
-		}
 	};
 
 	useEffect(() => {
