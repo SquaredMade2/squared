@@ -5,23 +5,15 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc",
-		"check-types": "tsc --noEmit",
-		"dev": "tsc --watch",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint --write .",
-		"format": "biome format --write .",
-		"start": "node dist/index.js",
-		"start:dev": "ts-node src/index.ts"
+		"build": "squared-build src/index.ts/index.ts",
+		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@squaredmade/logger": "1.1.1",
-		"cron": "^4.3.0",
-		"date-fns": "^4.1.0",
-		"dotenv": "^16.5.0",
-		"zod": "^3.24.4"
+		"cron": "^4.3.0"
 	},
 	"devDependencies": {
+		"@squaredmade/builder": "^1.0.1",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/cron": "^2.0.1",
 		"@types/node": "^20.10.5",

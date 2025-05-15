@@ -1,7 +1,3 @@
-// Load environment variables
-import dotenv from "dotenv";
-dotenv.config();
-
 // Export all types and classes
 export * from "./types";
 export * from "./job-manager";
