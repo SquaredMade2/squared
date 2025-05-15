@@ -1,11 +1,10 @@
 import { TODO } from "@squaredmade/context";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { workspaceProcedure } from "../procedures";
+import { j, workspaceProcedure } from "../jstack";
 
 const effortEnum = z.enum(["LINEAR", "EXPONENTIAL", "FIBONACCI"]);
 
-export const teamRouter = router({
+export const teamRouter = j.router({
 	getUserTeams: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { teamService, userId, workspaceId } = ctx;
 		return c.superjson(
