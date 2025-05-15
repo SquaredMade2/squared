@@ -137,9 +137,7 @@ export const NewTaskModal = () => {
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization.id,
-				})
+				.$get()
 				.then((res) => res.json());
 			setTeams(teams);
 			setTeam(teams[0]);
