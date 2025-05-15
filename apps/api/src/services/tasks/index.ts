@@ -123,6 +123,10 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		}),
 		output: z.array(taskSchema),
 	},
+	archiveOldTasks: {
+		input: z.void(),
+		output: z.void(),
+	},
 });
 
 export type TaskRpcSchema = typeof taskRpcSchema;
@@ -144,6 +148,7 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 			taskService.getTaskBlockedByAndBlocking(input),
 		getAllBlockedTaskIds: (input) => taskService.getAllBlockedTaskIds(input),
 		getSubtasks: (input) => taskService.getSubtasks(input),
+		archiveOldTasks: () => taskService.archiveOldTasks(),
 	});
 
 export { TaskService } from "./task-service";

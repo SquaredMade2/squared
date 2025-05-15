@@ -63,4 +63,5 @@ export interface TaskRpc {
 	}>;
 	getAllBlockedTaskIds: (args: { teamId: string }) => Promise<string[]>;
 	getSubtasks: (args: { parentId: string }) => Promise<Task[]>;
+	archiveOldTasks: () => Promise<void>;
 }
