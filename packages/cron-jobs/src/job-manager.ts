@@ -5,6 +5,7 @@ import type {
 	JobContext,
 	JobHandler,
 	JobResult,
+	JobResultData,
 	RegisteredJob,
 } from "./types";
 
@@ -16,7 +17,7 @@ export class JobManager {
 	private handlers: Map<
 		string,
 		// biome-ignore lint/suspicious/noExplicitAny: Any is used to allow the handler to be a function that can return any type
-		(context: JobContext<any>) => Promise<JobResult<any>>
+		(context: JobContext<any>) => Promise<JobResultData<any>>
 	> = new Map();
 	private logger: Logger;
 
@@ -60,7 +61,7 @@ export class JobManager {
 				if (config.timeout && config.timeout > 0) {
 					jobPromise = Promise.race([
 						jobPromise,
-						new Promise<JobResult<T>>((_, reject) => {
+						new Promise<JobResultData<T>>((_, reject) => {
 							setTimeout(
 								() =>
 									reject(new Error(`Job timed out after ${config.timeout}ms`)),
@@ -74,9 +75,9 @@ export class JobManager {
 				const endTime = new Date();
 				const duration = endTime.getTime() - startTime.getTime();
 
+				// Add duration to the result
 				result = {
 					...jobResult,
-					success: true,
 					duration,
 				};
 
@@ -221,9 +222,9 @@ export class JobManager {
 			const endTime = new Date();
 			const duration = endTime.getTime() - startTime.getTime();
 
+			// Add duration to the result
 			result = {
 				...jobResult,
-				success: true,
 				duration,
 			};
 

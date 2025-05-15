@@ -21,6 +21,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@clerk/backend": "^1.24.0",
+		"@squaredmade/cron-jobs": "workspace:*",
 		"@squaredmade/db": "workspace:*",
 		"@squaredmade/logger": "1.1.1",
 		"@squaredmade/rpc": "1.0.4",

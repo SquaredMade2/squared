@@ -51,9 +51,10 @@ export interface JobContext<T = unknown> {
 }
 
 /**
- * Result of a job execution
+ * Job result data before processing
+ * This is what job handlers return directly
  */
-export interface JobResult<T = unknown> {
+export interface JobResultData<T = unknown> {
 	/**
 	 * Whether the job succeeded
 	 */
@@ -68,9 +69,16 @@ export interface JobResult<T = unknown> {
 	 * Error message if the job failed
 	 */
 	error?: string;
+}
 
+/**
+ * Complete result of a job execution
+ * This is stored in the job manager after processing
+ */
+export interface JobResult<T = unknown> extends JobResultData<T> {
 	/**
 	 * Duration of job execution in milliseconds
+	 * This is required in the final result
 	 */
 	duration: number;
 }
@@ -102,7 +110,8 @@ export interface RegisteredJob<T = unknown> {
 
 /**
  * Handler function for a CRON job
+ * Returns JobResultData, not JobResult, as duration is added by the job manager
  */
 export type JobHandler<T = unknown> = (
 	context: JobContext<T>,
-) => Promise<JobResult<T>>;
+) => Promise<JobResultData<T>>;
