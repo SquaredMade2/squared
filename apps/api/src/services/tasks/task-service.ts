@@ -8,7 +8,6 @@ import {
 	eq,
 	inArray,
 	isNull,
-	lt,
 	max,
 	sprintsTable,
 	sql,
@@ -519,29 +518,6 @@ export class TaskService implements TaskRpc {
 
 			return blockedTasks.map((task) => task.id);
 		});
-	}
-
-	async archiveOldTasks(): Promise<void> {
-		this.logger.info("Archiving old tasks");
-
-		await this.db
-			.update(tasksTable)
-			.set({ status: "archived" })
-			.from(tasksTable)
-			.innerJoin(
-				workspacesTable,
-				eq(tasksTable.workspaceId, workspacesTable.externalId),
-			)
-			.where(
-				and(
-					eq(tasksTable.deleted, false),
-					inArray(tasksTable.status, ["done", "canceled", "duplicated"]),
-					lt(
-						tasksTable.updatedAt,
-						sql`NOW() - INTERVAL '1 day' * ${workspacesTable.daysUntilArchive}`,
-					),
-				),
-			);
 	}
 
 	private throwError(message: string): never {
