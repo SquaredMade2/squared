@@ -242,8 +242,8 @@ export function AssignTasksDialog({
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
 						<TabsContent value="list" className="mt-0">
-							<ScrollArea className="h-full w-full rounded-md border">
-								<div className="w-full p-4 sm:w-[450px] md:w-[800px]">
+							<ScrollArea className="scroll-area-no-table h-full w-full rounded-md border">
+								<div className="w-full p-4">
 									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">
 										<Checkbox
 											id="select-all"
