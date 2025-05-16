@@ -1,12 +1,15 @@
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { useOrganization } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
+import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useWorkspaces() {
 	const { setWorkspace, setWorkspaces } = useWorkspaceStore((state) => state);
 	const { organization, isLoaded } = useOrganization();
+	const { setActive } = useOrganizationList();
+	const queryClient = useQueryClient();
 
 	const {
 		data,
@@ -24,10 +27,22 @@ export function useWorkspaces() {
 		},
 	});
 
+	const switchWorkspace = async (org: OrganizationResource) => {
+		const keysToRemove = ["task", "tasks"];
+		await setActive?.({ organization: org });
+		for (const key of keysToRemove) {
+			queryClient.removeQueries({ queryKey: [key], exact: false });
+		}
+		for (const key of keysToRemove) {
+			queryClient.invalidateQueries({ queryKey: [key], refetchType: "active" });
+		}
+	};
+
 	return {
 		loading: loading || !isLoaded,
 		error: parseError(error, "Failed to fetch workspaces"),
 		workspace: data?.workspace,
 		workspaces: data?.workspaces,
+		switchWorkspace,
 	};
 }
