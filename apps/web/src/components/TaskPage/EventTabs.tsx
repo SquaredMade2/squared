@@ -4,20 +4,25 @@ import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
 import { useCommentStore, useTaskStore } from "@/store";
-import { handleFormatSlateToComment } from "@/utils/formatting";
+import { convertSlateToMDX } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { CreatedByInformation } from ".";
 import TextEditor, { type CustomDescendant } from "../TextEditor";
+import { initialEditorValue } from "../TextEditor";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
 	const { comments, setComments } = useCommentStore((state) => state);
 	const currentTask = useTaskStore((state) => state.currentTask);
+	const [currentComment, setCurrentComment] =
+		useState<CustomDescendant[]>(initialEditorValue);
 	const { workspace } = useTaskDashboard();
 
 	const { memberships } = useOrganization({
@@ -64,10 +69,10 @@ export const EventTabs = () => {
 
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", currentTask?.id],
-		mutationFn: async (editorContent: CustomDescendant[]) => {
+		mutationFn: async () => {
 			if (currentTask) {
 				const newComment = {
-					comment: handleFormatSlateToComment(editorContent),
+					comment: convertSlateToMDX(currentComment),
 					date: new Date(),
 					taskId: currentTask.id,
 				};
@@ -76,6 +81,7 @@ export const EventTabs = () => {
 				const createdComment = await response.json();
 
 				setComments([...comments, createdComment]);
+				setCurrentComment([]);
 			} else {
 				toast.error("Error getting comments", {
 					description: "Could not find user data and current task",
@@ -85,7 +91,7 @@ export const EventTabs = () => {
 
 			if (users && workspace) {
 				createMentionNotifications({
-					editorContent,
+					editorContent: currentComment,
 				});
 			} else {
 				if (!users) console.error("No users found", users);
@@ -103,6 +109,10 @@ export const EventTabs = () => {
 		},
 	});
 
+	async function handleAddComment() {
+		await addCommentToTask();
+	}
+
 	return (
 		<Tabs defaultValue="activity" className="mt-8 w-full">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
@@ -118,7 +128,15 @@ export const EventTabs = () => {
 				{comments.map((comment) => {
 					return <CommentCard key={comment.id} comment={comment} />;
 				})}
-				{currentTask && <TextEditor addAction={addCommentToTask} />}
+				{currentTask && (
+					<TextEditor value={currentComment} setValue={setCurrentComment} />
+				)}
+				<Button
+					onClick={handleAddComment}
+					className={`m-5 ml-auto ${(currentComment.length === 0 || currentComment === initialEditorValue) && "bg-muted text-muted-foreground hover:bg-muted"}`}
+				>
+					Confirm
+				</Button>
 			</TabsContent>
 		</Tabs>
 	);

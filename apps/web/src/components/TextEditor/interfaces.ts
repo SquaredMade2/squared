@@ -3,7 +3,9 @@ import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
 import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
-	addAction: (editorContent: CustomDescendant[]) => void;
+	placeholder?: string;
+	value: CustomDescendant[];
+	setValue: Dispatch<SetStateAction<CustomDescendant[]>>;
 }
 
 export interface TextEditorToolBarProps {

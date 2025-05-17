@@ -6,7 +6,6 @@ import {
 	isValidCharBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
-import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
 import { toast } from "@squaredmade/ui/toast";
 import {
@@ -46,7 +45,7 @@ declare module "slate" {
 	}
 }
 
-const initialValue: CustomDescendant[] = [
+export const initialEditorValue: CustomDescendant[] = [
 	{
 		type: "paragraph",
 		children: [{ text: "" }],
@@ -58,10 +57,8 @@ const defaultSelectionRange = {
 	focus: { path: [0, 0], offset: 0 },
 };
 
-const TextEditor = ({ addAction }: TextEditorProps) => {
+const TextEditor = ({ placeholder, value, setValue }: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
-	// Holding current content in editor
-	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
 
@@ -76,23 +73,18 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
 
-	// Functions
-	function handleSubmitEditor() {
+	useEffect(() => {
 		if (checkIfSlateEmpty(editor)) {
-			setEditorContent([]);
-			editor.children = initialValue;
+			editor.children = initialEditorValue;
 			Transforms.select(editor, defaultSelectionRange);
 			return;
 		}
 
-		addAction(editorContent);
-
-		// reset editor
-
-		setEditorContent([]);
-		editor.children = initialValue;
-		Transforms.select(editor, defaultSelectionRange);
-	}
+		if (value.length === 0 || value === initialEditorValue) {
+			editor.children = initialEditorValue;
+			Transforms.select(editor, defaultSelectionRange);
+		}
+	}, [value]);
 
 	const handleCharKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "@" || event.key === "#") {
@@ -361,14 +353,17 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 	return (
 		<Slate
 			editor={editor}
-			initialValue={initialValue}
-			onChange={(newValue) => setEditorContent(newValue)}
+			initialValue={initialEditorValue}
+			onChange={(newValue) => {
+				setValue(newValue);
+			}}
 		>
 			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
 				<div
 					className={cn(
 						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
 					)}
+					flex-col
 				>
 					<TextEditorToolBar
 						// Leafs
@@ -384,6 +379,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 					/>
 					<div ref={editorRef}>
 						<Editable
+							placeholder={placeholder || ""}
 							onKeyDown={handleSetEditorContent}
 							renderLeaf={renderLeaf}
 							renderElement={renderElement}
@@ -413,13 +409,6 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 					debounceRef={debounceRef}
 				/>
 			)}
-
-			<Button
-				onClick={handleSubmitEditor}
-				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}
-			>
-				Confirm
-			</Button>
 		</Slate>
 	);
 };

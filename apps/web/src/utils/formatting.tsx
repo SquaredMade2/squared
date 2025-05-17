@@ -151,7 +151,7 @@ export const formatPriority = (priority: Priority) => {
 // return links;
 // };
 
-export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
+export const convertSlateToMDX = (slateArr: CustomDescendant[]) => {
 	const arrOfFormattedLines = slateArr.map((line) => {
 		// each formatted line/row
 		const formattedLine = [];

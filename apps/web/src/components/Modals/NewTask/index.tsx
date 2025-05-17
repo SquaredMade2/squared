@@ -1,9 +1,14 @@
 "use client";
 
+import TextEditor, {
+	initialEditorValue,
+	type CustomDescendant,
+} from "@/components/TextEditor";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
+import { convertSlateToMDX } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { ChevronRight } from "@squaredmade/icons";
@@ -28,7 +33,6 @@ import {
 import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
-import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -63,6 +67,8 @@ export const NewTaskModal = () => {
 	const { team, setTeams, setTeam } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
 	const [isEditingTitle, setIsEditingTitle] = useState(false);
+	const [editorDescription, setEditorDescription] =
+		useState<CustomDescendant[]>(initialEditorValue);
 
 	const {
 		status,
@@ -106,7 +112,7 @@ export const NewTaskModal = () => {
 
 		const createTaskParams = {
 			title: values.title,
-			description: values.description,
+			description: convertSlateToMDX(editorDescription),
 			status: status || "backlog",
 			priority: priority || "noPriority",
 			labels: labels || [],
@@ -160,7 +166,7 @@ export const NewTaskModal = () => {
 				</DialogHeader>
 				<Form {...form} onSubmit={handleCreateTask}>
 					<div className="flex space-x-4">
-						<div className="w-4/5 space-y-4">
+						<div className="w-4/5">
 							<FormField
 								control={form.control}
 								name="title"
@@ -193,18 +199,20 @@ export const NewTaskModal = () => {
 									<FormItem>
 										<FormLabel className="text-xl">Description</FormLabel>
 										<FormControl>
-											<Textarea
-												{...field}
-												placeholder="Add Description"
-												className="resize-none text-md"
-												rows={4}
-											/>
+											<div className="markdown-content">
+												<TextEditor
+													{...field}
+													placeholder="Add Description"
+													value={editorDescription}
+													setValue={setEditorDescription}
+												/>
+											</div>
 										</FormControl>
 									</FormItem>
 								)}
 							/>
 							{upcomingSprints.length === 0 && activeSprint && (
-								<div className="flex items-center gap-2">
+								<div className="mt-4 flex items-center gap-2">
 									<Checkbox
 										checked={activeSprint.id === newTaskData.sprintId}
 										onCheckedChange={(checked) =>
