@@ -341,12 +341,11 @@ describe("@squaredmade/logger", () => {
 		});
 
 		it("should handle complex nested objects in metadata", () => {
-			// For this test, we'll use a different approach since our mock doesn't
-			// include metadata objects as Winston would
 			createCustomLogger("test");
 
-			// Get the logger instance
-			const logger = createCustomLogger("test");
+			// Access the printf formatting function from our external mock
+			const printfFn = mockPrintfFn.current;
+			expect(printfFn).not.toBeNull();
 
 			// Create a complex nested object
 			const complexObject = {
@@ -371,17 +370,33 @@ describe("@squaredmade/logger", () => {
 				},
 			};
 
-			// Call the debug method directly
-			logger.debug("Processing request", complexObject);
+			// Set up the splat symbol with our complex object
+			const splatSymbol = Symbol.for("splat");
+			const meta: any = {};
+			meta[splatSymbol] = [complexObject];
 
-			// Verify the debug method was called with the right arguments
-			expect(vi.mocked(logger.debug)).toHaveBeenCalledWith(
-				"Processing request",
-				complexObject,
-			);
+			// Test the formatting function with the complex object
+			const result = printfFn({
+				timestamp: "May 17 10:30:45",
+				level: "debug",
+				message: "Processing request: ",
+				splat: undefined,
+				...meta,
+			});
 
-			// This test now verifies that the logger correctly passes the
-			// complex object to Winston, which is what we control in our code
+			// Verify basic structure of output
+			expect(result).toContain("May 17 10:30:45");
+			expect(result).toContain("debug");
+			expect(result).toContain("[test]");
+			expect(result).toContain("Processing request");
+
+			// Verify that key parts of the complex object are included in the output
+			expect(result).toContain("Test User");
+			expect(result).toContain("test@example.com");
+			expect(result).toContain("dark");
+			expect(result).toContain("/api/data");
+			expect(result).toContain("POST");
+			expect(result).toContain("abcd1234");
 		});
 	});
 });
