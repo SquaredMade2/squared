@@ -241,7 +241,7 @@ export function AssignTasksDialog({
 							<TabsTrigger value="list">List View</TabsTrigger>
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
-						<TabsContent value="list" className="mt-0">
+						<TabsContent value="list" className="mt-0 min-h-0">
 							<ScrollArea className="scroll-area-no-table h-full w-full rounded-md border">
 								<div className="w-full p-4">
 									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">

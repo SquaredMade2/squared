@@ -24,6 +24,7 @@ jobs:
         map_github_to_discord() {
           case "$1" in
             "agreen254") echo "152861183026790402" ;;
+            "Alcladii") echo "658611325403922443" ;;
             "BBruington") echo "255762796162187264" ;;
             "bret-miller2010") echo "317823605218213898" ;;
             "Chase-T-White") echo "414567565843759105" ;;
@@ -40,6 +41,7 @@ jobs:
             "Smerly") echo "277576312686641153" ;;
             "THEjacob1000") echo "213438742315139073" ;;
             "velinakennedy") echo "669209137376264221" ;;
+            "tcocco20") echo "162447718483099648" ;;
             *) echo "" ;;
           esac
         }

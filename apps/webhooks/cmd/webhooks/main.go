@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/github"
-	"github.com/SquaredMade2/squared/apps/webhooks/helpers"
-	"github.com/SquaredMade2/squared/apps/webhooks/vercel"
+	"github.com/SquaredMade2/squared/apps/webhooks/internal/config"
+	"github.com/SquaredMade2/squared/apps/webhooks/internal/github"
+	"github.com/SquaredMade2/squared/apps/webhooks/internal/vercel"
 )
 
 func main() {
@@ -28,7 +28,7 @@ func main() {
 		github.SetLogLevel(github.LogLevelBasic)
 	}
 
-	helpers.LoadEnv()
+	config.LoadEnv()
 	http.HandleFunc("/", handleRequest)
 	http.HandleFunc("/github", github.WebhookHandler)
 	http.HandleFunc("/vercel", vercel.WebhookHandler)

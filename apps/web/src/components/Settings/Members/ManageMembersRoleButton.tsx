@@ -12,22 +12,16 @@ import {
 import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { MemberWithRole } from "./data-table";
 
 const ManageMembersRoleButton = ({
 	userId,
 	pageId,
-	membersWithRoles,
 }: {
 	userId: string;
 	pageId: string | undefined;
-	membersWithRoles: MemberWithRole[] | undefined;
 }) => {
 	const queryClient = useQueryClient();
 	const { user } = useUser();
-	const loggedInUserRole = membersWithRoles?.find(
-		(u) => u.identifier === user?.id,
-	)?.role;
 
 	const updateRoleMutation = useMutation({
 		mutationFn: async (newRole: ClerkAuthorization["role"]) => {
@@ -56,10 +50,6 @@ const ManageMembersRoleButton = ({
 		updateRoleMutation.mutate(newRole);
 	};
 
-	if (loggedInUserRole !== "org:admin" && loggedInUserRole !== "org:owner") {
-		return null;
-	}
-
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -79,11 +69,6 @@ const ManageMembersRoleButton = ({
 					<DropdownMenuItem onClick={() => handleClick("org:admin")}>
 						Change user role to Admin
 					</DropdownMenuItem>
-					{loggedInUserRole === "org:owner" && (
-						<DropdownMenuItem onClick={() => handleClick("org:owner")}>
-							Change user role to Owner
-						</DropdownMenuItem>
-					)}
 				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>

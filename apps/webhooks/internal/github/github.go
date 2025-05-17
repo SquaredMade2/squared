@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/gen/rpc"
-	"github.com/google/go-github/v71/github"
+	"github.com/SquaredMade2/squared/apps/webhooks/internal/rpc"
+	"github.com/google/go-github/v72/github"
 )
 
 // LogLevel controls how verbose the logging is
