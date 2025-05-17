@@ -24,7 +24,6 @@ const formatError = (level: string, meta: LogMeta) => {
 		const logMeta = meta as LogMeta;
 		const stack = logMeta.stack?.split("\n").slice(1).join("\n");
 
-		console.log("Type of stack", typeof stack);
 		const splatInfo = logMeta[splatSymbol];
 		let additionalInfo = "";
 
