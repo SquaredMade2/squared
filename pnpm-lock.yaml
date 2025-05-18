@@ -179,8 +179,8 @@ importers:
         specifier: 1.0.2
         version: 1.0.2(@squaredmade/context@1.0.1)
       '@squaredmade/ui':
-        specifier: 3.0.2
-        version: 3.0.2(@tailwindcss/postcss@4.1.7)(@types/node@22.15.18)(@types/react@19.1.4)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.7))(tailwindcss@4.1.7)(zod@3.24.4)
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: ^5.62.7
         version: 5.76.1(react@19.1.0)

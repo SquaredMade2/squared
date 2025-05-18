@@ -200,6 +200,9 @@ interface FormContextValue<TFieldValues extends FieldValues = FieldValues> {
 
 	/** Reset the form to default or specified values */
 	reset: (values?: Record<string, unknown>) => void;
+
+	/** Watch for form value changes */
+	watch: (name?: string) => unknown;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1103,6 +1106,7 @@ function FormComponent<TFieldValues extends FieldValues = FieldValues>(
 		getValues,
 		formState,
 		reset,
+		watch,
 		...formProps
 	} = props;
 
@@ -1131,6 +1135,7 @@ function FormComponent<TFieldValues extends FieldValues = FieldValues>(
 			touchedFields: {},
 		},
 		reset: reset as (values?: Record<string, unknown>) => void,
+		watch: watch as (name?: string) => unknown,
 	};
 
 	// Create a submit handler if both handleSubmit and onSubmit are provided

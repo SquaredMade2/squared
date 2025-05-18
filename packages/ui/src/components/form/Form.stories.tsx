@@ -2,6 +2,13 @@ import { LoaderCircle, Plus, Trash } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@squaredmade/ui/dialog";
+import {
 	Form,
 	FormControl,
 	FormDescription,
@@ -3249,3 +3256,328 @@ export const DeepNestedForm: Story = {
 		);
 	},
 };
+
+/**
+ * # NewTaskModal Example
+ *
+ * This example shows how to correctly handle the Form component with the watch
+ * function from useForm. It demonstrates a proper solution to the common error:
+ * "Invalid value for prop watch on <form> tag"
+ */
+export const NewTaskModalExample: Story = {
+	parameters: {
+		docs: {
+			source: {
+				code: `
+// First solution: Explicitly pass only the needed form props
+const form = useForm<FormSchema>({...});
+
+<Form
+  control={form.control}
+  register={form.register}
+  handleSubmit={form.handleSubmit}
+  setValue={form.setValue}
+  getValues={form.getValues}
+  formState={form.formState}
+  reset={form.reset}
+  onSubmit={handleSubmitFn}
+>
+  {/* Form fields */}
+</Form>
+
+// Second solution: Destructure watch out of form props
+const form = useForm<FormSchema>({...});
+const { watch, ...formProps } = form;
+
+<Form {...formProps} onSubmit={handleSubmitFn}>
+  {/* Form fields */}
+</Form>
+
+// Improved Form component that handles watch prop
+function FormComponent(props, ref) {
+  const {
+    __scopeForm,
+    className,
+    children,
+    onSubmit,
+    watch, // Accept watch but don't pass it to the form element
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState,
+    reset,
+    ...formProps
+  } = props;
+  
+  // Create form context...
+  
+  return (
+    <FormProvider {...formContextValue}>
+      <form
+        ref={ref}
+        onSubmit={onSubmitHandler}
+        className={cn(className)}
+        {...formProps}
+      >
+        {children}
+      </form>
+    </FormProvider>
+  );
+}`,
+			},
+		},
+	},
+	render: () => <NewTaskModalStory />,
+};
+
+// Define the schema for the NewTaskModal form
+const taskFormSchema = z.object({
+	title: z
+		.string()
+		.min(2, { message: "Title must be at least 2 characters." })
+		.max(50, { message: "Title must be 50 characters or less." }),
+	description: z.string().optional(),
+	status: z.enum(["backlog", "todo", "in-progress", "done", "canceled"]),
+	priority: z.enum(["noPriority", "low", "medium", "high", "urgent"]),
+	effortEstimate: z.number().optional(),
+	dueDate: z.date().optional().nullable(),
+});
+
+type TaskFormValues = z.infer<typeof taskFormSchema>;
+
+// Create the NewTaskModal component for testing
+function NewTaskModalStory() {
+	const [showModal, setShowModal] = useState(false);
+
+	const form = useForm<TaskFormValues>({
+		resolver: zodResolver(taskFormSchema),
+		defaultValues: {
+			title: "",
+			description: "",
+			status: "todo",
+			priority: "noPriority",
+			effortEstimate: undefined,
+			dueDate: null,
+		},
+	});
+
+	// Watch title to demonstrate reactive updates
+	const titleValue = form.watch("title");
+	const statusValue = form.watch("status");
+	const titleLength = titleValue?.length || 0;
+
+	function onSubmit(data: TaskFormValues) {
+		toast("Task Created Successfully", {
+			description: (
+				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
+				</pre>
+			),
+		});
+		setShowModal(false);
+	}
+
+	return (
+		<div className="flex flex-col items-center gap-6">
+			<div className="max-w-md space-y-4">
+				<h2 className="font-bold text-2xl">NewTaskModal Form Example</h2>
+				<p>
+					This demonstrates how to handle the <code>watch</code> function with
+					the Form component, solving the invalid prop error.
+				</p>
+
+				<div className="rounded-md border p-4">
+					<h3 className="mb-2 font-medium">Current watched values:</h3>
+					<p>
+						<strong>Title:</strong> {titleValue || "(empty)"}
+					</p>
+					<p>
+						<strong>Title length:</strong> {titleLength}/50
+					</p>
+					<p>
+						<strong>Status:</strong> {statusValue}
+					</p>
+				</div>
+
+				<Button onClick={() => setShowModal(true)}>Open New Task Modal</Button>
+			</div>
+
+			<Dialog open={showModal} onOpenChange={setShowModal}>
+				<DialogContent className="max-w-3xl">
+					<DialogHeader>
+						<DialogTitle>Create New Task</DialogTitle>
+					</DialogHeader>
+
+					{/* Solution 1: Using destructured form props */}
+					<Form {...form} onSubmit={onSubmit}>
+						<div className="grid grid-cols-3 gap-6">
+							<div className="col-span-2 space-y-4">
+								<FormField
+									control={form.control}
+									name="title"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Title</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													placeholder="Task title"
+													maxLength={50}
+												/>
+											</FormControl>
+											<FormDescription className="text-right">
+												{titleLength}/50
+											</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Description</FormLabel>
+											<FormControl>
+												<Textarea
+													{...field}
+													placeholder="Add description"
+													className="resize-none"
+													rows={4}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+
+							<div className="space-y-4">
+								<FormField
+									control={form.control}
+									name="status"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Status</FormLabel>
+											<Select
+												value={field.value}
+												onValueChange={field.onChange}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select status" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													<SelectItem value="backlog">Backlog</SelectItem>
+													<SelectItem value="todo">To Do</SelectItem>
+													<SelectItem value="in-progress">
+														In Progress
+													</SelectItem>
+													<SelectItem value="done">Done</SelectItem>
+													<SelectItem value="canceled">Canceled</SelectItem>
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name="priority"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Priority</FormLabel>
+											<Select
+												value={field.value}
+												onValueChange={field.onChange}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select priority" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													<SelectItem value="noPriority">
+														No Priority
+													</SelectItem>
+													<SelectItem value="low">Low</SelectItem>
+													<SelectItem value="medium">Medium</SelectItem>
+													<SelectItem value="high">High</SelectItem>
+													<SelectItem value="urgent">Urgent</SelectItem>
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name="effortEstimate"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Effort Estimate</FormLabel>
+											<FormControl>
+												<Input
+													type="number"
+													placeholder="Effort points"
+													value={field.value || ""}
+													onChange={(e) =>
+														field.onChange(
+															e.target.value
+																? Number.parseInt(e.target.value)
+																: undefined,
+														)
+													}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+						</div>
+
+						<DialogFooter className="mt-6">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => setShowModal(false)}
+							>
+								Cancel
+							</Button>
+							<Button type="submit">Create Task</Button>
+						</DialogFooter>
+					</Form>
+				</DialogContent>
+			</Dialog>
+
+			<div className="mt-4 rounded-md border p-4">
+				<h3 className="mb-2 font-medium text-lg">Solution Approaches:</h3>
+				<div className="space-y-2">
+					<p className="text-sm">
+						<strong>Solution 1:</strong> Destructure the watch function:
+						<code className="ml-2 rounded bg-gray-100 p-1">
+							const {"{ watch, ...formProps }"} = form;
+						</code>
+					</p>
+					<p className="text-sm">
+						<strong>Solution 2:</strong> Pass only needed props:
+						<code className="ml-2 rounded bg-gray-100 p-1">
+							{"<Form control={} register={} handleSubmit={} ... >"}
+						</code>
+					</p>
+					<p className="text-sm">
+						<strong>Best Solution:</strong> Update the Form component to handle
+						the watch prop.
+					</p>
+				</div>
+			</div>
+		</div>
+	);
+}
