@@ -52,8 +52,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/db
       '@squaredmade/logger':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       '@squaredmade/rpc':
         specifier: 1.0.4
         version: 1.0.4(express@5.1.0)
@@ -579,8 +579,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@squaredmade/logger':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       '@squaredmade/superjson':
         specifier: 1.0.1
         version: 1.0.1
@@ -647,8 +647,8 @@ importers:
   packages/seed:
     dependencies:
       '@squaredmade/logger':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.1.2
+        version: 1.1.2
       dotenv:
         specifier: ^16.4.1
         version: 16.5.0
