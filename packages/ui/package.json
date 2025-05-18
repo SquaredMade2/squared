@@ -665,7 +665,7 @@
 		"@storybook/test": "^8.6.7",
 		"@storybook/test-runner": "^0.22.0",
 		"@types/fs-extra": "^11.0.4",
-		"@types/node": "22.15.17",
+		"@types/node": "22.15.18",
 		"@types/react": "^19.0.1",
 		"@types/react-dom": "^19.0.2",
 		"@types/resize-observer-browser": "^0.1.11",
