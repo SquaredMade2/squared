@@ -9,8 +9,10 @@ import {
 	CommandList,
 	CommandSeparator,
 } from "@/components/ui/command";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useModalStore } from "@/store";
-import { useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { useOrganization } from "@clerk/nextjs";
+import type { OrganizationResource } from "@clerk/types";
 import { Check, CirclePlus } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import {
@@ -27,11 +29,16 @@ export function WorkspaceSwitcher() {
 	const { showSwitchWorkspace: open, setShowSwitchWorkspace: setOpen } =
 		useModalStore((state) => state);
 	const { organization, memberships } = useOrganization({ memberships: true });
-	const { setActive } = useOrganizationList();
 	const organizations = memberships?.data?.map((m) => m.organization);
 	const router = useRouter();
+	const { switchWorkspace } = useWorkspaces();
 
-	if (!organization || !organizations || !setActive) return null;
+	if (!organization || !organizations) return null;
+
+	const handleWorkspaceSwitch = async (org: OrganizationResource) => {
+		await switchWorkspace(org);
+		setOpen(false);
+	};
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -51,10 +58,7 @@ export function WorkspaceSwitcher() {
 								{organizations.map((org) => (
 									<CommandItem
 										key={org?.id}
-										onSelect={() => {
-											setActive({ organization: org });
-											setOpen(false);
-										}}
+										onSelect={() => handleWorkspaceSwitch(org)}
 										className="cursor-pointer"
 									>
 										<Check

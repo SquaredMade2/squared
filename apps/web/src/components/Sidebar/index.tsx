@@ -88,7 +88,10 @@ function SidebarContent() {
 	};
 
 	return (
-		<>
+		<Sidebar
+			collapsible="icon"
+			className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+		>
 			<SidebarHeader
 				className={`space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
 			>
@@ -135,15 +138,13 @@ function SidebarContent() {
 				</div>
 			</SidebarHeader>
 			{state === "expanded" && organization?.slug && (
-				<div className="px-2">
-					<SidebarContainer>
-						<TeamAccordion
-							teams={teams}
-							currentTeam={team}
-							workspaceUrl={organization.slug}
-						/>
-					</SidebarContainer>
-				</div>
+				<SidebarContainer className="px-2">
+					<TeamAccordion
+						teams={teams}
+						currentTeam={team}
+						workspaceUrl={organization.slug}
+					/>
+				</SidebarContainer>
 			)}
 			<SidebarFooter
 				className={`mt-auto space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
@@ -157,7 +158,7 @@ function SidebarContent() {
 				/>
 				<UserProfile onLogout={handleLogout} />
 			</SidebarFooter>
-		</>
+		</Sidebar>
 	);
 }
 
@@ -165,12 +166,7 @@ export function SidebarNav() {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<SidebarProvider className={"relative"}>
-				<Sidebar
-					collapsible="icon"
-					className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
-				>
-					<SidebarContent />
-				</Sidebar>
+				<SidebarContent />
 				<ToggleSidebarButton />
 			</SidebarProvider>
 		</TooltipProvider>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSidebar } from "@/components/ui/sidebar";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useModalStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
@@ -22,11 +23,12 @@ export function WorkspaceDropdown() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const { organization } = useOrganization();
-	const { userMemberships, setActive } = useOrganizationList({
+	const { userMemberships } = useOrganizationList({
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
 	const { setShowInvite } = useModalStore((state) => state);
+	const { switchWorkspace } = useWorkspaces();
 
 	const updatePathWithWorkspace = (url: string | null) => {
 		const pathNameParts = pathName.split("/");
@@ -42,10 +44,9 @@ export function WorkspaceDropdown() {
 		}
 	};
 
-	const updateActiveWorkspace = (org: OrganizationResource) => {
-		setActive?.({ organization: org }).then(() => {
-			updatePathWithWorkspace(org.slug);
-		});
+	const updateActiveWorkspace = async (org: OrganizationResource) => {
+		await switchWorkspace(org);
+		updatePathWithWorkspace(org.slug);
 	};
 
 	useEffect(() => {

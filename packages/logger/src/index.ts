@@ -24,7 +24,6 @@ const formatError = (level: string, meta: LogMeta) => {
 		const logMeta = meta as LogMeta;
 		const stack = logMeta.stack?.split("\n").slice(1).join("\n");
 
-		console.log("Type of stack", typeof stack);
 		const splatInfo = logMeta[splatSymbol];
 		let additionalInfo = "";
 
@@ -49,7 +48,15 @@ const formatMessage = (message: unknown, meta: LogMeta) => {
 	let additionalInfo = "";
 
 	if (Array.isArray(splatInfo) && splatInfo.length > 0) {
-		additionalInfo = splatInfo.join("");
+		// Instead of just joining, properly format each object
+		additionalInfo = splatInfo
+			.map((item) => {
+				if (typeof item === "object" && item !== null) {
+					return util.inspect(item, { depth: 4, colors: false });
+				}
+				return String(item);
+			})
+			.join(" ");
 	}
 
 	return `${message}${additionalInfo}`;
