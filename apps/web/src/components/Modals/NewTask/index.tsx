@@ -31,6 +31,7 @@ import { Separator } from "@squaredmade/ui/separator";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
@@ -118,8 +119,16 @@ export const NewTaskModal = () => {
 		};
 
 		createTask(createTaskParams, {
-			onSuccess: () => {
-				toast.success("Task Created Successfully");
+			onSuccess: ({ url }) => {
+				toast.success("Task Created Successfully", {
+					description: (
+						<Link href={url} passHref>
+							<Button variant="link" className="m-0 p-0">
+								Go to task
+							</Button>
+						</Link>
+					),
+				});
 				setShowNewTask(false);
 				setNewTaskData({});
 				form.reset();

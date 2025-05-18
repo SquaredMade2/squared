@@ -29,37 +29,40 @@ export type CreateTaskRequest = {
 };
 
 export type CreateTaskResponse = {
-	assigneeId: string | null;
-	authorId: string;
-	dateCreated: Date;
-	deleted: boolean;
-	description: string | null;
-	dueDate: Date | null;
-	effortEstimate: number | null;
-	id: string;
-	identifier: string;
-	labels: {
-		color: string;
-		description?: string | null;
-		name: string;
-	}[];
-	order: number;
-	parentId: string | null;
-	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
-	sprintId: string | null;
-	status:
-		| "backlog"
-		| "todo"
-		| "inProgress"
-		| "inReview"
-		| "done"
-		| "canceled"
-		| "archived"
-		| "duplicated";
-	teamId: string;
-	title: string;
-	updatedAt: Date;
-	workspaceId: string;
+	task: {
+		assigneeId: string | null;
+		authorId: string;
+		dateCreated: Date;
+		deleted: boolean;
+		description: string | null;
+		dueDate: Date | null;
+		effortEstimate: number | null;
+		id: string;
+		identifier: string;
+		labels: {
+			color: string;
+			description?: string | null;
+			name: string;
+		}[];
+		order: number;
+		parentId: string | null;
+		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+		sprintId: string | null;
+		status:
+			| "backlog"
+			| "todo"
+			| "inProgress"
+			| "inReview"
+			| "done"
+			| "canceled"
+			| "archived"
+			| "duplicated";
+		teamId: string;
+		title: string;
+		updatedAt: Date;
+		workspaceId: string;
+	};
+	url: string;
 };
 
 export type UpdateTaskRequest = {
