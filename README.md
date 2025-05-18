@@ -40,7 +40,7 @@ This is a monorepo containing the following applications and services:
 ### Prerequisites
 
 - Node.js (>=23.0.0)
-- pnpm (>=10.10.0)
+- pnpm (>=10.11.0)
 - Docker and Docker Compose (for containerized development)
 - Go (for webhooks service)
 
