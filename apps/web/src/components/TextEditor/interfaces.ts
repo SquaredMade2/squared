@@ -35,6 +35,13 @@ export interface TextEditorMentionsProps {
 	setToggleMentions: Dispatch<SetStateAction<boolean>>;
 	debounceRef: MutableRefObject<boolean>;
 }
+export interface TextEditorTasksProps {
+	cursorPosition: { x: number; y: number } | null;
+	editor: Editor;
+	setCurrentEnterUser: Dispatch<SetStateAction<PublicUserData | null>>;
+	setToggleTasks: Dispatch<SetStateAction<boolean>>;
+	debounceRef: MutableRefObject<boolean>;
+}
 
 export interface MentionHoverProps {
 	mentionedUser: PublicUserData;
@@ -46,6 +53,7 @@ export type MarkActives = {
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
 	isMentionActive: () => boolean;
+	isTaskActive: () => boolean;
 };
 
 export type CustomElementAttributes = Omit<
@@ -69,6 +77,7 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 	mention?: boolean;
+	taskConfirm?: boolean;
 	mentionConfirm?: PublicUserData;
 };
 

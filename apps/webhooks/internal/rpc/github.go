@@ -213,6 +213,160 @@ func (s *GithubService) UpsertPullRequest(ctx context.Context, req UpsertPullReq
 }
 
 
+// MergePullRequestRequest represents the request for mergePullRequest method
+type MergePullRequestRequest struct {
+	PullRequestId string `json:"pullRequestId"`
+}
+
+
+
+// MergePullRequestResponse represents the response for mergePullRequest method
+type MergePullRequestResponse struct{}
+
+
+// MergePullRequest calls the mergePullRequest RPC method
+func (s *GithubService) MergePullRequest(ctx context.Context, req MergePullRequestRequest) (*MergePullRequestResponse, error) {
+	endpoint := fmt.Sprintf("%s/github/mergePullRequest", s.baseURL)
+
+	
+	wrappedReq := struct {
+		JSON MergePullRequestRequest "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling request: %w", err)
+	}
+	
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	requestID := make([]byte, 6)
+	if _, err := rand.Read(requestID); err != nil {
+		return nil, fmt.Errorf("error generating request ID: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("X-Request-ID", base64.URLEncoding.EncodeToString(requestID))
+
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	type MergePullRequestResponseWrapper struct {
+		JSON MergePullRequestResponse "json:\"json\""
+	}
+
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper MergePullRequestResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
+	
+}
+
+
+// ClosePullRequestRequest represents the request for closePullRequest method
+type ClosePullRequestRequest struct {
+	PullRequestId string `json:"pullRequestId"`
+}
+
+
+
+// ClosePullRequestResponse represents the response for closePullRequest method
+type ClosePullRequestResponse struct{}
+
+
+// ClosePullRequest calls the closePullRequest RPC method
+func (s *GithubService) ClosePullRequest(ctx context.Context, req ClosePullRequestRequest) (*ClosePullRequestResponse, error) {
+	endpoint := fmt.Sprintf("%s/github/closePullRequest", s.baseURL)
+
+	
+	wrappedReq := struct {
+		JSON ClosePullRequestRequest "json:\"json\""
+	}{
+		JSON: req,
+	}
+
+	reqBody, err := json.Marshal(wrappedReq)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling request: %w", err)
+	}
+	
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	requestID := make([]byte, 6)
+	if _, err := rand.Read(requestID); err != nil {
+		return nil, fmt.Errorf("error generating request ID: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("X-Request-ID", base64.URLEncoding.EncodeToString(requestID))
+
+	resp, err := s.client.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("error sending request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	type ClosePullRequestResponseWrapper struct {
+		JSON ClosePullRequestResponse "json:\"json\""
+	}
+
+	var responseString string
+	if err := json.Unmarshal(body, &responseString); err != nil {
+		return nil, fmt.Errorf("error decoding response string: %w", err)
+	}
+
+	var wrapper ClosePullRequestResponseWrapper
+	if err := json.Unmarshal([]byte(responseString), &wrapper); err != nil {
+		return nil, fmt.Errorf("error decoding wrapped response: %w", err)
+	}
+
+	return &wrapper.JSON, nil
+	
+}
+
+
 // PushCommitRequest represents the request for pushCommit method
 type PushCommitRequest struct {
 	Author string `json:"author"`

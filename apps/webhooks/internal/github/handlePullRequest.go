@@ -19,52 +19,53 @@ func handlePullRequestEvent(webhookEvent *github.PullRequestEvent, githubService
 	}
 
 	pullRequest := webhookEvent.PullRequest
-	request := rpc.UpsertPullRequestRequest{
-		Author: *pullRequest.User.Login,
-		Body:   *pullRequest.Body,
-		Branch: *pullRequest.Head.Ref,
-		Id:     *pullRequest.NodeID,
-		Number: *pullRequest.Number,
-		Repo: struct {
-			Description *string `json:"description"`
-			Id          string  `json:"id"`
-			Name        string  `json:"name"`
-			OrgId       string  `json:"orgId"`
-			Private     bool    `json:"private"`
-			Url         string  `json:"url"`
-		}{
-			Id:          *webhookEvent.Repo.NodeID,
-			Name:        *webhookEvent.Repo.Name,
-			Url:         *webhookEvent.Repo.URL,
-			Description: webhookEvent.Repo.Description,
-			Private:     *webhookEvent.Repo.Private,
-			OrgId:       *webhookEvent.Organization.NodeID,
-		},
-		Org: struct {
-			Description *string `json:"description"`
-			Id          string  `json:"id"`
-			Name        string  `json:"name"`
-		}{
-			Id:          *webhookEvent.Organization.NodeID,
-			Name:        *webhookEvent.Organization.Login,
-			Description: webhookEvent.Organization.Description,
-		},
-		State:     *pullRequest.State,
-		Title:     *pullRequest.Title,
-		Url:       *pullRequest.HTMLURL,
-		Timestamp: pullRequest.CreatedAt.Format(time.RFC3339),
-	}
-
-	tasks, err := githubService.UpsertPullRequest(context.TODO(), request)
-	if err != nil {
-		log.Printf("Error upserting pull request: %v", err)
-		http.Error(w, "Error upserting pull request", http.StatusInternalServerError)
-		return
-	}
 
 	// Handle different webhook actions using switch statement
 	switch *webhookEvent.Action {
 	case "opened", "reopened", "synchronize", "edited":
+		request := rpc.UpsertPullRequestRequest{
+			Author: *pullRequest.User.Login,
+			Body:   *pullRequest.Body,
+			Branch: *pullRequest.Head.Ref,
+			Id:     *pullRequest.NodeID,
+			Number: *pullRequest.Number,
+			Repo: struct {
+				Description *string `json:"description"`
+				Id          string  `json:"id"`
+				Name        string  `json:"name"`
+				OrgId       string  `json:"orgId"`
+				Private     bool    `json:"private"`
+				Url         string  `json:"url"`
+			}{
+				Id:          *webhookEvent.Repo.NodeID,
+				Name:        *webhookEvent.Repo.Name,
+				Url:         *webhookEvent.Repo.URL,
+				Description: webhookEvent.Repo.Description,
+				Private:     *webhookEvent.Repo.Private,
+				OrgId:       *webhookEvent.Organization.NodeID,
+			},
+			Org: struct {
+				Description *string `json:"description"`
+				Id          string  `json:"id"`
+				Name        string  `json:"name"`
+			}{
+				Id:          *webhookEvent.Organization.NodeID,
+				Name:        *webhookEvent.Organization.Login,
+				Description: webhookEvent.Organization.Description,
+			},
+			State:     *pullRequest.State,
+			Title:     *pullRequest.Title,
+			Url:       *pullRequest.HTMLURL,
+			Timestamp: pullRequest.CreatedAt.Format(time.RFC3339),
+		}
+
+		res, err := githubService.UpsertPullRequest(context.TODO(), request)
+		if err != nil {
+			log.Printf("Error upserting pull request: %v", err)
+			http.Error(w, "Error upserting pull request", http.StatusInternalServerError)
+			return
+		}
+
 		// Update PR description for these actions
 		if err := updatePullRequestDescription(&github.PullRequest{
 			Body:    pullRequest.Body,
@@ -84,26 +85,36 @@ func handlePullRequestEvent(webhookEvent *github.PullRequestEvent, githubService
 					},
 				},
 			},
-		}, *tasks, *webhookEvent.Installation.ID); err != nil {
+		}, *res, *webhookEvent.Installation.ID); err != nil {
 			log.Printf("Error updating pull request description: %v", err)
 			http.Error(w, fmt.Sprintf("Error updating pull request description: %v", err), http.StatusInternalServerError)
 			return
 		}
 
 		// Add comment only for "opened" action
-		if *webhookEvent.Action == "opened" {
-			if err := addCommentToPR(*pullRequest.Base.Repo.Owner.Login, *pullRequest.Base.Repo.Name, *pullRequest.Number, *tasks, *webhookEvent.Installation.ID); err != nil {
+		if *webhookEvent.Action == "opened" && len(res.Tasks) > 0 {
+			if err := addCommentToPR(*pullRequest.Base.Repo.Owner.Login, *pullRequest.Base.Repo.Name, *pullRequest.Number, *res, *webhookEvent.Installation.ID); err != nil {
 				log.Printf("Error adding comment to PR: %v", err)
 				http.Error(w, "Error adding comment to PR", http.StatusInternalServerError)
 				return
 			}
 		}
 	case "closed":
-		// Handle closed PRs if needed
-		log.Printf("PR #%d was closed", *pullRequest.Number)
+		if _, err := githubService.ClosePullRequest(context.TODO(), rpc.ClosePullRequestRequest{
+			PullRequestId: *pullRequest.NodeID,
+		}); err != nil {
+			log.Printf("Error closing pull request: %v", err)
+			http.Error(w, "Error closing pull request", http.StatusInternalServerError)
+			return
+		}
 	case "merged":
-		// Handle merged PRs if needed
-		log.Printf("PR #%d was merged", *pullRequest.Number)
+		if _, err := githubService.MergePullRequest(context.TODO(), rpc.MergePullRequestRequest{
+			PullRequestId: *pullRequest.NodeID,
+		}); err != nil {
+			log.Printf("Error merging pull request: %v", err)
+			http.Error(w, "Error merging pull request", http.StatusInternalServerError)
+			return
+		}
 	default:
 		// Handle other webhook actions if needed
 		log.Printf("Unhandled webhook action: %s", *webhookEvent.Action)

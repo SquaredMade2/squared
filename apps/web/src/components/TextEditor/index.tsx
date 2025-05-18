@@ -3,7 +3,7 @@ import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
 	injectMentionConfirm,
-	isValidMentionBlock,
+	isValidCharBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
 import { Button } from "@squaredmade/ui/button";
@@ -25,6 +25,7 @@ import type {
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
 import TextEditorMentions from "./Menus/TextEditorMentions";
+import TextEditorTasks from "./Menus/TextEditorTasks";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
@@ -65,6 +66,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 	const [editor] = useState(() => withReact(createEditor()));
 
 	const [toggleMentions, setToggleMentions] = useState(false);
+	const [toggleTask, setToggleTask] = useState(false);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	// Mention search filter
 	const [mentionsFilter, setMentionsFilter] = useState("");
@@ -92,8 +94,8 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		Transforms.select(editor, defaultSelectionRange);
 	}
 
-	const handleMentionKeyUp = (event: KeyboardEvent) => {
-		if (event.key === "@") {
+	const handleCharKeyUp = (event: KeyboardEvent) => {
+		if (event.key === "@" || event.key === "#") {
 			const selection = window.getSelection();
 			if (!selection) {
 				setPosition({ x: 0, y: 0 });
@@ -184,6 +186,8 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 				return "isMentionActive";
 			case "mentionConfirm":
 				return "isMentionConfirmActive";
+			case "taskConfirm":
+				return "isTaskActive";
 			case "url":
 				return "isLinkActive";
 		}
@@ -203,6 +207,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
 		isMentionActive: () => isMarkActive("mention"),
+		isTaskActive: () => isMarkActive("taskConfirm"),
 		isMentionConfirmActive: () => isMarkActive("mentionConfirm"),
 	});
 
@@ -225,6 +230,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		if (isMarkActive("mentionConfirm") && e.key !== "Backspace") {
 			Editor.removeMark(editor, "mentionConfirm");
 		}
+
 		switch (e.key) {
 			// Element Blocks
 
@@ -249,6 +255,11 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 
 			case "@": {
 				createLeaf("mention", true);
+				break;
+			}
+
+			case "#": {
+				createLeaf("taskConfirm", true);
 				break;
 			}
 
@@ -337,10 +348,14 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 			debounceRef.current = false;
 			return;
 		}
-		isValidMentionBlock(editor) ? allowEntireMention() : deleteEntireMention();
+		isValidCharBlock(editor, "@")
+			? allowEntireMention()
+			: deleteEntireMention();
 		if (toggleMentions) {
 			setMentionsFilter(getMentionFromLeaf(editor));
 		}
+
+		setToggleTask(isValidCharBlock(editor, "#"));
 	}, [editor.selection]);
 
 	return (
@@ -349,7 +364,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 			initialValue={initialValue}
 			onChange={(newValue) => setEditorContent(newValue)}
 		>
-			<div className="markdown-content" onKeyUp={handleMentionKeyUp}>
+			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
 				<div
 					className={cn(
 						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
@@ -385,6 +400,16 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 					editor={editor}
 					setCurrentEnterUser={setCurrentEnterUser}
 					setToggleMentions={setToggleMentions}
+					debounceRef={debounceRef}
+				/>
+			)}
+
+			{toggleTask && (
+				<TextEditorTasks
+					cursorPosition={position}
+					editor={editor}
+					setCurrentEnterUser={setCurrentEnterUser}
+					setToggleTasks={setToggleTask}
 					debounceRef={debounceRef}
 				/>
 			)}
