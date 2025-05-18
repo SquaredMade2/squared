@@ -6,7 +6,6 @@ import {
 	isValidCharBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
-import { cn } from "@squaredmade/ui/cn";
 import { toast } from "@squaredmade/ui/toast";
 import {
 	type KeyboardEvent,
@@ -360,10 +359,9 @@ const TextEditor = ({ placeholder, value, setValue }: TextEditorProps) => {
 		>
 			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
 				<div
-					className={cn(
-						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-					)}
-					flex-col
+					className={
+						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+					}
 				>
 					<TextEditorToolBar
 						// Leafs
