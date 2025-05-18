@@ -419,7 +419,7 @@ importers:
     devDependencies:
       '@squaredmade/logger':
         specifier: ^1.0.0
-        version: 1.1.2
+        version: 1.1.1
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.2
@@ -649,6 +649,9 @@ importers:
       '@squaredmade/logger':
         specifier: 1.1.1
         version: 1.1.1
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       dotenv:
         specifier: ^16.4.1
         version: 16.5.0
@@ -3216,9 +3219,6 @@ packages:
 
   '@squaredmade/logger@1.1.1':
     resolution: {integrity: sha512-SY75V9AzgqeXgY8HBNPr+DoFOFTsRqVR0IEApzkMGOgmx0tvTCyho+y2Zegt6OKMzTcoVFPCskR5fg6WA8IlLg==}
-
-  '@squaredmade/logger@1.1.2':
-    resolution: {integrity: sha512-zZAPVjvbgpfd2AUllT3CqtyhdcdwYSOwltjxvMPSfJ4ZDJ8KUybqRhQQyRfsrJ7xNEAeYTFX6297QU6xOAG16w==}
 
   '@squaredmade/rpc-client@1.0.2':
     resolution: {integrity: sha512-JWv9ZB0OmzIlsS+cbxjP65oUKnSv+TT619+5f00P12K6OAFSn8lRCxzHbR8SqLtaJHwBQmdBBE1GfFjBsmgVJQ==}
@@ -11837,10 +11837,6 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   '@squaredmade/logger@1.1.1':
-    dependencies:
-      winston: 3.17.0
-
-  '@squaredmade/logger@1.1.2':
     dependencies:
       winston: 3.17.0
 
