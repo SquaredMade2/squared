@@ -123,9 +123,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		};
 		const JSXCommentData = async () => {
 			try {
-				const formattedComment = comment.comment
-					.replace(/\n{2,}/g, "<br /><br />")
-					.replace(/\n/g, "<br />\n");
+				const formattedComment = comment.comment;
 
 				const mdxSource = await serialize(formattedComment);
 				setCommentData(mdxSource);

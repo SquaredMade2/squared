@@ -1,4 +1,4 @@
-import type { CustomDescendant } from "@/components/TextEditor";
+import type { CustomElement, CustomText } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import type { PublicUserData } from "@clerk/types";
@@ -151,49 +151,141 @@ export const formatPriority = (priority: Priority) => {
 // return links;
 // };
 
-export const convertSlateToMDX = (slateArr: CustomDescendant[]) => {
-	const arrOfFormattedLines = slateArr.map((line) => {
-		// each formatted line/row
-		const formattedLine = [];
+function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
+	const codeLines: string[] = [];
+	let i = startIndex;
 
-		// if there is a formatted piece of text (this is for each subline of each row)
-		if ("children" in line) {
-			// for every leaf, or subtext that has format, format them as MDX
-			const allLeafs = line.children.map((leaf) => {
-				if (leaf.url) {
-					return `[${leaf.text}](${leaf.url})`;
-				}
-				if (leaf.mentionConfirm) {
-					return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
-				}
+	for (; i < slateArr.length; i++) {
+		const currentIsCodeLine = slateArr[i]?.children?.every(
+			(item) => item.code === true,
+		);
 
-				// input mentionConfirms
-				// helper vars
-				const returnBoldMarks = leaf.bold ? "**" : "";
-				const returnItalicMarks = leaf.italic ? "*" : "";
-				const returnCodeMarks = leaf.code ? "```" : "";
-				// add new marks here, needs both left and right bc future might need them
-				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
-				const rightSurrounderMark = leftSurrounderMark;
-				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
-			});
+		if (!currentIsCodeLine) break;
+		codeLines.push(slateArr[i]?.children.map((leaf) => leaf.text).join(""));
+	}
 
-			// Handle current block/row (each row can only have one block)
-			const returnHeaderBlock = line.type === "header" ? "### " : "";
-			const leftSurrounderBlock = `${returnHeaderBlock}`;
-			// will need below for future formatting
-			const rightSurrounderBlock = `${""}`;
-			formattedLine.push(
-				`${leftSurrounderBlock}${allLeafs.join("")}${rightSurrounderBlock}`,
-			);
+	return { codeLines, nextIndex: i };
+}
+
+export const convertSlateToMDX = (slateArr: CustomElement[]) => {
+	const lines: string[] = [];
+	let i = 0;
+
+	while (i < slateArr.length) {
+		const line = slateArr[i];
+		const isCodeLine = line.children.every((item) => item.code === true);
+		if (isCodeLine) {
+			const { codeLines, nextIndex } = findSlateCodeBlock(slateArr, i);
+			i = nextIndex;
+			lines.push(`\`\`\`ts\n${codeLines.join("\n")}\n\`\`\``);
 		} else {
-			formattedLine.push(line.text);
+			// Not a code block, process normally
+			const lineStr = line.children
+				.map((leaf) => {
+					if (leaf.url) return `[${leaf.text}](${leaf.url})`;
+					if (leaf.mentionConfirm)
+						return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
+
+					const bold = leaf.bold ? "**" : "";
+					const italic = leaf.italic ? "*" : "";
+					const code = leaf.code ? "`" : ""; // use single backtick for inline code
+					return `${italic}${bold}${code}${leaf.text.trim()}${code}${bold}${italic} `;
+				})
+				.join("");
+
+			const prefix = line.type === "header" ? "### " : "";
+			lines.push(prefix + lineStr);
+			i++;
+		}
+	}
+	return lines.join("\n\n");
+};
+
+function findMdxLines(text: string): string[] {
+	const parts = text.split(/(```[\s\S]*?\n```)/g);
+
+	return parts.flatMap((part, i) => {
+		if (i % 2 === 1) {
+			// This is a code block, keep it as a whole string
+			return [part];
+		}
+		return part.split("\n\n");
+	});
+}
+
+function parseInlineMarkdown(text: string): CustomText[] {
+	const result: CustomText[] = [];
+
+	const regex = /(\*\*\*[^*]+?\*\*\*|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+`)/g;
+
+	let lastIndex = 0;
+	for (const match of text.matchAll(regex)) {
+		if (match === null) break;
+		if (match.index > lastIndex) {
+			// Add plain text before match
+			result.push({ text: text.slice(lastIndex, match.index) });
+		}
+		const token = match[0];
+		if (token.startsWith("***")) {
+			result.push({
+				text: token.slice(3, -3),
+				bold: true,
+				italic: true,
+			});
+		} else if (token.startsWith("**")) {
+			result.push({
+				text: token.slice(2, -2),
+				bold: true,
+			});
+		} else if (token.startsWith("*")) {
+			result.push({
+				text: token.slice(1, -1),
+				italic: true,
+			});
+		} else if (token.startsWith("`")) {
+			result.push({
+				text: token.slice(1, -1),
+				code: true,
+			});
 		}
 
-		return formattedLine.join("");
-	});
+		lastIndex = match.index + token.length;
+	}
 
-	return arrOfFormattedLines.join("\n");
+	if (lastIndex < text.length) {
+		result.push({ text: text.slice(lastIndex) });
+	}
+
+	return result;
+}
+
+export const convertMDXToSlate = (mdxString: string) => {
+	const lines = findMdxLines(mdxString);
+	const slateArr: CustomElement[] = [];
+
+	for (const line of lines) {
+		if (line.startsWith("```")) {
+			const codeBlock = line.replace(/```/g, "").trim();
+			slateArr.push({
+				type: "code",
+				children: [{ text: codeBlock, code: true }],
+			});
+		} else if (line.startsWith("### ")) {
+			const headerText = line.replace("### ", "").trim();
+			slateArr.push({
+				type: "header",
+				children: parseInlineMarkdown(headerText),
+			});
+		} else {
+			const text = line.trim();
+			slateArr.push({
+				type: "paragraph",
+				children: parseInlineMarkdown(text),
+			});
+		}
+	}
+
+	return slateArr;
 };
 
 // TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })

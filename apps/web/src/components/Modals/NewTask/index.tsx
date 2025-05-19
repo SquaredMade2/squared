@@ -3,6 +3,7 @@
 import TextEditor, {
 	initialEditorValue,
 	type CustomDescendant,
+	type CustomElement,
 } from "@/components/TextEditor";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useSprints } from "@/hooks/useSprints";
@@ -112,7 +113,7 @@ export const NewTaskModal = () => {
 
 		const createTaskParams = {
 			title: values.title,
-			description: convertSlateToMDX(editorDescription),
+			description: convertSlateToMDX(editorDescription as CustomElement[]),
 			status: status || "backlog",
 			priority: priority || "noPriority",
 			labels: labels || [],
@@ -195,13 +196,12 @@ export const NewTaskModal = () => {
 							<FormField
 								control={form.control}
 								name="description"
-								render={({ field }) => (
+								render={() => (
 									<FormItem>
 										<FormLabel className="text-xl">Description</FormLabel>
 										<FormControl>
 											<div className="markdown-content">
 												<TextEditor
-													{...field}
 													placeholder="Add Description"
 													value={editorDescription}
 													setValue={setEditorDescription}

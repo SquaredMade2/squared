@@ -6,7 +6,6 @@ import {
 	isValidCharBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
-import { cn } from "@squaredmade/ui/cn";
 import { toast } from "@squaredmade/ui/toast";
 import {
 	type KeyboardEvent,
@@ -57,7 +56,16 @@ const defaultSelectionRange = {
 	focus: { path: [0, 0], offset: 0 },
 };
 
-const TextEditor = ({ placeholder, value, setValue }: TextEditorProps) => {
+const TextEditor = ({
+	placeholder,
+	style,
+	onBlur,
+	onFocus,
+	onChange,
+	value = initialEditorValue,
+	setValue,
+	hasToolbar = true,
+}: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
@@ -353,36 +361,41 @@ const TextEditor = ({ placeholder, value, setValue }: TextEditorProps) => {
 	return (
 		<Slate
 			editor={editor}
-			initialValue={initialEditorValue}
+			initialValue={value}
 			onChange={(newValue) => {
 				setValue(newValue);
+				onChange?.(newValue); // Optional external onChange handler
 			}}
 		>
 			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
 				<div
-					className={cn(
-						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-					)}
-					flex-col
+					className={
+						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+					}
 				>
-					<TextEditorToolBar
-						// Leafs
+					{hasToolbar && (
+						<TextEditorToolBar
+							// Leafs
 
-						createLeaf={createLeaf}
-						markActiveChecks={useEditorMarks()}
-						injectLinkContent={injectLinkContent}
-						// Blocks
-						createHeaderBlock={createHeaderBlock}
-						isHeaderBlock={isHeaderBlock()}
-						// Others
-						selection={editor.selection}
-					/>
+							createLeaf={createLeaf}
+							markActiveChecks={useEditorMarks()}
+							injectLinkContent={injectLinkContent}
+							// Blocks
+							createHeaderBlock={createHeaderBlock}
+							isHeaderBlock={isHeaderBlock()}
+							// Others
+							selection={editor.selection}
+						/>
+					)}
 					<div ref={editorRef}>
 						<Editable
 							placeholder={placeholder || ""}
+							onBlur={onBlur}
+							onFocus={onFocus}
 							onKeyDown={handleSetEditorContent}
 							renderLeaf={renderLeaf}
 							renderElement={renderElement}
+							style={style}
 							className="min-h-[160px] w-full px-3 py-4"
 						/>
 					</div>
