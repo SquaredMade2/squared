@@ -2,10 +2,9 @@ import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { TODO } from "@squaredmade/context";
 import { NotificationType } from "@squaredmade/db";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { workspaceProcedure } from "../procedures";
+import { j, workspaceProcedure } from "../jstack";
 
-export const notificationRouter = router({
+export const notificationRouter = j.router({
 	markAsUnread: workspaceProcedure
 		.input(z.object({ notificationIds: z.array(z.string()) }))
 		.mutation(async ({ c, ctx, input }) => {

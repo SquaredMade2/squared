@@ -62,9 +62,7 @@ function SidebarContent() {
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization?.id,
-				})
+				.$get()
 				.then((res) => res.json());
 			setTeams(teams);
 			return teams;

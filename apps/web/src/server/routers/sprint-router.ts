@@ -1,11 +1,10 @@
 import { TODO } from "@squaredmade/context";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { workspaceProcedure } from "../procedures";
+import { j, workspaceProcedure } from "../jstack";
 
 const retroTypeEnum = z.enum(["toImprove", "wentWell", "actionItems"]);
 
-export const sprintRouter = router({
+export const sprintRouter = j.router({
 	getSprints: workspaceProcedure
 		.input(z.object({ teamId: z.string() }))
 		.query(async ({ c, ctx, input }) => {

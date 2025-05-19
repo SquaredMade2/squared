@@ -1,7 +1,6 @@
 import { TODO } from "@squaredmade/context";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { workspaceProcedure } from "../procedures";
+import { j, workspaceProcedure } from "../jstack";
 
 const statusEnum = z.enum([
 	"backlog",
@@ -22,7 +21,7 @@ const labelSchema = z.object({
 	color: z.string(),
 });
 
-export const taskRouter = router({
+export const taskRouter = j.router({
 	getTaskByIdentifier: workspaceProcedure
 		.input(z.object({ identifier: z.string() }))
 		.query(async ({ c, ctx, input }) => {

@@ -39,9 +39,7 @@ export function useTeams() {
 		queryKey: ["team", organization?.id, teamIdentifier],
 		queryFn: async () => {
 			if (!organization) return { teams: [], team: null };
-			const res = await client.team.getUserTeams.$get({
-				workspaceId: organization.id,
-			});
+			const res = await client.team.getUserTeams.$get();
 			const allTeams = await res.json();
 			setTeams(allTeams);
 			const currentTeam = allTeams.find((t) => t.identifier === teamIdentifier);
