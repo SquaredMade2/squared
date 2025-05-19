@@ -41,7 +41,7 @@ export function useSprints(sprintId?: string) {
 			if (!sprints.length) throw new Error("No sprints found");
 			return sprints;
 		},
-		enabled: !!teamQuery.data,
+		enabled: !!teamQuery.data?.id,
 	});
 
 	const activeSprint =
