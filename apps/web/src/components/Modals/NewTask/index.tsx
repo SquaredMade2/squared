@@ -123,6 +123,7 @@ export const NewTaskModal = () => {
 			workspaceId: organization.id,
 			sprintId,
 		};
+		setEditorDescription(initialEditorValue);
 
 		createTask(createTaskParams, {
 			onSuccess: () => {
