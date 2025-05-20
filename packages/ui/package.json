@@ -636,6 +636,7 @@
 		"release": "pnpm build && changeset publish",
 		"serve": "pnpm dlx serve storybook-static",
 		"storybook": "storybook dev -p 6006",
+		"test": "vitest",
 		"test-storybook": "test-storybook"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
@@ -664,6 +665,11 @@
 		"@storybook/react-webpack5": "^8.6.7",
 		"@storybook/test": "^8.6.7",
 		"@storybook/test-runner": "^0.22.0",
+		"@testing-library/cypress": "^10.0.3",
+		"@testing-library/dom": "^10.4.0",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.2.0",
+		"@testing-library/user-event": "^14.6.1",
 		"@types/fs-extra": "^11.0.4",
 		"@types/node": "22.15.18",
 		"@types/react": "^19.0.1",
@@ -673,6 +679,7 @@
 		"esbuild": "^0.25.0",
 		"fs-extra": "^11.3.0",
 		"glob": "^11.0.0",
+		"jsdom": "^26.1.0",
 		"playwright": "^1.51.1",
 		"postcss": "^8.4.14",
 		"postcss-cli": "^11.0.0",
@@ -681,7 +688,10 @@
 		"tsconfig-paths-webpack-plugin": "^4.1.0",
 		"tslib": "^2.4.0",
 		"tsup": "^8.3.0",
-		"typescript": "^5.7.2"
+		"typescript": "^5.7.2",
+		"vite": "^6.2.0",
+		"vitest": "^3.1.1",
+		"vitest-axe": "^1.0.0-pre.5"
 	},
 	"dependencies": {
 		"@floating-ui/react-dom": "^2.1.2",

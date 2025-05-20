@@ -110,10 +110,11 @@ const RovingFocusGroupImpl = React.forwardRef<
 	const ref = React.useRef<RovingFocusGroupImplElement>(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
 	const direction = useDirection(dir);
-	const [currentTabStopId = null, setCurrentTabStopId] = useControllableState({
+	const [currentTabStopId, setCurrentTabStopId] = useControllableState({
 		prop: currentTabStopIdProp,
-		defaultProp: defaultCurrentTabStopId,
+		defaultProp: defaultCurrentTabStopId ?? null,
 		onChange: onCurrentTabStopIdChange,
+		caller: GROUP_NAME,
 	});
 	const [isTabbingBackOut, setIsTabbingBackOut] = React.useState(false);
 	const handleEntryFocus = useCallbackRef(onEntryFocus);
@@ -184,9 +185,9 @@ const RovingFocusGroupImpl = React.forwardRef<
 								Boolean,
 							) as typeof items;
 
-							const candidateNodes = candidateItems.map(
-								(item) => item.ref.current!,
-							);
+							const candidateNodes = candidateItems
+								.map((item) => item.ref.current)
+								.filter((node) => node !== null);
 							focusFirst(candidateNodes, preventScrollOnEntryFocus);
 						}
 					}
@@ -295,7 +296,9 @@ const RovingFocusGroupItem = React.forwardRef<
 						event.preventDefault();
 						const items = getItems().filter((item) => item.focusable);
 
-						let candidateNodes = items.map((item) => item.ref.current!);
+						let candidateNodes = items
+							.map((item) => item.ref.current)
+							.filter((node) => node !== null);
 
 						if (focusIntent === "last") {
 							candidateNodes.reverse();
