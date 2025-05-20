@@ -189,6 +189,7 @@ export const convertSlateToMDX = (slateArr: CustomElement[]) => {
 					const bold = leaf.bold ? "**" : "";
 					const italic = leaf.italic ? "*" : "";
 					const code = leaf.code ? "`" : ""; // use single backtick for inline code
+					if (leaf.text === "") return "";
 					return `${italic}${bold}${code}${leaf.text.trim()}${code}${bold}${italic} `;
 				})
 				.join("");
@@ -202,6 +203,7 @@ export const convertSlateToMDX = (slateArr: CustomElement[]) => {
 };
 
 function findMdxLines(text: string): string[] {
+	// Split the text into parts, keeping the code blocks intact
 	const parts = text.split(/(```[\s\S]*?\n```)/g);
 
 	return parts.flatMap((part, i) => {
@@ -209,6 +211,7 @@ function findMdxLines(text: string): string[] {
 			// This is a code block, keep it as a whole string
 			return [part];
 		}
+		// This is a regular text part, split it into paragraphs
 		return part.split("\n\n");
 	});
 }
@@ -216,9 +219,11 @@ function findMdxLines(text: string): string[] {
 function parseInlineMarkdown(text: string): CustomText[] {
 	const result: CustomText[] = [];
 
+	// Regex to match inline markdown patterns
 	const regex = /(\*\*\*[^*]+?\*\*\*|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+`)/g;
 
 	let lastIndex = 0;
+	// Iterate through all matches
 	for (const match of text.matchAll(regex)) {
 		if (match === null) break;
 		if (match.index > lastIndex) {
@@ -264,7 +269,12 @@ export const convertMDXToSlate = (mdxString: string) => {
 	const slateArr: CustomElement[] = [];
 
 	for (const line of lines) {
-		if (line.startsWith("```")) {
+		if (line.trim() === "") {
+			slateArr.push({
+				type: "paragraph",
+				children: [{ text: "" }],
+			});
+		} else if (line.startsWith("```")) {
 			const codeBlock = line.replace(/```/g, "").trim();
 			slateArr.push({
 				type: "code",

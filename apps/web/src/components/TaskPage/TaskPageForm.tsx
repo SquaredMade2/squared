@@ -33,7 +33,6 @@ export const TaskPageForm = () => {
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
 	const [isEditingTitle, setIsEditingTitle] = useState(false);
-
 	const [updatedDescription, setUpdatedDescription] = useState<
 		CustomDescendant[]
 	>(convertMDXToSlate(task?.description ?? ""));
@@ -57,7 +56,6 @@ export const TaskPageForm = () => {
 		onSuccess: async (updatedTask) => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
-
 			const updatedEvents = await client.event.getEvents
 				.$get({
 					taskId: updatedTask.id,

@@ -113,7 +113,8 @@ export const NewTaskModal = () => {
 
 		const createTaskParams = {
 			title: values.title,
-			description: convertSlateToMDX(editorDescription as CustomElement[]),
+			description:
+				convertSlateToMDX(editorDescription as CustomElement[]) || "",
 			status: status || "backlog",
 			priority: priority || "noPriority",
 			labels: labels || [],
@@ -123,13 +124,13 @@ export const NewTaskModal = () => {
 			workspaceId: organization.id,
 			sprintId,
 		};
-		setEditorDescription(initialEditorValue);
 
 		createTask(createTaskParams, {
 			onSuccess: () => {
 				toast.success("Task Created Successfully");
 				setShowNewTask(false);
 				setNewTaskData({});
+				setEditorDescription(initialEditorValue);
 				form.reset();
 			},
 			onError: (error) => {
@@ -203,6 +204,7 @@ export const NewTaskModal = () => {
 										<FormControl>
 											<div className="markdown-content">
 												<TextEditor
+													hasToolbar={false}
 													placeholder="Add Description"
 													value={editorDescription}
 													setValue={setEditorDescription}
