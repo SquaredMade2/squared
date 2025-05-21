@@ -25,4 +25,13 @@ export const commentRouter = j.router({
 				}),
 			);
 		}),
+	deleteComment: workspaceProcedure
+		.input(z.object({ commentId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { commentService } = ctx;
+			const { commentId } = input;
+			return c.superjson(
+				await commentService.deleteComment(TODO, { commentId }),
+			);
+		}),
 });
