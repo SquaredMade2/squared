@@ -279,12 +279,36 @@ function createWatcher<TFieldValues extends FieldValues>(
 	): FieldPathValue<TFieldValues, TFieldName>;
 	(callback: (values: TFieldValues) => void): { unsubscribe: () => void };
 } {
-	function watch(): TFieldValues;
+	const getNestedValue = <
+		TFieldValues extends FieldValues,
+		TFieldName extends FieldPath<TFieldValues>,
+	>(
+		obj: Partial<TFieldValues>,
+		path: TFieldName,
+	): FieldPathValue<TFieldValues, TFieldName> | undefined => {
+		if (!path) return obj as FieldPathValue<TFieldValues, TFieldName>;
 
+		const keys = path.split(".");
+		let result: unknown = obj;
+
+		for (const key of keys) {
+			if (
+				result === undefined ||
+				result === null ||
+				typeof result !== "object"
+			) {
+				return undefined;
+			}
+			result = (result as Record<string, unknown>)[key];
+		}
+
+		return result as FieldPathValue<TFieldValues, TFieldName> | undefined;
+	};
+
+	function watch(): TFieldValues;
 	function watch<TFieldName extends FieldPath<TFieldValues>>(
 		name: TFieldName,
 	): FieldPathValue<TFieldValues, TFieldName>;
-
 	function watch(callback: (values: TFieldValues) => void): {
 		unsubscribe: () => void;
 	};
@@ -298,16 +322,19 @@ function createWatcher<TFieldValues extends FieldValues>(
 		if (nameOrCallback === undefined) {
 			return formValues as TFieldValues;
 		}
+
 		if (typeof nameOrCallback === "function") {
 			const unsubscribeFn = onFormValuesChange(nameOrCallback);
 			return {
 				unsubscribe: unsubscribeFn,
 			};
 		}
-		return formValues[nameOrCallback] as FieldPathValue<
-			TFieldValues,
-			TFieldName
-		>;
+
+		// Use getNestedValue helper for dotted path
+		return getNestedValue(
+			formValues,
+			nameOrCallback as string,
+		) as FieldPathValue<TFieldValues, TFieldName>;
 	}
 
 	return watch as {
