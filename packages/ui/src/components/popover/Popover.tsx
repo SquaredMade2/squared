@@ -112,10 +112,11 @@ const Popover: React.FC<PopoverProps> = (props: ScopedProps<PopoverProps>) => {
 	const popperScope = usePopperScope(__scopePopover);
 	const triggerRef = React.useRef<HTMLButtonElement>(null);
 	const [hasCustomAnchor, setHasCustomAnchor] = React.useState(false);
-	const [open = false, setOpen] = useControllableState({
+	const [open, setOpen] = useControllableState({
 		prop: openProp,
-		defaultProp: defaultOpen,
+		defaultProp: defaultOpen ?? false,
 		onChange: onOpenChange,
+		caller: POPOVER_NAME,
 	});
 
 	return (

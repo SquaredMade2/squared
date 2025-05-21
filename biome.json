@@ -38,21 +38,6 @@
 	},
 	"overrides": [
 		{
-			"include": ["packages/ui/**"],
-			"linter": {
-				"enabled": true,
-				"rules": {
-					"recommended": true,
-					"suspicious": {
-						"noExplicitAny": "off"
-					},
-					"style": {
-						"noNonNullAssertion": "off"
-					}
-				}
-			}
-		},
-		{
 			"include": ["apps/web/src/server/__internals", "packages/superjson"],
 			"linter": {
 				"rules": {
@@ -69,6 +54,9 @@
 			"include": ["**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"],
 			"linter": {
 				"rules": {
+					"style": {
+						"noNonNullAssertion": "off"
+					},
 					"suspicious": {
 						"noExplicitAny": "off",
 						"noArrayIndexKey": "off"

@@ -62,10 +62,11 @@ const SwitchPrimitive = React.forwardRef<SwitchElement, SwitchProps>(
 		const hasConsumerStoppedPropagationRef = React.useRef(false);
 		// We set this to true by default so that events bubble to forms without JS (SSR)
 		const isFormControl = button ? form || !!button.closest("form") : true;
-		const [checked = false, setChecked] = useControllableState({
+		const [checked, setChecked] = useControllableState({
 			prop: checkedProp,
-			defaultProp: defaultChecked,
+			defaultProp: defaultChecked ?? false,
 			onChange: onCheckedChange,
+			caller: SWITCH_NAME,
 		});
 
 		return (
@@ -176,7 +177,8 @@ const BubbleInput = (props: BubbleInputProps) => {
 
 	// Bubble checked change to parents (e.g form change event)
 	React.useEffect(() => {
-		const input = ref.current!;
+		const input = ref.current;
+		if (!input) return;
 		const inputProto = window.HTMLInputElement.prototype;
 		const descriptor = Object.getOwnPropertyDescriptor(
 			inputProto,

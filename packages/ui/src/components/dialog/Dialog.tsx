@@ -5,6 +5,7 @@ import {
 	createContext,
 	createContextScope,
 } from "@squaredmade/ui/context";
+import { DismissableLayer } from "@squaredmade/ui/dismissable-layer";
 import { useFocusGuards } from "@squaredmade/ui/focus-guards";
 import { FocusScope } from "@squaredmade/ui/focus-scope";
 import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
@@ -16,7 +17,6 @@ import { useId } from "@squaredmade/ui/use-id";
 import { hideOthers } from "aria-hidden";
 import * as React from "react";
 import { RemoveScroll } from "react-remove-scroll";
-import { DismissableLayer } from "src/lib/dismissable-layer";
 
 import { X } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
@@ -88,10 +88,11 @@ const Dialog: React.FC<DialogProps> = (props: ScopedProps<DialogProps>) => {
 	} = props;
 	const triggerRef = React.useRef<HTMLButtonElement>(null);
 	const contentRef = React.useRef<DialogContentElement>(null);
-	const [open = false, setOpen] = useControllableState({
+	const [open, setOpen] = useControllableState({
 		prop: openProp,
-		defaultProp: defaultOpen,
+		defaultProp: defaultOpen ?? false,
 		onChange: onOpenChange,
+		caller: DIALOG_NAME,
 	});
 
 	return (
@@ -354,9 +355,6 @@ const DialogContentModal = React.forwardRef<
 						event.preventDefault();
 					}
 				},
-			)}
-			onOpenAutoFocus={composeEventHandlers(props.onOpenAutoFocus, (event) =>
-				event.preventDefault(),
 			)}
 			// When focus is trapped, a `focusout` event may still happen.
 			// We make sure we don't trigger our `onDismiss` in such case.
@@ -703,11 +701,11 @@ const DialogContent = React.forwardRef<
 			)}
 			{...props}
 		>
-			{children}
-			<DialogClose className="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+			<DialogClose className="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
 				<X className="h-4 w-4" />
 				<span className="sr-only">Close</span>
 			</DialogClose>
+			{children}
 		</DialogContentPrimitive>
 	</DialogPortal>
 ));
