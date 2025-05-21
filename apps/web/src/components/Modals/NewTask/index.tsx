@@ -5,11 +5,11 @@ import TextEditor, {
 	type CustomDescendant,
 	type CustomElement,
 } from "@/components/TextEditor";
+import { convertSlateToMDX } from "@/components/TextEditor/format";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
-import { convertSlateToMDX } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { ChevronRight } from "@squaredmade/icons";
@@ -202,14 +202,12 @@ export const NewTaskModal = () => {
 									<FormItem>
 										<FormLabel className="text-xl">Description</FormLabel>
 										<FormControl>
-											<div className="markdown-content">
-												<TextEditor
-													hasToolbar={false}
-													placeholder="Add Description"
-													value={editorDescription}
-													setValue={setEditorDescription}
-												/>
-											</div>
+											<TextEditor
+												hasToolbar={false}
+												placeholder="Add Description"
+												value={editorDescription}
+												setValue={setEditorDescription}
+											/>
 										</FormControl>
 									</FormItem>
 								)}

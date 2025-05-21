@@ -1,10 +1,10 @@
-import { client } from "@/lib/client";
-import { useEventStore, useTaskStore } from "@/store";
 import {
 	convertMDXToSlate,
 	convertSlateToMDX,
-	formatUrl,
-} from "@/utils/formatting";
+} from "@/components/TextEditor/format";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore } from "@/store";
+import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useOrganization } from "@clerk/nextjs";
@@ -155,7 +155,6 @@ export const TaskPageForm = () => {
 				value={updatedDescription.filter(
 					(item) => isElement(item) && item.children.length > 0,
 				)}
-				setValue={setUpdatedDescription}
 				onChange={handleDescriptionChange}
 				placeholder="Add description..."
 				onBlur={handleSubmit}

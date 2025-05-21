@@ -4,7 +4,6 @@ import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { client } from "@/lib/client";
 import { useCommentStore, useTaskStore } from "@/store";
-import { convertSlateToMDX } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
@@ -19,6 +18,7 @@ import TextEditor, {
 	type CustomElement,
 } from "../TextEditor";
 import { initialEditorValue } from "../TextEditor";
+import { convertSlateToMDX } from "../TextEditor/format";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
@@ -26,6 +26,7 @@ export const EventTabs = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const [currentComment, setCurrentComment] =
 		useState<CustomDescendant[]>(initialEditorValue);
+	const [isLoading, setIsLoading] = useState(false);
 	const { workspace } = useTaskDashboard();
 
 	const { memberships } = useOrganization({
@@ -73,6 +74,7 @@ export const EventTabs = () => {
 	const { mutate: addCommentToTask } = useMutation({
 		mutationKey: ["comment", "addComment", currentTask?.id],
 		mutationFn: async () => {
+			setIsLoading(true);
 			if (currentTask) {
 				const newComment = {
 					comment: convertSlateToMDX(currentComment as CustomElement[]),
@@ -104,17 +106,15 @@ export const EventTabs = () => {
 						"Your comment was saved, but user mentions couldn't be processed",
 				});
 			}
+			setIsLoading(false);
 		},
 		onError: (error) => {
 			toast.error("Error adding comment", {
 				description: parseError(error),
 			});
+			setIsLoading(false);
 		},
 	});
-
-	async function handleAddComment() {
-		await addCommentToTask();
-	}
 
 	return (
 		<Tabs defaultValue="activity" className="mt-8 w-full">
@@ -135,10 +135,15 @@ export const EventTabs = () => {
 					<TextEditor value={currentComment} setValue={setCurrentComment} />
 				)}
 				<Button
-					onClick={handleAddComment}
+					disabled={
+						isLoading ||
+						currentComment.length === 0 ||
+						currentComment === initialEditorValue
+					}
+					onClick={() => addCommentToTask()}
 					className={`m-5 ml-auto ${(currentComment.length === 0 || currentComment === initialEditorValue) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 				>
-					Confirm
+					{isLoading ? "Loading..." : "Confirm"}
 				</Button>
 			</TabsContent>
 		</Tabs>

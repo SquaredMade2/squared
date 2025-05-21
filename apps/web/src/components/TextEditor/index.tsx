@@ -77,9 +77,18 @@ const TextEditor = ({
 	const [mentionsFilter, setMentionsFilter] = useState("");
 	const [currentEnterUser, setCurrentEnterUser] =
 		useState<PublicUserData | null>(null);
+	const [editorValue, setEditorValue] = useState<CustomDescendant[]>(value);
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
+
+	function handleStateChange(value: CustomDescendant[]) {
+		return setValue ? setValue(value) : setEditorValue(value);
+	}
+
+	function handleStateValue() {
+		return setValue ? value : editorValue;
+	}
 
 	useEffect(() => {
 		if (checkIfSlateEmpty(editor)) {
@@ -88,11 +97,14 @@ const TextEditor = ({
 			return;
 		}
 
-		if (value.length === 0 || value === initialEditorValue) {
+		if (
+			handleStateValue().length === 0 ||
+			handleStateValue() === initialEditorValue
+		) {
 			editor.children = initialEditorValue;
 			Transforms.select(editor, defaultSelectionRange);
 		}
-	}, [value]);
+	}, [value, editorValue]);
 
 	const handleCharKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "@" || event.key === "#") {
@@ -361,9 +373,9 @@ const TextEditor = ({
 	return (
 		<Slate
 			editor={editor}
-			initialValue={value}
+			initialValue={handleStateValue()}
 			onChange={(newValue) => {
-				setValue(newValue);
+				handleStateChange(newValue);
 				onChange?.(newValue); // Optional external onChange handler
 			}}
 		>

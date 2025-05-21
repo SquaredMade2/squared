@@ -14,8 +14,8 @@ export interface TextEditorProps {
 	onFocus?: React.FocusEventHandler<HTMLDivElement>;
 	onChange?: (value: CustomDescendant[]) => void;
 	style?: CSSProperties | undefined;
-	value: CustomDescendant[];
-	setValue: Dispatch<SetStateAction<CustomDescendant[]>>;
+	value?: CustomDescendant[];
+	setValue?: Dispatch<SetStateAction<CustomDescendant[]>>;
 	hasToolbar?: boolean;
 }
 
