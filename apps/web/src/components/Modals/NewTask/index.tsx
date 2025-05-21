@@ -36,6 +36,7 @@ import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
@@ -126,8 +127,16 @@ export const NewTaskModal = () => {
 		};
 
 		createTask(createTaskParams, {
-			onSuccess: () => {
-				toast.success("Task Created Successfully");
+			onSuccess: ({ url }) => {
+				toast.success("Task Created Successfully", {
+					description: (
+						<Link href={url} passHref>
+							<Button variant="link" className="m-0 p-0">
+								Go to task
+							</Button>
+						</Link>
+					),
+				});
 				setShowNewTask(false);
 				setNewTaskData({});
 				setEditorDescription(initialEditorValue);
@@ -146,9 +155,7 @@ export const NewTaskModal = () => {
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization.id,
-				})
+				.$get()
 				.then((res) => res.json());
 			setTeams(teams);
 			setTeam(teams[0]);

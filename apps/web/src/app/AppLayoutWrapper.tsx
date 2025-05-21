@@ -10,7 +10,7 @@ import {
 import SearchCommand from "@/components/SearchCommand";
 import { SquaredStoreProvider } from "@/store";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "@squaredmade/ui/toast";
+import { Toaster, toast } from "@squaredmade/ui/toast";
 import {
 	QueryCache,
 	QueryClient,
@@ -40,7 +40,7 @@ export default function ClientLayoutWrapper({
 							errorMessage = "An unknown error occurred.";
 						}
 						// toast notify user, log as an example
-						console.error(errorMessage);
+						toast.error(errorMessage);
 					},
 				}),
 			}),

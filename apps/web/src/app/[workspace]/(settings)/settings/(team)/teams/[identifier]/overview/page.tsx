@@ -147,7 +147,7 @@ export default function TeamsSetting() {
 					identifier: values.identifier,
 					effort: selectedEffort?.dbValue as Effort,
 				})
-				.then((res) => res.json());
+				.then((res: Response) => res.json());
 		},
 		onSuccess: async (updatedTeam) => {
 			updateTeam(updatedTeam);
@@ -157,7 +157,7 @@ export default function TeamsSetting() {
 						.$get({
 							identifier: updatedTeam.identifier,
 						})
-						.then((res) => res.json()),
+						.then((res: Response) => res.json()),
 				);
 				router.refresh();
 				toast.success("Team updated successfully");
@@ -178,7 +178,7 @@ export default function TeamsSetting() {
 				.$post({
 					teamId: team.id,
 				})
-				.then((res) => res.json());
+				.then((res: Response) => res.json());
 		},
 		onSuccess: () => {
 			deleteTeam(team.id);
@@ -257,14 +257,16 @@ export default function TeamsSetting() {
 						)}
 					/>
 					<div className="flex flex-col">
-						<FormLabel className="mb-2">Effort Type</FormLabel>
 						<DropdownMenu
 							open={showEffortDropdown}
 							onOpenChange={setShowEffortDropdown}
 						>
+							<DropdownMenuTrigger className="mb-2 w-fit cursor-auto text-start">
+								Effort Type
+							</DropdownMenuTrigger>
 							<DropdownMenuTrigger>
 								<menu
-									className="flex h-10 w-40 items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
+									className="flex h-10 w-full items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
 									aria-label="Effort style dropdown menu"
 									aria-hidden="true"
 								>
@@ -274,7 +276,7 @@ export default function TeamsSetting() {
 									/>
 								</menu>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent className="z-10 mt-3 mr-48 w-52 rounded-md p-0">
+							<DropdownMenuContent className="z-10 mt-3 mr-48 w-full rounded-md p-0">
 								<DropdownMenuRadioGroup
 									value={selectedEffort?.listOption as string}
 									onValueChange={handleEffortSelection}
@@ -287,7 +289,7 @@ export default function TeamsSetting() {
 											className="hover:cursor-pointer"
 										>
 											<div
-												className={`${index === 1 ? "border-y-2" : ""} z-10 flex items-center space-x-2 p-3`}
+												className={`${index === 1 ? "border-y-2" : ""} z-10 flex w-full items-center space-x-2 p-3`}
 											>
 												<span className="hover:cursor-pointer">
 													{item.listOption}

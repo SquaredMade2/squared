@@ -38,12 +38,8 @@ export default function InboxPage() {
 		queryFn: async () => {
 			if (!organization) throw new Error("No workspace found");
 			const [avatars, notifications] = await Promise.all([
-				client.user.getWorkspaceAvatars
-					.$get({
-						workspaceId: organization.id,
-					})
-					.then((res) => res.json()),
-				client.notification.getNotifications.$get({}).then((res) => res.json()),
+				client.user.getWorkspaceAvatars.$get().then((res) => res.json()),
+				client.notification.getNotifications.$get().then((res) => res.json()),
 			]);
 			setNotifications(notifications);
 			setUserAvatars(avatars);

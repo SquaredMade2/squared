@@ -1,7 +1,6 @@
 import { TODO } from "@squaredmade/context";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { workspaceProcedure } from "../procedures";
+import { j, workspaceProcedure } from "../jstack";
 
 const FilterValueSchema = z.union([
 	z.string(),
@@ -51,7 +50,7 @@ const filterConditionSchema = z.object({
 	operator: OperatorSchema,
 });
 
-export const filterRouter = router({
+export const filterRouter = j.router({
 	deleteFilter: workspaceProcedure
 		.input(z.object({ filterId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
