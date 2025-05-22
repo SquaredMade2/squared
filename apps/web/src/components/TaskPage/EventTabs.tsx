@@ -26,7 +26,6 @@ export const EventTabs = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const [currentComment, setCurrentComment] =
 		useState<CustomDescendant[]>(initialEditorValue);
-	const [isLoading, setIsLoading] = useState(false);
 	const { workspace } = useTaskDashboard();
 
 	const { memberships } = useOrganization({
@@ -71,10 +70,9 @@ export const EventTabs = () => {
 		},
 	});
 
-	const { mutate: addCommentToTask } = useMutation({
+	const { mutate: addCommentToTask, isPending } = useMutation({
 		mutationKey: ["comment", "addComment", currentTask?.id],
 		mutationFn: async () => {
-			setIsLoading(true);
 			if (currentTask) {
 				const newComment = {
 					comment: convertSlateToMDX(currentComment as CustomElement[]),
@@ -106,13 +104,11 @@ export const EventTabs = () => {
 						"Your comment was saved, but user mentions couldn't be processed",
 				});
 			}
-			setIsLoading(false);
 		},
 		onError: (error) => {
 			toast.error("Error adding comment", {
 				description: parseError(error),
 			});
-			setIsLoading(false);
 		},
 	});
 
@@ -136,14 +132,14 @@ export const EventTabs = () => {
 				)}
 				<Button
 					disabled={
-						isLoading ||
+						isPending ||
 						currentComment.length === 0 ||
 						currentComment === initialEditorValue
 					}
 					onClick={() => addCommentToTask()}
 					className={`m-5 ml-auto ${(currentComment.length === 0 || currentComment === initialEditorValue) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 				>
-					{isLoading ? "Loading..." : "Confirm"}
+					{isPending ? "Loading..." : "Confirm"}
 				</Button>
 			</TabsContent>
 		</Tabs>
