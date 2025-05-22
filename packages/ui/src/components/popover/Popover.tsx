@@ -15,7 +15,7 @@ import {
 import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
 import { Presence } from "@squaredmade/ui/presence";
 import { Primitive } from "@squaredmade/ui/primitive";
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useId } from "@squaredmade/ui/use-id";
 import { hideOthers } from "aria-hidden";
@@ -334,6 +334,7 @@ PopoverContentPrimitive.displayName = CONTENT_NAME;
 
 /* -----------------------------------------------------------------------------------------------*/
 
+const Slot = createSlot("PopoverContent.RemoveScroll");
 type PopoverContentTypeElement = PopoverContentImplElement;
 type PopoverContentTypeProps = Omit<
 	PopoverContentImplProps,

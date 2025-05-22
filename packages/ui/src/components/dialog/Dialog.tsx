@@ -1,3 +1,5 @@
+import { X } from "@squaredmade/icons";
+import { cn } from "@squaredmade/ui/cn";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import {
@@ -11,15 +13,12 @@ import { FocusScope } from "@squaredmade/ui/focus-scope";
 import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
 import { Presence } from "@squaredmade/ui/presence";
 import { Primitive } from "@squaredmade/ui/primitive";
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useId } from "@squaredmade/ui/use-id";
 import { hideOthers } from "aria-hidden";
 import * as React from "react";
 import { RemoveScroll } from "react-remove-scroll";
-
-import { X } from "@squaredmade/icons";
-import { cn } from "@squaredmade/ui/cn";
 
 /* -------------------------------------------------------------------------------------------------
  * Dialog
@@ -242,6 +241,7 @@ type DialogOverlayImplElement = React.ComponentRef<typeof Primitive.div>;
 type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
 type DialogOverlayImplProps = PrimitiveDivProps;
 
+const Slot = createSlot("DialogOverlay.RemoveScroll");
 const DialogOverlayImpl = React.forwardRef<
 	DialogOverlayImplElement,
 	DialogOverlayImplProps

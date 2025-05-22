@@ -4,8 +4,6 @@ export {
 	//
 	AlertDialog,
 	AlertDialogTrigger,
-	AlertDialogPortal,
-	AlertDialogOverlay,
 	AlertDialogContent,
 	AlertDialogAction,
 	AlertDialogCancel,

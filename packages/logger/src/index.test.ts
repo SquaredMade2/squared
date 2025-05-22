@@ -210,7 +210,7 @@ describe("@squaredmade/logger", () => {
 			const splatSymbol = Symbol.for("splat");
 
 			const meta: any = {};
-			meta[splatSymbol] = ["additional", " info"];
+			meta[splatSymbol] = ["additional", "info"];
 
 			const result = printfFn({
 				timestamp: "May 17 10:30:45",

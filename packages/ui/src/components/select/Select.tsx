@@ -17,7 +17,7 @@ import {
 } from "@squaredmade/ui/popper";
 import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
 import { Primitive } from "@squaredmade/ui/primitive";
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
 import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useDirection } from "@squaredmade/ui/use-direction";
@@ -698,6 +698,7 @@ interface SelectContentImplProps
 	position?: "item-aligned" | "popper";
 }
 
+const Slot = createSlot("SelectContent.RemoveScroll");
 const SelectContentImpl = React.forwardRef<
 	SelectContentImplElement,
 	SelectContentImplProps
@@ -1333,14 +1334,16 @@ const SelectPopperPosition = React.forwardRef<
 				...popperProps.style,
 				// re-namespace exposed content custom properties
 				...{
-					"--loke-select-content-transform-origin":
-						"var(--loke-popper-transform-origin)",
-					"--loke-select-content-available-width":
-						"var(--loke-popper-available-width)",
-					"--loke-select-content-available-height":
-						"var(--loke-popper-available-height)",
-					"--loke-select-trigger-width": "var(--loke-popper-anchor-width)",
-					"--loke-select-trigger-height": "var(--loke-popper-anchor-height)",
+					"--squared-select-content-transform-origin":
+						"var(--squared-popper-transform-origin)",
+					"--squared-select-content-available-width":
+						"var(--squared-popper-available-width)",
+					"--squared-select-content-available-height":
+						"var(--squared-popper-available-height)",
+					"--squared-select-trigger-width":
+						"var(--squared-popper-anchor-width)",
+					"--squared-select-trigger-height":
+						"var(--squared-popper-anchor-height)",
 				},
 			}}
 		/>
@@ -1398,13 +1401,13 @@ const SelectViewport = React.forwardRef<
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: This is a workaround for a bug in React
 				dangerouslySetInnerHTML={{
 					__html:
-						"[data-loke-select-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-loke-select-viewport]::-webkit-scrollbar{display:none}",
+						"[data-squared-select-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-squared-select-viewport]::-webkit-scrollbar{display:none}",
 				}}
 				nonce={nonce}
 			/>
 			<Collection.Slot scope={__scopeSelect}>
 				<Primitive.div
-					data-loke-select-viewport=""
+					data-squared-select-viewport=""
 					role="presentation"
 					{...viewportProps}
 					ref={composedRefs}
@@ -2270,7 +2273,7 @@ const SelectContent = React.forwardRef<
 				className={cn(
 					"p-1",
 					position === "popper" &&
-						"h-[var(--loke-select-trigger-height)] w-full min-w-[var(--loke-select-trigger-width)]",
+						"h-[var(--squared-select-trigger-height)] w-full min-w-[var(--squared-select-trigger-width)]",
 				)}
 			>
 				{children}
