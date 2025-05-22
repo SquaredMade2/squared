@@ -5,6 +5,7 @@ import { DeleteUserConfirmationModal } from "@/components/Modals/DeleteUserConfi
 import { client } from "@/lib/client";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
@@ -35,6 +36,7 @@ export default function Profile() {
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
+	const { signOut } = useClerk();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -46,14 +48,19 @@ export default function Profile() {
 	});
 
 	const { mutate: deleteUser } = useMutation({
-		mutationFn: async (userId: string) => {
-			return client.user.deleteUser.$post({ userId });
+		mutationFn: async () => {
+			return client.user.deleteUser.$post({ userId: user?.id });
 		},
 		onSuccess: () => {
-			console.log("Deleted successfully");
+			toast.success("Account deleted", {
+				description: "Your account has been successfully deleted.",
+			});
+			signOut();
 		},
 		onError: () => {
-			console.log("ERROR");
+			toast.error("Error deleting account", {
+				description: "Failed to delete account. Please try again.",
+			});
 		},
 	});
 
@@ -189,7 +196,7 @@ export default function Profile() {
 						Member Since:{" "}
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
-					<DeleteUserConfirmationModal handleDelete={deleteUser} />
+					<DeleteUserConfirmationModal handleDelete={() => deleteUser()} />
 				</div>
 			</div>
 		</div>

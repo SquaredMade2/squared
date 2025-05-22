@@ -11,7 +11,13 @@ import {
 } from "@squaredmade/ui/dialog";
 import { useState } from "react";
 
-export const DeleteUserConfirmationModal = ({ handleDelete }) => {
+type DeleteUserModalProps = {
+	handleDelete: () => void;
+};
+
+export const DeleteUserConfirmationModal = ({
+	handleDelete,
+}: DeleteUserModalProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleDeleteAndClose = () => {
