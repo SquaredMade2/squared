@@ -54,11 +54,11 @@ export const CreatedByInformation = () => {
 						return user.userId === event.authorId;
 					});
 					return (
-						<div key={event.id} className="flex items-center px-8">
-							<div className="w-[calc(10%+1rem)] gap-1 text-muted-foreground">
+						<div key={event.id} className="flex items-center gap-x-6 px-8">
+							<div className="flex w-[11%] break-words text-muted-foreground">
 								{formatDate(getEventTime(event), "dd MMM yyyy")}
 							</div>
-							<div className="w-[calc(5%+0.1rem)]">
+							<div className="w-[3%]">
 								<Avatar className="size-6 text-xxs">
 									<AvatarImage src={eventAuthor?.imageUrl ?? ""} />
 									<AvatarFallback>
@@ -66,31 +66,26 @@ export const CreatedByInformation = () => {
 									</AvatarFallback>
 								</Avatar>
 							</div>
-							<p className="w-[calc(15%+0.25rem)] text-foreground">
-								{getName(eventAuthor)}
-							</p>
-							<p className="w-[calc(70%+1rem)] text-muted-foreground text-sm">
+							<p className="w-[14%] text-foreground">{getName(eventAuthor)}</p>
+							<p className="w-[72%] text-muted-foreground text-sm">
 								{event.message}
 							</p>
 						</div>
 					);
 				})}
 			{/* Created by information */}
-			<div className="flex items-center px-8">
-				<div className="flex w-[calc(10%+1rem)] gap-1 overflow-hidden text-muted-foreground">
+			<div className="flex items-center gap-x-6 px-8">
+				<div className="flex w-[11%] gap-1 overflow-hidden truncate text-muted-foreground">
 					{displayDate()}
 				</div>
-
-				<div className="w-[calc(5%+0.1rem)]">
+				<div className="w-[3%]">
 					<Avatar className="size-6 text-xxs">
 						<AvatarImage src={foundUser?.imageUrl ?? ""} />
 						<AvatarFallback>{getInitials(getName(foundUser))}</AvatarFallback>
 					</Avatar>
 				</div>
-				<p className="w-[calc(15%+0.25rem)] text-foreground">
-					{getName(foundUser)}
-				</p>
-				<p className="w-[calc(70%+1rem)] text-muted-foreground text-sm">
+				<p className="w-[14%] truncate text-foreground">{getName(foundUser)}</p>
+				<p className="w-[72%] truncate text-muted-foreground text-sm">
 					created the task
 				</p>
 			</div>
