@@ -1,9 +1,8 @@
 import { TODO } from "@squaredmade/context";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { workspaceProcedure } from "../procedures";
+import { j, workspaceProcedure } from "../jstack";
 
-export const githubRouter = router({
+export const githubRouter = j.router({
 	getRepos: workspaceProcedure
 		.input(z.object({ workspaceId: z.string() }))
 		.query(async ({ c, ctx, input }) => {

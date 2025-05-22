@@ -6,6 +6,7 @@ import React from "react";
 type SlotProps = React.ComponentPropsWithoutRef<typeof Slot>;
 type CollectionElement = HTMLElement;
 interface CollectionProps extends SlotProps {
+	// biome-ignore lint/suspicious/noExplicitAny: We need to support any scope
 	scope: any;
 }
 
@@ -116,6 +117,7 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 	 * useCollection
 	 * ---------------------------------------------------------------------------------------------*/
 
+	// biome-ignore lint/suspicious/noExplicitAny: We need to support any scope
 	function useCollection(scope: any) {
 		const context = useCollectionContext(`${name}CollectionConsumer`, scope);
 
@@ -126,11 +128,13 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 				collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`),
 			);
 			const items = Array.from(context.itemMap.values());
-			const orderedItems = items.sort(
-				(a, b) =>
-					orderedNodes.indexOf(a.ref.current!) -
-					orderedNodes.indexOf(b.ref.current!),
-			);
+			const orderedItems = items.sort((a, b) => {
+				if (!a.ref.current || !b.ref.current) return 0;
+				return (
+					orderedNodes.indexOf(a.ref.current) -
+					orderedNodes.indexOf(b.ref.current)
+				);
+			});
 			return orderedItems;
 		}, [context.collectionRef, context.itemMap]);
 

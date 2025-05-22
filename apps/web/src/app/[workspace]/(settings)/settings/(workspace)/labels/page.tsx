@@ -16,7 +16,7 @@ export default function WorkspaceLabelsPage() {
 		queryFn: async () => {
 			if (!workspace) return [];
 			const labels = await client.workspace.getWorkspaceLabels
-				.$get({ workspaceId: workspace.id })
+				.$get()
 				.then((res) => res.json());
 			return labels;
 		},

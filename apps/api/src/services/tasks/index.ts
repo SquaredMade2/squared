@@ -12,8 +12,8 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		authorId: z.string(),
 		title: z.string(),
 		description: z.string().optional(),
-		dueDate: z.date().optional().nullable(),
-		effortEstimate: z.number().min(1).max(5).optional().nullable(),
+		dueDate: z.date().nullable().optional(),
+		effortEstimate: z.number().min(1).max(5).nullable().optional(),
 		teamId: z.string(),
 		status: statusEnum.optional(),
 		priority: z
@@ -47,7 +47,7 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 	createTask: {
 		input: createTaskParams,
-		output: taskSchema,
+		output: z.object({ task: taskSchema, url: z.string() }),
 	},
 	updateTask: {
 		input: updateTaskParams,

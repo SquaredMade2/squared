@@ -174,7 +174,7 @@ export function AssignTasksDialog({
 							</Select>
 						</div>
 					</div>
-					<div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+					<div className="flex flex-col items-start gap-2 sm:gap-4">
 						<Input
 							placeholder="Search tasks..."
 							value={searchQuery}
@@ -182,12 +182,12 @@ export function AssignTasksDialog({
 							className="grow"
 						/>
 
-						<div className="flex w-full items-center gap-2 sm:w-auto">
+						<div className="flex w-full items-center gap-2">
 							<Select
 								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}
 							>
-								<SelectTrigger className="w-full sm:w-[150px]">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Priority" />
 								</SelectTrigger>
 								<SelectContent>
@@ -203,7 +203,7 @@ export function AssignTasksDialog({
 								value={filterStatus}
 								onValueChange={(value) => setFilterStatus(value as Status)}
 							>
-								<SelectTrigger className="w-full sm:w-[150px]">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Status" />
 								</SelectTrigger>
 								<SelectContent>
@@ -218,7 +218,7 @@ export function AssignTasksDialog({
 								value={filterLabel}
 								onValueChange={(value) => setFilterLabel(value)}
 							>
-								<SelectTrigger className="w-full sm:w-[150px]">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Labels" />
 								</SelectTrigger>
 								<SelectContent>

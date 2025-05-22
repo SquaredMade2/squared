@@ -30,7 +30,7 @@ export type UpdateTaskParams = {
 };
 
 export interface TaskRpc {
-	createTask: (args: CreateTaskParams) => Promise<Task>;
+	createTask: (args: CreateTaskParams) => Promise<{ task: Task; url: string }>;
 	updateTask: (args: UpdateTaskParams) => Promise<Task>;
 	deleteTask: (args: { taskId: string }) => Promise<{ success: boolean }>;
 	getTask: (args: { taskId: string }) => Promise<Task>;

@@ -21,9 +21,7 @@ export default function Home() {
 		queryFn: async () => {
 			if (!organization) return null;
 			const allTeams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization.id,
-				})
+				.$get()
 				.then((res) => res.json());
 
 			if (team) {

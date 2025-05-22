@@ -188,7 +188,7 @@ function getElementRef(
 	let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
 	let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
 	if (mayWarn) {
-		return (element as any).ref;
+		return element.props.ref;
 	}
 
 	// React 19 in DEV
@@ -199,7 +199,7 @@ function getElementRef(
 	}
 
 	// Not DEV
-
+	// biome-ignore lint/suspicious/noExplicitAny: We need to use any here to handle both React 18 and 19 ref types
 	return element.props.ref || (element as any).ref;
 }
 
