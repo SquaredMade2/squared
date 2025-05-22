@@ -6,6 +6,7 @@ import { client } from "@/lib/client";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { useClerk } from "@clerk/nextjs";
+import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
@@ -37,6 +38,10 @@ export default function Profile() {
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const { signOut } = useClerk();
+	const { memberships } = useOrganization({
+		memberships: true,
+	});
+	console.log("Organization", memberships);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -49,12 +54,13 @@ export default function Profile() {
 
 	const { mutate: deleteUser } = useMutation({
 		mutationFn: async () => {
-			return client.user.deleteUser.$post({ userId: user?.id });
+			return client.user.deleteUser.$post();
 		},
 		onSuccess: () => {
 			toast.success("Account deleted", {
 				description: "Your account has been successfully deleted.",
 			});
+			console.log("Organization", memberships);
 			signOut();
 		},
 		onError: () => {

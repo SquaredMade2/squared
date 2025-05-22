@@ -1,3 +1,4 @@
+import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
 	type Team,
@@ -18,9 +19,11 @@ import type { UserRpc } from "./types";
 export class UserService implements UserRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
-	constructor(db: DBClient) {
+	private readonly clerkClient: ClerkClient;
+	constructor(db: DBClient, CLERK_SECRET?: string) {
 		this.db = db;
 		this.logger = createCustomLogger("users");
+		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 	}
 
 	async onBoardUser({ userId }: { userId: string }) {
@@ -53,6 +56,8 @@ export class UserService implements UserRpc {
 			.where(eq(usersTable.externalId, userId))
 			.returning()
 			.then((user) => user[0]);
+
+		await this.clerkClient.users.deleteUser(userId);
 	}
 
 	async updateUserAvatar({
