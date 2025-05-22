@@ -15,7 +15,7 @@ import {
 	WarningProvider,
 	createDialogScope,
 } from "@squaredmade/ui/dialog";
-import { Slottable } from "@squaredmade/ui/slot";
+import { createSlottable } from "@squaredmade/ui/slot";
 import * as React from "react";
 
 /* -------------------------------------------------------------------------------------------------
@@ -159,6 +159,8 @@ type AlertDialogContentProps = Omit<
 	DialogContentProps,
 	"onPointerDownOutside" | "onInteractOutside"
 >;
+
+const Slottable = createSlottable("AlertDialogContent");
 
 const AlertDialogContentPrimitive = React.forwardRef<
 	AlertDialogContentElement,
@@ -334,7 +336,7 @@ For more information, see https://squared-docs-link.com/components/alert-dialog`
 
 	React.useEffect(() => {
 		const hasDescription = document.getElementById(
-			contentRef.current?.getAttribute("aria-describedby")!,
+			contentRef.current?.getAttribute("aria-describedby") ?? "",
 		);
 		if (!hasDescription) {
 			console.warn(MESSAGE);
@@ -541,16 +543,14 @@ export {
 	createAlertDialogScope,
 	//
 	AlertDialog,
-	AlertDialogTrigger,
-	AlertDialogPortal,
-	AlertDialogOverlay,
-	AlertDialogContent,
 	AlertDialogAction,
 	AlertDialogCancel,
-	AlertDialogTitle,
+	AlertDialogContent,
 	AlertDialogDescription,
-	AlertDialogHeader,
 	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
 };
 export type {
 	AlertDialogProps,

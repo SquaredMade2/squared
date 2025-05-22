@@ -182,7 +182,8 @@ const BubbleInput = (props: BubbleInputProps) => {
 
 	// Bubble checked change to parents (e.g form change event)
 	React.useEffect(() => {
-		const input = ref.current!;
+		const input = ref.current;
+		if (!input) return;
 		const inputProto = window.HTMLInputElement.prototype;
 		const descriptor = Object.getOwnPropertyDescriptor(
 			inputProto,

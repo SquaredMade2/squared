@@ -310,7 +310,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:css
+      - run: pnpm build:ui
       - name: Install Playwright
         run: pnpm dlx playwright install --with-deps
       - name: Build Storybook
@@ -320,6 +320,8 @@ jobs:
           pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
             "pnpm dlx http-server storybook-static --port 6006 --silent" \
             "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm test-storybook"
+      - name: Run UI tests
+        run: pnpm --filter=ui test
 
   test-www:
     name: Test WWW
