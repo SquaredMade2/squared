@@ -25,7 +25,7 @@ import {
 	RovingFocusGroupItem,
 	createRovingFocusGroupScope,
 } from "@squaredmade/ui/roving-focus";
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
 import { useDirection } from "@squaredmade/ui/use-direction";
 import { useId } from "@squaredmade/ui/use-id";
@@ -401,6 +401,7 @@ interface MenuContentImplProps
 	onInteractOutside?: DismissableLayerProps["onInteractOutside"];
 }
 
+const Slot = createSlot("MenuContent.ScrollLock");
 const MenuContentImpl = React.forwardRef<
 	MenuContentImplElement,
 	MenuContentImplProps
@@ -595,9 +596,9 @@ const MenuContentImpl = React.forwardRef<
 										event.preventDefault();
 										const items = getItems().filter((item) => !item.disabled);
 
-										const candidateNodes = items.map(
-											(item) => item.ref.current!,
-										);
+										const candidateNodes = items
+											.map((item) => item.ref.current)
+											.filter((node) => node !== null);
 										if (LAST_KEYS.includes(event.key)) candidateNodes.reverse();
 										focusFirst(candidateNodes);
 									},

@@ -4,6 +4,7 @@ import { createCollection } from "@squaredmade/ui/collection";
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { DismissableLayer } from "@squaredmade/ui/dismissable-layer";
 import { useFocusGuards } from "@squaredmade/ui/focus-guards";
 import { FocusScope } from "@squaredmade/ui/focus-scope";
 import { clamp } from "@squaredmade/ui/number";
@@ -16,7 +17,7 @@ import {
 } from "@squaredmade/ui/popper";
 import { Portal as PortalPrimitive } from "@squaredmade/ui/portal";
 import { Primitive } from "@squaredmade/ui/primitive";
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import { useCallbackRef } from "@squaredmade/ui/use-callback-ref";
 import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useDirection } from "@squaredmade/ui/use-direction";
@@ -28,7 +29,6 @@ import { hideOthers } from "aria-hidden";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";
-import { DismissableLayer } from "src/lib/dismissable-layer";
 
 type Direction = "ltr" | "rtl";
 
@@ -70,7 +70,7 @@ type SelectContextValue = {
 	/** The unique identifier for the select content element. */
 	contentId: string;
 	/** The currently selected value in the select component. */
-	value?: string;
+	value: string | undefined;
 	/** Callback function triggered when the selected value changes. */
 	onValueChange(value: string): void;
 	/** Indicates whether the select dropdown is currently open. */
@@ -99,7 +99,33 @@ type SelectNativeOptionsContextValue = {
 const [SelectNativeOptionsProvider, useSelectNativeOptionsContext] =
 	createSelectContext<SelectNativeOptionsContextValue>(SELECT_NAME);
 
-interface SelectProps {
+interface ControlledClearableSelectProps {
+	value: string | undefined;
+	defaultValue?: never;
+	onValueChange: (value: string | undefined) => void;
+}
+
+interface ControlledUnclearableSelectProps {
+	value: string;
+	defaultValue?: never;
+	onValueChange: (value: string) => void;
+}
+
+interface UncontrolledSelectProps {
+	value?: never;
+	defaultValue?: string;
+	onValueChange?: {
+		(value: string): void;
+		(value: string | undefined): void;
+	};
+}
+
+type SelectControlProps =
+	| ControlledClearableSelectProps
+	| ControlledUnclearableSelectProps
+	| UncontrolledSelectProps;
+
+interface SelectSharedProps {
 	/** The content to be rendered inside the select component. */
 	children?: React.ReactNode;
 
@@ -139,6 +165,18 @@ interface SelectProps {
 	/** The form with which the select component is associated. */
 	form?: string;
 }
+
+// TODO: Should improve typing somewhat, but this would be a breaking change.
+// Consider using in the next major version (along with some testing to be sure
+// it works as expected and doesn't cause problems)
+// @ts-ignore
+type _FutureSelectProps = SelectSharedProps & SelectControlProps;
+
+type SelectProps = SelectSharedProps & {
+	value?: string;
+	defaultValue?: string;
+	onValueChange?(value: string): void;
+};
 
 /**
  * Select component for dropdown selection
@@ -185,15 +223,21 @@ const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
 	);
 	const [valueNodeHasChildren, setValueNodeHasChildren] = React.useState(false);
 	const direction = useDirection(dir);
-	const [open = false, setOpen] = useControllableState({
+	const [open, setOpen] = useControllableState({
 		prop: openProp,
-		defaultProp: defaultOpen,
+		defaultProp: defaultOpen ?? false,
 		onChange: onOpenChange,
+		caller: SELECT_NAME,
 	});
 	const [value, setValue] = useControllableState({
 		prop: valueProp,
 		defaultProp: defaultValue,
-		onChange: onValueChange,
+		// We use `any` here because `onValueChange` can accept either a string or undefined,
+		// while useControllableState expects a single consistent type. The cast allows us to
+		// handle both cases while maintaining compatibility with the component's API.
+		// biome-ignore lint/suspicious/noExplicitAny:
+		onChange: onValueChange as any,
+		caller: SELECT_NAME,
 	});
 	const triggerPointerDownPosRef = React.useRef<{
 		x: number;
@@ -654,6 +698,7 @@ interface SelectContentImplProps
 	position?: "item-aligned" | "popper";
 }
 
+const Slot = createSlot("SelectContent.RemoveScroll");
 const SelectContentImpl = React.forwardRef<
 	SelectContentImplElement,
 	SelectContentImplProps
@@ -955,7 +1000,9 @@ const SelectContentImpl = React.forwardRef<
 									) {
 										const items = getItems().filter((item) => !item.disabled);
 
-										let candidateNodes = items.map((item) => item.ref.current!);
+										let candidateNodes = items
+											.map((item) => item.ref.current)
+											.filter((node) => node !== null);
 
 										if (["ArrowUp", "End"].includes(event.key)) {
 											candidateNodes = candidateNodes.slice().reverse();
@@ -1173,8 +1220,9 @@ const SelectItemAlignedPosition = React.forwardRef<
 
 			// we don't want the initial scroll position adjustment to trigger "expand on scroll"
 			// so we explicitly turn it on only after they've registered.
-			// biome-ignore lint/suspicious/noAssignInExpressions: This is a workaround for a bug in React
-			requestAnimationFrame(() => (shouldExpandOnScrollRef.current = true));
+			requestAnimationFrame(() => {
+				shouldExpandOnScrollRef.current = true;
+			});
 		}
 	}, [
 		getItems,
@@ -2034,7 +2082,8 @@ const BubbleSelect = React.forwardRef<
 
 	// Bubble value change to parents (e.g form change event)
 	React.useEffect(() => {
-		const select = ref.current!;
+		const select = ref.current;
+		if (!select) return;
 		const selectProto = window.HTMLSelectElement.prototype;
 		const descriptor = Object.getOwnPropertyDescriptor(
 			selectProto,

@@ -6,8 +6,10 @@ type MachineEvent<T> = keyof UnionToIntersection<T[keyof T]>;
 
 // 🤯 https://fettblog.eu/typescript-union-to-intersection/
 
+// biome-ignore lint/suspicious/noExplicitAny: ✨ This is template magic ✨
 type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
 	x: infer R,
+	// biome-ignore lint/suspicious/noExplicitAny: ✨ This is template magic ✨
 ) => any
 	? R
 	: never;
