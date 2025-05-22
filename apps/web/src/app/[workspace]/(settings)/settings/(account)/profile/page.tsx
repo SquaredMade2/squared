@@ -4,9 +4,7 @@ import ImageUpload from "@/components/ImageUpload";
 import { DeleteUserConfirmationModal } from "@/components/Modals/DeleteUserConfirmationModal";
 import { client } from "@/lib/client";
 import { getInitials } from "@/utils/formatting";
-import { useUser } from "@clerk/nextjs";
-import { useClerk } from "@clerk/nextjs";
-import { useOrganization } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
@@ -38,10 +36,6 @@ export default function Profile() {
 	const router = useRouter();
 	const [isUpdating, setIsUpdating] = useState(false);
 	const { signOut } = useClerk();
-	const { memberships } = useOrganization({
-		memberships: true,
-	});
-	console.log("Organization", memberships);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -60,7 +54,6 @@ export default function Profile() {
 			toast.success("Account deleted", {
 				description: "Your account has been successfully deleted.",
 			});
-			console.log("Organization", memberships);
 			signOut();
 		},
 		onError: () => {
