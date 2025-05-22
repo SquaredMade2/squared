@@ -44,6 +44,18 @@ export const githubRpcSchema = createServiceSchema<GithubRpc>()({
 			),
 		}),
 	},
+	mergePullRequest: {
+		input: z.object({
+			pullRequestId: z.string(),
+		}),
+		output: z.void(),
+	},
+	closePullRequest: {
+		input: z.object({
+			pullRequestId: z.string(),
+		}),
+		output: z.void(),
+	},
 	pushCommit: {
 		input: z.object({
 			id: z.string(),
@@ -76,6 +88,8 @@ export const createGithubRpcHandler = (githubService: GithubService) =>
 		getWorkspaceOrganizations: (input) =>
 			githubService.getWorkspaceOrganizations(input),
 		upsertPullRequest: (input) => githubService.upsertPullRequest(input),
+		mergePullRequest: (input) => githubService.mergePullRequest(input),
+		closePullRequest: (input) => githubService.closePullRequest(input),
 		pushCommit: (input) => githubService.pushCommit(input),
 		uploadOrg: (input) => githubService.uploadOrg(input),
 	});

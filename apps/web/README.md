@@ -104,7 +104,7 @@ This web application is built using Next.js 15 with App Router and React 19, pro
 ### Prerequisites
 
 - Node.js >=23.0.0
-- pnpm >=10.10.0
+- pnpm >=10.11.0
 
 ### Installation
 

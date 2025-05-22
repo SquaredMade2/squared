@@ -12,7 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { CreatedByInformation } from ".";
-import TextEditor, { type CustomDescendant } from "../TextEditor";
+import TextEditor, {
+	type CustomDescendant,
+	type CustomElement,
+} from "../TextEditor";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
@@ -67,7 +70,7 @@ export const EventTabs = () => {
 		mutationFn: async (editorContent: CustomDescendant[]) => {
 			if (currentTask) {
 				const newComment = {
-					comment: handleFormatSlateToComment(editorContent),
+					comment: handleFormatSlateToComment(editorContent as CustomElement[]),
 					date: new Date(),
 					taskId: currentTask.id,
 				};

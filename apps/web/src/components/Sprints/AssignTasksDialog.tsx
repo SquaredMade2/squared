@@ -174,7 +174,7 @@ export function AssignTasksDialog({
 							</Select>
 						</div>
 					</div>
-					<div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+					<div className="flex flex-col items-start gap-2 sm:gap-4">
 						<Input
 							placeholder="Search tasks..."
 							value={searchQuery}
@@ -182,12 +182,12 @@ export function AssignTasksDialog({
 							className="grow"
 						/>
 
-						<div className="flex w-full items-center gap-2 sm:w-auto">
+						<div className="flex w-full items-center gap-2">
 							<Select
 								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}
 							>
-								<SelectTrigger className="w-full sm:w-[150px]">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Priority" />
 								</SelectTrigger>
 								<SelectContent>
@@ -203,7 +203,7 @@ export function AssignTasksDialog({
 								value={filterStatus}
 								onValueChange={(value) => setFilterStatus(value as Status)}
 							>
-								<SelectTrigger className="w-full sm:w-[150px]">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Status" />
 								</SelectTrigger>
 								<SelectContent>
@@ -218,7 +218,7 @@ export function AssignTasksDialog({
 								value={filterLabel}
 								onValueChange={(value) => setFilterLabel(value)}
 							>
-								<SelectTrigger className="w-full sm:w-[150px]">
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Labels" />
 								</SelectTrigger>
 								<SelectContent>
@@ -242,8 +242,8 @@ export function AssignTasksDialog({
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
 						<TabsContent value="list" className="mt-0 min-h-0">
-							<ScrollArea className="h-full w-full rounded-md border">
-								<div className="w-full p-4 sm:w-[450px] md:w-[800px]">
+							<ScrollArea className="scroll-area-no-table h-full w-full rounded-md border">
+								<div className="w-full p-4">
 									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">
 										<Checkbox
 											id="select-all"

@@ -11,7 +11,13 @@ import { WorkspaceService } from "@/gen/rpc/workspace";
 import { auth } from "@clerk/nextjs/server";
 import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
-import { j } from "./__internals/j";
+import { jstack } from "jstack";
+
+interface Env {
+	Bindings: { NEXT_PUBLIC_SERVER: string };
+}
+
+export const j = jstack.init<Env>();
 
 /**
  * You can remove this if you don't like it, but caching can massively speed up your database queries.

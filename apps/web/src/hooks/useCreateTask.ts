@@ -37,8 +37,8 @@ export const useCreateTask = () => {
 			});
 			return await res.json();
 		},
-		onSuccess: (newTask) => {
-			addTask(newTask);
+		onSuccess: ({ task }) => {
+			addTask(task);
 			if (workspace) {
 				setWorkspace({
 					...workspace,

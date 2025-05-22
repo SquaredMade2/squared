@@ -1,9 +1,8 @@
 import { TODO } from "@squaredmade/context";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { privateProcedure, workspaceProcedure } from "../procedures";
+import { j, privateProcedure, workspaceProcedure } from "../jstack";
 
-export const userRouter = router({
+export const userRouter = j.router({
 	getAllUsers: workspaceProcedure.query(async ({ c, ctx }) => {
 		const { userService, workspaceId } = ctx;
 		return c.superjson(

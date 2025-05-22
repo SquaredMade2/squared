@@ -1,5 +1,11 @@
 # @squaredmade/logger
 
+## 1.1.2
+
+### Patch Changes
+
+- 2523e21: Fix bugs where object splats weren't being formatted correctly
+
 ## 1.1.1
 
 ### Patch Changes

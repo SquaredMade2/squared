@@ -4,6 +4,7 @@ import * as React from "react";
 // We spaces with `.trim().toString()` to prevent bundlers from trying to `import { useId } from 'react';`
 
 const useReactId =
+	// biome-ignore lint/suspicious/noExplicitAny: We need to cast React to any to access the useId function this way
 	(React as any)[" useId ".trim().toString()] || (() => undefined);
 let count = 0;
 

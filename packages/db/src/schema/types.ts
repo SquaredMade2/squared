@@ -63,7 +63,11 @@ export type FilterCondition = {
 		| "arrayIncludesAny";
 };
 
-export const pullRequestState = pgEnum("PullRequestState", ["open", "closed"]);
+export const pullRequestState = pgEnum("PullRequestState", [
+	"open",
+	"closed",
+	"merged",
+]);
 
 export type PullRequest = {
 	id: string;

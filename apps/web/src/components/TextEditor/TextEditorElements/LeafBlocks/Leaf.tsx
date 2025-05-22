@@ -23,7 +23,7 @@ const Leaf = (props: RenderLeafProps) => {
 			<span
 				{...props.attributes}
 				style={leafStyling}
-				className={`${props.leaf.mentionConfirm && "bg-muted-foreground"}`}
+				className={`${(props.leaf.mentionConfirm || props.leaf.taskConfirm) && "bg-muted-foreground"}`}
 			>
 				{props.children}
 			</span>

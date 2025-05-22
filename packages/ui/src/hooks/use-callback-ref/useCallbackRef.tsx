@@ -5,6 +5,7 @@ import * as React from "react";
  * prop or avoid re-executing effects when passed as a dependency
  */
 
+// biome-ignore lint/suspicious/noExplicitAny: We need to support any callback
 function useCallbackRef<T extends (..._args: any[]) => any>(
 	callback: T | undefined,
 ): T {

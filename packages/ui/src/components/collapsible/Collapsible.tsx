@@ -69,10 +69,11 @@ const Collapsible = React.forwardRef<CollapsibleElement, CollapsibleProps>(
 			...collapsibleProps
 		} = props;
 
-		const [open = false, setOpen] = useControllableState({
+		const [open, setOpen] = useControllableState({
 			prop: openProp,
-			defaultProp: defaultOpen,
+			defaultProp: defaultOpen ?? false,
 			onChange: onOpenChange,
+			caller: COLLAPSIBLE_NAME,
 		});
 
 		return (
