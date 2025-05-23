@@ -1,3 +1,4 @@
+import env from "@/env";
 import {
 	expirationTimeFormat,
 	generateSecureRandomString,
@@ -352,7 +353,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					emailAddress: e,
 					inviterUserId: userId,
 					role: "member",
-					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
+					redirectUrl: `${env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
 				}),
 			),
 		);

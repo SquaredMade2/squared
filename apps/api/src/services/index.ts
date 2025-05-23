@@ -1,4 +1,4 @@
-import "dotenv/config";
+import env from "@/env";
 import { createDb } from "@squaredmade/db";
 import { createAuthRpcHandler } from "./auth";
 import { AuthService } from "./auth/auth-service";
@@ -16,10 +16,10 @@ import { UserService } from "./users/user-service";
 import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
 
 const db = createDb({
-	databaseUrl: process.env.DATABASE_URL,
+	databaseUrl: env.DATABASE_URL,
 });
 
-const clerkSecret = process.env.CLERK_SECRET;
+const clerkSecret = env.CLERK_SECRET;
 
 const auth = new AuthService(db);
 const comment = new CommentService(db);

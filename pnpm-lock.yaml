@@ -647,9 +647,6 @@ importers:
 
   packages/server:
     dependencies:
-      '@squaredmade/rpc':
-        specifier: workspace:*
-        version: link:../rpc
       hono:
         specifier: ^4
         version: 4.7.10
@@ -663,6 +660,9 @@ importers:
       '@squaredmade/logger':
         specifier: workspace:*
         version: link:../logger
+      '@squaredmade/rpc':
+        specifier: workspace:*
+        version: link:../rpc
       '@squaredmade/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

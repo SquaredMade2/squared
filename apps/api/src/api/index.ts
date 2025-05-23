@@ -1,19 +1,19 @@
-import { createDb } from "@squaredmade/db";
-import "dotenv/config";
+import env from "@/env";
 import { serve } from "@hono/node-server";
+import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
 import { Server } from "socket.io";
 import app from "./app";
 
-export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
+export const db = createDb({ databaseUrl: env.DATABASE_URL });
 const logger = createCustomLogger("api");
 
-const port = process.env.PORT || 5173;
+const port = env.PORT;
 
+logger.info(`Server is running on http://localhost:${port}`);
 const server = serve({
 	fetch: app.fetch,
-}).listen(port, () => {
-	logger.info(`Server is running on http://localhost:${port}`);
+	port,
 });
 
 const io = new Server(server);

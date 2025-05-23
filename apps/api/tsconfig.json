@@ -10,7 +10,7 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
-		"types": ["node", "jest"],
+		"types": ["node"],
 		"paths": {
 			"@/*": ["src/*"]
 		}
