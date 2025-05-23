@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import * as context from "@squaredmade/context";
 import type { Logger } from "@squaredmade/logger";
 import superjson from "@squaredmade/superjson";
-import type { ErrorRequestHandler, RequestHandler } from "express";
+import type { MiddlewareHandler } from "hono";
 import "tslib";
 import { z } from "zod";
 import {
@@ -60,16 +60,16 @@ function getExposedMeta(serviceDetails: ServiceDetails) {
 export function createRequestHandler(
 	// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
 	services: ServiceSet<any>[],
-): RequestHandler {
-	const postHandlers = new Map<string, RequestHandler>();
-	const getHandlers = new Map<string, RequestHandler>();
+): MiddlewareHandler {
+	const postHandlers = new Map<string, MiddlewareHandler>();
+	const getHandlers = new Map<string, MiddlewareHandler>();
 
 	const meta = {
 		services: Object.values(services.map((s) => getExposedMeta(s.meta))),
 	};
 
-	getHandlers.set("/", (_, res) => {
-		res.json(meta);
+	getHandlers.set("/", async (c) => {
+		return c.json(meta);
 	});
 
 	for (const service of services) {
@@ -78,8 +78,8 @@ export function createRequestHandler(
 			(s) => s.serviceName === serviceName,
 		);
 
-		getHandlers.set(`/${serviceName}`, (_, res) => {
-			res.json(serviceMeta);
+		getHandlers.set(`/${serviceName}`, async (c) => {
+			return c.json(serviceMeta);
 		});
 
 		for (const methodDef of service.meta.expose) {
@@ -88,8 +88,8 @@ export function createRequestHandler(
 				(s) => s.methodName === methodName,
 			);
 
-			const getHandler: RequestHandler = (_, res) => {
-				res.json(methodMeta);
+			const getHandler: MiddlewareHandler = async (c) => {
+				return c.json(methodMeta);
 			};
 			getHandlers.set(`/${serviceName}/${methodName}`, getHandler);
 
@@ -97,10 +97,10 @@ export function createRequestHandler(
 				service.implementation,
 			);
 
-			const postHandler: RequestHandler = async (req, res, next) => {
+			const postHandler: MiddlewareHandler = async (c) => {
 				let abortable: context.Abortable | null = null;
 				try {
-					const requestDeadline = first(req.headers["x-request-deadline"]);
+					const requestDeadline = c.req.header("x-request-deadline");
 
 					if (requestDeadline) {
 						abortable = context.withDeadline(
@@ -113,21 +113,21 @@ export function createRequestHandler(
 
 					const ctx = context.withValues(abortable.ctx, {
 						[context.requestIdKey]:
-							first(req.headers["x-request-id"]) ||
+							c.req.header("x-request-id") ||
 							randomBytes(6).toString("base64url"),
 					});
 
-					res.on("finish", () => abortable?.abort());
+					// Store context for cleanup
+					c.set("abortable", abortable);
 
-					requestContexts.set(req, ctx);
-					const result = await methodFn(
-						superjson.parse(JSON.stringify(req.body)),
-					);
-					res.json(superjson.stringify(result));
+					requestContexts.set(c.req.raw, ctx);
+					const body = await c.req.json();
+					const result = await methodFn(superjson.parse(JSON.stringify(body)));
+					return c.json(superjson.stringify(result));
 
 					// biome-ignore lint/suspicious/noExplicitAny: Error has to be any
 				} catch (err: any) {
-					next(new RpcError(serviceName, methodName, err));
+					throw new RpcError(serviceName, methodName, err);
 				} finally {
 					abortable?.abort();
 				}
@@ -137,14 +137,14 @@ export function createRequestHandler(
 		}
 	}
 
-	return async (req, res, next) => {
-		let handler: RequestHandler | undefined;
-		switch (req.method) {
+	return async (c, next) => {
+		let handler: MiddlewareHandler | undefined;
+		switch (c.req.method) {
 			case "GET":
-				handler = getHandlers.get(req.path);
+				handler = getHandlers.get(c.req.path);
 				break;
 			case "POST":
-				handler = postHandlers.get(req.path);
+				handler = postHandlers.get(c.req.path);
 				break;
 		}
 
@@ -152,48 +152,52 @@ export function createRequestHandler(
 			return next();
 		}
 
-		handler(req, res, next);
+		return handler(c, next);
 	};
 }
 
 export function createErrorHandler(
 	args: { log?: Logger } = {},
-): ErrorRequestHandler {
+): MiddlewareHandler {
 	const { log } = args;
-	return (err, _, res, next) => {
-		if (err instanceof RpcError) {
-			const source = `${err.serviceName}/${err.methodName}`;
-			log?.error(`Error executing ${source}: ${err.inner.stack}`);
-			if (
-				err.inner instanceof ValidationError ||
-				err.inner instanceof ResponseValidationError
-			) {
-				res.status(400).json({
-					message: err.inner.message,
-					code: err.inner.code,
-					type: err.inner.type,
-					params: err.inner.params,
-				});
-			} else {
-				res.status(400).json({
-					message: err.inner.message,
-					code: err.inner.code || "unknown_error",
-					type:
-						err.inner.type ||
-						"https://errors.squared.global/@squaredmade/rpc/unknown-error",
-				});
+	return async (c, next) => {
+		try {
+			return await next();
+		} catch (err) {
+			if (err instanceof RpcError) {
+				const source = `${err.serviceName}/${err.methodName}`;
+				log?.error(`Error executing ${source}: ${err.inner.stack}`);
+				if (
+					err.inner instanceof ValidationError ||
+					err.inner instanceof ResponseValidationError
+				) {
+					return c.json(
+						{
+							message: err.inner.message,
+							code: err.inner.code,
+							type: err.inner.type,
+							params: err.inner.params,
+						},
+						400,
+					);
+				}
+				return c.json(
+					{
+						message: err.inner.message,
+						code: err.inner.code || "unknown_error",
+						type:
+							err.inner.type ||
+							"https://errors.squared.global/@squaredmade/rpc/unknown-error",
+					},
+					400,
+				);
 			}
-		} else {
-			log?.error(`Internal error: ${err.stack || err.message}`);
-			res.status(500).json({ message: "Internal Server Error" });
+			// biome-ignore lint/suspicious/noExplicitAny: Error can be any type
+			const error = err as any;
+			log?.error(`Internal error: ${error.stack || error.message}`);
+			return c.json({ message: "Internal Server Error" }, 500);
 		}
-		next();
 	};
-}
-
-function first(s: string | string[] | undefined) {
-	if (!s) return undefined;
-	return Array.isArray(s) ? s[0] : s;
 }
 
 export function createSchema<T>() {

@@ -45,7 +45,7 @@ describe("@squaredmade/rpc", () => {
 	});
 
 	describe("createRequestHandler", () => {
-		it("should create an Express request handler", () => {
+		it("should create a Hono middleware handler", () => {
 			// Create a simple service
 			const serviceName = "testService";
 			const schema = {
@@ -63,19 +63,19 @@ describe("@squaredmade/rpc", () => {
 			const serviceSet = createRpcHandler(serviceName, schema, implementation);
 			const requestHandler = createRequestHandler([serviceSet]);
 
-			// Check that it's a function (Express middleware)
+			// Check that it's a function (Hono middleware)
 			expect(typeof requestHandler).toBe("function");
-			expect(requestHandler.length).toBe(3); // (req, res, next)
+			expect(requestHandler.length).toBe(2); // (c, next)
 		});
 	});
 
 	describe("createErrorHandler", () => {
-		it("should create an Express error handler", () => {
+		it("should create a Hono error middleware handler", () => {
 			const errorHandler = createErrorHandler({ log: mockLogger });
 
-			// Check that it's a function (Express error middleware)
+			// Check that it's a function (Hono error middleware)
 			expect(typeof errorHandler).toBe("function");
-			expect(errorHandler.length).toBe(4); // (err, req, res, next)
+			expect(errorHandler.length).toBe(2); // (c, next)
 		});
 	});
 

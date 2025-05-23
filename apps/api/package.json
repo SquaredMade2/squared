@@ -23,7 +23,7 @@
 		"@clerk/backend": "^1.24.0",
 		"@squaredmade/db": "workspace:*",
 		"@squaredmade/logger": "1.1.2",
-		"@squaredmade/rpc": "1.0.4",
+		"@squaredmade/rpc": "workspace:*",
 		"cors": "^2.8.5",
 		"date-fns": "^4.0.0",
 		"dotenv": "^16.4.1",
