@@ -1,3 +1,4 @@
+import type { PublicUserData } from "@clerk/types";
 import type { CustomElement, CustomText } from "./interfaces";
 
 function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
@@ -32,6 +33,7 @@ export const convertSlateToMDX = (slateArr: CustomElement[]): string => {
 			// Not a code block, process normally
 			const lineStr = line.children
 				.map((leaf) => {
+					if (leaf.text === "") return "";
 					if (leaf.url) return `[${leaf.text}](${leaf.url})`;
 					if (leaf.mentionConfirm)
 						return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
@@ -39,8 +41,10 @@ export const convertSlateToMDX = (slateArr: CustomElement[]): string => {
 					const bold = leaf.bold ? "**" : "";
 					const italic = leaf.italic ? "*" : "";
 					const code = leaf.code ? "`" : ""; // use single backtick for inline code
-					if (leaf.text === "") return "";
-					return `${italic}${bold}${code}${leaf.text.trim()}${code}${bold}${italic} `;
+					const underlineStart = leaf.underline ? "<u>" : "";
+					const underlineEnd = leaf.underline ? "</u>" : "";
+					const formattedText = `${italic}${bold}${underlineStart}${code}${leaf.text.trim()}${code}${underlineEnd}${bold}${italic} `;
+					return formattedText;
 				})
 				.join("");
 
@@ -66,52 +70,65 @@ function findMDXLines(text: string): string[] {
 	});
 }
 
-function parseInlineMarkdown(text: string): CustomText[] {
+function splitText(text: string): string[] {
+	return text
+		.split(/(\*\*|\*|<u>|<\/u>|<MentionHover[^>]*\/>|\[.*?\]\(.*?\))/g)
+		.filter((part) => part.trim() !== "");
+}
+
+function trackFormatting(parts: string[]): CustomText[] {
 	const result: CustomText[] = [];
 
-	// Regex to match inline markdown patterns
-	const regex = /(\*\*\*[^*]+?\*\*\*|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+`)/g;
+	let boldOn = false;
+	let italicOn = false;
+	let underlineOn = false;
 
-	let lastIndex = 0;
-	// Iterate through all matches
-	for (const match of text.matchAll(regex)) {
-		if (match === null) break;
-		if (match.index > lastIndex) {
-			// Add plain text before match
-			result.push({ text: text.slice(lastIndex, match.index) });
+	for (const part of parts) {
+		if (part.startsWith("<MentionHover")) {
+			const mentionData = part.match(/mentionedUser=\{\{(.+?)\}\}/);
+			if (!mentionData) continue;
+			const cleaned = mentionData[1]
+				.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":') // Convert keys to "keys"
+				.replace(/'/g, '"'); // Replace single quotes with double quotes if any
+
+			try {
+				const mentionUser = JSON.parse(`{${cleaned}}`) as PublicUserData;
+				result.push({
+					text: `@${mentionUser.firstName}` || "Error loading name",
+					mentionConfirm: mentionUser,
+				});
+				continue;
+			} catch (e) {
+				console.error("Failed to parse mention data:", e);
+			}
 		}
-		const token = match[0];
-		if (token.startsWith("***")) {
-			result.push({
-				text: token.slice(3, -3),
-				bold: true,
-				italic: true,
-			});
-		} else if (token.startsWith("**")) {
-			result.push({
-				text: token.slice(2, -2),
-				bold: true,
-			});
-		} else if (token.startsWith("*")) {
-			result.push({
-				text: token.slice(1, -1),
-				italic: true,
-			});
-		} else if (token.startsWith("`")) {
-			result.push({
-				text: token.slice(1, -1),
-				code: true,
-			});
+		if (part === "***") {
+			boldOn = !boldOn;
+			italicOn = !italicOn;
+		} else if (part === "**") {
+			boldOn = !boldOn;
+		} else if (part === "*") {
+			italicOn = !italicOn;
+		} else if (part === "<u>") {
+			underlineOn = true;
+		} else if (part === "</u>") {
+			underlineOn = false;
+		} else {
+			const currentText: CustomText = { text: part };
+			if (boldOn) currentText.bold = true;
+			if (italicOn) currentText.italic = true;
+			if (underlineOn) currentText.underline = true;
+			result.push(currentText);
 		}
-
-		lastIndex = match.index + token.length;
-	}
-
-	if (lastIndex < text.length) {
-		result.push({ text: text.slice(lastIndex) });
 	}
 
 	return result;
+}
+
+function parseInlineMarkdown(text: string): CustomText[] {
+	const parts = splitText(text);
+	const formattedParts = trackFormatting(parts);
+	return formattedParts;
 }
 
 export const convertMDXToSlate = (mdxString: string) => {

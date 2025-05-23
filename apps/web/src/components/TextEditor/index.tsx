@@ -3,7 +3,6 @@ import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
 	injectMentionConfirm,
-	isValidCharBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
 import { toast } from "@squaredmade/ui/toast";
@@ -237,6 +236,7 @@ const TextEditor = ({
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
 		//     ctrl <something>, you dont want to add the character <something> in while doing a shortcut
 		// !!!
+		handleCommandComponentOnKey(e.key);
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
 		if (isMarkActive("url")) {
@@ -310,6 +310,13 @@ const TextEditor = ({
 				}
 				break;
 			}
+			case "u": {
+				if (e[universalHotKey]) {
+					e.preventDefault();
+					createLeaf("underline");
+				}
+				break;
+			}
 			case "l": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
@@ -347,7 +354,7 @@ const TextEditor = ({
 		};
 	}, []);
 
-	useEffect(() => {
+	function handleCommandComponentOnKey(key: string) {
 		const deleteEntireMention = () => {
 			if (useEditorMarks().isMentionActive()) {
 				clearCurrentLeafContent(editor);
@@ -363,15 +370,15 @@ const TextEditor = ({
 			debounceRef.current = false;
 			return;
 		}
-		isValidCharBlock(editor, "@")
-			? allowEntireMention()
-			: deleteEntireMention();
+		if ("@" === key) allowEntireMention();
+		else deleteEntireMention();
+
 		if (toggleMentions) {
 			setMentionsFilter(getMentionFromLeaf(editor));
 		}
 
-		setToggleTask(isValidCharBlock(editor, "#"));
-	}, [editor.selection]);
+		setToggleTask("#" === key);
+	}
 
 	return (
 		<Slate
