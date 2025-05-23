@@ -7,12 +7,12 @@ import { logger } from "hono/logger";
 const app = new OpenAPIHono({ strict: false });
 
 // Health check route for root path
-app.get("/", (c) => c.text("ok", 200));
-app.use("/*", cors);
 
 const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
-app.use("/rpc/*", rpcRequestHandler);
+app.all("/rpc/*", rpcRequestHandler);
 
+app.get("/", (c) => c.text("ok", 200));
+app.use(cors);
 app.notFound(notFound);
 app.onError(errorHandler);
 app.use(logger());

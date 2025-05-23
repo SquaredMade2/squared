@@ -1,9 +1,12 @@
 import type {
 	Comment,
+	FilterCondition,
 	GithubCommit,
+	GithubOrg,
 	GithubRepo,
 	Label,
 	Notification,
+	SavedFilter,
 	Sprint,
 	Task,
 	Team,
@@ -198,5 +201,80 @@ export const teamSchema = createSchema<Team>()(
 		sprintStartDate: z.date(),
 		tasksPerSprint: z.number(),
 		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
+	}),
+);
+
+const FilterValueSchema = z.union([
+	z.string(),
+	z.number(),
+	z.date(),
+	z.boolean(),
+	z.null(),
+	z.array(z.union([z.string(), z.null()])),
+	z.array(z.string()),
+]);
+
+const TaskFields = [
+	"id",
+	"title",
+	"description",
+	"status",
+	"sprintId",
+	"teamId",
+	"updatedAt",
+	"authorId",
+	"identifier",
+	"dueDate",
+	"effortEstimate",
+	"priority",
+	"dateCreated",
+	"assigneeId",
+	"labels",
+	"workspaceId",
+	"parentId",
+	"deleted",
+	"order",
+] as const;
+
+// Define the operator schema
+const OperatorSchema = z.enum([
+	"equals",
+	"contains",
+	"greaterThan",
+	"lessThan",
+	"arrayIncludesAll",
+	"arrayIncludesAny",
+]);
+
+export const filterConditionSchema = createSchema<FilterCondition>()(
+	z.object({
+		field: z.enum(TaskFields),
+		value: FilterValueSchema,
+		operator: OperatorSchema,
+	}),
+);
+
+export const savedFilterSchema = createSchema<SavedFilter>()(
+	z.object({
+		id: z.string(),
+		name: z.string(),
+		description: z.string().nullable(),
+		type: z.enum(["TEAM", "WORKSPACE"]),
+		filter: z.array(filterConditionSchema).min(1),
+		workspaceId: z.string().nullable(),
+		teamId: z.string().nullable(),
+		authorId: z.string(),
+		sprintId: z.string().nullable(),
+	}),
+);
+
+export const githubOrgSchema = createSchema<GithubOrg>()(
+	z.object({
+		name: z.string(),
+		id: z.string(),
+		workspaceId: z.string(),
+		externalId: z.string(),
+		createdAt: z.date(),
+		description: z.string().nullable(),
 	}),
 );
