@@ -76,9 +76,6 @@ func TestMain(m *testing.M) {
 	os.Setenv("WEBHOOK_SECRET", "squared")
 	os.Setenv("SERVER_URL", "http://localhost:5173")
 
-	// Set log level to quiet for tests to reduce noise
-	SetLogLevel(LogLevelQuiet)
-
 	// Optionally capture log output to prevent it from cluttering test output
 	originalOutput := log.Writer()
 	log.SetOutput(io.Discard)
