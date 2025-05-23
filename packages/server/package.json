@@ -1,0 +1,32 @@
+{
+	"name": "@squaredmade/server",
+	"version": "0.0.0",
+	"private": true,
+	"exports": {
+		"./middleware": {
+			"import": {
+				"types": "./dist/middleware/index.d.mts",
+				"default": "./dist/middleware/index.mjs"
+			},
+			"require": {
+				"types": "./dist/middleware/index.d.ts",
+				"default": "./dist/middleware/index.js"
+			}
+		}
+	},
+	"scripts": {
+		"build": "node build.mjs"
+	},
+	"devDependencies": {
+		"@squaredmade/builder": "workspace:*",
+		"@squaredmade/logger": "workspace:*",
+		"@squaredmade/typescript-config": "workspace:*",
+		"@types/node": "^22.15.21",
+		"typescript": "^5.8.3"
+	},
+	"peerDependencies": {
+		"@squaredmade/rpc": "workspace:*",
+		"hono": "^4",
+		"zod": "^3"
+	}
+}
