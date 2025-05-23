@@ -1,5 +1,6 @@
 import { Bold, Heading, Italic } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { Underline } from "lucide-react";
 import LinkModal from "./Menus/LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
 
@@ -50,6 +51,18 @@ const TextEditorToolBar = ({
 			>
 				<Italic className="h-4 w-4" />
 				<span className="sr-only">Italic</span>
+			</Button>
+			<Button
+				variant="ghost"
+				size="icon"
+				className={`size-8 ${!markActiveChecks.isUnderlineActive() && "text-muted-foreground"}`}
+				onMouseDown={(e) => {
+					e.preventDefault();
+					createLeaf("underline");
+				}}
+			>
+				<Underline className="h-4 w-4" />
+				<span className="sr-only">Underline</span>
 			</Button>
 
 			<Button

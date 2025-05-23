@@ -52,6 +52,7 @@ export type MarkActives = {
 	isItalicActive: () => boolean;
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
+	isUnderlineActive: () => boolean;
 	isMentionActive: () => boolean;
 	isTaskActive: () => boolean;
 };
@@ -77,6 +78,7 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 	mention?: boolean;
+	underline?: boolean;
 	taskConfirm?: boolean;
 	mentionConfirm?: PublicUserData;
 };

@@ -33,6 +33,7 @@ const Leaf = (props: RenderLeafProps) => {
 	const leafStyling = {
 		fontWeight: props.leaf.bold ? "bold" : "normal",
 		fontStyle: props.leaf.italic ? "italic" : "",
+		textDecoration: props.leaf.underline ? "underline" : "",
 		borderRadius: props.leaf.mentionConfirm ? "4px" : "",
 		paddingTop: props.leaf.mentionConfirm ? "2px" : "",
 		paddingBottom: props.leaf.mentionConfirm ? "2px" : "",

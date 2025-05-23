@@ -180,6 +180,8 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 				return "isBoldActive";
 			case "italic":
 				return "isItalicActive";
+			case "underline":
+				return "isUnderlineActive";
 			case "code":
 				return "isCodeActive";
 			case "mention":
@@ -204,6 +206,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 	const useEditorMarks = () => ({
 		isBoldActive: () => isMarkActive("bold"),
 		isItalicActive: () => isMarkActive("italic"),
+		isUnderlineActive: () => isMarkActive("underline"),
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
 		isMentionActive: () => isMarkActive("mention"),
