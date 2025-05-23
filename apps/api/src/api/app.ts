@@ -1,71 +1,49 @@
 import { rpcHandlers } from "@/services";
-import { createDb } from "@squaredmade/db";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import createCustomLogger from "@squaredmade/logger";
 import { createErrorHandler, createRequestHandler } from "@squaredmade/rpc";
-import cors from "cors";
-import express from "express";
-import "dotenv/config";
+import { cors } from "hono/cors";
 
-export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
-
+const app = new OpenAPIHono();
 const logger = createCustomLogger("api");
+const port = process.env.PORT || 5173;
 
-function createApp() {
-	const app = express();
+app.get("/", (c) => c.text("ok", 200));
+const productionDomain = "https://app.squaredmade.com";
+const productionServerDomain = "https://api.squaredmade.com";
+const developmentDomain = "https://app-develop.squaredmade.com";
+const localDevDomain = "http://localhost:3000";
+const localServerDomain = `http://localhost:${port}`;
 
-	const productionDomain = "https://app.squaredmade.com";
-	const productionServerDomain = "https://api.squaredmade.com";
-	const developmentDomain = "https://app-develop.squaredmade.com";
-	const localDevDomain = "http://localhost:3000";
-	const localServerDomain = `http://localhost:${process.env.PORT || 5173}`;
+// Health check route for root path
+app.get("/", (c) => c.text("ok", 200));
+app.use(
+	"/*",
+	cors({
+		origin: (origin) => {
+			// Allow requests from Vercel branch deployments, production domain, and local development
+			if (
+				!origin ||
+				/^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/.test(origin) ||
+				origin === productionDomain ||
+				origin === productionServerDomain ||
+				origin === developmentDomain ||
+				origin === localDevDomain ||
+				origin === localServerDomain
+			) {
+				return origin;
+			}
+			return null;
+		},
+		allowMethods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true,
+	}),
+);
 
-	// Health check route for root path
-	app.get("/", (_, res) => {
-		res.status(200).send("ok");
-	});
+const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
+app.use("/rpc/*", rpcRequestHandler);
 
-	app.use(
-		cors({
-			origin: (origin, callback) => {
-				if (
-					!origin ||
-					/^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/.test(origin) ||
-					origin === productionDomain ||
-					origin === productionServerDomain ||
-					origin === developmentDomain ||
-					origin === localDevDomain ||
-					origin === localServerDomain
-				) {
-					callback(null, true);
-				} else {
-					callback(new Error("Not allowed by CORS"));
-				}
-			},
-			methods: ["GET", "POST", "PUT", "DELETE"],
-			credentials: true,
-		}),
-	);
+// Use the RPC error handler
+app.use(createErrorHandler({ log: logger }));
 
-	app.use(express.json());
-
-	if (rpcHandlers && Object.keys(rpcHandlers).length > 0) {
-		const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
-		app.use("/rpc", rpcRequestHandler);
-	} else {
-		logger.warn(
-			"rpcHandlers is undefined or empty. RPC endpoints will not be available.",
-		);
-	}
-
-	const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
-	app.use("/rpc", rpcRequestHandler);
-
-	app.use(createErrorHandler({ log: logger }));
-
-	const router = express.Router();
-	app.use(router);
-
-	return app;
-}
-
-export const app = createApp();
+export default app;
