@@ -49,6 +49,6 @@ export const userRouter = j.router({
 
 		await userService.deleteUser(TODO, { userId });
 
-		return c.json({ success: true, message: "User was deleted" });
+		return c.status(204);
 	}),
 });

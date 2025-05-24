@@ -1,14 +1,17 @@
 "use client";
 
-import { Button } from "@squaredmade/ui/button";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@squaredmade/ui/dialog";
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import { useState } from "react";
 
 type DeleteUserModalProps = {
@@ -26,30 +29,27 @@ export const DeleteUserConfirmationModal = ({
 	};
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>
+		<AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+			<AlertDialogTrigger asChild>
 				<Button type="button" variant="destructive">
 					Delete Account
 				</Button>
-			</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Are you absolutely sure?</DialogTitle>
-					<DialogDescription>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete your
 						account and remove your data from our servers.
-						<br />
-						<Button
-							className="mt-2"
-							onClick={handleDeleteAndClose}
-							type="submit"
-							variant="destructive"
-						>
-							Yes
-						</Button>
-					</DialogDescription>
-				</DialogHeader>
-			</DialogContent>
-		</Dialog>
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction onClick={handleDeleteAndClose} type="button">
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 };

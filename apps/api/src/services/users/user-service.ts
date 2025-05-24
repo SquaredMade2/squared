@@ -52,12 +52,11 @@ export class UserService implements UserRpc {
 	async deleteUser({ userId }: { userId: string }) {
 		this.logger.info("Deleting user with id: ", userId);
 		await this.db
-			.delete(usersTable)
-			.where(eq(usersTable.externalId, userId))
-			.returning()
-			.then((user) => user[0]);
+			.update(usersTable)
+			.set({ deleted: true })
+			.where(eq(usersTable.externalId, userId));
 
-		await this.clerkClient.users.deleteUser(userId);
+		//await this.clerkClient.users.deleteUser(userId);
 	}
 
 	async updateUserAvatar({

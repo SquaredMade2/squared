@@ -56,9 +56,9 @@ export default function Profile() {
 			});
 			signOut();
 		},
-		onError: () => {
+		onError: (err) => {
 			toast.error("Error deleting account", {
-				description: "Failed to delete account. Please try again.",
+				description: err.message,
 			});
 		},
 	});
