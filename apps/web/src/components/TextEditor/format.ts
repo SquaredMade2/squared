@@ -84,7 +84,10 @@ function trackFormatting(parts: string[]): CustomText[] {
 	let underlineOn = false;
 
 	for (const part of parts) {
-		if (part.startsWith("<MentionHover")) {
+		if (part === "") continue;
+
+		// Check for mention hover components
+		if (part.startsWith("<MentionHover") && part.endsWith("/>")) {
 			const mentionData = part.match(/mentionedUser=\{\{(.+?)\}\}/);
 			if (!mentionData) continue;
 			const cleaned = mentionData[1]
@@ -100,6 +103,23 @@ function trackFormatting(parts: string[]): CustomText[] {
 				continue;
 			} catch (e) {
 				console.error("Failed to parse mention data:", e);
+			}
+		}
+
+		// Check for links in the format [text](url)
+		if (part.startsWith("[") && part.includes("](")) {
+			const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/);
+			if (!linkMatch) continue;
+
+			try {
+				const linkData = {
+					text: `${linkMatch[1]}`,
+					url: linkMatch[2],
+				};
+				result.push(linkData);
+				continue;
+			} catch (e) {
+				console.error("Failed to parse link data:", e);
 			}
 		}
 		if (part === "***") {

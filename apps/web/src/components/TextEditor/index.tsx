@@ -62,7 +62,6 @@ const TextEditor = ({
 	onFocus,
 	onChange,
 	value = initialEditorValue,
-	setValue,
 	hasToolbar = true,
 }: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
@@ -81,13 +80,9 @@ const TextEditor = ({
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
 
-	function handleStateChange(value: CustomDescendant[]) {
-		return setValue ? setValue(value) : setEditorValue(value);
-	}
-
-	function handleStateValue() {
-		return setValue ? value : editorValue;
-	}
+	useEffect(() => {
+		setEditorValue(value);
+	}, [value]);
 
 	useEffect(() => {
 		if (checkIfSlateEmpty(editor)) {
@@ -96,14 +91,11 @@ const TextEditor = ({
 			return;
 		}
 
-		if (
-			handleStateValue().length === 0 ||
-			handleStateValue() === initialEditorValue
-		) {
+		if (editorValue.length === 0 || editorValue === initialEditorValue) {
 			editor.children = initialEditorValue;
 			Transforms.select(editor, defaultSelectionRange);
 		}
-	}, [value, editorValue]);
+	}, [editorValue]);
 
 	const handleCharKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "@" || event.key === "#") {
@@ -383,9 +375,9 @@ const TextEditor = ({
 	return (
 		<Slate
 			editor={editor}
-			initialValue={handleStateValue()}
+			initialValue={editorValue}
 			onChange={(newValue) => {
-				handleStateChange(newValue);
+				setEditorValue(newValue);
 				onChange?.(newValue); // Optional external onChange handler
 			}}
 		>

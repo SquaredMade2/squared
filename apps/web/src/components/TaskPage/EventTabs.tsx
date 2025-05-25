@@ -128,7 +128,10 @@ export const EventTabs = () => {
 					return <CommentCard key={comment.id} comment={comment} />;
 				})}
 				{currentTask && (
-					<TextEditor value={currentComment} setValue={setCurrentComment} />
+					<TextEditor
+						value={currentComment}
+						onChange={(value) => setCurrentComment(value)}
+					/>
 				)}
 				<Button
 					disabled={

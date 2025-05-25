@@ -15,7 +15,6 @@ export interface TextEditorProps {
 	onChange?: (value: CustomDescendant[]) => void;
 	style?: CSSProperties | undefined;
 	value?: CustomDescendant[];
-	setValue?: Dispatch<SetStateAction<CustomDescendant[]>>;
 	hasToolbar?: boolean;
 }
 
