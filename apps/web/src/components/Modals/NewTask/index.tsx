@@ -213,7 +213,7 @@ export const NewTaskModal = () => {
 												hasToolbar={false}
 												placeholder="Add Description"
 												value={editorDescription}
-												setValue={setEditorDescription}
+												onChange={(value) => setEditorDescription(value)}
 											/>
 										</FormControl>
 									</FormItem>
