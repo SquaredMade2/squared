@@ -4,7 +4,7 @@ import MentionLeaf from "./MentionLeaf";
 
 const Leaf = (props: RenderLeafProps) => {
 	const leafStyling = {
-		fontWeight: props.leaf.bold ? "bold" : "normal",
+		fontWeight: props.leaf.bold ? "font-bold" : "font-normal",
 		fontStyle: props.leaf.italic ? "italic" : "",
 		textDecoration: props.leaf.underline ? "underline" : "",
 	};
