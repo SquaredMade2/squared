@@ -20,14 +20,6 @@ const (
 	LogLevelFull
 )
 
-// Current log level - set to Basic by default
-var currentLogLevel = LogLevelBasic
-
-// SetLogLevel allows changing the logging verbosity
-func SetLogLevel(level LogLevel) {
-	currentLogLevel = level
-}
-
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
 	if webhookSecret == "" {
@@ -70,6 +62,8 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		handlePullRequestEvent(event, githubService, w)
 	case *github.PushEvent:
 		handlePushCommitEvent(event, githubService, w)
+	case *github.InstallationEvent:
+		handleInstallEvent(githubService, r, w)
 	default:
 		http.Error(w, "Unsupported event", http.StatusBadRequest)
 		return

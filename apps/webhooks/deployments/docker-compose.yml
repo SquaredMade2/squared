@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  webhooks:
+    build:
+      context: .
+      dockerfile: Dockerfile.webhooks
+    ports:
+      - "3131:3131"
+    env_file:
+      - .env
+    restart: unless-stopped
+    container_name: webhooks-app
+    
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    env_file:
+      - .env
+    restart: unless-stopped
+    container_name: bot-app
+    # Uncomment if your bot needs a port
+    # ports:
+    #   - "8080:8080"
