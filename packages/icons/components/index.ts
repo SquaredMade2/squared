@@ -4,6 +4,7 @@ export * from "./User";
 export * from "./UserSearch";
 export * from "./UserRoundPlus";
 export * from "./UserCog";
+export * from "./Underline";
 export * from "./TriangleAlert";
 export * from "./Trash";
 export * from "./Trash2";

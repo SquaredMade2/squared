@@ -3,7 +3,6 @@ import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
 	injectMentionConfirm,
-	isValidCharBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
 import { toast } from "@squaredmade/ui/toast";
@@ -63,7 +62,6 @@ const TextEditor = ({
 	onFocus,
 	onChange,
 	value = initialEditorValue,
-	setValue,
 	hasToolbar = true,
 }: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
@@ -82,13 +80,9 @@ const TextEditor = ({
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
 
-	function handleStateChange(value: CustomDescendant[]) {
-		return setValue ? setValue(value) : setEditorValue(value);
-	}
-
-	function handleStateValue() {
-		return setValue ? value : editorValue;
-	}
+	useEffect(() => {
+		setEditorValue(value);
+	}, [value]);
 
 	useEffect(() => {
 		if (checkIfSlateEmpty(editor)) {
@@ -97,14 +91,11 @@ const TextEditor = ({
 			return;
 		}
 
-		if (
-			handleStateValue().length === 0 ||
-			handleStateValue() === initialEditorValue
-		) {
+		if (editorValue.length === 0 || editorValue === initialEditorValue) {
 			editor.children = initialEditorValue;
 			Transforms.select(editor, defaultSelectionRange);
 		}
-	}, [value, editorValue]);
+	}, [editorValue]);
 
 	const handleCharKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "@" || event.key === "#") {
@@ -192,6 +183,8 @@ const TextEditor = ({
 				return "isBoldActive";
 			case "italic":
 				return "isItalicActive";
+			case "underline":
+				return "isUnderlineActive";
 			case "code":
 				return "isCodeActive";
 			case "mention":
@@ -216,6 +209,7 @@ const TextEditor = ({
 	const useEditorMarks = () => ({
 		isBoldActive: () => isMarkActive("bold"),
 		isItalicActive: () => isMarkActive("italic"),
+		isUnderlineActive: () => isMarkActive("underline"),
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
 		isMentionActive: () => isMarkActive("mention"),
@@ -234,6 +228,7 @@ const TextEditor = ({
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
 		//     ctrl <something>, you dont want to add the character <something> in while doing a shortcut
 		// !!!
+		handleCommandComponentOnKey(e.key);
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
 		if (isMarkActive("url")) {
@@ -307,6 +302,13 @@ const TextEditor = ({
 				}
 				break;
 			}
+			case "u": {
+				if (e[universalHotKey]) {
+					e.preventDefault();
+					createLeaf("underline");
+				}
+				break;
+			}
 			case "l": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
@@ -344,7 +346,7 @@ const TextEditor = ({
 		};
 	}, []);
 
-	useEffect(() => {
+	function handleCommandComponentOnKey(key: string) {
 		const deleteEntireMention = () => {
 			if (useEditorMarks().isMentionActive()) {
 				clearCurrentLeafContent(editor);
@@ -360,22 +362,24 @@ const TextEditor = ({
 			debounceRef.current = false;
 			return;
 		}
-		isValidCharBlock(editor, "@")
-			? allowEntireMention()
-			: deleteEntireMention();
+		if ("@" === key) {
+			allowEntireMention();
+		} else {
+			deleteEntireMention();
+		}
 		if (toggleMentions) {
 			setMentionsFilter(getMentionFromLeaf(editor));
 		}
 
-		setToggleTask(isValidCharBlock(editor, "#"));
-	}, [editor.selection]);
+		setToggleTask("#" === key);
+	}
 
 	return (
 		<Slate
 			editor={editor}
-			initialValue={handleStateValue()}
+			initialValue={editorValue}
 			onChange={(newValue) => {
-				handleStateChange(newValue);
+				setEditorValue(newValue);
 				onChange?.(newValue); // Optional external onChange handler
 			}}
 		>

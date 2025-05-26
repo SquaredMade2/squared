@@ -15,7 +15,6 @@ export interface TextEditorProps {
 	onChange?: (value: CustomDescendant[]) => void;
 	style?: CSSProperties | undefined;
 	value?: CustomDescendant[];
-	setValue?: Dispatch<SetStateAction<CustomDescendant[]>>;
 	hasToolbar?: boolean;
 }
 
@@ -65,6 +64,7 @@ export type MarkActives = {
 	isItalicActive: () => boolean;
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
+	isUnderlineActive: () => boolean;
 	isMentionActive: () => boolean;
 	isTaskActive: () => boolean;
 };
@@ -90,6 +90,7 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 	mention?: boolean;
+	underline?: boolean;
 	taskConfirm?: boolean;
 	mentionConfirm?: PublicUserData;
 };
