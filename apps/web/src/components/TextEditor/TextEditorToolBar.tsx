@@ -25,7 +25,7 @@ const TextEditorToolBar = ({
 	// Separator
 }: TextEditorToolBarProps) => {
 	return (
-		<div className="flex h-16 flex-row items-center rounded-m border p-10 p-2 shadow-md">
+		<div className="flex h-14 flex-row items-center rounded-m border px-2 py-6 shadow-md">
 			<Button
 				variant="ghost"
 				size="icon"
