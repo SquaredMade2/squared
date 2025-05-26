@@ -71,7 +71,6 @@ export const NewTaskModal = () => {
 	const [isEditingTitle, setIsEditingTitle] = useState(false);
 	const [editorDescription, setEditorDescription] =
 		useState<CustomDescendant[]>(initialEditorValue);
-
 	const {
 		status,
 		priority,
@@ -176,7 +175,7 @@ export const NewTaskModal = () => {
 				</DialogHeader>
 				<Form {...form} onSubmit={handleCreateTask}>
 					<div className="flex space-x-4">
-						<div className="w-4/5">
+						<div className="w-4/5 space-y-4">
 							<FormField
 								control={form.control}
 								name="title"
@@ -220,7 +219,7 @@ export const NewTaskModal = () => {
 								)}
 							/>
 							{upcomingSprints.length === 0 && activeSprint && (
-								<div className="mt-4 flex items-center gap-2">
+								<div className="flex items-center gap-2">
 									<Checkbox
 										checked={activeSprint.id === newTaskData.sprintId}
 										onCheckedChange={(checked) =>
