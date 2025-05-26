@@ -20,8 +20,11 @@ const router = <
 /**
  * Adapts a Hono middleware to be compatible with the type-safe middleware format
  */
+// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
 export function fromHono<E extends Env = any>(
+	// biome-ignore lint/suspicious/noExplicitAny: Hono middleware handlers accept any environment type
 	honoMiddleware: MiddlewareHandler<any>,
+	// biome-ignore lint/suspicious/noExplicitAny: Middleware function can accept any context type
 ): MiddlewareFunction<any, void, E> {
 	return async ({ c, next }) => {
 		await honoMiddleware(c, async () => {
@@ -32,6 +35,7 @@ export function fromHono<E extends Env = any>(
 }
 
 class JStack {
+	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
 	init<E extends Env = any>() {
 		return {
 			/**

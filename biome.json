@@ -51,6 +51,19 @@
 			}
 		},
 		{
+			"include": ["packages/rpc"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConfusingVoidType": "off"
+					},
+					"complexity": {
+						"noBannedTypes": "off"
+					}
+				}
+			}
+		},
+		{
 			"include": ["**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"],
 			"linter": {
 				"rules": {

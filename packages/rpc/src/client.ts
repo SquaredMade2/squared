@@ -206,6 +206,7 @@ export const createClient = <T extends Router<any>>(
 //   return mappedUrl + targetUrl.pathname
 // }
 
+// biome-ignore lint/suspicious/noExplicitAny: JSON parsing can return any data structure
 const parseJsonResponse = async (response: Response): Promise<any> => {
 	const text = await response.text();
 	const isSuperjson = response.headers.get("x-is-superjson") === "true";
@@ -218,6 +219,7 @@ const parseJsonResponse = async (response: Response): Promise<any> => {
 	}
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: Serialization functions handle any input data
 function serializeWithSuperJSON(data: any): any {
 	if (typeof data !== "object" || data === null) {
 		return data;
@@ -231,9 +233,11 @@ function serializeWithSuperJSON(data: any): any {
 }
 
 function createProxy(
+	// biome-ignore lint/suspicious/noExplicitAny: Proxy functions work with any client type
 	baseClient: any,
 	baseUrl: string,
 	path: string[] = [],
+	// biome-ignore lint/suspicious/noExplicitAny: Proxy return type is dynamic based on client structure
 ): any {
 	return new Proxy(baseClient, {
 		get(target, prop, receiver) {
@@ -241,6 +245,7 @@ function createProxy(
 				const routePath = [...path, prop];
 
 				if (prop === "$get") {
+					// biome-ignore lint/suspicious/noExplicitAny: HTTP method arguments can be any data structure
 					return async (...args: any[]) => {
 						const [data, options] = args;
 						const serializedQuery = serializeWithSuperJSON(data);
@@ -249,6 +254,7 @@ function createProxy(
 				}
 
 				if (prop === "$post") {
+					// biome-ignore lint/suspicious/noExplicitAny: HTTP method arguments can be any data structure
 					return async (...args: any[]) => {
 						const [data, options] = args;
 						const serializedJson = serializeWithSuperJSON(data);
@@ -257,6 +263,7 @@ function createProxy(
 				}
 
 				if (prop === "$url") {
+					// biome-ignore lint/suspicious/noExplicitAny: URL args can be any query parameters
 					return (args?: any) => {
 						const endpointPath = `/${routePath.slice(0, -1).join("/")}`;
 						const normalizedPath = endpointPath.replace(baseUrl, "");

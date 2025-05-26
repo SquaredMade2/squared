@@ -16,7 +16,12 @@ export type InferSchemaFromRouters<
 };
 
 export function mergeRouters<
-	R extends Record<string, Router<any> | (() => Promise<Router<any>>)>,
+	R extends Record<
+		string,
+		// biome-ignore lint/suspicious/noExplicitAny: Router merger accepts routers with any type parameters
+		Router<any> | (() => Promise<Router<any>>)
+	>,
+	// biome-ignore lint/suspicious/noExplicitAny: Hono API instance can have any type parameters
 >(api: Hono<any, any, any>, routers: R): Router<InferSchemaFromRouters<R>> {
 	const mergedRouter = new Router();
 	Object.assign(mergedRouter, api);

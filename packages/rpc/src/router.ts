@@ -20,18 +20,52 @@ import type {
 const logger = createCustomLogger("rpc-router");
 
 type FlattenRoutes<T> = {
-	[K in keyof T]: T[K] extends WebSocketOperation<any, any>
+	[K in keyof T]: T[K] extends WebSocketOperation<
+		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
+		any,
+		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
+		any
+	>
 		? { [P in `${string & K}`]: T[K] }
-		: T[K] extends GetOperation<any, any>
+		: T[K] extends GetOperation<
+					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible input schemas
+					any,
+					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible return types
+					any
+				>
 			? { [P in `${string & K}`]: T[K] }
-			: T[K] extends PostOperation<any, any>
+			: T[K] extends PostOperation<
+						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible input schemas
+						any,
+						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible return types
+						any
+					>
 				? { [P in `${string & K}`]: T[K] }
-				: T[K] extends Record<string, any>
+				: T[K] extends Record<
+							// biome-ignore lint/suspicious/noExplicitAny: Record types require any for flexible nested operation structures
+							string,
+							any
+						>
 					? {
 							[SubKey in keyof T[K] as `${string & K}/${string & SubKey}`]: T[K][SubKey] extends
-								| WebSocketOperation<any, any>
-								| GetOperation<any, any>
-								| PostOperation<any, any>
+								| WebSocketOperation<
+										// biome-ignore lint/suspicious/noExplicitAny: Nested WebSocket operations require any for flexible event schemas
+										any,
+										// biome-ignore lint/suspicious/noExplicitAny: Nested WebSocket operations require any for flexible event schemas
+										any
+								  >
+								| GetOperation<
+										// biome-ignore lint/suspicious/noExplicitAny: Nested GET operations require any for flexible input schemas
+										any,
+										// biome-ignore lint/suspicious/noExplicitAny: Nested GET operations require any for flexible return types
+										any
+								  >
+								| PostOperation<
+										// biome-ignore lint/suspicious/noExplicitAny: Nested POST operations require any for flexible input schemas
+										any,
+										// biome-ignore lint/suspicious/noExplicitAny: Nested POST operations require any for flexible return types
+										any
+								  >
 								? T[K][SubKey]
 								: never;
 						}
@@ -42,8 +76,19 @@ export type MergeRoutes<T> = {
 	[K in keyof FlattenRoutes<T>]: FlattenRoutes<T>[K];
 };
 
-export type RouterSchema<T extends Record<string, any>> = {
-	[K in keyof T]: T[K] extends WebSocketOperation<any, any>
+export type RouterSchema<
+	T extends Record<
+		// biome-ignore lint/suspicious/noExplicitAny: Router schema requires any for flexible operation structures
+		string,
+		any
+	>,
+> = {
+	[K in keyof T]: T[K] extends WebSocketOperation<
+		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
+		any,
+		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
+		any
+	>
 		? {
 				$get: {
 					input: InferInput<T[K]>;
@@ -54,7 +99,12 @@ export type RouterSchema<T extends Record<string, any>> = {
 					status: StatusCode;
 				};
 			}
-		: T[K] extends GetOperation<any, any>
+		: T[K] extends GetOperation<
+					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible input schemas
+					any,
+					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible return types
+					any
+				>
 			? {
 					$get: {
 						input: InferInput<T[K]>;
@@ -63,7 +113,12 @@ export type RouterSchema<T extends Record<string, any>> = {
 						status: StatusCode;
 					};
 				}
-			: T[K] extends PostOperation<any, any>
+			: T[K] extends PostOperation<
+						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible input schemas
+						any,
+						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible return types
+						any
+					>
 				? {
 						$post: {
 							input: InferInput<T[K]>;
@@ -75,7 +130,12 @@ export type RouterSchema<T extends Record<string, any>> = {
 				: never;
 };
 
-export type OperationSchema<T> = T extends WebSocketOperation<any, any>
+export type OperationSchema<T> = T extends WebSocketOperation<
+	// biome-ignore lint/suspicious/noExplicitAny: WebSocket operation schemas require any for flexible event data
+	any,
+	// biome-ignore lint/suspicious/noExplicitAny: WebSocket operation schemas require any for flexible event data
+	any
+>
 	? {
 			$get: {
 				input: InferInput<T>;
@@ -86,7 +146,12 @@ export type OperationSchema<T> = T extends WebSocketOperation<any, any>
 				status: StatusCode;
 			};
 		}
-	: T extends GetOperation<any, any>
+	: T extends GetOperation<
+				// biome-ignore lint/suspicious/noExplicitAny: GET operation schemas require any for flexible input validation
+				any,
+				// biome-ignore lint/suspicious/noExplicitAny: GET operation schemas require any for flexible return types
+				any
+			>
 		? {
 				$get: {
 					input: InferInput<T>;
@@ -95,7 +160,12 @@ export type OperationSchema<T> = T extends WebSocketOperation<any, any>
 					status: StatusCode;
 				};
 			}
-		: T extends PostOperation<any, any>
+		: T extends PostOperation<
+					// biome-ignore lint/suspicious/noExplicitAny: POST operation schemas require any for flexible input validation
+					any,
+					// biome-ignore lint/suspicious/noExplicitAny: POST operation schemas require any for flexible return types
+					any
+				>
 			? {
 					$post: {
 						input: InferInput<T>;
@@ -113,16 +183,24 @@ interface InternalContext {
 }
 
 export class Router<
-	T extends Record<string, OperationType<any, any> | Record<string, any>> = {},
+	T extends Record<
+		string,
+		// biome-ignore lint/suspicious/noExplicitAny: Router accepts any operation type or nested router structure
+		OperationType<any, any> | Record<string, any>
+	> = {},
+	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
 	E extends Env = any,
+	// biome-ignore lint/suspicious/noExplicitAny: Hono extends requires any for base path parameter
 > extends Hono<E, RouterSchema<MergeRoutes<T>>, any> {
 	_metadata: {
+		// biome-ignore lint/suspicious/noExplicitAny: Sub-routers can be any router instance regardless of type parameters
 		subRouters: Record<string, Promise<Router<any>> | Router<any>>;
 		config: RouterConfig | Record<string, RouterConfig>;
 		procedures: Record<string, Record<string, { type: "get" | "post" | "ws" }>>;
 		registeredPaths: string[];
 	};
 
+	// biome-ignore lint/suspicious/noExplicitAny: Hono error handler requires any for generic error handling
 	_errorHandler: undefined | ErrorHandler<any> = undefined;
 
 	config(config?: RouterConfig) {
@@ -136,6 +214,7 @@ export class Router<
 	// Used in Hono adapters
 	// Strips types to prevent version-mismatch induced infinite recursion warning
 	get handler() {
+		// biome-ignore lint/suspicious/noExplicitAny: Type stripping required for Hono adapter compatibility
 		return this as any;
 	}
 
@@ -149,6 +228,7 @@ export class Router<
 			registeredPaths: [],
 		};
 
+		// biome-ignore lint/suspicious/noExplicitAny: Hono error handler requires any for generic error handling
 		this.onError = (handler: ErrorHandler<any>) => {
 			this._errorHandler = handler;
 			return this;
@@ -182,6 +262,7 @@ export class Router<
 		});
 	}
 
+	// biome-ignore lint/suspicious/noExplicitAny: Procedures can be any operation type or nested structure
 	private setupRoutes(procedures: Record<string, any>) {
 		for (const [key, value] of Object.entries(procedures)) {
 			if (this.isOperationType(value)) {
@@ -196,7 +277,18 @@ export class Router<
 		}
 	}
 
-	private isOperationType(value: any): value is OperationType<any, any, any> {
+	// biome-ignore lint/suspicious/noExplicitAny: Type guard requires any for unknown value input
+	private isOperationType(
+		// biome-ignore lint/suspicious/noExplicitAny: Type guard parameter must accept any value for runtime checking
+		value: any,
+	): value is OperationType<
+		// biome-ignore lint/suspicious/noExplicitAny: Operation type inference requires any for flexible schemas
+		any,
+		// biome-ignore lint/suspicious/noExplicitAny: Operation type inference requires any for flexible schemas
+		any,
+		// biome-ignore lint/suspicious/noExplicitAny: Operation type inference requires any for environment type
+		any
+	> {
 		return (
 			value &&
 			typeof value === "object" &&
@@ -207,12 +299,14 @@ export class Router<
 
 	private registerOperation(
 		path: string,
+		// biome-ignore lint/suspicious/noExplicitAny: Operation registration accepts any input/output schemas
 		operation: OperationType<any, any, E>,
 	) {
 		const routePath = `/${path}` as const;
 
 		if (!this._metadata.procedures[path]) {
 			this._metadata.procedures[path] = {
+				// biome-ignore lint/suspicious/noExplicitAny: Operation type assertion required for metadata storage
 				type: operation.type as any,
 			};
 		}

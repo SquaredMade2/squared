@@ -19,6 +19,7 @@ type InferIncomingData<Events> = Events extends ZodTypeAny
 	: void;
 
 export class Procedure<
+	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
 	E extends Env = any,
 	Ctx = {},
 	InputSchema extends ZodTypeAny | void = void,
@@ -192,6 +193,7 @@ export class Procedure<
 		handler: MiddlewareFunction<Ctx, Return, E>,
 	): Procedure<E, Ctx & T & Return, InputSchema, Incoming, Outgoing> {
 		return new Procedure<E, Ctx & T & Return, InputSchema, Incoming, Outgoing>(
+			// biome-ignore lint/suspicious/noExplicitAny: Middleware handler type assertion required for generic middleware chaining
 			[...this.middlewares, handler as any],
 			this.inputSchema,
 			this.incomingSchema,
@@ -199,6 +201,7 @@ export class Procedure<
 		);
 	}
 
+	// biome-ignore lint/suspicious/noExplicitAny: Return type can be any response structure
 	get<Return extends OptionalPromise<ResponseType<any>>>(
 		handler: ({
 			ctx,
@@ -213,11 +216,13 @@ export class Procedure<
 		return {
 			type: "get",
 			schema: this.inputSchema,
+			// biome-ignore lint/suspicious/noExplicitAny: Handler type assertion required for operation type compatibility
 			handler: handler as any,
 			middlewares: this.middlewares,
 		};
 	}
 
+	// biome-ignore lint/suspicious/noExplicitAny: Return type can be any response structure
 	query<Return extends OptionalPromise<ResponseType<any>>>(
 		handler: ({
 			ctx,
@@ -232,6 +237,7 @@ export class Procedure<
 		return this.get(handler);
 	}
 
+	// biome-ignore lint/suspicious/noExplicitAny: Return type can be any response structure
 	post<Return extends OptionalPromise<ResponseType<any>>>(
 		handler: ({
 			ctx,
@@ -246,11 +252,13 @@ export class Procedure<
 		return {
 			type: "post",
 			schema: this.inputSchema,
+			// biome-ignore lint/suspicious/noExplicitAny: Handler type assertion required for operation type compatibility
 			handler: handler as any,
 			middlewares: this.middlewares,
 		};
 	}
 
+	// biome-ignore lint/suspicious/noExplicitAny: Return type can be any response structure
 	mutation<Return extends OptionalPromise<ResponseType<any>>>(
 		handler: ({
 			ctx,
@@ -285,6 +293,7 @@ export class Procedure<
 		return {
 			type: "ws",
 			outputFormat: "ws",
+			// biome-ignore lint/suspicious/noExplicitAny: Handler type assertion required for WebSocket operation type compatibility
 			handler: handler as any,
 			middlewares: this.middlewares,
 		};

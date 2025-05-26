@@ -71,6 +71,7 @@ export class ServerSocket<IncomingEvents, OutgoingEvents> {
 
 	off<K extends keyof IncomingEvents & SystemEvents>(
 		event: K,
+		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.off(event as string, callback);
@@ -78,6 +79,7 @@ export class ServerSocket<IncomingEvents, OutgoingEvents> {
 
 	on<K extends keyof IncomingEvents>(
 		event: K,
+		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.on(event as string, callback);
@@ -381,6 +383,7 @@ Fix this issue: https://jstack.app/docs/getting-started/local-development
 
 	off<K extends keyof IncomingEvents & SystemEvents>(
 		event: K,
+		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.off(event as string, callback);
@@ -388,6 +391,7 @@ Fix this issue: https://jstack.app/docs/getting-started/local-development
 
 	on<K extends keyof IncomingEvents>(
 		event: K,
+		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.on(event as string, callback);
