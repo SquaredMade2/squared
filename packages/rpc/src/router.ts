@@ -5,6 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Env, ErrorHandler, MiddlewareHandler } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
 import { z } from "zod";
+import type { ZodType } from "zod/v4";
 import { bodyParsingMiddleware, queryParsingMiddleware } from "./middleware";
 import { IO, ServerSocket } from "./sockets";
 import type {
@@ -20,52 +21,19 @@ import type {
 const logger = createCustomLogger("rpc-router");
 
 type FlattenRoutes<T> = {
-	[K in keyof T]: T[K] extends WebSocketOperation<
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
-		any,
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
-		any
-	>
+	[K in keyof T]: T[K] extends WebSocketOperation<ZodType, ZodType>
 		? { [P in `${string & K}`]: T[K] }
-		: T[K] extends GetOperation<
-					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible input schemas
-					any,
-					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible return types
-					any
-				>
+		: T[K] extends GetOperation<ZodType | void>
 			? { [P in `${string & K}`]: T[K] }
-			: T[K] extends PostOperation<
-						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible input schemas
-						any,
-						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible return types
-						any
-					>
+			: T[K] extends PostOperation<ZodType | void>
 				? { [P in `${string & K}`]: T[K] }
-				: T[K] extends Record<
-							// biome-ignore lint/suspicious/noExplicitAny: Record types require any for flexible nested operation structures
-							string,
-							any
-						>
+				: T[K] extends Record<string, unknown>
 					? {
-							[SubKey in keyof T[K] as `${string & K}/${string & SubKey}`]: T[K][SubKey] extends
-								| WebSocketOperation<
-										// biome-ignore lint/suspicious/noExplicitAny: Nested WebSocket operations require any for flexible event schemas
-										any,
-										// biome-ignore lint/suspicious/noExplicitAny: Nested WebSocket operations require any for flexible event schemas
-										any
-								  >
-								| GetOperation<
-										// biome-ignore lint/suspicious/noExplicitAny: Nested GET operations require any for flexible input schemas
-										any,
-										// biome-ignore lint/suspicious/noExplicitAny: Nested GET operations require any for flexible return types
-										any
-								  >
-								| PostOperation<
-										// biome-ignore lint/suspicious/noExplicitAny: Nested POST operations require any for flexible input schemas
-										any,
-										// biome-ignore lint/suspicious/noExplicitAny: Nested POST operations require any for flexible return types
-										any
-								  >
+							[SubKey in keyof T[K] as `${string & K}/${string &
+								SubKey}`]: T[K][SubKey] extends
+								| WebSocketOperation<ZodType, ZodType>
+								| GetOperation<ZodType | void>
+								| PostOperation<ZodType | void>
 								? T[K][SubKey]
 								: never;
 						}
@@ -76,35 +44,19 @@ export type MergeRoutes<T> = {
 	[K in keyof FlattenRoutes<T>]: FlattenRoutes<T>[K];
 };
 
-export type RouterSchema<
-	T extends Record<
-		// biome-ignore lint/suspicious/noExplicitAny: Router schema requires any for flexible operation structures
-		string,
-		any
-	>,
-> = {
-	[K in keyof T]: T[K] extends WebSocketOperation<
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
-		any,
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket operations require any for flexible event schemas
-		any
-	>
+export type RouterSchema<T extends Record<string, unknown>> = {
+	[K in keyof T]: T[K] extends WebSocketOperation<ZodType, ZodType>
 		? {
 				$get: {
 					input: InferInput<T[K]>;
-					output: {};
+					output: Record<string, never>;
 					incoming: NonNullable<T[K]["incoming"]>;
 					outgoing: NonNullable<T[K]["outgoing"]>;
 					outputFormat: "ws";
 					status: StatusCode;
 				};
 			}
-		: T[K] extends GetOperation<
-					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible input schemas
-					any,
-					// biome-ignore lint/suspicious/noExplicitAny: GET operations require any for flexible return types
-					any
-				>
+		: T[K] extends GetOperation<ZodType | void>
 			? {
 					$get: {
 						input: InferInput<T[K]>;
@@ -113,12 +65,7 @@ export type RouterSchema<
 						status: StatusCode;
 					};
 				}
-			: T[K] extends PostOperation<
-						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible input schemas
-						any,
-						// biome-ignore lint/suspicious/noExplicitAny: POST operations require any for flexible return types
-						any
-					>
+			: T[K] extends PostOperation<ZodType | void>
 				? {
 						$post: {
 							input: InferInput<T[K]>;
@@ -130,28 +77,18 @@ export type RouterSchema<
 				: never;
 };
 
-export type OperationSchema<T> = T extends WebSocketOperation<
-	// biome-ignore lint/suspicious/noExplicitAny: WebSocket operation schemas require any for flexible event data
-	any,
-	// biome-ignore lint/suspicious/noExplicitAny: WebSocket operation schemas require any for flexible event data
-	any
->
+export type OperationSchema<T> = T extends WebSocketOperation<ZodType, ZodType>
 	? {
 			$get: {
 				input: InferInput<T>;
-				output: {};
+				output: Record<string, never>;
 				incoming: NonNullable<T["incoming"]>;
 				outgoing: NonNullable<T["outgoing"]>;
 				outputFormat: "ws";
 				status: StatusCode;
 			};
 		}
-	: T extends GetOperation<
-				// biome-ignore lint/suspicious/noExplicitAny: GET operation schemas require any for flexible input validation
-				any,
-				// biome-ignore lint/suspicious/noExplicitAny: GET operation schemas require any for flexible return types
-				any
-			>
+	: T extends GetOperation<ZodType | void>
 		? {
 				$get: {
 					input: InferInput<T>;
@@ -160,12 +97,7 @@ export type OperationSchema<T> = T extends WebSocketOperation<
 					status: StatusCode;
 				};
 			}
-		: T extends PostOperation<
-					// biome-ignore lint/suspicious/noExplicitAny: POST operation schemas require any for flexible input validation
-					any,
-					// biome-ignore lint/suspicious/noExplicitAny: POST operation schemas require any for flexible return types
-					any
-				>
+		: T extends PostOperation<ZodType | void>
 			? {
 					$post: {
 						input: InferInput<T>;
@@ -182,26 +114,37 @@ interface InternalContext {
 	__parsed_body?: Record<string, unknown>;
 }
 
+// Type for WebSocket bindings
+interface WebSocketBindings {
+	UPSTASH_REDIS_REST_URL: string | undefined;
+	UPSTASH_REDIS_REST_TOKEN: string | undefined;
+}
+
+// Type for sub-router storage
+type SubRouterValue<
+	TRouter = Router<
+		Record<string, Record<string, unknown> | OperationType<ZodType, ZodType>>
+	>,
+> = Promise<TRouter> | TRouter;
+
+// Type for procedures metadata
+type ProcedureMetadata = Record<string, { type: "get" | "post" | "ws" }>;
+
 export class Router<
 	T extends Record<
 		string,
-		// biome-ignore lint/suspicious/noExplicitAny: Router accepts any operation type or nested router structure
-		OperationType<any, any> | Record<string, any>
-	> = {},
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	E extends Env = any,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono extends requires any for base path parameter
-> extends Hono<E, RouterSchema<MergeRoutes<T>>, any> {
+		OperationType<ZodType, ZodType> | Record<string, unknown>
+	> = Record<string, never>,
+	E extends Env = Env,
+> extends Hono<E, RouterSchema<MergeRoutes<T>>, string> {
 	_metadata: {
-		// biome-ignore lint/suspicious/noExplicitAny: Sub-routers can be any router instance regardless of type parameters
-		subRouters: Record<string, Promise<Router<any>> | Router<any>>;
+		subRouters: Record<string, SubRouterValue>;
 		config: RouterConfig | Record<string, RouterConfig>;
-		procedures: Record<string, Record<string, { type: "get" | "post" | "ws" }>>;
+		procedures: Record<string, ProcedureMetadata>;
 		registeredPaths: string[];
 	};
 
-	// biome-ignore lint/suspicious/noExplicitAny: Hono error handler requires any for generic error handling
-	_errorHandler: undefined | ErrorHandler<any> = undefined;
+	_errorHandler: ErrorHandler<E> | undefined = undefined;
 
 	config(config?: RouterConfig) {
 		if (config) {
@@ -213,9 +156,8 @@ export class Router<
 
 	// Used in Hono adapters
 	// Strips types to prevent version-mismatch induced infinite recursion warning
-	get handler() {
-		// biome-ignore lint/suspicious/noExplicitAny: Type stripping required for Hono adapter compatibility
-		return this as any;
+	get handler(): Hono<E> {
+		return this as unknown as Hono<E>;
 	}
 
 	constructor(procedures: T = {} as T) {
@@ -228,8 +170,7 @@ export class Router<
 			registeredPaths: [],
 		};
 
-		// biome-ignore lint/suspicious/noExplicitAny: Hono error handler requires any for generic error handling
-		this.onError = (handler: ErrorHandler<any>) => {
+		this.onError = (handler: ErrorHandler<E>) => {
 			this._errorHandler = handler;
 			return this;
 		};
@@ -262,13 +203,13 @@ export class Router<
 		});
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Procedures can be any operation type or nested structure
-	private setupRoutes(procedures: Record<string, any>) {
+	private setupRoutes(procedures: Record<string, unknown>) {
 		for (const [key, value] of Object.entries(procedures)) {
 			if (this.isOperationType(value)) {
 				this.registerOperation(key, value);
 			} else if (typeof value === "object" && value !== null) {
-				for (const [subKey, subValue] of Object.entries(value)) {
+				const nestedProcedures = value as Record<string, unknown>;
+				for (const [subKey, subValue] of Object.entries(nestedProcedures)) {
 					if (this.isOperationType(subValue)) {
 						this.registerOperation(`${key}/${subKey}`, subValue);
 					}
@@ -277,37 +218,27 @@ export class Router<
 		}
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Type guard requires any for unknown value input
 	private isOperationType(
-		// biome-ignore lint/suspicious/noExplicitAny: Type guard parameter must accept any value for runtime checking
-		value: any,
-	): value is OperationType<
-		// biome-ignore lint/suspicious/noExplicitAny: Operation type inference requires any for flexible schemas
-		any,
-		// biome-ignore lint/suspicious/noExplicitAny: Operation type inference requires any for flexible schemas
-		any,
-		// biome-ignore lint/suspicious/noExplicitAny: Operation type inference requires any for environment type
-		any
-	> {
+		value: unknown,
+	): value is OperationType<ZodType, ZodType, E> {
 		return (
-			value &&
+			value !== null &&
 			typeof value === "object" &&
 			"type" in value &&
-			(value.type === "get" || value.type === "post" || value.type === "ws")
+			typeof (value as { type: unknown }).type === "string" &&
+			["get", "post", "ws"].includes((value as { type: string }).type)
 		);
 	}
 
 	private registerOperation(
 		path: string,
-		// biome-ignore lint/suspicious/noExplicitAny: Operation registration accepts any input/output schemas
-		operation: OperationType<any, any, E>,
+		operation: OperationType<ZodType, ZodType, E>,
 	) {
 		const routePath = `/${path}` as const;
 
 		if (!this._metadata.procedures[path]) {
 			this._metadata.procedures[path] = {
-				// biome-ignore lint/suspicious/noExplicitAny: Operation type assertion required for metadata storage
-				type: operation.type as any,
+				type: operation,
 			};
 		}
 
@@ -319,9 +250,14 @@ export class Router<
 					>;
 					const middlewareOutput = typedC.get("__middleware_output") ?? {};
 
-					const nextWrapper = async <B>(args: B) => {
-						Object.assign(middlewareOutput, args);
-						return middlewareOutput;
+					const nextWrapper = async <B extends Record<string, unknown>>(
+						args?: B,
+					): Promise<B & typeof middlewareOutput> => {
+						if (args) {
+							Object.assign(middlewareOutput, args);
+						}
+						return { ...middlewareOutput, ...args } as B &
+							typeof middlewareOutput;
 					};
 
 					const res = await middleware({
@@ -330,7 +266,7 @@ export class Router<
 						c: c as ContextWithSuperJSON<E>,
 					});
 
-					if (res) {
+					if (res && typeof res === "object") {
 						Object.assign(middlewareOutput, res);
 					}
 
@@ -342,7 +278,9 @@ export class Router<
 			});
 
 		if (operation.type === "get") {
-			if (operation.schema) {
+			const getOp = operation as GetOperation<ZodType | void, unknown, E>;
+
+			if (getOp.schema) {
 				this.get(
 					routePath,
 					queryParsingMiddleware,
@@ -353,13 +291,13 @@ export class Router<
 						const parsedQuery = typedC.get("__parsed_query");
 
 						const queryInput =
-							Object.keys(parsedQuery || {}).length === 0
-								? undefined
-								: parsedQuery;
+							parsedQuery && Object.keys(parsedQuery).length > 0
+								? parsedQuery
+								: undefined;
 
 						// caught at app-level with .onError
-						const input = operation.schema?.parse(queryInput);
-						const result = await operation.handler({
+						const input = getOp.schema?.parse(queryInput);
+						const result = await getOp.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
 							input,
@@ -373,16 +311,18 @@ export class Router<
 					const typedC = c as Context<E & { Variables: InternalContext }>;
 					const ctx = typedC.get("__middleware_output") || {};
 
-					const result = await operation.handler({
+					const result = await getOp.handler({
 						c: c as ContextWithSuperJSON<E>,
 						ctx,
-						input: undefined,
+						input: undefined as void,
 					});
 					return result === undefined ? c.json(undefined) : result;
 				});
 			}
 		} else if (operation.type === "post") {
-			if (operation.schema) {
+			const postOp = operation as PostOperation<ZodType | void, unknown, E>;
+
+			if (postOp.schema) {
 				this.post(
 					routePath,
 					bodyParsingMiddleware,
@@ -393,17 +333,17 @@ export class Router<
 						const parsedBody = typedC.get("__parsed_body");
 
 						const bodyInput =
-							Object.keys(parsedBody || {}).length === 0
-								? undefined
-								: parsedBody;
+							parsedBody && Object.keys(parsedBody).length > 0
+								? parsedBody
+								: undefined;
 
 						// caught at app-level with .onError
-						const input = operation.schema?.parse(bodyInput);
+						const input = postOp.schema?.parse(bodyInput);
 
-						const result = await operation.handler({
+						const result = await postOp.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
-							input,
+							input: input as ZodType | void,
 						});
 
 						return result === undefined ? c.json(undefined) : result;
@@ -414,15 +354,17 @@ export class Router<
 					const typedC = c as Context<E & { Variables: InternalContext }>;
 					const ctx = typedC.get("__middleware_output") || {};
 
-					const result = await operation.handler({
+					const result = await postOp.handler({
 						c: c as ContextWithSuperJSON<E>,
 						ctx,
-						input: undefined,
+						input: undefined as void,
 					});
 					return result === undefined ? c.json(undefined) : result;
 				});
 			}
 		} else if (operation.type === "ws") {
+			const wsOp = operation as WebSocketOperation<ZodType, ZodType, E>;
+
 			this.get(
 				routePath,
 				queryParsingMiddleware,
@@ -431,10 +373,7 @@ export class Router<
 					const typedC = c as Context<
 						E & {
 							Variables: InternalContext;
-							Bindings: {
-								UPSTASH_REDIS_REST_URL: string | undefined;
-								UPSTASH_REDIS_REST_TOKEN: string | undefined;
-							};
+							Bindings: WebSocketBindings;
 						}
 					>;
 
@@ -461,17 +400,20 @@ export class Router<
 
 					const io = new IO(UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN);
 
-					const handler = await operation.handler({
+					const handler = await wsOp.handler({
 						io,
 						c: c as ContextWithSuperJSON<E>,
 						ctx,
 					});
 
-					const socket = new ServerSocket(server, {
+					const socket = new ServerSocket<
+						typeof wsOp.incoming,
+						typeof wsOp.outgoing
+					>(server, {
 						redisUrl: UPSTASH_REDIS_REST_URL,
 						redisToken: UPSTASH_REDIS_REST_TOKEN,
-						incomingSchema: operation.incoming,
-						outgoingSchema: operation.outgoing,
+						incomingSchema: wsOp.incoming,
+						outgoingSchema: wsOp.outgoing,
 					});
 
 					handler.onConnect?.({ socket });
@@ -490,7 +432,7 @@ export class Router<
 					server.onmessage = async (event) => {
 						try {
 							const rawData = z.string().parse(event.data);
-							const parsedData = JSON.parse(rawData);
+							const parsedData = JSON.parse(rawData) as unknown;
 
 							const [eventName, eventData] = eventSchema.parse(parsedData);
 

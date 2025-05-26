@@ -3,6 +3,7 @@ import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
 import type { z } from "zod";
+import type { ZodType } from "zod/v4";
 import type { IO, ServerSocket } from "./sockets";
 
 type SuperJSONParsedType<T> = ReturnType<typeof superjson.parse<T>>;
@@ -21,75 +22,74 @@ export type SuperJSONHandler = {
 };
 
 export type ContextWithSuperJSON<
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment and path parameters
-	E extends Env = any,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic path parameters
-	P extends string = any,
-	I extends Input = {},
+	E extends Env = Env,
+	P extends string = string,
+	I extends Input = Input,
 > = Context<E, P, I> & SuperJSONHandler;
 
 export type InferMiddlewareOutput<T> = T extends MiddlewareFunction<
-	// biome-ignore lint/suspicious/noExplicitAny: Generic inference requires any for unknown context types
-	any,
+	unknown,
 	infer R,
-	// biome-ignore lint/suspicious/noExplicitAny: Generic inference requires any for unknown environment types
-	any
+	Env
 >
 	? R
 	: unknown;
 
 export type MiddlewareFunction<
-	T = {},
+	T = Record<string, unknown>,
 	R = void,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	E extends Env = any,
+	E extends Env = Env,
 > = (params: {
 	ctx: T;
-	next: <B>(args?: B) => Promise<B & T>;
+	next: <B extends Record<string, unknown>>(args?: B) => Promise<B & T>;
 	c: ContextWithSuperJSON<E>;
 }) => Promise<R>;
 
-// biome-ignore lint/suspicious/noExplicitAny: WebSocket events can contain any data structure
-export type EmitFunction = (event: string, data?: any) => Promise<void>;
-// biome-ignore lint/suspicious/noExplicitAny: WebSocket events can contain any data structure
-export type RoomEmitFunction = (room: string, data?: any) => Promise<void>;
+export type EmitFunction = (event: string, data?: unknown) => Promise<void>;
 
-export type WebSocketHandler<IncomingSchema, OutgoingSchema> = {
+export type RoomEmitFunction = (room: string, data?: unknown) => Promise<void>;
+
+export type WebSocketHandler<
+	IncomingSchema extends ZodType | undefined,
+	OutgoingSchema extends ZodType | undefined,
+> = {
 	onConnect?: ({
 		socket,
 	}: {
-		socket: ServerSocket<IncomingSchema, OutgoingSchema>;
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket handler return types can be any value or void
-	}) => any;
+		socket:
+			| ServerSocket<IncomingSchema | undefined, OutgoingSchema | undefined>
+			| undefined;
+	}) => unknown;
 	onDisconnect?: ({
 		socket,
 	}: {
-		socket: ServerSocket<IncomingSchema, OutgoingSchema>;
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket handler return types can be any value or void
-	}) => any;
+		socket: ServerSocket<
+			IncomingSchema | undefined,
+			OutgoingSchema | undefined
+		>;
+	}) => unknown;
 	onError?: ({
 		socket,
 		error,
 	}: {
-		socket: ServerSocket<IncomingSchema, OutgoingSchema>;
+		socket: ServerSocket<
+			IncomingSchema | undefined,
+			OutgoingSchema | undefined
+		>;
 		error: Event;
-		// biome-ignore lint/suspicious/noExplicitAny: WebSocket handler return types can be any value or void
-	}) => any;
+	}) => unknown;
 };
 
 export type WebSocketOperation<
-	// biome-ignore lint/suspicious/noExplicitAny: WebSocket schemas require any for flexible event data structures
-	IncomingSchema extends Record<string, any>,
-	// biome-ignore lint/suspicious/noExplicitAny: WebSocket schemas require any for flexible event data structures
-	OutgoingSchema extends Record<string, any>,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	E extends Env = any,
+	IncomingSchema extends ZodType,
+	OutgoingSchema extends ZodType,
+	E extends Env = Env,
 > = {
 	type: "ws";
 	incoming?: IncomingSchema;
 	outgoing?: OutgoingSchema;
 	outputFormat: "ws";
-	handler: <Input>({
+	handler: <Input extends Record<string, unknown>>({
 		io,
 		c,
 		ctx,
@@ -98,8 +98,8 @@ export type WebSocketOperation<
 		c: ContextWithSuperJSON<E>;
 		ctx: Input;
 	}) => OptionalPromise<WebSocketHandler<IncomingSchema, OutgoingSchema>>;
-	// biome-ignore lint/suspicious/noExplicitAny: Middleware functions can accept any context and return any value
-	middlewares: MiddlewareFunction<any, any, E>[];
+
+	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
 export type ResponseType<Output> =
@@ -109,78 +109,69 @@ export type ResponseType<Output> =
 	| void;
 
 type UnwrapResponse<T> = Awaited<T> extends TypedResponse<infer U>
-	? U
+	? TypedResponse<U, StatusCode>
 	: Awaited<T> extends SuperJSONTypedResponse<infer U>
-		? U
+		? SuperJSONTypedResponse<U>
 		: Awaited<T> extends Response
-			? // biome-ignore lint/suspicious/noExplicitAny: Raw Response objects can contain any data structure
-				any
+			? Response
 			: Awaited<T> extends void
-				? void
-				: T;
+				? Response
+				: Awaited<T> extends ResponseType<infer U>
+					? ResponseType<U>
+					: Response;
 
 export type GetOperation<
-	// biome-ignore lint/suspicious/noExplicitAny: Schema can be any object structure for flexible input validation
-	Schema extends Record<string, any> | void,
-	// biome-ignore lint/suspicious/noExplicitAny: Return type can be any response structure
-	Return = OptionalPromise<ResponseType<any>>,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	E extends Env = any,
+	Schema extends ZodType | void,
+	Return = OptionalPromise<ResponseType<unknown>>,
+	E extends Env = Env,
 > = {
 	type: "get";
 	schema?: z.ZodType<Schema> | void;
-	handler: <Input>({
+	handler: <Input extends Record<string, unknown>>({
 		c,
 		ctx,
 		input,
 	}: {
 		ctx: Input;
 		c: ContextWithSuperJSON<E>;
-		// biome-ignore lint/suspicious/noExplicitAny: Input schema can be any object structure for flexible validation
-		input: Schema extends Record<string, any> ? Schema : void;
+		input: Schema extends ZodType ? Schema : void;
 	}) => UnwrapResponse<OptionalPromise<Return>>;
-	// biome-ignore lint/suspicious/noExplicitAny: Middleware functions can accept any context and return any value
-	middlewares: MiddlewareFunction<any, any, E>[];
+
+	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
 type OptionalPromise<T> = T | Promise<T>;
 
 export type PostOperation<
-	// biome-ignore lint/suspicious/noExplicitAny: Schema can be any object structure for flexible input validation
-	Schema extends Record<string, any> | void,
-	// biome-ignore lint/suspicious/noExplicitAny: Return type can be any response structure
-	Return = OptionalPromise<ResponseType<any>>,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	E extends Env = any,
+	Schema extends ZodType | void,
+	Return = OptionalPromise<ResponseType<unknown>>,
+	E extends Env = Env,
 > = {
 	type: "post";
 	schema?: z.ZodType<Schema> | void;
-	handler: <Input>({
+	handler: <Input extends Record<string, unknown>>({
 		ctx,
 		c,
+		input,
 	}: {
 		ctx: Input;
 		c: ContextWithSuperJSON<E>;
-		// biome-ignore lint/suspicious/noExplicitAny: Input schema can be any object structure for flexible validation
-		input: Schema extends Record<string, any> ? Schema : void;
+		input: Schema extends ZodType ? Schema : void;
 	}) => UnwrapResponse<OptionalPromise<Return>>;
-	// biome-ignore lint/suspicious/noExplicitAny: Middleware functions can accept any context and return any value
-	middlewares: MiddlewareFunction<any, any, E>[];
+
+	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
 export type OperationType<
-	// biome-ignore lint/suspicious/noExplicitAny: Input can be any object structure for flexible operation parameters
-	I extends Record<string, any>,
-	O extends Record<string, unknown>,
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	E extends Env = any,
+	I extends ZodType,
+	O extends ZodType,
+	E extends Env = Env,
 > =
 	| GetOperation<I, O, E>
 	| PostOperation<I, O, E>
 	| WebSocketOperation<I, O, E>;
 
-// biome-ignore lint/suspicious/noExplicitAny: Generic inference requires any for unknown output types
-export type InferInput<T> = T extends OperationType<infer I, any>
+export type InferInput<T> = T extends OperationType<infer I, ZodType>
 	? I extends z.ZodTypeAny
 		? z.infer<I>
 		: I

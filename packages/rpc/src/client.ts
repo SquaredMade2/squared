@@ -52,69 +52,76 @@ export type ClientRequest<S extends Schema> = {
 					: { param: P }
 				: R extends { query: infer Q }
 					? { query: Q }
-					: {}
-			: {},
+					: Record<string, never>
+			: Record<string, never>,
 	) => URL;
 } & (S["$get"] extends { outputFormat: "ws" }
 		? S["$get"] extends {
 				input: infer I;
-				incoming: infer Incoming extends Record<string, any>;
-				outgoing: infer Outgoing extends Record<string, any>;
+				incoming: infer Incoming extends Record<string, unknown>;
+				outgoing: infer Outgoing extends Record<string, unknown>;
 			}
 			? {
 					$ws: (args?: I) => ClientSocket<Outgoing & SystemEvents, Incoming>;
 				}
-			: {}
-		: {});
+			: Record<string, never>
+		: Record<string, never>);
 
 export type UnwrapRouterSchema<T> = T extends RouterSchema<infer R> ? R : never;
 
-export type InferRouter<T extends Router<any, any>> = T extends Router<
+export type InferRouter<T extends Router<string, unknown>> = T extends Router<
 	infer P,
-	any
+	unknown
 >
 	? RouterSchema<P>
 	: never;
 
-export type Client<T extends Router<any, any> | (() => Promise<Router<any>>)> =
-	T extends Hono<any, infer S>
-		? S extends RouterSchema<infer B>
-			? B extends MergeRoutes<infer C>
-				? C extends InferSchemaFromRouters<infer D>
-					? {
-							[K1 in keyof D]: D[K1] extends () => Promise<Router<infer P, any>>
+export type Client<
+	T extends
+		| Router<unknown, unknown>
+		| (() => Promise<Router<unknown, unknown>>),
+> = T extends Hono<unknown, infer S>
+	? S extends RouterSchema<infer B>
+		? B extends MergeRoutes<infer C>
+			? C extends InferSchemaFromRouters<infer D>
+				? {
+						[K1 in keyof D]: D[K1] extends () => Promise<
+							Router<infer P, unknown>
+						>
+							? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
+							: D[K1] extends Router<infer P, unknown>
 								? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
-								: D[K1] extends Router<infer P, any>
-									? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
-									: never;
-						}
-					: never
+								: never;
+					}
 				: never
 			: never
-		: never;
+		: never
+	: never;
 
 type OperationIO<
-	T extends Router<any, any> | (() => Promise<Router<any, any>>),
+	T extends
+		| Router<unknown, unknown>
+		| (() => Promise<Router<unknown, unknown>>),
 	IOType extends "input" | "output",
-> = T extends Hono<any, infer S>
+> = T extends Hono<unknown, infer S>
 	? S extends RouterSchema<infer B>
 		? B extends MergeRoutes<infer C>
 			? C extends InferSchemaFromRouters<infer D>
 				? {
 						[K1 in keyof D]: D[K1] extends
-							| Router<infer P, any>
-							| (() => Promise<Router<infer P, any>>)
+							| Router<infer P, unknown>
+							| (() => Promise<Router<infer P, unknown>>)
 							? {
 									[K2 in keyof P]: P[K2] extends infer Operation
-										? Operation extends PostOperation<any>
+										? Operation extends PostOperation<unknown>
 											? OperationSchema<Operation> extends {
-													$post: { [key in IOType]: any };
+													$post: { [key in IOType]: unknown };
 												}
 												? OperationSchema<Operation>["$post"][IOType]
 												: never
-											: Operation extends GetOperation<any>
+											: Operation extends GetOperation<unknown>
 												? OperationSchema<Operation> extends {
-														$get: { [key in IOType]: any };
+														$get: { [key in IOType]: unknown };
 													}
 													? OperationSchema<Operation>["$get"][IOType]
 													: never
@@ -128,18 +135,44 @@ type OperationIO<
 		: never
 	: never;
 
-export type InferRouterOutputs<T extends Router<any>> = OperationIO<
+export type InferRouterOutputs<T extends Router<unknown, unknown>> =
+	OperationIO<T, "output">;
+export type InferRouterInputs<T extends Router<unknown, unknown>> = OperationIO<
 	T,
-	"output"
+	"input"
 >;
-export type InferRouterInputs<T extends Router<any>> = OperationIO<T, "input">;
 
 export interface ClientConfig extends ClientRequestOptions {
 	baseUrl: string;
 	credentials?: RequestCredentials;
 }
 
-export const createClient = <T extends Router<any>>(
+// Type for the serialized data structure
+type SerializableValue =
+	| string
+	| number
+	| boolean
+	| null
+	| undefined
+	| SerializableValue[]
+	| { [key: string]: SerializableValue };
+
+// Type for HTTP method arguments
+type HttpMethodArgs<T = unknown> = [data?: T, options?: ClientRequestOptions];
+
+// Type for URL method arguments
+type UrlMethodArgs = { query?: Record<string, SerializableValue> };
+
+// Improved proxy target interface
+interface ProxyTarget {
+	$get?: (...args: HttpMethodArgs) => Promise<Response>;
+	$post?: (...args: HttpMethodArgs) => Promise<Response>;
+	$url?: (args?: UrlMethodArgs) => URL;
+	$ws?: () => ClientSocket<SystemEvents, Record<string, unknown>>;
+	[key: string]: unknown;
+}
+
+export const createClient = <T extends Router<unknown, unknown>>(
 	options?: ClientConfig,
 ): UnionToIntersection<Client<T>> => {
 	const {
@@ -148,7 +181,10 @@ export const createClient = <T extends Router<any>>(
 		...opts
 	} = options ?? ({} as ClientConfig);
 
-	const jfetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+	const jfetch = async (
+		input: RequestInfo | URL,
+		init?: RequestInit,
+	): Promise<Response> => {
 		// remove baseUrl from input if already included, for example during SSR
 		const inputPath = input.toString().replace(baseUrl, "");
 		const targetUrl = baseUrl + inputPath;
@@ -174,40 +210,12 @@ export const createClient = <T extends Router<any>>(
 	const baseClient = hc(baseUrl, {
 		...opts,
 		fetch: opts.fetch || jfetch,
-	}) as unknown as UnionToIntersection<Client<T>>;
+	});
 
-	return createProxy(baseClient, baseUrl) as typeof baseClient;
+	return createProxy(baseClient, baseUrl) as UnionToIntersection<Client<T>>;
 };
 
-// export type ExtractAppRouter<T> = T extends {
-//   _def: { routerConfig: Record<string, any> }
-//   registeredPaths: string[]
-//   handler: Hono<any, infer Schema, infer BasePath>
-// }
-//   ? { routes: Schema; basePath: BasePath }
-//   : never
-
-// export type ValidPath<AppType> =
-//   ExtractAppRouter<AppType> extends { routes: infer R; basePath: infer BasePath }
-//     ? keyof R extends `${infer RouterName}/${string}`
-//       ? `${BasePath & string}/${RouterName}`
-//       : never
-//     : never
-
-// export type UrlMap<AppType> = Partial<Record<ValidPath<AppType> | (string & {}), string>>
-
-// const getCloudflareUrl = (input: string, cloudflareUrls: Partial<Record<string, string>>): string | null => {
-//   const targetUrl = new URL(input)
-//   const matchingKey = Object.keys(cloudflareUrls).find((key) => targetUrl.pathname.startsWith(key))
-
-//   if (!matchingKey) return null
-
-//   const mappedUrl = cloudflareUrls[matchingKey]
-//   return mappedUrl + targetUrl.pathname
-// }
-
-// biome-ignore lint/suspicious/noExplicitAny: JSON parsing can return any data structure
-const parseJsonResponse = async (response: Response): Promise<any> => {
+const parseJsonResponse = async (response: Response): Promise<unknown> => {
 	const text = await response.text();
 	const isSuperjson = response.headers.get("x-is-superjson") === "true";
 
@@ -219,13 +227,14 @@ const parseJsonResponse = async (response: Response): Promise<any> => {
 	}
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: Serialization functions handle any input data
-function serializeWithSuperJSON(data: any): any {
+function serializeWithSuperJSON(data: unknown): Record<string, string> {
 	if (typeof data !== "object" || data === null) {
-		return data;
+		return {};
 	}
+
+	const record = data as Record<string, unknown>;
 	return Object.fromEntries(
-		Object.entries(data).map(([key, value]) => [
+		Object.entries(record).map(([key, value]) => [
 			key,
 			superjson.stringify(value),
 		]),
@@ -233,46 +242,43 @@ function serializeWithSuperJSON(data: any): any {
 }
 
 function createProxy(
-	// biome-ignore lint/suspicious/noExplicitAny: Proxy functions work with any client type
-	baseClient: any,
+	baseClient: ProxyTarget,
 	baseUrl: string,
 	path: string[] = [],
-	// biome-ignore lint/suspicious/noExplicitAny: Proxy return type is dynamic based on client structure
-): any {
+): ProxyTarget {
 	return new Proxy(baseClient, {
-		get(target, prop, receiver) {
+		get(target: ProxyTarget, prop: string | symbol, receiver): unknown {
 			if (typeof prop === "string") {
 				const routePath = [...path, prop];
 
 				if (prop === "$get") {
-					// biome-ignore lint/suspicious/noExplicitAny: HTTP method arguments can be any data structure
-					return async (...args: any[]) => {
+					return async (...args: HttpMethodArgs) => {
 						const [data, options] = args;
 						const serializedQuery = serializeWithSuperJSON(data);
-						return target.$get({ query: serializedQuery }, options);
+						return target.$get?.({ query: serializedQuery }, options);
 					};
 				}
 
 				if (prop === "$post") {
-					// biome-ignore lint/suspicious/noExplicitAny: HTTP method arguments can be any data structure
-					return async (...args: any[]) => {
+					return async (...args: HttpMethodArgs) => {
 						const [data, options] = args;
 						const serializedJson = serializeWithSuperJSON(data);
-						return target.$post({ json: serializedJson }, options);
+						return target.$post?.({ json: serializedJson }, options);
 					};
 				}
 
 				if (prop === "$url") {
-					// biome-ignore lint/suspicious/noExplicitAny: URL args can be any query parameters
-					return (args?: any) => {
+					return (args?: UrlMethodArgs): URL => {
 						const endpointPath = `/${routePath.slice(0, -1).join("/")}`;
 						const normalizedPath = endpointPath.replace(baseUrl, "");
 						const url = new URL(baseUrl + normalizedPath);
 
 						if (args?.query) {
-							Object.entries(args.query).forEach(([key, value]) => {
-								url.searchParams.append(key, String(value));
-							});
+							for (const [key, value] of Object.entries(args.query)) {
+								if (value !== null && value !== undefined) {
+									url.searchParams.append(key, String(value));
+								}
+							}
 						}
 
 						return url;
@@ -280,7 +286,7 @@ function createProxy(
 				}
 
 				if (prop === "$ws") {
-					return () => {
+					return (): ClientSocket<SystemEvents, Record<string, unknown>> => {
 						const endpointPath = `/${routePath.slice(0, -1).join("/")}`;
 						const normalizedPath = endpointPath.replace(baseUrl, "");
 						const url = new URL(baseUrl + normalizedPath);
@@ -292,12 +298,16 @@ function createProxy(
 					};
 				}
 
-				return createProxy(target[prop], baseUrl, routePath);
+				const nestedTarget = target[prop] as ProxyTarget | undefined;
+				if (nestedTarget) {
+					return createProxy(nestedTarget, baseUrl, routePath);
+				}
+
+				// Return empty object for unknown properties to maintain proxy chain
+				return createProxy({}, baseUrl, routePath);
 			}
 
 			return Reflect.get(target, prop, receiver);
 		},
 	});
 }
-
-// export const client: typeof baseClient = createProxy(baseClient)

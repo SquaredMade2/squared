@@ -1,9 +1,9 @@
 import createCustomLogger from "@squaredmade/logger";
-import { z } from "zod";
+import { ZodError, type ZodType, treeifyError } from "zod/v4";
 
 const logger = createCustomLogger("rpc-event-emitter");
 
-type Schema = z.ZodTypeAny | undefined;
+type Schema = ZodType | undefined;
 
 interface SchemaConfig {
 	incomingSchema: Schema;
@@ -48,11 +48,9 @@ export class EventEmitter {
 
 	// biome-ignore lint/suspicious/noExplicitAny: Error handling requires any for unknown error types and data
 	handleSchemaMismatch(event: string, data: any, err: any) {
-		if (err instanceof z.ZodError) {
+		if (err instanceof ZodError) {
 			logger.error(`Invalid outgoing event data for "${event}":`, {
-				errors: err.errors
-					.map((e) => `${e.path.join(".")}: ${e.message}`)
-					.join(", "),
+				errors: treeifyError(err),
 				data: JSON.stringify(data, null, 2),
 			});
 		} else {
@@ -76,11 +74,9 @@ export class EventEmitter {
 			try {
 				validatedData = this.incomingSchema.parse(data);
 			} catch (err) {
-				if (err instanceof z.ZodError) {
+				if (err instanceof ZodError) {
 					logger.error(`Invalid incoming event data for "${eventName}":`, {
-						errors: err.errors
-							.map((e) => `${e.path.join(".")}: ${e.message}`)
-							.join(", "),
+						errors: treeifyError(err),
 						data: JSON.stringify(data, null, 2),
 					});
 				} else {
