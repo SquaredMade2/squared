@@ -10,16 +10,6 @@ import { Procedure } from "./procedure";
 import { Router } from "./router";
 import type { MiddlewareFunction, OperationType } from "./types";
 
-// Updated router function signature
-const router = <
-	T extends Record<string, OperationType<ZodObject | void, ZodObject | void>>,
-	E extends Env,
->(
-	procedures: T = {} as T,
-): Router<T, E> => {
-	return new Router(procedures);
-};
-
 /**
  * Adapts a Hono middleware to be compatible with the type-safe middleware format
  */
@@ -36,7 +26,16 @@ export function fromHono<E extends Env = Env>(
 class JStack {
 	init<E extends Env = Env>() {
 		return {
-			router,
+			router: <
+				T extends Record<
+					string,
+					OperationType<ZodObject | void, ZodObject | void, E>
+				>,
+			>(
+				procedures: T = {} as T,
+			): Router<T, E> => {
+				return new Router(procedures);
+			},
 			mergeRouters,
 			middleware: <T = Record<string, unknown>, R = void>(
 				middleware: MiddlewareFunction<T, R, E>,
