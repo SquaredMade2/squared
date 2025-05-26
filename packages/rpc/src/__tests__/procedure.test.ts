@@ -1,3 +1,4 @@
+import type { Env } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { Procedure } from "../procedure";
@@ -211,9 +212,13 @@ describe("Procedure", () => {
 	describe("WebSocket operations", () => {
 		it("should create WebSocket operation", () => {
 			const procedure = new Procedure();
-			const handler = vi.fn(({ io }) => ({
-				onConnect: ({ socket }) => {},
-				onDisconnect: ({ socket }) => {},
+			const handler = vi.fn(() => ({
+				onConnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
+				onDisconnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
 			}));
 
 			const operation = procedure.ws(handler);
@@ -226,8 +231,10 @@ describe("Procedure", () => {
 		it("should create WebSocket with incoming schema", () => {
 			const procedure = new Procedure();
 			const schema = z.object({ message: z.string() });
-			const handler = vi.fn(({ io }) => ({
-				onConnect: ({ socket }) => {},
+			const handler = vi.fn(() => ({
+				onConnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
 			}));
 
 			const operation = procedure.incoming(schema).ws(handler);
@@ -237,8 +244,10 @@ describe("Procedure", () => {
 		it("should create WebSocket with outgoing schema", () => {
 			const procedure = new Procedure();
 			const schema = z.object({ response: z.string() });
-			const handler = vi.fn(({ io }) => ({
-				onConnect: ({ socket }) => {},
+			const handler = vi.fn(() => ({
+				onConnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
 			}));
 
 			const operation = procedure.outgoing(schema).ws(handler);
@@ -250,9 +259,9 @@ describe("Procedure", () => {
 			const messageSchema = z.object({ message: z.string() });
 			const responseSchema = z.object({ response: z.string() });
 
-			const handler = vi.fn(({ io }) => ({
-				onConnect: ({ socket }) => {
-					socket.on("message", (data) => {
+			const handler = vi.fn(() => ({
+				onConnect: ({ socket }: { socket: any }) => {
+					socket.on("message", (data: any) => {
 						socket.emit("response", { response: `Got: ${data.message}` });
 					});
 				},
@@ -332,9 +341,11 @@ describe("Procedure", () => {
 
 	describe("Environment types", () => {
 		it("should handle custom environment types", () => {
-			interface CustomEnv {
-				DATABASE_URL: string;
-				API_KEY: string;
+			interface CustomEnv extends Env {
+				Bindings: {
+					DATABASE_URL: string;
+					API_KEY: string;
+				};
 			}
 
 			const procedure = new Procedure<CustomEnv>();

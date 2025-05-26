@@ -21,6 +21,7 @@
 	},
 	"scripts": {
 		"build": "node build.mjs",
+		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf dist",
 		"prepublishOnly": "pnpm run build",

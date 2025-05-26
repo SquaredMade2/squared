@@ -261,7 +261,7 @@ describe("Sockets", () => {
 			it("should remove event handlers", () => {
 				const handler = vi.fn();
 				serverSocket.on("message", handler);
-				serverSocket.off("message", handler);
+				serverSocket.off("message" as any, handler);
 
 				serverSocket.handleEvent("message", { message: "test" });
 				expect(handler).not.toHaveBeenCalled();
@@ -309,8 +309,8 @@ describe("Sockets", () => {
 
 		beforeEach(() => {
 			// Mock WebSocket constructor
-			global.WebSocket = vi.fn().mockImplementation(() => ({
-				readyState: WebSocket.OPEN,
+			(global.WebSocket as any) = vi.fn().mockImplementation(() => ({
+				readyState: 1, // WebSocket.OPEN
 				send: vi.fn(),
 				close: vi.fn(),
 				addEventListener: vi.fn(),
@@ -320,7 +320,20 @@ describe("Sockets", () => {
 				onopen: null,
 				onclose: null,
 				onmessage: null,
+				binaryType: "blob",
+				bufferedAmount: 0,
+				extensions: "",
+				protocol: "",
+				CONNECTING: 0,
+				OPEN: 1,
+				CLOSING: 2,
+				CLOSED: 3,
+				dispatchEvent: vi.fn(),
 			}));
+			(global.WebSocket as any).CONNECTING = 0;
+			(global.WebSocket as any).OPEN = 1;
+			(global.WebSocket as any).CLOSING = 2;
+			(global.WebSocket as any).CLOSED = 3;
 		});
 
 		afterEach(() => {
@@ -416,7 +429,7 @@ describe("Sockets", () => {
 				const handler = vi.fn();
 
 				clientSocket.on("test", handler);
-				clientSocket.off("test", handler);
+				clientSocket.off("test" as any, handler);
 
 				// Handler should be removed
 				const mockWs = (clientSocket as any).ws;
@@ -466,7 +479,7 @@ describe("Sockets", () => {
 				send: vi.fn(),
 			};
 
-			const emitter = new EventEmitter(mockWebSocket, {
+			const emitter = new EventEmitter(mockWebSocket as any, {
 				incomingSchema: schema,
 				outgoingSchema: undefined,
 			});
@@ -510,7 +523,7 @@ describe("Sockets", () => {
 				send: vi.fn(),
 			};
 
-			const emitter = new EventEmitter(mockWebSocket, {
+			const emitter = new EventEmitter(mockWebSocket as any, {
 				incomingSchema: undefined,
 				outgoingSchema: schema,
 			});

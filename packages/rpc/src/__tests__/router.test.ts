@@ -142,10 +142,6 @@ describe("Router", () => {
 
 			const router = new Router(procedures);
 
-			// Mock request
-			const mockRequest = new Request("http://localhost/test");
-			const mockEnv = {};
-
 			// Test that router is properly set up
 			expect(router._metadata.procedures.test).toBeDefined();
 		});
@@ -183,9 +179,13 @@ describe("Router", () => {
 	describe("WebSocket operations", () => {
 		it("should register WebSocket operation", () => {
 			const j = jstack.init();
-			const handler = vi.fn(({ io }) => ({
-				onConnect: ({ socket }) => {},
-				onDisconnect: ({ socket }) => {},
+			const handler = vi.fn(() => ({
+				onConnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
+				onDisconnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
 			}));
 
 			const procedures = {
@@ -206,8 +206,13 @@ describe("Router", () => {
 				}),
 			});
 
-			const handler = vi.fn(({ io }) => ({
-				onConnect: ({ socket }) => {},
+			const handler = vi.fn(() => ({
+				onConnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
+				onDisconnect: ({ socket }: { socket: any }) => {
+					socket.on("message", () => {});
+				},
 			}));
 
 			const procedures = {
@@ -277,8 +282,6 @@ describe("Router", () => {
 
 	describe("Operation type validation", () => {
 		it("should validate operation types correctly", () => {
-			const router = new Router();
-
 			// Test private method through procedures setup
 			const j = jstack.init();
 			const validOperation = j.procedure.get(({ c }) => c.json({}));

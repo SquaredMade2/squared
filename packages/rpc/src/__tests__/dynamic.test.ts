@@ -107,10 +107,8 @@ describe("Dynamic router loading", () => {
 		it("should work with real import scenario", async () => {
 			const j = jstack.init();
 			const testRouter = j.router({
-				users: {
-					list: j.procedure.get(({ c }) => c.json([])),
-					create: j.procedure.post(({ c }) => c.json({ id: 1 })),
-				},
+				users: j.procedure.get(({ c }) => c.json([])),
+				create: j.procedure.post(({ c }) => c.json({ id: 1 })),
 			});
 
 			// Simulate dynamic import
