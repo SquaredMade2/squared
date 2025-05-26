@@ -9,7 +9,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Endpoint, Env, ResponseFormat, Schema } from "hono/types";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type { UnionToIntersection } from "hono/utils/types";
-import type { ZodType } from "zod/v4";
+import type { ZodObject, ZodType } from "zod/v4";
 import type { InferSchemaFromRouters } from "./merge-routers";
 import type {
 	MergeRoutes,
@@ -23,7 +23,7 @@ import type { GetOperation, OperationType, PostOperation } from "./types";
 // Define the router constraint type
 type RouterRecord = Record<
 	string,
-	OperationType<ZodType, ZodType> | Record<string, unknown>
+	OperationType<ZodObject, ZodObject> | Record<string, unknown>
 >;
 
 type ClientResponseOfEndpoint<T extends Endpoint = Endpoint> = T extends {

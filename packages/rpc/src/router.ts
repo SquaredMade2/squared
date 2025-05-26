@@ -5,7 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Env, ErrorHandler, MiddlewareHandler } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
 import { z } from "zod/v4";
-import type { ZodType } from "zod/v4";
+import type { ZodObject, ZodType } from "zod/v4";
 import { bodyParsingMiddleware, queryParsingMiddleware } from "./middleware";
 import { IO, ServerSocket } from "./sockets";
 import type {
@@ -21,7 +21,7 @@ import type {
 const logger = createCustomLogger("rpc-router");
 
 type FlattenRoutes<T> = {
-	[K in keyof T]: T[K] extends WebSocketOperation<ZodType, ZodType>
+	[K in keyof T]: T[K] extends WebSocketOperation<ZodObject, ZodObject>
 		? { [P in `${string & K}`]: T[K] }
 		: T[K] extends GetOperation<ZodType | void>
 			? { [P in `${string & K}`]: T[K] }
@@ -31,7 +31,7 @@ type FlattenRoutes<T> = {
 					? {
 							[SubKey in keyof T[K] as `${string & K}/${string &
 								SubKey}`]: T[K][SubKey] extends
-								| WebSocketOperation<ZodType, ZodType>
+								| WebSocketOperation<ZodObject, ZodObject>
 								| GetOperation<ZodType | void>
 								| PostOperation<ZodType | void>
 								? T[K][SubKey]
@@ -45,7 +45,7 @@ export type MergeRoutes<T> = {
 };
 
 export type RouterSchema<T extends Record<string, unknown>> = {
-	[K in keyof T]: T[K] extends WebSocketOperation<ZodType, ZodType>
+	[K in keyof T]: T[K] extends WebSocketOperation<ZodObject, ZodObject>
 		? {
 				$get: {
 					input: InferInput<T[K]>;
@@ -77,7 +77,10 @@ export type RouterSchema<T extends Record<string, unknown>> = {
 				: never;
 };
 
-export type OperationSchema<T> = T extends WebSocketOperation<ZodType, ZodType>
+export type OperationSchema<T> = T extends WebSocketOperation<
+	ZodObject,
+	ZodObject
+>
 	? {
 			$get: {
 				input: InferInput<T>;
@@ -123,7 +126,10 @@ interface WebSocketBindings {
 // Type for sub-router storage
 type SubRouterValue<
 	TRouter = Router<
-		Record<string, Record<string, unknown> | OperationType<ZodType, ZodType>>
+		Record<
+			string,
+			Record<string, unknown> | OperationType<ZodObject, ZodObject>
+		>
 	>,
 > = Promise<TRouter> | TRouter;
 
@@ -133,7 +139,7 @@ type ProcedureMetadata = Record<string, { type: "get" | "post" | "ws" }>;
 export class Router<
 	T extends Record<
 		string,
-		OperationType<ZodType | void, ZodType | void> | Record<string, unknown>
+		OperationType<ZodObject | void, ZodObject | void> | Record<string, unknown>
 	> = Record<string, never>,
 	E extends Env = Env,
 > extends Hono<E, RouterSchema<MergeRoutes<T>>, string> {
@@ -220,7 +226,7 @@ export class Router<
 
 	private isOperationType(
 		value: unknown,
-	): value is OperationType<ZodType | void, ZodType | void, E> {
+	): value is OperationType<ZodObject | void, ZodObject | void, E> {
 		return (
 			value !== null &&
 			typeof value === "object" &&
@@ -232,7 +238,7 @@ export class Router<
 
 	private registerOperation(
 		path: string,
-		operation: OperationType<ZodType | void, ZodType | void, E>,
+		operation: OperationType<ZodObject | void, ZodObject | void, E>,
 	) {
 		const routePath = `/${path}` as const;
 
@@ -362,7 +368,7 @@ export class Router<
 				});
 			}
 		} else if (operation.type === "ws") {
-			const wsOp = operation as WebSocketOperation<ZodType, ZodType, E>;
+			const wsOp = operation;
 
 			this.get(
 				routePath,

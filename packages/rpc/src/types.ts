@@ -2,7 +2,7 @@ import type superjson from "@squaredmade/superjson";
 import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
-import type { ZodType } from "zod/v4";
+import type { ZodObject, ZodType } from "zod/v4";
 import type { IO, ServerSocket } from "./sockets";
 
 type SuperJSONParsedType<T> = ReturnType<typeof superjson.parse<T>>;
@@ -80,8 +80,8 @@ export type WebSocketHandler<
 };
 
 export type WebSocketOperation<
-	IncomingSchema extends ZodType | void,
-	OutgoingSchema extends ZodType | void,
+	IncomingSchema extends ZodObject | void,
+	OutgoingSchema extends ZodObject | void,
 	E extends Env = Env,
 > = {
 	type: "ws";
@@ -163,16 +163,16 @@ export type PostOperation<
 
 // Fixed: Allow void schemas
 export type OperationType<
-	I extends ZodType | void = ZodType | void,
-	O extends ZodType | void = ZodType | void,
+	I extends ZodObject | void = ZodObject | void,
+	O extends ZodObject | void = ZodObject | void,
 	E extends Env = Env,
 > =
 	| GetOperation<I, O, E>
 	| PostOperation<I, O, E>
 	| WebSocketOperation<I, O, E>;
 
-export type InferInput<T> = T extends OperationType<infer I, ZodType | void>
-	? I extends ZodType
+export type InferInput<T> = T extends OperationType<infer I, ZodObject | void>
+	? I extends ZodObject
 		? I
 		: void
 	: void;

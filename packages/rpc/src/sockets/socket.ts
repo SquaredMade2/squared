@@ -1,12 +1,12 @@
 import createCustomLogger, { type Logger } from "@squaredmade/logger";
-import { type ZodType, z } from "zod/v4";
+import { type ZodObject, z } from "zod/v4";
 import { EventEmitter } from "./event-emitter";
 
 interface ServerSocketOptions {
 	redisUrl: string;
 	redisToken: string;
-	incomingSchema: ZodType | undefined;
-	outgoingSchema: ZodType | undefined;
+	incomingSchema: ZodObject | void;
+	outgoingSchema: ZodObject | void;
 }
 
 export interface SystemEvents {
@@ -243,7 +243,7 @@ export class ServerSocket<IncomingEvents, OutgoingEvents> {
 	}
 }
 
-type Schema = z.ZodSchema | undefined;
+type Schema = ZodObject | undefined;
 
 export class ClientSocket<IncomingEvents extends SystemEvents, OutgoingEvents> {
 	private ws!: WebSocket;

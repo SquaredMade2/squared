@@ -4,14 +4,14 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import type { Env, HTTPResponseError, MiddlewareHandler } from "hono/types";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { ZodError, type ZodType } from "zod/v4";
+import { ZodError, type ZodObject } from "zod/v4";
 import { mergeRouters } from "./merge-routers";
 import { Procedure } from "./procedure";
 import { Router } from "./router";
 import type { MiddlewareFunction, OperationType } from "./types";
 
 const router = <
-	T extends Record<string, OperationType<ZodType | void, ZodType | void>>,
+	T extends Record<string, OperationType<ZodObject | void, ZodObject | void>>,
 	E extends Env,
 >(
 	procedures: T = {} as T,

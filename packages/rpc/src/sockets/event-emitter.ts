@@ -3,7 +3,7 @@ import { ZodError, type ZodObject, treeifyError } from "zod/v4";
 
 const logger = createCustomLogger("rpc-event-emitter");
 
-type Schema = ZodObject | undefined;
+type Schema = ZodObject | void;
 
 interface SchemaConfig {
 	incomingSchema: Schema;

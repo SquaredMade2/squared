@@ -16,7 +16,7 @@ import type {
 } from "./types";
 
 type OptionalPromise<T> = T | Promise<T>;
-type InferIncomingData<Events> = Events extends ZodTypeAny
+type InferIncomingData<Events> = Events extends ZodType
 	? z.infer<Events>
 	: void;
 
@@ -122,13 +122,13 @@ export class Procedure<
 		}: {
 			ctx: Ctx;
 			c: ContextWithSuperJSON<E>;
-			input: InputSchema extends ZodTypeAny ? z.infer<InputSchema> : void;
+			input: InputSchema extends ZodTypeAny ? InputSchema : void;
 		}) => Return,
 	): GetOperation<InputSchema, Return, E> {
 		return {
 			type: "get",
 			schema: this.inputSchema as InputSchema extends void ? void : ZodType,
-			handler: handler as GetOperation<InputSchema, Return, E>["handler"],
+			handler,
 			middlewares: this.middlewares as MiddlewareFunction<
 				Record<string, unknown>,
 				unknown,
