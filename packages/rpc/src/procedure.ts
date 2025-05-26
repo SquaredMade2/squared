@@ -9,14 +9,12 @@ import type {
 	InferSchema,
 	InferWebSocketData,
 	MiddlewareFunction,
+	OptionalPromise,
 	PostOperation,
 	ResponseType,
 	WebSocketHandler,
 	WebSocketOperation,
 } from "./types";
-
-type OptionalPromise<T> = T | Promise<T>;
-
 export class Procedure<
 	E extends Env = Env,
 	Ctx = Record<string, unknown>,
@@ -118,7 +116,7 @@ export class Procedure<
 			c: ContextWithSuperJSON<E>;
 			input: InferSchema<InputSchema>;
 		}) => Return,
-	): GetOperation<InputSchema, Return, E> {
+	): GetOperation<InputSchema, unknown, E> {
 		const operation: GetOperation<InputSchema, Return, E> = {
 			type: "get",
 			schema: this.inputSchema,
@@ -158,7 +156,7 @@ export class Procedure<
 			c: ContextWithSuperJSON<E>;
 			input: InferSchema<InputSchema>;
 		}) => Return,
-	): PostOperation<InputSchema, Return, E> {
+	): PostOperation<InputSchema, unknown, E> {
 		const operation: PostOperation<InputSchema, Return, E> = {
 			type: "post",
 			schema: this.inputSchema,

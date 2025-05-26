@@ -1,5 +1,6 @@
 import createCustomLogger from "@squaredmade/logger";
 import { ZodError, type ZodObject, treeifyError } from "zod/v4";
+import type { OptionalPromise } from "../types";
 
 const logger = createCustomLogger("rpc-event-emitter");
 
@@ -11,7 +12,6 @@ interface SchemaConfig {
 }
 
 export class EventEmitter {
-	// biome-ignore lint/suspicious/noExplicitAny: Event handlers can receive and return any data type
 	eventHandlers = new Map<string, ((data: any) => any)[]>();
 	ws: WebSocket;
 
@@ -26,8 +26,7 @@ export class EventEmitter {
 		this.outgoingSchema = outgoingSchema;
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Event data can be any type for flexible event system
-	emit(event: string, data: any): boolean {
+	emit(event: string, data: any): OptionalPromise<boolean> {
 		if (this.ws.readyState !== WebSocket.OPEN) {
 			logger.warn("WebSocket is not in OPEN state. Message not sent.");
 			return false;
@@ -46,7 +45,6 @@ export class EventEmitter {
 		return true;
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Error handling requires any for unknown error types and data
 	handleSchemaMismatch(event: string, data: any, err: any) {
 		if (err instanceof ZodError) {
 			logger.error(`Invalid outgoing event data for "${event}":`, {
@@ -58,7 +56,6 @@ export class EventEmitter {
 		}
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Event data can be any type for flexible event system
 	handleEvent(eventName: string, data: any) {
 		const handlers = this.eventHandlers.get(eventName);
 
@@ -111,7 +108,6 @@ export class EventEmitter {
 		}
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Event callbacks can receive and return any data type
 	off(event: string, callback?: (data: any) => any) {
 		if (!callback) {
 			this.eventHandlers.delete(event as string);
@@ -129,7 +125,6 @@ export class EventEmitter {
 		}
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: Event callbacks can receive and return any data type
 	on(event: string, callback?: (data: any) => any): void {
 		if (!callback) {
 			logger.error(

@@ -98,8 +98,6 @@ export type WebSocketOperation<
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
-type OptionalPromise<T> = T | Promise<T>;
-
 export type ResponseType<Output> =
 	| SuperJSONTypedResponse<Output>
 	| TypedResponse<Output, StatusCode, "text">
@@ -159,3 +157,5 @@ export type OperationType<
 export type InferInput<T> = T extends OperationType<infer I, ZodObject | void>
 	? InferSchema<I>
 	: void;
+
+export type OptionalPromise<T> = T | Promise<T>;

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { z } from "zod/v4";
 import { dynamic } from "../dynamic";
 import { jstack } from "../j";
 import { Router } from "../router";
@@ -150,7 +151,7 @@ describe("Dynamic router loading", () => {
 			const j = jstack.init();
 			const testRouter = j.router({
 				echo: j.procedure
-					.input({ message: "string" } as any)
+					.input(z.object({ message: z.string() }))
 					.post(({ c, input }) => c.json({ echo: input.message })),
 			});
 

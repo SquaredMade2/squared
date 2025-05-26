@@ -1,5 +1,6 @@
 import createCustomLogger, { type Logger } from "@squaredmade/logger";
-import { type ZodObject, z } from "zod/v4";
+import { type ZodObject, type ZodType, z } from "zod/v4";
+import type { OptionalPromise } from "../types";
 import { EventEmitter } from "./event-emitter";
 
 interface ServerSocketOptions {
@@ -14,7 +15,28 @@ export interface SystemEvents {
 	onError: Error;
 }
 
-export class ServerSocket<IncomingEvents, OutgoingEvents> {
+type EventKeys<T> = T extends ZodObject
+	? keyof T["shape"]
+	: T extends Record<PropertyKey, unknown>
+		? keyof T
+		: string;
+
+type EventData<T, K extends PropertyKey> = T extends ZodObject
+	? K extends keyof T["shape"]
+		? T["shape"][K] extends ZodType
+			? z.infer<T["shape"][K]>
+			: T["shape"][K]
+		: never
+	: T extends Record<PropertyKey, unknown>
+		? K extends keyof T
+			? T[K]
+			: never
+		: unknown;
+
+export class ServerSocket<
+	IncomingEvents extends ZodObject | void,
+	OutgoingEvents extends ZodObject | void,
+> {
 	private room = "DEFAULT_ROOM";
 	private ws: WebSocket;
 	private controllers: Map<string, AbortController> = new Map();
@@ -71,24 +93,23 @@ export class ServerSocket<IncomingEvents, OutgoingEvents> {
 
 	off<K extends keyof IncomingEvents & SystemEvents>(
 		event: K,
-		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
+
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.off(event as string, callback);
 	}
 
-	on<K extends keyof IncomingEvents>(
+	on<K extends EventKeys<IncomingEvents>>(
 		event: K,
-		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
-		callback?: (data: IncomingEvents[K]) => any,
+		callback?: (data: EventData<IncomingEvents, K>) => any,
 	) {
 		return this.emitter.on(event as string, callback);
 	}
 
-	emit<K extends keyof OutgoingEvents>(
+	emit<K extends EventKeys<OutgoingEvents>>(
 		event: K,
-		data: OutgoingEvents[K],
-	): boolean {
+		data: EventData<OutgoingEvents, K>,
+	): OptionalPromise<boolean> {
 		return this.emitter.emit(event as string, data);
 	}
 
@@ -148,87 +169,98 @@ export class ServerSocket<IncomingEvents, OutgoingEvents> {
 	}
 
 	private async subscribe(room: string): Promise<void> {
-		// biome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
-		return new Promise(async (resolve, reject) => {
-			try {
-				const controller = new AbortController();
-				this.controllers.set(room, controller);
+		try {
+			const controller = new AbortController();
+			this.controllers.set(room, controller);
 
-				// initialize heartbeat
-				this.lastPingTimes.set(room, Date.now());
+			// initialize heartbeat
+			this.lastPingTimes.set(room, Date.now());
 
-				const stream = await fetch(`${this.redisUrl}/subscribe/${room}`, {
-					headers: {
-						Authorization: `Bearer ${this.redisToken}`,
-						accept: "text/event-stream",
-					},
-					signal: controller.signal,
-				});
+			const stream = await fetch(`${this.redisUrl}/subscribe/${room}`, {
+				headers: {
+					Authorization: `Bearer ${this.redisToken}`,
+					accept: "text/event-stream",
+				},
+				signal: controller.signal,
+			});
 
-				const reader = stream.body?.getReader();
-				const decoder = new TextDecoder();
-				let buffer = "";
+			const reader = stream.body?.getReader();
+			const decoder = new TextDecoder();
+			const buffer = "";
 
-				while (reader) {
-					const { done, value } = await reader.read();
+			// Start processing messages in the background
+			this.processStreamMessages(reader, decoder, buffer, room);
 
-					// continue execution once connection is established
-					// otherwise subscription below would be blocking
-					resolve();
+			// Return immediately after connection is established
+			return;
+		} catch (err) {
+			this.logger.error("Error establishing subscription:", err);
+			throw err;
+		}
+	}
 
-					if (done) break;
+	private async processStreamMessages(
+		reader: ReadableStreamDefaultReader<Uint8Array> | undefined,
+		decoder: TextDecoder,
+		buffer: string,
+		room: string,
+	): Promise<void> {
+		try {
+			let newBuffer = buffer;
+			while (reader) {
+				const { done, value } = await reader.read();
 
-					const chunk = decoder.decode(value);
-					buffer += chunk;
+				if (done) break;
 
-					const messages = buffer.split("\n");
-					buffer = messages.pop() || "";
+				const chunk = decoder.decode(value);
+				newBuffer += chunk;
 
-					for (const message of messages) {
-						this.logger.info("Received message:", message);
-						if (message.startsWith("data: ")) {
-							const data = message.slice(6);
-							try {
-								// extract payload from message format: message,room,payload
-								// skip first two commas to get the start of the payload
-								const firstCommaIndex = data.indexOf(",");
-								const secondCommaIndex = data.indexOf(",", firstCommaIndex + 1);
+				const messages = newBuffer.split("\n");
+				newBuffer = messages.pop() || "";
 
-								if (firstCommaIndex === -1 || secondCommaIndex === -1) {
-									this.logger.warn("Invalid message format - missing commas");
-									continue;
-								}
+				for (const message of messages) {
+					this.logger.info("Received message:", message);
+					if (message.startsWith("data: ")) {
+						const data = message.slice(6);
+						try {
+							// extract payload from message format: message,room,payload
+							// skip first two commas to get the start of the payload
+							const firstCommaIndex = data.indexOf(",");
+							const secondCommaIndex = data.indexOf(",", firstCommaIndex + 1);
 
-								const payloadStr = data.slice(secondCommaIndex + 1);
-
-								if (!payloadStr) {
-									this.logger.warn("Missing payload in message");
-									continue;
-								}
-
-								const parsed = JSON.parse(payloadStr);
-
-								if (parsed[0] === "ping") {
-									this.logger.info("Heartbeat received successfully");
-
-									this.lastPingTimes.set(room, Date.now());
-								}
-
-								if (this.ws.readyState === WebSocket.OPEN) {
-									this.ws.send(JSON.stringify(parsed));
-								} else {
-									this.logger.debug("WebSocket not open, skipping message");
-								}
-							} catch (err) {
-								this.logger.debug("Failed to parse message payload", err);
+							if (firstCommaIndex === -1 || secondCommaIndex === -1) {
+								this.logger.warn("Invalid message format - missing commas");
+								continue;
 							}
+
+							const payloadStr = data.slice(secondCommaIndex + 1);
+
+							if (!payloadStr) {
+								this.logger.warn("Missing payload in message");
+								continue;
+							}
+
+							const parsed = JSON.parse(payloadStr);
+
+							if (parsed[0] === "ping") {
+								this.logger.info("Heartbeat received successfully");
+								this.lastPingTimes.set(room, Date.now());
+							}
+
+							if (this.ws.readyState === WebSocket.OPEN) {
+								this.ws.send(JSON.stringify(parsed));
+							} else {
+								this.logger.debug("WebSocket not open, skipping message");
+							}
+						} catch (err) {
+							this.logger.debug("Failed to parse message payload", err);
 						}
 					}
 				}
-			} catch (err) {
-				reject(err);
 			}
-		});
+		} catch (err) {
+			this.logger.error("Error processing stream messages:", err);
+		}
 	}
 
 	private async unsubscribe(room: string) {
@@ -377,13 +409,13 @@ Fix this issue: https://jstack.app/docs/getting-started/local-development
 	emit<K extends keyof OutgoingEvents>(
 		event: K,
 		data: OutgoingEvents[K],
-	): boolean {
+	): OptionalPromise<boolean> {
 		return this.emitter.emit(event as string, data);
 	}
 
 	off<K extends keyof IncomingEvents & SystemEvents>(
 		event: K,
-		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
+
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.off(event as string, callback);
@@ -391,7 +423,7 @@ Fix this issue: https://jstack.app/docs/getting-started/local-development
 
 	on<K extends keyof IncomingEvents>(
 		event: K,
-		// biome-ignore lint/suspicious/noExplicitAny: Event callback return type can be any value
+
 		callback?: (data: IncomingEvents[K]) => any,
 	) {
 		return this.emitter.on(event as string, callback);
