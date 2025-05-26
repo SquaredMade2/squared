@@ -106,7 +106,12 @@ class JStack {
 
 						return httpError.getResponse();
 					}
-					if ("status" in err && typeof err.status === "number") {
+					if (
+						err &&
+						typeof err === "object" &&
+						"status" in err &&
+						typeof err.status === "number"
+					) {
 						const httpError = new HTTPException(
 							err.status as ContentfulStatusCode,
 							{
