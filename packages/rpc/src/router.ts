@@ -168,7 +168,7 @@ export class Router<
 			const subRouter = await this._metadata.subRouters[key];
 
 			if (subRouter) {
-				const rewrittenPath = "/" + c.req.path.split("/").slice(3).join("/");
+				const rewrittenPath = `/${c.req.path.split("/").slice(3).join("/")}`;
 				const newUrl = new URL(c.req.url);
 				newUrl.pathname = rewrittenPath;
 
@@ -183,17 +183,17 @@ export class Router<
 	}
 
 	private setupRoutes(procedures: Record<string, any>) {
-		Object.entries(procedures).forEach(([key, value]) => {
+		for (const [key, value] of Object.entries(procedures)) {
 			if (this.isOperationType(value)) {
 				this.registerOperation(key, value);
 			} else if (typeof value === "object" && value !== null) {
-				Object.entries(value).forEach(([subKey, subValue]) => {
+				for (const [subKey, subValue] of Object.entries(value)) {
 					if (this.isOperationType(subValue)) {
 						this.registerOperation(`${key}/${subKey}`, subValue);
 					}
-				});
+				}
 			}
-		});
+		}
 	}
 
 	private isOperationType(value: any): value is OperationType<any, any, any> {

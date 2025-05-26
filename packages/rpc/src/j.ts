@@ -97,14 +97,16 @@ class JStack {
 
 					if (err instanceof HTTPException) {
 						return err.getResponse();
-					} else if (err instanceof ZodError) {
+					}
+					if (err instanceof ZodError) {
 						const httpError = new HTTPException(422, {
 							message: "Validation error",
 							cause: err,
 						});
 
 						return httpError.getResponse();
-					} else if ("status" in err && typeof err.status === "number") {
+					}
+					if ("status" in err && typeof err.status === "number") {
 						const httpError = new HTTPException(
 							err.status as ContentfulStatusCode,
 							{
@@ -114,15 +116,14 @@ class JStack {
 						);
 
 						return httpError.getResponse();
-					} else {
-						const httpError = new HTTPException(500, {
-							message:
-								"An unexpected error occurred. Check server logs for details.",
-							cause: err,
-						});
-
-						return httpError.getResponse();
 					}
+					const httpError = new HTTPException(500, {
+						message:
+							"An unexpected error occurred. Check server logs for details.",
+						cause: err,
+					});
+
+					return httpError.getResponse();
 				},
 			},
 		};
