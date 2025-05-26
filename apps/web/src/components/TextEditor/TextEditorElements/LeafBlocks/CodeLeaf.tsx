@@ -6,11 +6,11 @@ const jetBrains = JetBrains_Mono({
 	subsets: ["latin"],
 });
 
-const CodeLeaf = (props: RenderLeafProps) => {
+const CodeLeaf = ({ attributes, children }: RenderLeafProps) => {
 	return (
 		<div className="w-full bg-muted">
-			<code className={` ${jetBrains.className}`} {...props.attributes}>
-				{props.children}
+			<code className={` ${jetBrains.className}`} {...attributes}>
+				{children}
 			</code>
 		</div>
 	);
