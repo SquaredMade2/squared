@@ -2,7 +2,7 @@ import type superjson from "@squaredmade/superjson";
 import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 import type { ZodType } from "zod/v4";
 import type { IO, ServerSocket } from "./sockets";
 

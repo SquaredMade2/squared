@@ -1,9 +1,9 @@
 import createCustomLogger from "@squaredmade/logger";
-import { ZodError, type ZodType, treeifyError } from "zod/v4";
+import { ZodError, type ZodObject, treeifyError } from "zod/v4";
 
 const logger = createCustomLogger("rpc-event-emitter");
 
-type Schema = ZodType | undefined;
+type Schema = ZodObject | undefined;
 
 interface SchemaConfig {
 	incomingSchema: Schema;

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { EventEmitter } from "../sockets/event-emitter";
 import { IO } from "../sockets/io";
 import { ClientSocket, ServerSocket } from "../sockets/socket";

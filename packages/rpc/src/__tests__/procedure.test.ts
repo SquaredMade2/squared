@@ -1,6 +1,6 @@
 import type { Env } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { Procedure } from "../procedure";
 
 // Mock superjson

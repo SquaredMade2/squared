@@ -6,9 +6,10 @@ import {
 	hc,
 } from "hono/client";
 import { HTTPException } from "hono/http-exception";
-import type { Endpoint, ResponseFormat, Schema } from "hono/types";
+import type { Endpoint, Env, ResponseFormat, Schema } from "hono/types";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type { UnionToIntersection } from "hono/utils/types";
+import type { ZodType } from "zod/v4";
 import type { InferSchemaFromRouters } from "./merge-routers";
 import type {
 	MergeRoutes,
@@ -17,7 +18,13 @@ import type {
 	RouterSchema,
 } from "./router";
 import { ClientSocket, type SystemEvents } from "./sockets";
-import type { GetOperation, PostOperation } from "./types";
+import type { GetOperation, OperationType, PostOperation } from "./types";
+
+// Define the router constraint type
+type RouterRecord = Record<
+	string,
+	OperationType<ZodType, ZodType> | Record<string, unknown>
+>;
 
 type ClientResponseOfEndpoint<T extends Endpoint = Endpoint> = T extends {
 	output: infer O;
@@ -69,27 +76,25 @@ export type ClientRequest<S extends Schema> = {
 
 export type UnwrapRouterSchema<T> = T extends RouterSchema<infer R> ? R : never;
 
-export type InferRouter<T extends Router<string, unknown>> = T extends Router<
+export type InferRouter<T extends Router<RouterRecord, Env>> = T extends Router<
 	infer P,
-	unknown
+	Env
 >
 	? RouterSchema<P>
 	: never;
 
 export type Client<
 	T extends
-		| Router<unknown, unknown>
-		| (() => Promise<Router<unknown, unknown>>),
-> = T extends Hono<unknown, infer S>
+		| Router<RouterRecord, Env>
+		| (() => Promise<Router<RouterRecord, Env>>),
+> = T extends Hono<Env, infer S>
 	? S extends RouterSchema<infer B>
 		? B extends MergeRoutes<infer C>
 			? C extends InferSchemaFromRouters<infer D>
 				? {
-						[K1 in keyof D]: D[K1] extends () => Promise<
-							Router<infer P, unknown>
-						>
+						[K1 in keyof D]: D[K1] extends () => Promise<Router<infer P, Env>>
 							? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
-							: D[K1] extends Router<infer P, unknown>
+							: D[K1] extends Router<infer P, Env>
 								? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
 								: never;
 					}
@@ -100,26 +105,27 @@ export type Client<
 
 type OperationIO<
 	T extends
-		| Router<unknown, unknown>
-		| (() => Promise<Router<unknown, unknown>>),
+		| Router<RouterRecord, Env>
+		| (() => Promise<Router<RouterRecord, Env>>),
 	IOType extends "input" | "output",
-> = T extends Hono<unknown, infer S>
+> = T extends Hono<Env, infer S>
 	? S extends RouterSchema<infer B>
 		? B extends MergeRoutes<infer C>
 			? C extends InferSchemaFromRouters<infer D>
 				? {
 						[K1 in keyof D]: D[K1] extends
-							| Router<infer P, unknown>
-							| (() => Promise<Router<infer P, unknown>>)
+							| Router<infer P, Env>
+							// biome-ignore lint/suspicious/noRedeclare: P is not redeclared
+							| (() => Promise<Router<infer P, Env>>)
 							? {
 									[K2 in keyof P]: P[K2] extends infer Operation
-										? Operation extends PostOperation<unknown>
+										? Operation extends PostOperation<ZodType | void>
 											? OperationSchema<Operation> extends {
 													$post: { [key in IOType]: unknown };
 												}
 												? OperationSchema<Operation>["$post"][IOType]
 												: never
-											: Operation extends GetOperation<unknown>
+											: Operation extends GetOperation<ZodType | void>
 												? OperationSchema<Operation> extends {
 														$get: { [key in IOType]: unknown };
 													}
@@ -135,12 +141,10 @@ type OperationIO<
 		: never
 	: never;
 
-export type InferRouterOutputs<T extends Router<unknown, unknown>> =
+export type InferRouterOutputs<T extends Router<RouterRecord, Env>> =
 	OperationIO<T, "output">;
-export type InferRouterInputs<T extends Router<unknown, unknown>> = OperationIO<
-	T,
-	"input"
->;
+export type InferRouterInputs<T extends Router<RouterRecord, Env>> =
+	OperationIO<T, "input">;
 
 export interface ClientConfig extends ClientRequestOptions {
 	baseUrl: string;
@@ -172,7 +176,7 @@ interface ProxyTarget {
 	[key: string]: unknown;
 }
 
-export const createClient = <T extends Router<unknown, unknown>>(
+export const createClient = <T extends Router<RouterRecord, Env>>(
 	options?: ClientConfig,
 ): UnionToIntersection<Client<T>> => {
 	const {
@@ -199,7 +203,6 @@ export const createClient = <T extends Router<unknown, unknown>>(
 			const message = await res.text();
 			throw new HTTPException(res.status as ContentfulStatusCode, {
 				message,
-				res,
 			});
 		}
 

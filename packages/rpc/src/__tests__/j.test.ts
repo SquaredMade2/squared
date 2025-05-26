@@ -1,7 +1,7 @@
 import type { Env } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { type ZodError, z } from "zod";
+import { type ZodError, z } from "zod/v4";
 import { fromHono, jstack } from "../j";
 import { mergeRouters } from "../merge-routers";
 import { Procedure } from "../procedure";

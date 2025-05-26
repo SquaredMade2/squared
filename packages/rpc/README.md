@@ -22,7 +22,7 @@ To define an RPC service, create a new TypeScript file and define your service i
 
 ```typescript
 import { Context } from "@squaredmade/context";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 // Define your service interface
 interface UserService {
