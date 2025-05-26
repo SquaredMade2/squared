@@ -1,8 +1,10 @@
+// types.ts - Fixed with better type inference
+
 import type superjson from "@squaredmade/superjson";
 import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
-import type { ZodObject, ZodType } from "zod/v4";
+import type { ZodObject, z } from "zod/v4";
 import type { IO, ServerSocket } from "./sockets";
 
 type SuperJSONParsedType<T> = ReturnType<typeof superjson.parse<T>>;
@@ -40,7 +42,7 @@ export type MiddlewareFunction<
 	E extends Env = Env,
 > = (params: {
 	ctx: T;
-	next: <B extends Record<string, unknown>>(args?: B) => Promise<void>;
+	next: <B extends Record<string, unknown>>(args?: B) => Promise<B & T>;
 	c: ContextWithSuperJSON<E>;
 }) => Promise<R>;
 
@@ -48,33 +50,33 @@ export type EmitFunction = (event: string, data?: unknown) => Promise<void>;
 
 export type RoomEmitFunction = (room: string, data?: unknown) => Promise<void>;
 
+// Simplified schema inference to avoid deep instantiation
+export type InferSchema<T> = T extends ZodObject<infer Shape>
+	? z.infer<ZodObject<Shape>>
+	: void;
+
+// Simplified WebSocket data inference
+export type InferWebSocketData<T> = T extends ZodObject ? z.infer<T> : void;
+
 export type WebSocketHandler<
-	IncomingSchema extends ZodType | void,
-	OutgoingSchema extends ZodType | void,
+	IncomingSchema extends ZodObject | void,
+	OutgoingSchema extends ZodObject | void,
 > = {
 	onConnect?: ({
 		socket,
 	}: {
-		socket:
-			| ServerSocket<IncomingSchema | undefined, OutgoingSchema | undefined>
-			| undefined;
+		socket: ServerSocket<IncomingSchema, OutgoingSchema>;
 	}) => unknown;
 	onDisconnect?: ({
 		socket,
 	}: {
-		socket: ServerSocket<
-			IncomingSchema | undefined,
-			OutgoingSchema | undefined
-		>;
+		socket: ServerSocket<IncomingSchema, OutgoingSchema>;
 	}) => unknown;
 	onError?: ({
 		socket,
 		error,
 	}: {
-		socket: ServerSocket<
-			IncomingSchema | undefined,
-			OutgoingSchema | undefined
-		>;
+		socket: ServerSocket<IncomingSchema, OutgoingSchema>;
 		error: Event;
 	}) => unknown;
 };
@@ -88,16 +90,11 @@ export type WebSocketOperation<
 	incoming?: IncomingSchema;
 	outgoing?: OutgoingSchema;
 	outputFormat: "ws";
-	handler: <Input extends Record<string, unknown>>({
-		io,
-		c,
-		ctx,
-	}: {
+	handler: (params: {
 		io: IO<IncomingSchema, OutgoingSchema>;
 		c: ContextWithSuperJSON<E>;
-		ctx: Input;
+		ctx: Record<string, unknown>;
 	}) => OptionalPromise<WebSocketHandler<IncomingSchema, OutgoingSchema>>;
-
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
@@ -117,51 +114,39 @@ type UnwrapResponse<T> = Awaited<T> extends TypedResponse<infer U>
 			? Response
 			: Awaited<T> extends void
 				? Response
-				: Awaited<T> extends ResponseType<infer U>
-					? ResponseType<U>
-					: Response;
+				: Response;
 
 export type GetOperation<
-	Schema extends ZodType | void,
+	Schema extends ZodObject | void,
 	Return = OptionalPromise<ResponseType<unknown>>,
 	E extends Env = Env,
 > = {
 	type: "get";
-	schema?: Schema extends void ? void : ZodType;
-	handler: <Input extends Record<string, unknown>>({
-		c,
-		ctx,
-		input,
-	}: {
-		ctx: Input;
+	schema?: Schema;
+	handler: (params: {
 		c: ContextWithSuperJSON<E>;
-		input: Schema extends ZodType ? Schema : void;
-	}) => Promise<UnwrapResponse<OptionalPromise<Return>>>;
-
+		ctx: Record<string, unknown>;
+		input: InferSchema<Schema>;
+	}) => Promise<UnwrapResponse<Return>>;
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
 export type PostOperation<
-	Schema extends ZodType | void,
+	Schema extends ZodObject | void,
 	Return = OptionalPromise<ResponseType<unknown>>,
 	E extends Env = Env,
 > = {
 	type: "post";
-	schema?: Schema extends void ? void : ZodType;
-	handler: <Input extends Record<string, unknown>>({
-		ctx,
-		c,
-		input,
-	}: {
-		ctx: Input;
+	schema?: Schema;
+	handler: (params: {
+		ctx: Record<string, unknown>;
 		c: ContextWithSuperJSON<E>;
-		input: Schema extends ZodType ? Schema : void;
-	}) => UnwrapResponse<OptionalPromise<Return>>;
-
+		input: InferSchema<Schema>;
+	}) => UnwrapResponse<Return>;
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
-// Fixed: Allow void schemas
+// Fixed: Allow void schemas with simplified constraints
 export type OperationType<
 	I extends ZodObject | void = ZodObject | void,
 	O extends ZodObject | void = ZodObject | void,
@@ -172,7 +157,5 @@ export type OperationType<
 	| WebSocketOperation<I, O, E>;
 
 export type InferInput<T> = T extends OperationType<infer I, ZodObject | void>
-	? I extends ZodObject
-		? I
-		: void
+	? InferSchema<I>
 	: void;

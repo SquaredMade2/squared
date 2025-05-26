@@ -9,7 +9,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Endpoint, Env, ResponseFormat, Schema } from "hono/types";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type { UnionToIntersection } from "hono/utils/types";
-import type { ZodObject, ZodType } from "zod/v4";
+import type { ZodObject } from "zod/v4";
 import type { InferSchemaFromRouters } from "./merge-routers";
 import type {
 	MergeRoutes,
@@ -119,13 +119,13 @@ type OperationIO<
 							| (() => Promise<Router<infer P, Env>>)
 							? {
 									[K2 in keyof P]: P[K2] extends infer Operation
-										? Operation extends PostOperation<ZodType | void>
+										? Operation extends PostOperation<ZodObject | void>
 											? OperationSchema<Operation> extends {
 													$post: { [key in IOType]: unknown };
 												}
 												? OperationSchema<Operation>["$post"][IOType]
 												: never
-											: Operation extends GetOperation<ZodType | void>
+											: Operation extends GetOperation<ZodObject | void>
 												? OperationSchema<Operation> extends {
 														$get: { [key in IOType]: unknown };
 													}

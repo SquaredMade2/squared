@@ -1,13 +1,13 @@
-// procedure.ts - Fixed with proper type constraints
-
 import superjson from "@squaredmade/superjson";
 import type { Env } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
-import type { ZodType, ZodTypeAny, z } from "zod/v4";
+import type { ZodObject } from "zod/v4";
 import type { IO } from "./sockets";
 import type {
 	ContextWithSuperJSON,
 	GetOperation,
+	InferSchema,
+	InferWebSocketData,
 	MiddlewareFunction,
 	PostOperation,
 	ResponseType,
@@ -16,16 +16,13 @@ import type {
 } from "./types";
 
 type OptionalPromise<T> = T | Promise<T>;
-type InferIncomingData<Events> = Events extends ZodType
-	? z.infer<Events>
-	: void;
 
 export class Procedure<
 	E extends Env = Env,
 	Ctx = Record<string, unknown>,
-	InputSchema extends ZodType | void = void,
-	Incoming extends ZodType | void = void,
-	Outgoing extends ZodType | void = void,
+	InputSchema extends ZodObject | void = void,
+	Incoming extends ZodObject | void = void,
+	Outgoing extends ZodObject | void = void,
 > {
 	private readonly middlewares: MiddlewareFunction<Ctx, void, E>[] = [];
 	private readonly inputSchema?: InputSchema;
@@ -45,7 +42,7 @@ export class Procedure<
 				});
 			}) as JSONRespond;
 
-			return next();
+			await next();
 		};
 
 	constructor(
@@ -67,7 +64,7 @@ export class Procedure<
 	/**
 	 * Validates incoming WebSocket messages using a Zod schema.
 	 */
-	incoming<Schema extends ZodTypeAny>(schema: Schema) {
+	incoming<Schema extends ZodObject>(schema: Schema) {
 		return new Procedure<E, Ctx, InputSchema, Schema, Outgoing>(
 			this.middlewares,
 			this.inputSchema,
@@ -79,7 +76,7 @@ export class Procedure<
 	/**
 	 * Validates outgoing WebSocket messages using a Zod schema.
 	 */
-	outgoing<Schema extends ZodTypeAny>(schema: Schema) {
+	outgoing<Schema extends ZodObject>(schema: Schema) {
 		return new Procedure<E, Ctx, InputSchema, Incoming, Schema>(
 			this.middlewares,
 			this.inputSchema,
@@ -91,7 +88,7 @@ export class Procedure<
 	/**
 	 * Validates input parameters using a Zod schema.
 	 */
-	input<Schema extends ZodTypeAny>(schema: Schema) {
+	input<Schema extends ZodObject>(schema: Schema) {
 		return new Procedure<E, Ctx, Schema, Incoming, Outgoing>(
 			this.middlewares,
 			schema,
@@ -106,8 +103,9 @@ export class Procedure<
 	use<T extends Record<string, unknown>, Return = void>(
 		handler: MiddlewareFunction<Ctx, Return, E>,
 	): Procedure<E, Ctx & T & Return, InputSchema, Incoming, Outgoing> {
+		const typedHandler = handler as MiddlewareFunction<Ctx, void, E>;
 		return new Procedure<E, Ctx & T & Return, InputSchema, Incoming, Outgoing>(
-			[...this.middlewares, handler as MiddlewareFunction<Ctx, void, E>],
+			[...this.middlewares, typedHandler],
 			this.inputSchema,
 			this.incomingSchema,
 			this.outgoingSchema,
@@ -115,109 +113,103 @@ export class Procedure<
 	}
 
 	get<Return extends OptionalPromise<ResponseType<unknown>>>(
-		handler: ({
-			ctx,
-			c,
-			input,
-		}: {
+		handler: (params: {
 			ctx: Ctx;
 			c: ContextWithSuperJSON<E>;
-			input: InputSchema extends ZodTypeAny ? InputSchema : void;
+			input: InferSchema<InputSchema>;
 		}) => Return,
 	): GetOperation<InputSchema, Return, E> {
-		return {
+		const operation: GetOperation<InputSchema, Return, E> = {
 			type: "get",
-			schema: this.inputSchema as InputSchema extends void ? void : ZodType,
-			handler,
+			schema: this.inputSchema,
+			handler: (params) => {
+				return handler({
+					ctx: params.ctx as Ctx,
+					c: params.c,
+					input: params.input,
+				});
+			},
 			middlewares: this.middlewares as MiddlewareFunction<
 				Record<string, unknown>,
 				unknown,
 				E
 			>[],
 		};
+		return operation;
 	}
 
 	query<Return extends OptionalPromise<ResponseType<unknown>>>(
-		handler: ({
-			ctx,
-			c,
-			input,
-		}: {
+		handler: (params: {
 			ctx: Ctx;
 			c: ContextWithSuperJSON<E>;
-			input: InputSchema extends ZodTypeAny ? z.infer<InputSchema> : void;
+			input: InferSchema<InputSchema>;
 		}) => Return,
 	): GetOperation<InputSchema, Return, E> {
 		return this.get(handler);
 	}
 
 	post<Return extends OptionalPromise<ResponseType<unknown>>>(
-		handler: ({
-			ctx,
-			c,
-			input,
-		}: {
+		handler: (params: {
 			ctx: Ctx;
 			c: ContextWithSuperJSON<E>;
-			input: InputSchema extends ZodTypeAny ? z.infer<InputSchema> : void;
+			input: InferSchema<InputSchema>;
 		}) => Return,
 	): PostOperation<InputSchema, Return, E> {
-		return {
+		const operation: PostOperation<InputSchema, Return, E> = {
 			type: "post",
-			schema: this.inputSchema as InputSchema extends void ? void : ZodType,
-			handler: handler as PostOperation<InputSchema, Return, E>["handler"],
+			schema: this.inputSchema,
+			handler: (params) => {
+				return handler({
+					ctx: params.ctx as Ctx,
+					c: params.c,
+					input: params.input,
+				});
+			},
 			middlewares: this.middlewares as MiddlewareFunction<
 				Record<string, unknown>,
 				unknown,
 				E
 			>[],
 		};
+		return operation;
 	}
 
 	mutation<Return extends OptionalPromise<ResponseType<unknown>>>(
-		handler: ({
-			ctx,
-			c,
-			input,
-		}: {
+		handler: (params: {
 			ctx: Ctx;
 			c: ContextWithSuperJSON<E>;
-			input: InputSchema extends ZodTypeAny ? z.infer<InputSchema> : void;
+			input: InferSchema<InputSchema>;
 		}) => Return,
 	): PostOperation<InputSchema, Return, E> {
 		return this.post(handler);
 	}
 
 	ws(
-		handler: ({
-			io,
-			c,
-			ctx,
-		}: {
-			io: IO<InferIncomingData<Incoming>, InferIncomingData<Outgoing>>;
+		handler: (params: {
+			io: IO<InferWebSocketData<Incoming>, InferWebSocketData<Outgoing>>;
 			c: ContextWithSuperJSON<E>;
 			ctx: Ctx;
-		}) => OptionalPromise<
-			WebSocketHandler<InferIncomingData<Incoming>, InferIncomingData<Outgoing>>
-		>,
-	): WebSocketOperation<
-		InferIncomingData<Incoming>,
-		InferIncomingData<Outgoing>,
-		E
-	> {
-		return {
+		}) => OptionalPromise<WebSocketHandler<Incoming, Outgoing>>,
+	): WebSocketOperation<Incoming, Outgoing, E> {
+		const operation: WebSocketOperation<Incoming, Outgoing, E> = {
 			type: "ws",
 			outputFormat: "ws",
-			handler: handler as WebSocketOperation<
-				InferIncomingData<Incoming>,
-				InferIncomingData<Outgoing>,
-				E
-			>["handler"],
+			handler: (params) => {
+				return handler({
+					io: params.io as IO<
+						InferWebSocketData<Incoming>,
+						InferWebSocketData<Outgoing>
+					>,
+					c: params.c,
+					ctx: params.ctx as Ctx,
+				});
+			},
 			middlewares: this.middlewares as MiddlewareFunction<
 				Record<string, unknown>,
 				unknown,
 				E
 			>[],
 		};
+		return operation;
 	}
 }

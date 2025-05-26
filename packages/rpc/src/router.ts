@@ -4,8 +4,8 @@ import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
 import type { Env, ErrorHandler, MiddlewareHandler } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
+import type { ZodObject } from "zod/v4";
 import { z } from "zod/v4";
-import type { ZodObject, ZodType } from "zod/v4";
 import { bodyParsingMiddleware, queryParsingMiddleware } from "./middleware";
 import { IO, ServerSocket } from "./sockets";
 import type {
@@ -23,17 +23,17 @@ const logger = createCustomLogger("rpc-router");
 type FlattenRoutes<T> = {
 	[K in keyof T]: T[K] extends WebSocketOperation<ZodObject, ZodObject>
 		? { [P in `${string & K}`]: T[K] }
-		: T[K] extends GetOperation<ZodType | void>
+		: T[K] extends GetOperation<ZodObject | void>
 			? { [P in `${string & K}`]: T[K] }
-			: T[K] extends PostOperation<ZodType | void>
+			: T[K] extends PostOperation<ZodObject | void>
 				? { [P in `${string & K}`]: T[K] }
 				: T[K] extends Record<string, unknown>
 					? {
 							[SubKey in keyof T[K] as `${string & K}/${string &
 								SubKey}`]: T[K][SubKey] extends
 								| WebSocketOperation<ZodObject, ZodObject>
-								| GetOperation<ZodType | void>
-								| PostOperation<ZodType | void>
+								| GetOperation<ZodObject | void>
+								| PostOperation<ZodObject | void>
 								? T[K][SubKey]
 								: never;
 						}
@@ -56,7 +56,7 @@ export type RouterSchema<T extends Record<string, unknown>> = {
 					status: StatusCode;
 				};
 			}
-		: T[K] extends GetOperation<ZodType | void>
+		: T[K] extends GetOperation<ZodObject | void>
 			? {
 					$get: {
 						input: InferInput<T[K]>;
@@ -65,7 +65,7 @@ export type RouterSchema<T extends Record<string, unknown>> = {
 						status: StatusCode;
 					};
 				}
-			: T[K] extends PostOperation<ZodType | void>
+			: T[K] extends PostOperation<ZodObject | void>
 				? {
 						$post: {
 							input: InferInput<T[K]>;
@@ -91,7 +91,7 @@ export type OperationSchema<T> = T extends WebSocketOperation<
 				status: StatusCode;
 			};
 		}
-	: T extends GetOperation<ZodType | void>
+	: T extends GetOperation<ZodObject | void>
 		? {
 				$get: {
 					input: InferInput<T>;
@@ -100,7 +100,7 @@ export type OperationSchema<T> = T extends WebSocketOperation<
 					status: StatusCode;
 				};
 			}
-		: T extends PostOperation<ZodType | void>
+		: T extends PostOperation<ZodObject | void>
 			? {
 					$post: {
 						input: InferInput<T>;
@@ -258,11 +258,11 @@ export class Router<
 
 					const nextWrapper = async <B extends Record<string, unknown>>(
 						args?: B,
-					): Promise<void> => {
+					): Promise<B> => {
 						if (args) {
 							Object.assign(middlewareOutput, args);
 						}
-						return;
+						return args ?? ({} as B);
 					};
 
 					const res = await middleware({
@@ -283,7 +283,7 @@ export class Router<
 			});
 
 		if (operation.type === "get") {
-			const getOp = operation as GetOperation<ZodType | void, unknown, E>;
+			const getOp = operation as GetOperation<ZodObject | void, unknown, E>;
 
 			if (getOp.schema) {
 				this.get(
@@ -301,7 +301,7 @@ export class Router<
 								: undefined;
 
 						// caught at app-level with .onError
-						const input = getOp.schema?.parse(queryInput) as ZodType;
+						const input = getOp.schema?.parse(queryInput);
 						const result = await getOp.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
@@ -325,7 +325,7 @@ export class Router<
 				});
 			}
 		} else if (operation.type === "post") {
-			const postOp = operation as PostOperation<ZodType | void, unknown, E>;
+			const postOp = operation as PostOperation<ZodObject | void, unknown, E>;
 
 			if (postOp.schema) {
 				this.post(
@@ -348,7 +348,7 @@ export class Router<
 						const result = await postOp.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
-							input: input as ZodType | void,
+							input: input as ZodObject | void,
 						});
 
 						return result === undefined ? c.json(undefined) : result;
