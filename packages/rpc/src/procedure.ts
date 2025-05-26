@@ -123,11 +123,15 @@ export class Procedure<
 			type: "get",
 			schema: this.inputSchema,
 			handler: (params) => {
-				return handler({
+				const result = handler({
 					ctx: params.ctx as Ctx,
 					c: params.c,
 					input: params.input,
 				});
+				// Handle void return by converting to Response
+				return (result === undefined ? new Response() : result) as ReturnType<
+					GetOperation<InputSchema, Return, E>["handler"]
+				>;
 			},
 			middlewares: this.middlewares as MiddlewareFunction<
 				Record<string, unknown>,
@@ -159,11 +163,15 @@ export class Procedure<
 			type: "post",
 			schema: this.inputSchema,
 			handler: (params) => {
-				return handler({
+				const result = handler({
 					ctx: params.ctx as Ctx,
 					c: params.c,
 					input: params.input,
 				});
+				// Handle void return by converting to Response
+				return (result === undefined ? new Response() : result) as ReturnType<
+					PostOperation<InputSchema, Return, E>["handler"]
+				>;
 			},
 			middlewares: this.middlewares as MiddlewareFunction<
 				Record<string, unknown>,
