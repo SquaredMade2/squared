@@ -18,7 +18,6 @@ import {
 	workspacesTable,
 } from "@squaredmade/db";
 import z from "zod";
-import type {} from "./events/types";
 import { taskSchema } from "./schema";
 
 export const eventService = j.router({

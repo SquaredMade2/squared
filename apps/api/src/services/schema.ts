@@ -39,6 +39,10 @@ export const statusEnum = createEnumSchema<Task["status"]>()(
 	]),
 );
 
+export const priorityEnum = createEnumSchema<Task["priority"]>()(
+	z.enum(["noPriority", "urgent", "high", "medium", "low"]),
+);
+
 export const workspaceRoleEnum = z.enum([
 	"org:admin",
 	"org:member",
