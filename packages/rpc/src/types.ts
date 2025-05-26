@@ -2,7 +2,6 @@ import type superjson from "@squaredmade/superjson";
 import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
-import type { z } from "zod/v4";
 import type { ZodType } from "zod/v4";
 import type { IO, ServerSocket } from "./sockets";
 
@@ -41,7 +40,7 @@ export type MiddlewareFunction<
 	E extends Env = Env,
 > = (params: {
 	ctx: T;
-	next: <B extends Record<string, unknown>>(args?: B) => Promise<B & T>;
+	next: <B extends Record<string, unknown>>(args?: B) => Promise<void>;
 	c: ContextWithSuperJSON<E>;
 }) => Promise<R>;
 
@@ -50,8 +49,8 @@ export type EmitFunction = (event: string, data?: unknown) => Promise<void>;
 export type RoomEmitFunction = (room: string, data?: unknown) => Promise<void>;
 
 export type WebSocketHandler<
-	IncomingSchema extends ZodType | undefined,
-	OutgoingSchema extends ZodType | undefined,
+	IncomingSchema extends ZodType | void,
+	OutgoingSchema extends ZodType | void,
 > = {
 	onConnect?: ({
 		socket,
@@ -81,8 +80,8 @@ export type WebSocketHandler<
 };
 
 export type WebSocketOperation<
-	IncomingSchema extends ZodType,
-	OutgoingSchema extends ZodType,
+	IncomingSchema extends ZodType | void,
+	OutgoingSchema extends ZodType | void,
 	E extends Env = Env,
 > = {
 	type: "ws";
@@ -101,6 +100,8 @@ export type WebSocketOperation<
 
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
+
+type OptionalPromise<T> = T | Promise<T>;
 
 export type ResponseType<Output> =
 	| SuperJSONTypedResponse<Output>
@@ -126,7 +127,7 @@ export type GetOperation<
 	E extends Env = Env,
 > = {
 	type: "get";
-	schema?: z.ZodType<Schema> | void;
+	schema?: Schema extends void ? void : ZodType;
 	handler: <Input extends Record<string, unknown>>({
 		c,
 		ctx,
@@ -135,12 +136,10 @@ export type GetOperation<
 		ctx: Input;
 		c: ContextWithSuperJSON<E>;
 		input: Schema extends ZodType ? Schema : void;
-	}) => UnwrapResponse<OptionalPromise<Return>>;
+	}) => Promise<UnwrapResponse<OptionalPromise<Return>>>;
 
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
-
-type OptionalPromise<T> = T | Promise<T>;
 
 export type PostOperation<
 	Schema extends ZodType | void,
@@ -148,7 +147,7 @@ export type PostOperation<
 	E extends Env = Env,
 > = {
 	type: "post";
-	schema?: z.ZodType<Schema> | void;
+	schema?: Schema extends void ? void : ZodType;
 	handler: <Input extends Record<string, unknown>>({
 		ctx,
 		c,
@@ -162,17 +161,18 @@ export type PostOperation<
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
+// Fixed: Allow void schemas
 export type OperationType<
-	I extends ZodType,
-	O extends ZodType,
+	I extends ZodType | void = ZodType | void,
+	O extends ZodType | void = ZodType | void,
 	E extends Env = Env,
 > =
 	| GetOperation<I, O, E>
 	| PostOperation<I, O, E>
 	| WebSocketOperation<I, O, E>;
 
-export type InferInput<T> = T extends OperationType<infer I, ZodType>
-	? I extends z.ZodTypeAny
-		? z.infer<I>
-		: I
+export type InferInput<T> = T extends OperationType<infer I, ZodType | void>
+	? I extends ZodType
+		? I
+		: void
 	: void;

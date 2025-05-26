@@ -1,3 +1,5 @@
+// j.ts - Fixed with proper type constraints
+
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import type { Env, HTTPResponseError, MiddlewareHandler } from "hono/types";
@@ -9,7 +11,7 @@ import { Router } from "./router";
 import type { MiddlewareFunction, OperationType } from "./types";
 
 const router = <
-	T extends Record<string, OperationType<ZodType, ZodType>>,
+	T extends Record<string, OperationType<ZodType | void, ZodType | void>>,
 	E extends Env,
 >(
 	procedures: T = {} as T,
@@ -20,12 +22,9 @@ const router = <
 /**
  * Adapts a Hono middleware to be compatible with the type-safe middleware format
  */
-// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-export function fromHono<E extends Env = any>(
-	// biome-ignore lint/suspicious/noExplicitAny: Hono middleware handlers accept any environment type
-	honoMiddleware: MiddlewareHandler<any>,
-	// biome-ignore lint/suspicious/noExplicitAny: Middleware function can accept any context type
-): MiddlewareFunction<any, void, E> {
+export function fromHono<E extends Env = Env>(
+	honoMiddleware: MiddlewareHandler<E>,
+): MiddlewareFunction<Record<string, unknown>, void, E> {
 	return async ({ c, next }) => {
 		await honoMiddleware(c, async () => {
 			const result = await next();
@@ -35,34 +34,14 @@ export function fromHono<E extends Env = any>(
 }
 
 class JStack {
-	// biome-ignore lint/suspicious/noExplicitAny: Hono framework requires any for generic environment parameters
-	init<E extends Env = any>() {
+	init<E extends Env = Env>() {
 		return {
 			/**
 			 * Type-safe router factory function that creates a new router instance.
-			 *
-			 * @template T - Record of operation types (get/post/websockets)
-			 * @template E - Environment type for the router
-			 * @returns {Router<T, E>} A new router instance with type-safe procedure definitions
-			 *
-			 * @example
-			 * const userRouter = router({
-			 *   getUser: publicProcedure
-			 *     .input(z.object({ id: z.string() }))
-			 *     .get(async ({ input }) => {
-			 *       return { id: input.id, name: "John Doe" }
-			 *     }),
-			 *
-			 *   createUser: publicProcedure
-			 *     .input(z.object({ name: z.string() }))
-			 *     .post(async ({ input }) => {
-			 *       return { id: "123", name: input.name }
-			 *     })
-			 * })
 			 */
 			router,
 			mergeRouters,
-			middleware: <T = {}, R = void>(
+			middleware: <T = Record<string, unknown>, R = void>(
 				middleware: MiddlewareFunction<T, R, E>,
 			): MiddlewareFunction<T, R, E> => middleware,
 			fromHono,
@@ -70,12 +49,6 @@ class JStack {
 			defaults: {
 				/**
 				 * CORS middleware configuration with default settings for API endpoints.
-				 *
-				 * @default
-				 * - Allows 'x-is-superjson' and 'Content-Type' in headers
-				 * - Exposes 'x-is-superjson' in headers
-				 * - Accepts all origins
-				 * - Enables credentials
 				 */
 				cors: cors({
 					allowHeaders: ["x-is-superjson", "Content-Type"],
@@ -85,16 +58,6 @@ class JStack {
 				}),
 				/**
 				 * Global error handler for API endpoints.
-				 *
-				 * @example
-				 * // Client-side error handling
-				 * const { mutate } = useMutation({
-				 *   onError: (err: HTTPException) => {
-				 *     if (err.status === 401) {
-				 *       console.log(err.message) // Handle unauthorized
-				 *     }
-				 *   }
-				 * })
 				 */
 				errorHandler: (err: Error | HTTPResponseError) => {
 					console.error("[API Error]", err);

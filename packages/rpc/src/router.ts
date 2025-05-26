@@ -133,7 +133,7 @@ type ProcedureMetadata = Record<string, { type: "get" | "post" | "ws" }>;
 export class Router<
 	T extends Record<
 		string,
-		OperationType<ZodType, ZodType> | Record<string, unknown>
+		OperationType<ZodType | void, ZodType | void> | Record<string, unknown>
 	> = Record<string, never>,
 	E extends Env = Env,
 > extends Hono<E, RouterSchema<MergeRoutes<T>>, string> {
@@ -220,7 +220,7 @@ export class Router<
 
 	private isOperationType(
 		value: unknown,
-	): value is OperationType<ZodType, ZodType, E> {
+	): value is OperationType<ZodType | void, ZodType | void, E> {
 		return (
 			value !== null &&
 			typeof value === "object" &&
@@ -232,7 +232,7 @@ export class Router<
 
 	private registerOperation(
 		path: string,
-		operation: OperationType<ZodType, ZodType, E>,
+		operation: OperationType<ZodType | void, ZodType | void, E>,
 	) {
 		const routePath = `/${path}` as const;
 
@@ -252,12 +252,11 @@ export class Router<
 
 					const nextWrapper = async <B extends Record<string, unknown>>(
 						args?: B,
-					): Promise<B & typeof middlewareOutput> => {
+					): Promise<void> => {
 						if (args) {
 							Object.assign(middlewareOutput, args);
 						}
-						return { ...middlewareOutput, ...args } as B &
-							typeof middlewareOutput;
+						return;
 					};
 
 					const res = await middleware({
@@ -296,7 +295,7 @@ export class Router<
 								: undefined;
 
 						// caught at app-level with .onError
-						const input = getOp.schema?.parse(queryInput);
+						const input = getOp.schema?.parse(queryInput) as ZodType;
 						const result = await getOp.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
