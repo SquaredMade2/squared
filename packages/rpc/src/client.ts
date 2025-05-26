@@ -115,6 +115,7 @@ type OperationIO<
 				? {
 						[K1 in keyof D]: D[K1] extends
 							| Router<infer P, Env>
+							// biome-ignore lint/suspicious/noRedeclare: This isn't a redeclaration, it's a type
 							| (() => Promise<Router<infer P, Env>>)
 							? {
 									[K2 in keyof P]: P[K2] extends infer Operation

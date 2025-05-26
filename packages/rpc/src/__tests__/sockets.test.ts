@@ -156,7 +156,7 @@ describe("Sockets", () => {
 	});
 
 	describe("IO", () => {
-		let io: IO<any, any>;
+		let io: IO<any>;
 		const redisUrl = "https://redis.example.com";
 		const redisToken = "test-token";
 

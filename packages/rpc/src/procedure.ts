@@ -192,7 +192,7 @@ export class Procedure<
 
 	ws(
 		handler: (params: {
-			io: IO<InferWebSocketData<Incoming>, InferWebSocketData<Outgoing>>;
+			io: IO<InferWebSocketData<Outgoing>>;
 			c: ContextWithSuperJSON<E>;
 			ctx: Ctx;
 		}) => OptionalPromise<WebSocketHandler<Incoming, Outgoing>>,
@@ -202,10 +202,7 @@ export class Procedure<
 			outputFormat: "ws",
 			handler: (params) => {
 				return handler({
-					io: params.io as IO<
-						InferWebSocketData<Incoming>,
-						InferWebSocketData<Outgoing>
-					>,
+					io: params.io as IO<InferWebSocketData<Outgoing>>,
 					c: params.c,
 					ctx: params.ctx as Ctx,
 				});

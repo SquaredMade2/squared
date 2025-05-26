@@ -58,10 +58,7 @@ export type InferSchema<T> = T extends ZodObject<infer Shape>
 // Simplified WebSocket data inference
 export type InferWebSocketData<T> = T extends ZodObject ? z.infer<T> : void;
 
-export type WebSocketHandler<
-	IncomingSchema extends ZodObject | void,
-	OutgoingSchema extends ZodObject | void,
-> = {
+export type WebSocketHandler<IncomingSchema, OutgoingSchema> = {
 	onConnect?: ({
 		socket,
 	}: {
@@ -82,8 +79,8 @@ export type WebSocketHandler<
 };
 
 export type WebSocketOperation<
-	IncomingSchema extends ZodObject | void,
-	OutgoingSchema extends ZodObject | void,
+	IncomingSchema,
+	OutgoingSchema,
 	E extends Env = Env,
 > = {
 	type: "ws";
@@ -91,7 +88,7 @@ export type WebSocketOperation<
 	outgoing?: OutgoingSchema;
 	outputFormat: "ws";
 	handler: (params: {
-		io: IO<IncomingSchema, OutgoingSchema>;
+		io: IO<OutgoingSchema>;
 		c: ContextWithSuperJSON<E>;
 		ctx: Record<string, unknown>;
 	}) => OptionalPromise<WebSocketHandler<IncomingSchema, OutgoingSchema>>;
@@ -115,7 +112,7 @@ type UnwrapResponse<T> = Awaited<T> extends TypedResponse<infer U>
 				: Response;
 
 export type GetOperation<
-	Schema extends ZodObject | void,
+	Schema,
 	Return = OptionalPromise<ResponseType<unknown>>,
 	E extends Env = Env,
 > = {
@@ -130,7 +127,7 @@ export type GetOperation<
 };
 
 export type PostOperation<
-	Schema extends ZodObject | void,
+	Schema,
 	Return = OptionalPromise<ResponseType<unknown>>,
 	E extends Env = Env,
 > = {
@@ -145,11 +142,7 @@ export type PostOperation<
 };
 
 // Fixed: Allow void schemas with simplified constraints
-export type OperationType<
-	I extends ZodObject | void = ZodObject | void,
-	O extends ZodObject | void = ZodObject | void,
-	E extends Env = Env,
-> =
+export type OperationType<I, O, E extends Env = Env> =
 	| GetOperation<I, O, E>
 	| PostOperation<I, O, E>
 	| WebSocketOperation<I, O, E>;

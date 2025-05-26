@@ -1,23 +1,29 @@
-import type { Hono } from "hono";
+import type { Env, Hono, Schema } from "hono";
 import { Router } from "./router";
 
+// Define a generic Router type constraint
+type AnyRouter = Router<Record<string, unknown>, Env>;
+
+// Define a generic Hono type constraint
+type AnyHono<S extends Schema> = Hono<Env, S, string>;
+
 export type InferSchemaFromRouters<
-	R extends Record<string, Router<any> | (() => Promise<Router<any>>)>,
+	R extends Record<string, AnyRouter | (() => Promise<AnyRouter>)>,
 > = {
-	[P in keyof R]: R[P] extends () => Promise<Router<any>>
+	[P in keyof R]: R[P] extends () => Promise<AnyRouter>
 		? R[P] extends () => Promise<infer T>
-			? T extends Hono<any, infer S>
+			? T extends AnyHono<infer S>
 				? { [Q in keyof S]: S[Q] }
 				: never
 			: never
-		: R[P] extends Hono<any, infer S>
+		: R[P] extends AnyHono<infer S>
 			? { [Q in keyof S]: S[Q] }
 			: never;
 };
 
 export function mergeRouters<
-	R extends Record<string, Router<any> | (() => Promise<Router<any>>)>,
->(api: Hono<any, any, any>, routers: R): Router<InferSchemaFromRouters<R>> {
+	R extends Record<string, AnyRouter | (() => Promise<AnyRouter>)>,
+>(api: AnyHono<Schema>, routers: R): Router<InferSchemaFromRouters<R>> {
 	const mergedRouter = new Router();
 	Object.assign(mergedRouter, api);
 

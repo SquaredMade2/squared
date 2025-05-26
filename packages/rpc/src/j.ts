@@ -4,11 +4,11 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import type { Env, HTTPResponseError, MiddlewareHandler } from "hono/types";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { ZodError, type ZodObject } from "zod/v4";
+import { ZodError } from "zod/v4";
 import { mergeRouters } from "./merge-routers";
 import { Procedure } from "./procedure";
 import { Router } from "./router";
-import type { MiddlewareFunction, OperationType } from "./types";
+import type { MiddlewareFunction } from "./types";
 
 /**
  * Adapts a Hono middleware to be compatible with the type-safe middleware format
@@ -26,12 +26,7 @@ export function fromHono<E extends Env = Env>(
 class JStack {
 	init<E extends Env = Env>() {
 		return {
-			router: <
-				T extends Record<
-					string,
-					OperationType<ZodObject | void, ZodObject | void, E>
-				>,
-			>(
+			router: <T extends Record<string, unknown>>(
 				procedures: T = {} as T,
 			): Router<T, E> => {
 				return new Router(procedures);

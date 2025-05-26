@@ -12,7 +12,7 @@ interface SchemaConfig {
 }
 
 export class EventEmitter {
-	eventHandlers = new Map<string, ((data: any) => any)[]>();
+	eventHandlers = new Map<string, Function[]>();
 	ws: WebSocket;
 
 	incomingSchema: Schema;
@@ -26,7 +26,7 @@ export class EventEmitter {
 		this.outgoingSchema = outgoingSchema;
 	}
 
-	emit(event: string, data: any): OptionalPromise<boolean> {
+	emit(event: string, data: unknown): OptionalPromise<boolean> {
 		if (this.ws.readyState !== WebSocket.OPEN) {
 			logger.warn("WebSocket is not in OPEN state. Message not sent.");
 			return false;
@@ -45,7 +45,7 @@ export class EventEmitter {
 		return true;
 	}
 
-	handleSchemaMismatch(event: string, data: any, err: any) {
+	handleSchemaMismatch(event: string, data: unknown, err: unknown) {
 		if (err instanceof ZodError) {
 			logger.error(`Invalid outgoing event data for "${event}":`, {
 				errors: treeifyError(err),
@@ -56,7 +56,7 @@ export class EventEmitter {
 		}
 	}
 
-	handleEvent(eventName: string, data: any) {
+	handleEvent(eventName: string, data: unknown) {
 		const handlers = this.eventHandlers.get(eventName);
 
 		if (!handlers?.length) {
@@ -108,7 +108,7 @@ export class EventEmitter {
 		}
 	}
 
-	off(event: string, callback?: (data: any) => any) {
+	off(event: string, callback?: Function) {
 		if (!callback) {
 			this.eventHandlers.delete(event as string);
 		} else {
@@ -125,7 +125,7 @@ export class EventEmitter {
 		}
 	}
 
-	on(event: string, callback?: (data: any) => any): void {
+	on(event: string, callback?: Function): void {
 		if (!callback) {
 			logger.error(
 				`No callback provided for event handler "${event.toString()}". Ppass a callback to handle this event.`,

@@ -137,10 +137,7 @@ type SubRouterValue<
 type ProcedureMetadata = Record<string, { type: "get" | "post" | "ws" }>;
 
 export class Router<
-	T extends Record<
-		string,
-		OperationType<ZodObject | void, ZodObject | void> | Record<string, unknown>
-	> = Record<string, never>,
+	T extends Record<string, unknown>,
 	E extends Env = Env,
 > extends Hono<E, RouterSchema<MergeRoutes<T>>, string> {
 	_metadata: {
@@ -209,7 +206,7 @@ export class Router<
 		});
 	}
 
-	private setupRoutes(procedures: Record<string, unknown>) {
+	private setupRoutes(procedures: T) {
 		for (const [key, value] of Object.entries(procedures)) {
 			if (this.isOperationType(value)) {
 				this.registerOperation(key, value);

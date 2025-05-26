@@ -33,10 +33,7 @@ type EventData<T, K extends PropertyKey> = T extends ZodObject
 			: never
 		: unknown;
 
-export class ServerSocket<
-	IncomingEvents extends ZodObject | void,
-	OutgoingEvents extends ZodObject | void,
-> {
+export class ServerSocket<IncomingEvents, OutgoingEvents> {
 	private room = "DEFAULT_ROOM";
 	private ws: WebSocket;
 	private controllers: Map<string, AbortController> = new Map();
@@ -94,14 +91,14 @@ export class ServerSocket<
 	off<K extends keyof IncomingEvents & SystemEvents>(
 		event: K,
 
-		callback?: (data: IncomingEvents[K]) => any,
+		callback?: (data: IncomingEvents[K]) => unknown,
 	) {
 		return this.emitter.off(event as string, callback);
 	}
 
 	on<K extends EventKeys<IncomingEvents>>(
 		event: K,
-		callback?: (data: EventData<IncomingEvents, K>) => any,
+		callback?: (data: EventData<IncomingEvents, K>) => unknown,
 	) {
 		return this.emitter.on(event as string, callback);
 	}
@@ -416,7 +413,7 @@ Fix this issue: https://jstack.app/docs/getting-started/local-development
 	off<K extends keyof IncomingEvents & SystemEvents>(
 		event: K,
 
-		callback?: (data: IncomingEvents[K]) => any,
+		callback?: (data: IncomingEvents[K]) => unknown,
 	) {
 		return this.emitter.off(event as string, callback);
 	}
@@ -424,7 +421,7 @@ Fix this issue: https://jstack.app/docs/getting-started/local-development
 	on<K extends keyof IncomingEvents>(
 		event: K,
 
-		callback?: (data: IncomingEvents[K]) => any,
+		callback?: (data: IncomingEvents[K]) => unknown,
 	) {
 		return this.emitter.on(event as string, callback);
 	}

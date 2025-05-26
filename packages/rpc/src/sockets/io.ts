@@ -2,7 +2,7 @@ import createCustomLogger from "@squaredmade/logger";
 
 const logger = createCustomLogger("rpc-io");
 
-export class IO<IncomingEvents, OutgoingEvents> {
+export class IO<OutgoingEvents> {
 	private targetRoom: string | null = null;
 	private redisUrl: string;
 	private redisToken: string;
