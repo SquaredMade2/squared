@@ -122,7 +122,7 @@ export type GetOperation<
 		c: ContextWithSuperJSON<E>;
 		ctx: Record<string, unknown>;
 		input: InferSchema<Schema>;
-	}) => UnwrapResponse<Return>;
+	}) => OptionalPromise<UnwrapResponse<Return>>;
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
@@ -137,7 +137,7 @@ export type PostOperation<
 		ctx: Record<string, unknown>;
 		c: ContextWithSuperJSON<E>;
 		input: InferSchema<Schema>;
-	}) => UnwrapResponse<Return>;
+	}) => OptionalPromise<UnwrapResponse<Return>>;
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 

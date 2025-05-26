@@ -134,7 +134,7 @@ type SubRouterValue<
 > = Promise<TRouter> | TRouter;
 
 // Type for procedures metadata
-type ProcedureMetadata = Record<string, { type: "get" | "post" | "ws" }>;
+type ProcedureMetadata = Record<string, "get" | "post" | "ws">;
 
 export class Router<
 	T extends Record<string, unknown>,
@@ -241,7 +241,7 @@ export class Router<
 
 		if (!this._metadata.procedures[path]) {
 			this._metadata.procedures[path] = {
-				type: operation,
+				type: operation.type,
 			};
 		}
 

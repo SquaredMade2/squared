@@ -148,14 +148,23 @@ describe("Procedure", () => {
 	});
 
 	describe("GET operations", () => {
-		it("should create GET operation", () => {
+		it("should create GET operation", async () => {
 			const procedure = new Procedure();
 			const handler = vi.fn(({ c }) => c.json({ message: "test" }));
 
 			const operation = procedure.get(handler);
 			expect(operation.type).toBe("get");
-			expect(operation.handler).toBe(handler);
 			expect(operation.middlewares).toBeDefined();
+
+			// Test that calling the operation.handler calls the original handler
+			const mockParams = {
+				ctx: {},
+				c: { json: vi.fn() },
+				input: {},
+			} as any;
+
+			await operation.handler(mockParams);
+			expect(handler).toHaveBeenCalledWith(mockParams);
 		});
 
 		it("should create GET operation with input schema", () => {
@@ -178,14 +187,21 @@ describe("Procedure", () => {
 	});
 
 	describe("POST operations", () => {
-		it("should create POST operation", () => {
+		it("should create POST operation", async () => {
 			const procedure = new Procedure();
 			const handler = vi.fn(({ c }) => c.json({ created: true }));
 
 			const operation = procedure.post(handler);
 			expect(operation.type).toBe("post");
-			expect(operation.handler).toBe(handler);
 			expect(operation.middlewares).toBeDefined();
+			const mockParams = {
+				ctx: {},
+				c: { json: vi.fn() },
+				input: {},
+			} as any;
+
+			await operation.handler(mockParams);
+			expect(handler).toHaveBeenCalledWith(mockParams);
 		});
 
 		it("should create POST operation with input schema", () => {
@@ -210,7 +226,7 @@ describe("Procedure", () => {
 	});
 
 	describe("WebSocket operations", () => {
-		it("should create WebSocket operation", () => {
+		it("should create WebSocket operation", async () => {
 			const procedure = new Procedure();
 			const handler = vi.fn(() => ({
 				onConnect: ({ socket }: { socket: any }) => {
@@ -224,8 +240,16 @@ describe("Procedure", () => {
 			const operation = procedure.ws(handler);
 			expect(operation.type).toBe("ws");
 			expect(operation.outputFormat).toBe("ws");
-			expect(operation.handler).toBe(handler);
 			expect(operation.middlewares).toBeDefined();
+
+			const mockParams = {
+				ctx: {},
+				c: { json: vi.fn() },
+				io: undefined,
+			} as any;
+
+			await operation.handler(mockParams);
+			expect(handler).toHaveBeenCalledWith(mockParams);
 		});
 
 		it("should create WebSocket with incoming schema", () => {
