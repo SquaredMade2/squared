@@ -38,7 +38,7 @@
 	},
 	"overrides": [
 		{
-			"include": ["apps/web/src/server/__internals", "packages/superjson"],
+			"include": ["packages/superjson"],
 			"linter": {
 				"rules": {
 					"complexity": {

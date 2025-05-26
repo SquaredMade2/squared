@@ -2,7 +2,7 @@ import pkg from "@squaredmade/builder";
 const { build } = pkg;
 
 build("src/index.ts", [
-	"express",
+	"hono",
 	"@squaredmade/context",
 	"@squaredmade/logger",
 	"@squaredmade/superjson",
