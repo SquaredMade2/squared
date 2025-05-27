@@ -1,5 +1,11 @@
 # @squaredmade/icons
 
+## 1.1.0
+
+### Minor Changes
+
+- 88e00ac: add underline to icons packages
+
 ## 1.0.5
 
 ### Patch Changes
