@@ -131,7 +131,7 @@ dev-webhooks:
 .PHONY: dev-bot
 dev-bot:
 	@which air > /dev/null || (echo "Installing air..." && go install github.com/air-verse/air@latest)
-	air -c .air.bot.toml
+	@export PATH="$(shell go env GOPATH)/bin:$$PATH" && air -c .air.bot.toml
 
 # Legacy dev command (runs webhooks dev for backward compatibility)
 .PHONY: dev
