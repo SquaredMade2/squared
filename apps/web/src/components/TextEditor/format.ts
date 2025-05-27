@@ -1,3 +1,4 @@
+import type { PublicUserData } from "@clerk/types";
 import type { CustomElement, CustomText } from "./interfaces";
 
 function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
