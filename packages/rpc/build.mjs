@@ -3,7 +3,6 @@ const { build } = pkg;
 
 build("src/index.ts", [
 	"hono",
-	"@squaredmade/context",
 	"@squaredmade/logger",
 	"@squaredmade/superjson",
 	"zod",
