@@ -28,8 +28,15 @@ export const commentRouter = j.router({
 	deleteComment: workspaceProcedure
 		.input(z.object({ commentId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { commentService } = ctx;
+			const { commentService, userId } = ctx;
 			const { commentId } = input;
+			const comment = await commentService.getCommentById(TODO, { commentId });
+			if (!comment) {
+				throw new Error("Comment does not exist.");
+			}
+			if (comment.authorId !== userId) {
+				throw new Error("You are not authorized to delete this comment.");
+			}
 			return c.superjson(
 				await commentService.deleteComment(TODO, { commentId }),
 			);

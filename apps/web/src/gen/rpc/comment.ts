@@ -24,6 +24,10 @@ export type GetTaskCommentsRequest = {
 	taskId: string;
 };
 
+export type GetCommentByIdRequest = {
+	commentId: string;
+};
+
 export type GetTaskCommentsResponse = {
 	authorId: string;
 	comment: string;
@@ -31,6 +35,14 @@ export type GetTaskCommentsResponse = {
 	id: string;
 	taskId: string;
 }[];
+
+export type GetCommentByIdResponse = {
+	authorId: string;
+	comment: string;
+	date: Date;
+	id: string;
+	taskId: string;
+};
 
 /**
  * comment service
@@ -65,5 +77,15 @@ export class CommentService extends RPCContextClient {
 		req: GetTaskCommentsRequest,
 	): Promise<GetTaskCommentsResponse> {
 		return this.request(ctx, "getTaskComments", req);
+	}
+
+	/**
+	 * getCommentById method
+	 */
+	getCommentById(
+		ctx: Context,
+		req: GetCommentByIdRequest,
+	): Promise<GetCommentByIdResponse> {
+		return this.request(ctx, "getCommentById", req);
 	}
 }

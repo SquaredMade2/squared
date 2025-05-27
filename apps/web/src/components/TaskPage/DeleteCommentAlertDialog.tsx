@@ -34,10 +34,10 @@ export const DeleteCommentAlertDialog = ({
 			if (!commentId) {
 				throw new Error("Comment ID is required");
 			}
-			await client.comment.deleteComment.$post({ commentId });
-			setComments(comments.filter((comment) => comment.id !== commentId));
+			return await client.comment.deleteComment.$post({ commentId });
 		},
 		onSuccess: () => {
+			setComments(comments.filter((comment) => comment.id !== commentId));
 			toast.success("Comment Deleted", {
 				description: "Comment has been successfully deleted.",
 			});

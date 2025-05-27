@@ -1,3 +1,4 @@
+import { useUsers } from "@/hooks/useUsers";
 import type { UserAvatar } from "@/store/users";
 import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
@@ -26,6 +27,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
 	const [avatarUrl, setAvatarUrl] = useState("");
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+	const { user } = useUsers();
 	const [commentData, setCommentData] = useState<
 		MDXRemoteSerializeResult | React.ReactElement
 	>(<p>Loading...</p>);
@@ -172,20 +174,24 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 					<p className="mr-4 ml-2 text-foreground">{authorName}</p>
 				</div>
-				<Button
-					variant="ghost"
-					className="self-center"
-					size="icon"
-					aria-label="Delete comment"
-					onClick={() => setShowConfirmDelete(true)}
-				>
-					<Trash />
-				</Button>
-				<DeleteCommentAlertDialog
-					commentId={comment.id}
-					showConfirmDelete={showConfirmDelete}
-					setShowConfirmDelete={setShowConfirmDelete}
-				/>
+				{comment.authorId === user?.id && (
+					<div>
+						<Button
+							variant="ghost"
+							className="self-center"
+							size="icon"
+							aria-label="Delete comment"
+							onClick={() => setShowConfirmDelete(true)}
+						>
+							<Trash />
+						</Button>
+						<DeleteCommentAlertDialog
+							commentId={comment.id}
+							showConfirmDelete={showConfirmDelete}
+							setShowConfirmDelete={setShowConfirmDelete}
+						/>
+					</div>
+				)}
 			</div>
 			<div className="markdown-content inline-flex min-h-20 min-w-60 flex-col items-start rounded-md bg-secondary p-3">
 				{"compiledSource" in commentData && (

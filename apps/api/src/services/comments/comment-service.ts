@@ -45,4 +45,13 @@ export class CommentService implements CommentRpc {
 			.from(commentsTable)
 			.where(eq(commentsTable.taskId, taskId));
 	}
+	async getCommentById(commentId: string): Promise<Comment | null> {
+		this.logger.info("Fetching comment with id", commentId);
+		const result = await this.db
+			.select()
+			.from(commentsTable)
+			.where(eq(commentsTable.id, commentId))
+			.limit(1);
+		return result[0] || null;
+	}
 }
