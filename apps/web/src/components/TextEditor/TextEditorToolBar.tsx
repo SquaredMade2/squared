@@ -1,5 +1,8 @@
 import { Bold, Heading, Italic } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
+import { Underline } from "lucide-react";
+import LinkModal from "./Menus/LinkModal";
+import type { TextEditorToolBarProps } from "./interfaces";
 const TextEditorToolBar = ({
 	createLeaf,
 	markActiveChecks,
