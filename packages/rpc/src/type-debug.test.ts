@@ -9,7 +9,7 @@ import type { JSONValue } from "hono/utils/types";
 import type { JSONParsed } from "hono/utils/types";
 import type { SimplifyDeepArray } from "hono/utils/types";
 import type { Client } from "./client";
-import { jstack } from "./j";
+import { sqStack } from "./j";
 import type { InferSchemaFromRouters } from "./merge-routers";
 import type { OperationSchema, Router } from "./router"; // Adjust import path
 import type { GetOperation } from "./types"; // Adjust import paths
@@ -33,7 +33,7 @@ interface AppEnv {
 	Bindings: { DATABASE_URL: string };
 }
 
-const j = jstack.init<AppEnv>();
+const j = sqStack.init<AppEnv>();
 const api = j
 	.router()
 	.basePath("/api")

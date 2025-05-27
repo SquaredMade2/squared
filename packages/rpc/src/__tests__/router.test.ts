@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod/v4";
-import { jstack } from "../j";
+import { sqStack } from "../j";
 import { Router } from "../router";
 
 // Mock dependencies
@@ -39,7 +39,7 @@ describe("Router", () => {
 		});
 
 		it("should create router with procedures", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const procedures = {
 				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
 			};
@@ -50,7 +50,7 @@ describe("Router", () => {
 		});
 
 		it("should handle nested procedures", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const procedures = {
 				users: {
 					list: j.procedure.get(({ c }) => c.json([])),
@@ -107,7 +107,7 @@ describe("Router", () => {
 
 	describe("GET operations", () => {
 		it("should register GET operation without schema", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const handler = vi.fn(({ c }) => c.json({ message: "test" }));
 			const procedures = {
 				test: j.procedure.get(handler),
@@ -119,7 +119,7 @@ describe("Router", () => {
 		});
 
 		it("should register GET operation with schema", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const schema = z.object({ name: z.string() });
 			const handler = vi.fn(({ c, input }) =>
 				c.json({ greeting: `Hello ${input.name}` }),
@@ -134,7 +134,7 @@ describe("Router", () => {
 		});
 
 		it("should handle GET request execution", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const handler = vi.fn(({ c }) => c.json({ message: "test" }));
 			const procedures = {
 				test: j.procedure.get(handler),
@@ -149,7 +149,7 @@ describe("Router", () => {
 
 	describe("POST operations", () => {
 		it("should register POST operation without schema", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const handler = vi.fn(({ c }) => c.json({ created: true }));
 			const procedures = {
 				create: j.procedure.post(handler),
@@ -161,7 +161,7 @@ describe("Router", () => {
 		});
 
 		it("should register POST operation with schema", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const schema = z.object({ title: z.string() });
 			const handler = vi.fn(({ c, input }) =>
 				c.json({ id: 1, title: input.title }),
@@ -178,7 +178,7 @@ describe("Router", () => {
 
 	describe("WebSocket operations", () => {
 		it("should register WebSocket operation", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const handler = vi.fn(() => ({
 				onConnect: ({ socket }: { socket: any }) => {
 					socket.on("message", () => {});
@@ -199,7 +199,7 @@ describe("Router", () => {
 		});
 
 		it("should register WebSocket with incoming/outgoing schemas", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const messageSchema = z.object({
 				message: z.object({
 					text: z.string(),
@@ -230,7 +230,7 @@ describe("Router", () => {
 
 	describe("Middleware handling", () => {
 		it("should apply middleware to operations", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const middleware = vi.fn(async ({ next }) => {
 				return next({ user: { id: 1 } });
 			});
@@ -265,7 +265,7 @@ describe("Router", () => {
 
 	describe("Route path registration", () => {
 		it("should register nested routes correctly", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const procedures = {
 				users: {
 					profile: j.procedure.get(({ c }) => c.json({ id: 1 })),
@@ -284,7 +284,7 @@ describe("Router", () => {
 	describe("Operation type validation", () => {
 		it("should validate operation types correctly", () => {
 			// Test private method through procedures setup
-			const j = jstack.init();
+			const j = sqStack.init();
 			const validOperation = j.procedure.get(({ c }) => c.json({}));
 			const invalidOperation = { notAnOperation: true };
 

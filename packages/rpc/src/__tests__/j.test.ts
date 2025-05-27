@@ -2,7 +2,7 @@ import type { Env } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { type ZodError, z } from "zod/v4";
-import { fromHono, jstack } from "../j";
+import { fromHono, sqStack } from "../j";
 import { mergeRouters } from "../merge-routers";
 import { Procedure } from "../procedure";
 import { Router } from "../router";
@@ -12,14 +12,14 @@ vi.mock("hono/cors", () => ({
 	cors: vi.fn(() => vi.fn()),
 }));
 
-describe("JStack", () => {
+describe("SQStack", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	describe("jstack.init()", () => {
+	describe("sqStack.init()", () => {
 		it("should initialize with default environment", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			expect(j.router).toBeDefined();
 			expect(j.mergeRouters).toBeDefined();
@@ -35,7 +35,7 @@ describe("JStack", () => {
 				API_KEY: string;
 			}
 
-			const j = jstack.init<CustomEnv>();
+			const j = sqStack.init<CustomEnv>();
 
 			expect(j.router).toBeDefined();
 			expect(j.procedure).toBeInstanceOf(Procedure);
@@ -44,14 +44,14 @@ describe("JStack", () => {
 
 	describe("router factory", () => {
 		it("should create empty router", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const router = j.router();
 
 			expect(router).toBeInstanceOf(Router);
 		});
 
 		it("should create router with procedures", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const procedures = {
 				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
 			};
@@ -61,7 +61,7 @@ describe("JStack", () => {
 		});
 
 		it("should handle complex procedure definitions", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const procedures = {
 				users: j.procedure.get(({ c }) => c.json([])),
 				create: j.procedure
@@ -76,15 +76,15 @@ describe("JStack", () => {
 	});
 
 	describe("mergeRouters", () => {
-		it("should be accessible from jstack", () => {
-			const j = jstack.init();
+		it("should be accessible from sqStack", () => {
+			const j = sqStack.init();
 			expect(j.mergeRouters).toBe(mergeRouters);
 		});
 	});
 
 	describe("middleware factory", () => {
 		it("should return middleware function", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const middleware = j.middleware(async ({ next }) => {
 				return next({ user: { id: 1 } });
 			});
@@ -97,7 +97,7 @@ describe("JStack", () => {
 				user: { id: number; name: string };
 			}
 
-			const j = jstack.init();
+			const j = sqStack.init();
 			const middleware = j.middleware<UserContext>(async ({ next }) => {
 				await next({ user: { id: 1, name: "John" } });
 			});
@@ -106,7 +106,7 @@ describe("JStack", () => {
 		});
 
 		it("should handle middleware with return values", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const middleware = j.middleware<any, { timestamp: number }>(
 				async ({ next }) => {
 					return next({ timestamp: Date.now() });
@@ -119,7 +119,7 @@ describe("JStack", () => {
 
 	describe("fromHono adapter", () => {
 		it("should adapt Hono middleware", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const honoMiddleware = vi.fn(async (_, next) => {
 				await next();
 			});
@@ -135,12 +135,12 @@ describe("JStack", () => {
 
 	describe("procedure instance", () => {
 		it("should provide procedure instance", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			expect(j.procedure).toBeInstanceOf(Procedure);
 		});
 
 		it("should allow chaining", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const operation = j.procedure
 				.input(z.object({ name: z.string() }))
 				.get(({ c, input }) => c.json({ greeting: `Hello ${input.name}` }));
@@ -151,21 +151,21 @@ describe("JStack", () => {
 
 	describe("defaults", () => {
 		it("should provide CORS middleware", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			expect(j.defaults.cors).toBeDefined();
 		});
 
 		it("should provide error handler", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			expect(typeof j.defaults.errorHandler).toBe("function");
 		});
 	});
 
 	describe("error handler", () => {
-		let j: ReturnType<typeof jstack.init>;
+		let j: ReturnType<typeof sqStack.init>;
 
 		beforeEach(() => {
-			j = jstack.init();
+			j = sqStack.init();
 			vi.clearAllMocks();
 		});
 
@@ -234,7 +234,7 @@ describe("JStack", () => {
 
 	describe("integration tests", () => {
 		it("should create complete router with all features", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const authMiddleware = j.middleware(async ({ next }) => {
 				return next({ user: { id: 1, role: "admin" } });
@@ -281,7 +281,7 @@ describe("JStack", () => {
 				};
 			}
 
-			const j = jstack.init<AppEnv>();
+			const j = sqStack.init<AppEnv>();
 
 			const dbMiddleware = j.middleware(async ({ next }) => {
 				// Access to env.DATABASE_URL would be typed here

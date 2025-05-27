@@ -9,7 +9,7 @@ import {
 	type OperationType,
 	type Router,
 	type RouterSchema,
-	jstack,
+	sqStack,
 } from ".";
 import type { InferSchemaFromRouters } from "./merge-routers";
 
@@ -18,7 +18,7 @@ interface AppEnv {
 	Bindings: { DATABASE_URL: string };
 }
 
-const j = jstack.init<AppEnv>();
+const j = sqStack.init<AppEnv>();
 const api = j
 	.router()
 	.basePath("/api")

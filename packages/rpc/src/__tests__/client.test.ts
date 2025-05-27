@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createClient } from "../client";
-import { jstack } from "../j";
+import { sqStack } from "../j";
 
 // Mock superjson
 vi.mock("@squaredmade/superjson", () => ({
@@ -74,7 +74,7 @@ describe("Client", () => {
 				Bindings: { DATABASE_URL: string };
 			}
 
-			const j = jstack.init<AppEnv>();
+			const j = sqStack.init<AppEnv>();
 			const api = j
 				.router()
 				.basePath("/api")
@@ -167,7 +167,7 @@ describe("Client", () => {
 
 	describe("Type inference", () => {
 		it("should infer router types correctly", () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const testRouter = j.router({
 				test: j.procedure.get(({ c }) => c.json({ message: "hello" })),
 			});

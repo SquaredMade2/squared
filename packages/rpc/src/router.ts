@@ -388,11 +388,11 @@ export class Router<
 						throw new HTTPException(503, {
 							message:
 								"Missing required environment variables for WebSockets connection.\n\n" +
-								"Real-time WebSockets depend on a persistent connection layer to maintain communication. JStack uses Upstash Redis to achieve this." +
+								"Real-time WebSockets depend on a persistent connection layer to maintain communication. SQStack uses Upstash Redis to achieve this." +
 								"To fix this error:\n" +
 								"1. Log in to Upstash Redis at https://upstash.com\n" +
 								"2. Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to your environment variables\n\n" +
-								"Complete WebSockets guide: https://jstack.app/docs/websockets\n",
+								"Complete WebSockets guide: https://sqStack.app/docs/websockets\n",
 						});
 					}
 

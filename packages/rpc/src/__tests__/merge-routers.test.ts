@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { dynamic } from "../dynamic";
-import { jstack } from "../j";
+import { sqStack } from "../j";
 import { mergeRouters } from "../merge-routers";
 import { Router } from "../router";
 
@@ -23,7 +23,7 @@ describe("mergeRouters", () => {
 
 		it("should merge static routers", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const userRouter = j.router({
 				list: j.procedure.get(({ c }) => c.json([])),
@@ -48,7 +48,7 @@ describe("mergeRouters", () => {
 
 		it("should handle dynamic routers", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const userRouter = j.router({
 				profile: j.procedure.get(({ c }) => c.json({ id: 1 })),
@@ -84,7 +84,7 @@ describe("mergeRouters", () => {
 	describe("Subrouter registration", () => {
 		it("should register subrouter middleware", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const testRouter = j.router({
 				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
@@ -115,7 +115,7 @@ describe("mergeRouters", () => {
 
 		it("should preserve router metadata structure", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const userRouter = j.router({
 				list: j.procedure.get(({ c }) => c.json([])),
@@ -134,7 +134,7 @@ describe("mergeRouters", () => {
 	describe("Dynamic router handling", () => {
 		it("should create proxy for dynamic routers", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const actualRouter = j.router({
 				data: j.procedure.get(({ c }) => c.json({ data: "test" })),
@@ -154,7 +154,7 @@ describe("mergeRouters", () => {
 
 		it("should handle dynamic router loading on request", async () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const actualRouter = j.router({
 				endpoint: j.procedure.get(({ c }) => c.json({ success: true })),
@@ -177,7 +177,7 @@ describe("mergeRouters", () => {
 	describe("Mixed router types", () => {
 		it("should handle both static and dynamic routers", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const staticRouter = j.router({
 				static: j.procedure.get(({ c }) => c.json({ type: "static" })),
@@ -208,7 +208,7 @@ describe("mergeRouters", () => {
 	describe("Path generation", () => {
 		it("should generate correct API paths", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const router1 = j.router({});
 			const router2 = j.router({});
@@ -226,7 +226,7 @@ describe("mergeRouters", () => {
 
 		it("should handle router keys with special characters", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const router = j.router({});
 
@@ -245,7 +245,7 @@ describe("mergeRouters", () => {
 	describe("Type inference", () => {
 		it("should preserve type information from routers", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const typedRouter = j.router({
 				getData: j.procedure.get(({ c }) =>
@@ -297,7 +297,7 @@ describe("mergeRouters", () => {
 	describe("Integration with real scenarios", () => {
 		it("should merge complex application routers", () => {
 			const api = new Hono();
-			const j = jstack.init();
+			const j = sqStack.init();
 
 			const authRouter = j.router({
 				login: j.procedure.post(({ c }) => c.json({ token: "jwt" })),
@@ -334,7 +334,7 @@ describe("mergeRouters", () => {
 			interface AppEnv {
 				Bindings: { DATABASE_URL: string };
 			}
-			const j = jstack.init<AppEnv>();
+			const j = sqStack.init<AppEnv>();
 			const routers = {
 				users: j.router({
 					getData: j.procedure.get(({ c }) =>

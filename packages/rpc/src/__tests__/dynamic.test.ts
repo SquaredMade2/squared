@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod/v4";
 import { dynamic } from "../dynamic";
-import { jstack } from "../j";
+import { sqStack } from "../j";
 import { Router } from "../router";
 
 describe("Dynamic router loading", () => {
@@ -14,7 +14,7 @@ describe("Dynamic router loading", () => {
 		});
 
 		it("should load router from default export", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const testRouter = j.router({
 				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
 			});
@@ -31,7 +31,7 @@ describe("Dynamic router loading", () => {
 		});
 
 		it("should load router from named export", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const testRouter = j.router({
 				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
 			});
@@ -57,7 +57,7 @@ describe("Dynamic router loading", () => {
 		});
 
 		it("should throw error when module has multiple exports", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const router1 = j.router({});
 			const router2 = j.router({});
 
@@ -106,7 +106,7 @@ describe("Dynamic router loading", () => {
 		});
 
 		it("should work with real import scenario", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const testRouter = j.router({
 				users: j.procedure.get(({ c }) => c.json([])),
 				create: j.procedure.post(({ c }) => c.json({ id: 1 })),
@@ -126,7 +126,7 @@ describe("Dynamic router loading", () => {
 		});
 
 		it("should support TypeScript export patterns", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const apiRouter = j.router({
 				health: j.procedure.get(({ c }) => c.json({ status: "ok" })),
 			});
@@ -148,7 +148,7 @@ describe("Dynamic router loading", () => {
 		});
 
 		it("should preserve router functionality after dynamic loading", async () => {
-			const j = jstack.init();
+			const j = sqStack.init();
 			const testRouter = j.router({
 				echo: j.procedure
 					.input(z.object({ message: z.string() }))
