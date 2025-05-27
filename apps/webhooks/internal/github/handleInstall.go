@@ -31,7 +31,7 @@ func handleInstallEvent(githubService *rpc.GithubService, r *http.Request, w htt
 		return
 	}
 
-	org, err := GetOrgInstallationInfo(installationID)
+	org, err := getOrgInstallationInfo(installationID)
 	if err != nil {
 		log.Printf("failed to get organization installation info: %v", err)
 		return
@@ -56,7 +56,7 @@ func handleInstallEvent(githubService *rpc.GithubService, r *http.Request, w htt
 
 }
 
-func GetOrgInstallationInfo(installationId int64) (*OrgInstallationInfo, error) {
+func getOrgInstallationInfo(installationId int64) (*OrgInstallationInfo, error) {
 	appClient, err := createGitHubAppClient()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create GitHub client: %w", err)

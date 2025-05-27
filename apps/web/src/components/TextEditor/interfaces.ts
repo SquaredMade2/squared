@@ -1,9 +1,22 @@
 import type { PublicUserData } from "@clerk/types";
-import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
+import type {
+	CSSProperties,
+	Dispatch,
+	JSX,
+	MutableRefObject,
+	SetStateAction,
+} from "react";
 import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
-	addAction: (editorContent: CustomDescendant[]) => void;
+	placeholder?: string;
+	onBlur?: React.FocusEventHandler<HTMLDivElement>;
+	onFocus?: React.FocusEventHandler<HTMLDivElement>;
+	onChange?: (value: CustomDescendant[]) => void;
+	style?: CSSProperties | undefined;
+	value?: CustomDescendant[];
+	setValue?: Dispatch<SetStateAction<CustomDescendant[]>>;
+	hasToolbar?: boolean;
 }
 
 export interface TextEditorToolBarProps {

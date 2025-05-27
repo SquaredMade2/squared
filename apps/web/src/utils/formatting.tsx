@@ -1,4 +1,3 @@
-import type { CustomElement } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import type { PublicUserData } from "@clerk/types";
@@ -150,56 +149,6 @@ export const formatPriority = (priority: Priority) => {
 // }
 // return links;
 // };
-
-function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
-	const codeLines: string[] = [];
-	let i = startIndex;
-
-	for (; i < slateArr.length; i++) {
-		const currentIsCodeLine = slateArr[i]?.children?.every(
-			(item) => item.code === true,
-		);
-
-		if (!currentIsCodeLine) break;
-		codeLines.push(slateArr[i]?.children.map((leaf) => leaf.text).join(""));
-	}
-
-	return { codeLines, nextIndex: i };
-}
-
-export const handleFormatSlateToComment = (slateArr: CustomElement[]) => {
-	const lines: string[] = [];
-	let i = 0;
-
-	while (i < slateArr.length) {
-		const line = slateArr[i];
-		const isCodeLine = line.children.every((item) => item.code === true);
-		if (isCodeLine) {
-			const { codeLines, nextIndex } = findSlateCodeBlock(slateArr, i);
-			i = nextIndex;
-			lines.push(`\`\`\`ts\n${codeLines.join("\n")}\n\`\`\``);
-		} else {
-			// Not a code block, process normally
-			const lineStr = line.children
-				.map((leaf) => {
-					if (leaf.url) return `[${leaf.text}](${leaf.url})`;
-					if (leaf.mentionConfirm)
-						return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
-
-					const bold = leaf.bold ? "**" : "";
-					const italic = leaf.italic ? "*" : "";
-					const code = leaf.code ? "`" : ""; // use single backtick for inline code
-					return `${italic}${bold}${code}${leaf.text}${code}${bold}${italic}`;
-				})
-				.join("");
-
-			const prefix = line.type === "header" ? "### " : "";
-			lines.push(prefix + lineStr);
-			i++;
-		}
-	}
-	return lines.join("\n");
-};
 
 // TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
 // export const handleFormatCommentToSlate = (commentStr) => {
