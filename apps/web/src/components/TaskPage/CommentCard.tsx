@@ -105,19 +105,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		);
 	};
 
-	function formatMDXComment(comment: string): string {
-		const parts = comment.split(/(```[\s\S]*?\n```)/g);
-
-		return parts
-			.map((part, i) => {
-				if (i % 2 === 1) {
-					return part.endsWith("\n") ? part : `${part} \n`;
-				}
-				return part.replace(/\n/g, "<br />\n");
-			})
-			.join("");
-	}
-
 	useEffect(() => {
 		const handleGetUser = async () => {
 			try {
@@ -140,7 +127,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		};
 		const JSXCommentData = async () => {
 			try {
-				const formattedComment = formatMDXComment(comment.comment);
+				const formattedComment = comment.comment;
 
 				const mdxSource = await serialize(formattedComment);
 				setCommentData(mdxSource);

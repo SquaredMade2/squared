@@ -157,6 +157,10 @@ func addCommentToPR(owner, repo string, prNumber int, tasks rpc.UpsertPullReques
 	baseUrl := os.Getenv("APP_URL")
 	client, err := createGitHubInstallationClient(installationId)
 
+	if err != nil {
+		return fmt.Errorf("failed to create GitHub client: %w", err)
+	}
+
 	// Check if bot has already commented
 	comments, _, err := client.Issues.ListComments(ctx, owner, repo, prNumber, nil)
 	if err != nil {
