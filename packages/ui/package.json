@@ -699,7 +699,7 @@
 		"aria-hidden": "^1.2.4",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
-		"commander": "^13.1.0",
+		"commander": "^14.0.0",
 		"inquirer": "^12.4.2",
 		"lucide-react": "^0.510.0",
 		"react-remove-scroll": "^2.6.0",
