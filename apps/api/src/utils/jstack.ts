@@ -1,7 +1,25 @@
-import { j } from "@/api/app";
 import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
+import { jstack } from "@squaredmade/rpc";
 import { env } from "hono/adapter";
+import z from "zod/v4";
+
+const envSchema = z.object({
+	Bindings: z.object({
+		SQUARED_API_KEY: z.string(),
+		NEXT_PUBLIC_CONFIRM_URL: z.url(),
+		PORT: z.coerce.number().default(5173),
+		DATABASE_URL: z.string(),
+		LOCAL_DB: z.coerce.boolean().default(false),
+		CLERK_SECRET: z.string(),
+		CLERK_SECRET_KEY: z.string(),
+		DISCORD_BOT_TOKEN: z.string(),
+	}),
+});
+
+type Env = z.infer<typeof envSchema>;
+
+export const j = jstack.init<Env>();
 
 /**
  * Type-safely injects database into all procedures

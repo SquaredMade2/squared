@@ -1,5 +1,4 @@
-import { j } from "@/api/app";
-import { baseProcedure } from "@/middleware";
+import { baseProcedure, j } from "@/utils/jstack";
 import { and, eq, teamsTable, userTeamsTable } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
 import z from "zod/v4";

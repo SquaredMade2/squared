@@ -1,4 +1,4 @@
-import { baseProcedure, j } from "@/middleware";
+import { baseProcedure, j } from "@/utils/jstack";
 import { commentsTable, eq } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
 import z from "zod/v4";

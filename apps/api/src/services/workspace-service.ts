@@ -1,10 +1,8 @@
-import { j } from "@/api/app";
-import env from "@/env";
-import { baseProcedure } from "@/middleware";
 import {
 	expirationTimeFormat,
 	generateSecureRandomString,
 } from "@/utils/helpers";
+import { baseProcedure, j } from "@/utils/jstack";
 import { createClerkClient } from "@clerk/backend";
 import {
 	type DBClient,
@@ -21,6 +19,7 @@ import {
 	workspacesTable,
 } from "@squaredmade/db";
 import type { Logger } from "@squaredmade/logger";
+import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
 import z from "zod/v4";
 
@@ -48,14 +47,15 @@ export const workspaceService = j.router({
 		.mutation(async ({ input, ctx, c }) => {
 			const { userId, workspace } = input;
 			const { db, logger } = ctx;
+			const { CLERK_SECRET } = env(c);
 
-			if (!env.CLERK_SECRET) {
+			if (!CLERK_SECRET) {
 				throw new HTTPException(500, {
 					message: "CLERK_SECRET is not defined.",
 				});
 			}
 
-			const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET });
+			const clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 
 			logger.info(
 				"Creating workspace for user %s and payload %o",
@@ -200,13 +200,15 @@ export const workspaceService = j.router({
 			const { workspaceId } = input;
 			const { db, logger } = ctx;
 
-			if (!env.CLERK_SECRET) {
+			const { CLERK_SECRET } = env(c);
+
+			if (!CLERK_SECRET) {
 				throw new HTTPException(500, {
 					message: "CLERK_SECRET is not defined.",
 				});
 			}
 
-			const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET });
+			const clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 
 			logger.info("Deleting workspace with id %s", workspaceId);
 
@@ -249,14 +251,15 @@ export const workspaceService = j.router({
 		.mutation(async ({ input, ctx, c }) => {
 			const { userId, workspaceId, role } = input;
 			const { logger } = ctx;
+			const { CLERK_SECRET } = env(c);
 
-			if (!env.CLERK_SECRET) {
+			if (!CLERK_SECRET) {
 				throw new HTTPException(500, {
 					message: "CLERK_SECRET is not defined.",
 				});
 			}
 
-			const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET });
+			const clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 
 			logger.info(
 				"Updating workspace role with\n\tuserId:     %s\n\tworkspaceId: %s\n\trole:       %s",
@@ -432,13 +435,15 @@ export const workspaceService = j.router({
 			const { workspaceId, email, userId, slug } = input;
 			const { logger } = ctx;
 
-			if (!env.CLERK_SECRET) {
+			const { CLERK_SECRET, NEXT_PUBLIC_CONFIRM_URL } = env(c);
+
+			if (!CLERK_SECRET) {
 				throw new HTTPException(500, {
 					message: "CLERK_SECRET is not defined.",
 				});
 			}
 
-			const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET });
+			const clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
 
 			logger.info("Inviting user to workspace", {
 				email,
@@ -455,7 +460,7 @@ export const workspaceService = j.router({
 						emailAddress: e,
 						inviterUserId: userId,
 						role: "member",
-						redirectUrl: `${env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
+						redirectUrl: `${NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
 					}),
 				),
 			);

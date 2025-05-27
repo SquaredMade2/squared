@@ -1,4 +1,3 @@
-import env from "@/env";
 import { serve } from "@hono/node-server";
 import createCustomLogger from "@squaredmade/logger";
 import { Server } from "socket.io";
@@ -6,7 +5,7 @@ import app from "./app";
 
 const logger = createCustomLogger("api");
 
-const port = env.PORT;
+const port = 3131;
 
 logger.info(`Server is running on http://localhost:${port}`);
 const server = serve({
