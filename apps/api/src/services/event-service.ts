@@ -17,7 +17,7 @@ import {
 	usersTable,
 	workspacesTable,
 } from "@squaredmade/db";
-import z from "zod";
+import z from "zod/v4";
 import { taskSchema } from "./schema";
 
 export const eventService = j.router({

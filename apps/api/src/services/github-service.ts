@@ -12,7 +12,7 @@ import {
 	workspacesTable,
 } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 import { githubOrgSchema, githubRepoSchema } from "./schema";
 
 export const githubService = j.router({

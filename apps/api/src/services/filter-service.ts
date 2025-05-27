@@ -2,7 +2,7 @@ import { baseProcedure } from "@/middleware";
 import { j } from "@/middleware";
 import { eq, savedFiltersTable } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 import { filterConditionSchema } from "./schema";
 
 export const filterService = j.router({

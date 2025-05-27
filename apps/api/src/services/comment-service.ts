@@ -1,7 +1,7 @@
 import { baseProcedure, j } from "@/middleware";
 import { commentsTable, eq } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 import { commentSchema } from "./schema";
 
 export const commentService = j.router({

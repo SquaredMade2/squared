@@ -16,7 +16,7 @@ import type {
 	WorkspaceInviteLink,
 } from "@squaredmade/db";
 import { createEnumSchema, createSchema } from "@squaredmade/rpc";
-import z from "zod";
+import z from "zod/v4";
 
 export const workspaceInviteLinkSchema = createSchema<WorkspaceInviteLink>()(
 	z.object({

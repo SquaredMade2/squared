@@ -13,7 +13,7 @@ import {
 } from "@squaredmade/db";
 import { addWeeks } from "date-fns";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 
 export const sprintService = j.router({
 	getSprints: baseProcedure

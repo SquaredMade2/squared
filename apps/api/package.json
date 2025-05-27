@@ -27,10 +27,9 @@
 		"date-fns": "^4.0.0",
 		"dotenv": "^16.4.1",
 		"hono": "^4.7.10",
-		"jstack": "^1.1.1",
 		"qs": "^6.13.0",
 		"socket.io": "^4.8.0",
-		"zod": "^3.23.8"
+		"zod": "^3.25.30"
 	},
 	"devDependencies": {
 		"@squaredmade/superjson": "1.0.1",

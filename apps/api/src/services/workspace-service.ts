@@ -22,7 +22,7 @@ import {
 } from "@squaredmade/db";
 import type { Logger } from "@squaredmade/logger";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 
 // Schema definitions for complex objects
 const labelSchema = z.object({

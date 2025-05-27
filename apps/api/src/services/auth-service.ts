@@ -1,6 +1,6 @@
 import { baseProcedure, j } from "@/middleware";
 import { eq, usersTable } from "@squaredmade/db";
-import z from "zod";
+import z from "zod/v4";
 
 export const authService = j.router({
 	register: baseProcedure

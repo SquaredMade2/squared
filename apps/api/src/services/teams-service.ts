@@ -2,7 +2,7 @@ import { baseProcedure } from "@/middleware";
 import { j } from "@/middleware";
 import { and, eq, teamsTable, userTeamsTable } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 
 export const teamService = j.router({
 	createTeam: baseProcedure

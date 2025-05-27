@@ -17,7 +17,7 @@ import {
 	workspacesTable,
 } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
-import z from "zod";
+import z from "zod/v4";
 import { eventService } from "./event-service";
 import { labelSchema, priorityEnum, statusEnum } from "./schema";
 

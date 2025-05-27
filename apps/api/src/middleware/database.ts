@@ -1,7 +1,7 @@
 import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
+import { jstack } from "@squaredmade/rpc";
 import { env } from "hono/adapter";
-import { jstack } from "jstack";
 
 interface Env {
 	Bindings: {
