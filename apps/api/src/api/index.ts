@@ -1,11 +1,9 @@
 import env from "@/env";
 import { serve } from "@hono/node-server";
-import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
 import { Server } from "socket.io";
 import app from "./app";
 
-export const db = createDb({ databaseUrl: env.DATABASE_URL });
 const logger = createCustomLogger("api");
 
 const port = env.PORT;

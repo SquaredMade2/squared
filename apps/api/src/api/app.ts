@@ -1,13 +1,12 @@
-import { rpcHandlers } from "@/services";
+import type { Env } from "@/env";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { createRequestHandler } from "@squaredmade/rpc";
+import { createRequestHandler, jstack } from "@squaredmade/rpc";
 import { cors, errorHandler, notFound } from "@squaredmade/server/middleware";
 import { logger } from "hono/logger";
 
 const app = new OpenAPIHono({ strict: false });
 
-// Health check route for root path
-
+export const j = jstack.init<Env>();
 const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
 app.all("/rpc/*", rpcRequestHandler);
 

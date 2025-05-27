@@ -1,22 +1,7 @@
+import { j } from "@/api/app";
 import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
-import { jstack } from "@squaredmade/rpc";
 import { env } from "hono/adapter";
-
-interface Env {
-	Bindings: {
-		SQUARED_API_KEY: string;
-		NEXT_PUBLIC_CONFIRM_URL: string;
-		PORT: number;
-		DATABASE_URL: string;
-		LOCAL_DB: boolean;
-		CLERK_SECRET: string;
-		CLERK_SECRET_KEY: string;
-		DISCORD_BOT_TOKEN: string;
-	};
-}
-
-export const j = jstack.init<Env>();
 
 /**
  * Type-safely injects database into all procedures

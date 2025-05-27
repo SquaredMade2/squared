@@ -570,6 +570,9 @@ importers:
       '@squaredmade/builder':
         specifier: ^1.0.1
         version: 1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
+      '@squaredmade/server':
+        specifier: workspace:*
+        version: link:../server
       '@squaredmade/typescript-config':
         specifier: ^1.0.0
         version: 1.0.2

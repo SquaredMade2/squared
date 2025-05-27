@@ -125,11 +125,13 @@ interface WebSocketBindings {
 
 // Type for sub-router storage
 type SubRouterValue<
+	E extends Env = Env,
 	TRouter = Router<
 		Record<
 			string,
 			Record<string, unknown> | OperationType<ZodObject, ZodObject>
-		>
+		>,
+		E
 	>,
 > = Promise<TRouter> | TRouter;
 
@@ -141,7 +143,7 @@ export class Router<
 	E extends Env = Env,
 > extends Hono<E, RouterSchema<MergeRoutes<T>>, string> {
 	_metadata: {
-		subRouters: Record<string, SubRouterValue>;
+		subRouters: Record<string, SubRouterValue<E>>;
 		config: RouterConfig | Record<string, RouterConfig>;
 		procedures: Record<string, ProcedureMetadata>;
 		registeredPaths: string[];

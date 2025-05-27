@@ -329,5 +329,30 @@ describe("mergeRouters", () => {
 			expect(merged._metadata.subRouters["/api/users"]).toBe(userRouter);
 			expect(merged._metadata.subRouters["/api/admin"]).toBeInstanceOf(Router);
 		});
+
+		it("should preserve environment", () => {
+			interface AppEnv {
+				Bindings: { DATABASE_URL: string };
+			}
+			const j = jstack.init<AppEnv>();
+			const routers = {
+				users: j.router({
+					getData: j.procedure.get(({ c }) =>
+						c.json({ data: "test", count: 42 }),
+					),
+				}),
+			};
+
+			const api = j
+				.router()
+				.basePath("/")
+				.use(j.defaults.cors)
+				.onError(j.defaults.errorHandler);
+
+			const merged = mergeRouters(api, routers);
+
+			expect(merged).toBeInstanceOf(Router);
+			expect(merged._metadata.subRouters["/api/users"]).toBeInstanceOf(Router);
+		});
 	});
 });
