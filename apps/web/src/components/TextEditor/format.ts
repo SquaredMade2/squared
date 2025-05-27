@@ -43,7 +43,7 @@ export const convertSlateToMDX = (slateArr: CustomElement[]): string => {
 					const code = leaf.code ? "`" : ""; // use single backtick for inline code
 					const underlineStart = leaf.underline ? "<u>" : "";
 					const underlineEnd = leaf.underline ? "</u>" : "";
-					const formattedText = `${italic}${bold}${underlineStart}${code}${leaf.text.trim()}${code}${underlineEnd}${bold}${italic} `;
+					const formattedText = `${italic}${bold}${underlineStart}${code}${leaf.text}${code}${underlineEnd}${bold}${italic} `;
 					return formattedText;
 				})
 				.join("");
@@ -70,7 +70,7 @@ function findMDXLines(text: string): string[] {
 	});
 }
 
-function splitText(text: string): string[] {
+function splitMdxText(text: string): string[] {
 	return text
 		.split(/(\*\*|\*|<u>|<\/u>|<MentionHover[^>]*\/>|\[.*?\]\(.*?\))/g)
 		.filter((part) => part.trim() !== "");
@@ -107,7 +107,7 @@ function trackFormatting(parts: string[]): CustomText[] {
 		}
 		// Check for links in the format [text](url)
 		if (part.startsWith("[") && part.includes("](")) {
-			const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/);
+			const linkMatch = part.match(/\[([^\]]+)\]\(([^)\s]+(?:\)[^)\s]+)*)\)/);
 			if (!linkMatch) continue;
 
 			try {
@@ -121,10 +121,7 @@ function trackFormatting(parts: string[]): CustomText[] {
 				console.error("Failed to parse link data:", e);
 			}
 		}
-		if (part === "***") {
-			boldOn = !boldOn;
-			italicOn = !italicOn;
-		} else if (part === "**") {
+		if (part === "**") {
 			boldOn = !boldOn;
 		} else if (part === "*") {
 			italicOn = !italicOn;
@@ -142,12 +139,6 @@ function trackFormatting(parts: string[]): CustomText[] {
 	}
 
 	return result;
-}
-
-function parseInlineMarkdown(text: string): CustomText[] {
-	const parts = splitText(text);
-	const formattedParts = trackFormatting(parts);
-	return formattedParts;
 }
 
 export const convertMDXToSlate = (mdxString: string) => {
@@ -170,13 +161,13 @@ export const convertMDXToSlate = (mdxString: string) => {
 			const headerText = line.replace("### ", "").trim();
 			slateArr.push({
 				type: "header",
-				children: parseInlineMarkdown(headerText),
+				children: trackFormatting(splitMdxText(headerText)),
 			});
 		} else {
 			const text = line.trim();
 			slateArr.push({
 				type: "paragraph",
-				children: parseInlineMarkdown(text),
+				children: trackFormatting(splitMdxText(text)),
 			});
 		}
 	}

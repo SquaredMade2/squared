@@ -22,7 +22,7 @@ const MentionLeaf = ({ attributes, children, leaf }: RenderLeafProps) => {
 					<Card className="flex min-h-20 flex-row items-center justify-center px-1 py-0">
 						<CardContent className="flex flex-row items-center px-1 py-0">
 							<Avatar className="mx-2 flex size-6 shrink-0 items-center">
-								<AvatarImage src={leaf.mentionConfirm?.lastName || undefined} />
+								<AvatarImage src={leaf.mentionConfirm?.imageUrl || undefined} />
 								<AvatarFallback className="text-xxs">
 									{getInitials(
 										`${leaf.mentionConfirm?.firstName} ${leaf.mentionConfirm?.lastName}`,

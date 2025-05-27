@@ -43,7 +43,7 @@ const Leaf = (props: RenderLeafProps) => {
 					leaf.underline && "underline",
 				)}
 			>
-				{props.children}
+				{children}
 			</span>
 		);
 	};
