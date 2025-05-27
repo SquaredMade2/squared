@@ -13,17 +13,21 @@ export type InferSchemaFromRouters<
 > = {
 	[P in keyof R]: R[P] extends () => Promise<AnyRouter<E>>
 		? R[P] extends () => Promise<infer T>
-			? T extends AnyHono<infer S, E>
+			? T extends Router<infer S, E>
+				? S
+				: T extends AnyHono<infer S, E>
+					? {
+							[Q in keyof S]: S[Q];
+						}
+					: never
+			: never
+		: R[P] extends Router<infer S, E>
+			? S
+			: R[P] extends AnyHono<infer S, E>
 				? {
 						[Q in keyof S]: S[Q];
 					}
-				: never
-			: never
-		: R[P] extends AnyHono<infer S, E>
-			? {
-					[Q in keyof S]: S[Q];
-				}
-			: never;
+				: never;
 };
 
 export function mergeRouters<

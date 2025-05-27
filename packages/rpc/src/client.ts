@@ -87,7 +87,7 @@ export type Client<
 	T extends
 		| Router<RouterRecord, InferRouterEnv<T>>
 		| (() => Promise<Router<RouterRecord, InferRouterEnv<T>>>),
-> = T extends Hono<Env, infer S>
+> = T extends Hono<InferRouterEnv<T>, infer S>
 	? S extends RouterSchema<infer B>
 		? B extends MergeRoutes<infer C>
 			? C extends InferSchemaFromRouters<infer D>
