@@ -11,7 +11,7 @@ import { teamService } from "./teams-service";
 import { userService } from "./user-service";
 import { workspaceService } from "./workspace-service";
 
-const api = j.router().basePath("/").use(cors).onError(errorHandler);
+const api = j.router().basePath("/api").use(cors).onError(errorHandler);
 
 const appRouter = j.mergeRouters(api, {
 	auth: authService,
@@ -25,5 +25,7 @@ const appRouter = j.mergeRouters(api, {
 	users: userService,
 	workspace: workspaceService,
 });
+
+export type AppRouter = typeof appRouter;
 
 export default appRouter;

@@ -69,6 +69,30 @@ describe("Client", () => {
 			// The error handling happens in the internal jfetch function
 			expect(client).toBeDefined();
 		});
+		it("Should create a client with a custom Env", () => {
+			interface AppEnv {
+				Bindings: { DATABASE_URL: string };
+			}
+
+			const j = jstack.init<AppEnv>();
+			const api = j
+				.router()
+				.basePath("/api")
+				.use(j.defaults.cors)
+				.onError(j.defaults.errorHandler);
+
+			const appRouter = j.mergeRouters(api, {
+				auth: j.router({
+					test: j.procedure.get(({ c }) => c.json({ message: "test" })),
+				}),
+			});
+
+			type AppRouter = typeof appRouter;
+			const client = createClient<AppRouter>({
+				baseUrl: "https://api.example.com",
+			});
+			expect(client).toBeDefined();
+		});
 	});
 
 	describe("parseJsonResponse", () => {
