@@ -81,10 +81,12 @@ describe("Client", () => {
 				.use(j.defaults.cors)
 				.onError(j.defaults.errorHandler);
 
+			const authRouter = j.router({
+				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
+			});
+
 			const appRouter = j.mergeRouters(api, {
-				auth: j.router({
-					test: j.procedure.get(({ c }) => c.json({ message: "test" })),
-				}),
+				auth: authRouter,
 			});
 
 			type AppRouter = typeof appRouter;

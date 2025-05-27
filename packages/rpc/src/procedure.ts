@@ -116,7 +116,7 @@ export class Procedure<
 			c: ContextWithSuperJSON<E>;
 			input: InferSchema<InputSchema>;
 		}) => Return,
-	): GetOperation<InputSchema, unknown, E> {
+	): GetOperation<InputSchema, ReturnType<typeof handler>, E> {
 		const operation: GetOperation<InputSchema, Return, E> = {
 			type: "get",
 			schema: this.inputSchema,
@@ -156,7 +156,7 @@ export class Procedure<
 			c: ContextWithSuperJSON<E>;
 			input: InferSchema<InputSchema>;
 		}) => Return,
-	): PostOperation<InputSchema, unknown, E> {
+	): PostOperation<InputSchema, ReturnType<typeof handler>, E> {
 		const operation: PostOperation<InputSchema, Return, E> = {
 			type: "post",
 			schema: this.inputSchema,
