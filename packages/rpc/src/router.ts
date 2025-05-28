@@ -77,21 +77,22 @@ export type RouterSchema<T extends Record<string, unknown>> = {
 				: never;
 };
 
-export type OperationSchema<T> = T extends WebSocketOperation<
-	ZodObject,
-	ZodObject
->
+export type OperationSchema<
+	T,
+	E extends Env = Env,
+> = T extends WebSocketOperation<ZodObject, ZodObject>
 	? {
 			$get: {
 				input: InferInput<T>;
-				output: Record<string, never>;
+				output: {};
 				incoming: NonNullable<T["incoming"]>;
 				outgoing: NonNullable<T["outgoing"]>;
 				outputFormat: "ws";
 				status: StatusCode;
 			};
 		}
-	: T extends GetOperation<ZodObject | void>
+	: // biome-ignore lint/suspicious/noExplicitAny: Output type is not known
+		T extends GetOperation<ZodObject | void, any, E>
 		? {
 				$get: {
 					input: InferInput<T>;
@@ -100,7 +101,8 @@ export type OperationSchema<T> = T extends WebSocketOperation<
 					status: StatusCode;
 				};
 			}
-		: T extends PostOperation<ZodObject | void>
+		: // biome-ignore lint/suspicious/noExplicitAny: Output type is not known
+			T extends PostOperation<ZodObject | void, any, E>
 			? {
 					$post: {
 						input: InferInput<T>;
@@ -237,7 +239,8 @@ export class Router<
 
 	private registerOperation(
 		path: string,
-		operation: OperationType<ZodObject | void, ZodObject | void, E>,
+		// biome-ignore lint/suspicious/noExplicitAny: Output type is not known
+		operation: OperationType<ZodObject | void, any, E>,
 	) {
 		const routePath = `/${path}` as const;
 
@@ -282,9 +285,7 @@ export class Router<
 			});
 
 		if (operation.type === "get") {
-			const getOp = operation as GetOperation<ZodObject | void, unknown, E>;
-
-			if (getOp.schema) {
+			if (operation.schema) {
 				this.get(
 					routePath,
 					queryParsingMiddleware,
@@ -300,8 +301,8 @@ export class Router<
 								: undefined;
 
 						// caught at app-level with .onError
-						const input = getOp.schema?.parse(queryInput);
-						const result = await getOp.handler({
+						const input = operation.schema?.parse(queryInput);
+						const result = await operation.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
 							input,
@@ -315,7 +316,7 @@ export class Router<
 					const typedC = c as Context<E & { Variables: InternalContext }>;
 					const ctx = typedC.get("__middleware_output") || {};
 
-					const result = await getOp.handler({
+					const result = await operation.handler({
 						c: c as ContextWithSuperJSON<E>,
 						ctx,
 						input: undefined as void,
@@ -324,9 +325,7 @@ export class Router<
 				});
 			}
 		} else if (operation.type === "post") {
-			const postOp = operation as PostOperation<ZodObject | void, unknown, E>;
-
-			if (postOp.schema) {
+			if (operation.schema) {
 				this.post(
 					routePath,
 					bodyParsingMiddleware,
@@ -342,9 +341,9 @@ export class Router<
 								: undefined;
 
 						// caught at app-level with .onError
-						const input = postOp.schema?.parse(bodyInput);
+						const input = operation.schema?.parse(bodyInput);
 
-						const result = await postOp.handler({
+						const result = await operation.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
 							input: input as ZodObject | void,
@@ -358,7 +357,7 @@ export class Router<
 					const typedC = c as Context<E & { Variables: InternalContext }>;
 					const ctx = typedC.get("__middleware_output") || {};
 
-					const result = await postOp.handler({
+					const result = await operation.handler({
 						c: c as ContextWithSuperJSON<E>,
 						ctx,
 						input: undefined as void,

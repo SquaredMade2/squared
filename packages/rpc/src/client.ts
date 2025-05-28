@@ -90,12 +90,22 @@ export type Client<
 > = T extends Hono<InferRouterEnv<T>, infer S>
 	? S extends RouterSchema<infer B>
 		? B extends MergeRoutes<infer C>
-			? C extends InferSchemaFromRouters<infer D>
+			? C extends InferSchemaFromRouters<infer D, InferRouterEnv<T>>
 				? {
-						[K1 in keyof D]: D[K1] extends () => Promise<Router<infer P, Env>>
-							? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
-							: D[K1] extends Router<infer P, Env>
-								? { [K2 in keyof P]: ClientRequest<OperationSchema<P[K2]>> }
+						[K1 in keyof D]: D[K1] extends () => Promise<
+							Router<infer P, InferRouterEnv<T>>
+						>
+							? {
+									[K2 in keyof P]: ClientRequest<
+										OperationSchema<P[K2], InferRouterEnv<T>>
+									>;
+								}
+							: D[K1] extends Router<infer P, InferRouterEnv<T>>
+								? {
+										[K2 in keyof P]: ClientRequest<
+											OperationSchema<P[K2], InferRouterEnv<T>>
+										>;
+									}
 								: never;
 					}
 				: never

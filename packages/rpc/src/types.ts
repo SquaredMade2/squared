@@ -5,6 +5,7 @@ import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
 import type { ZodObject, z } from "zod/v4";
+import type { Router } from "./router";
 import type { IO, ServerSocket } from "./sockets";
 
 type SuperJSONParsedType<T> = ReturnType<typeof superjson.parse<T>>;
@@ -102,14 +103,14 @@ export type ResponseType<Output> =
 	| void;
 
 type UnwrapResponse<T> = Awaited<T> extends TypedResponse<infer U>
-	? TypedResponse<U, StatusCode>
+	? U
 	: Awaited<T> extends SuperJSONTypedResponse<infer U>
-		? SuperJSONTypedResponse<U>
+		? U
 		: Awaited<T> extends Response
-			? Response
+			? unknown
 			: Awaited<T> extends void
-				? Response
-				: Response;
+				? void
+				: T;
 
 export type GetOperation<
 	Schema,
@@ -122,7 +123,7 @@ export type GetOperation<
 		c: ContextWithSuperJSON<E>;
 		ctx: Record<string, unknown>;
 		input: InferSchema<Schema>;
-	}) => OptionalPromise<UnwrapResponse<Return>>;
+	}) => UnwrapResponse<OptionalPromise<Return>>;
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
@@ -137,7 +138,7 @@ export type PostOperation<
 		ctx: Record<string, unknown>;
 		c: ContextWithSuperJSON<E>;
 		input: InferSchema<Schema>;
-	}) => OptionalPromise<UnwrapResponse<Return>>;
+	}) => UnwrapResponse<OptionalPromise<Return>>;
 	middlewares: MiddlewareFunction<Record<string, unknown>, unknown, E>[];
 };
 
@@ -152,3 +153,10 @@ export type InferInput<T> = T extends OperationType<infer I, ZodObject | void>
 	: void;
 
 export type OptionalPromise<T> = T | Promise<T>;
+type RouterRecord = Record<
+	string,
+	OperationType<ZodObject, ZodObject> | Record<string, unknown>
+>;
+export type InferRouterEnv<T> = T extends Router<RouterRecord, infer E>
+	? E
+	: never;
