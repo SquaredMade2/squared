@@ -1,6 +1,6 @@
 import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
-import { jstack } from "@squaredmade/rpc";
+import { sqStack } from "@squaredmade/rpc";
 import { env } from "hono/adapter";
 import z from "zod/v4";
 
@@ -19,7 +19,7 @@ const envSchema = z.object({
 
 type Env = z.infer<typeof envSchema>;
 
-export const j = jstack.init<Env>();
+export const j = sqStack.init<Env>();
 
 /**
  * Type-safely injects database into all procedures

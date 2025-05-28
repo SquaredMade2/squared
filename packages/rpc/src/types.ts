@@ -4,7 +4,7 @@ import type superjson from "@squaredmade/superjson";
 import type { Context, TypedResponse } from "hono";
 import type { Env, Input } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
-import type { ZodObject, z } from "zod/v4";
+import type { ZodObject, ZodRawShape, z } from "zod/v4";
 import type { Router } from "./router";
 import type { IO, ServerSocket } from "./sockets";
 
@@ -50,11 +50,6 @@ export type MiddlewareFunction<
 export type EmitFunction = (event: string, data?: unknown) => Promise<void>;
 
 export type RoomEmitFunction = (room: string, data?: unknown) => Promise<void>;
-
-// Simplified schema inference to avoid deep instantiation
-export type InferSchema<T> = T extends ZodObject<infer Shape>
-	? z.infer<ZodObject<Shape>>
-	: void;
 
 // Simplified WebSocket data inference
 export type InferWebSocketData<T> = T extends ZodObject ? z.infer<T> : void;
@@ -148,9 +143,24 @@ export type OperationType<I, O, E extends Env = Env> =
 	| PostOperation<I, O, E>
 	| WebSocketOperation<I, O, E>;
 
-export type InferInput<T> = T extends OperationType<infer I, ZodObject | void>
-	? InferSchema<I>
+// Simplified schema inference to avoid deep instantiation
+export type InferSchema<T> = T extends ZodObject<
+	infer Shape extends ZodRawShape
+>
+	? {
+			[K in keyof Shape]: Shape[K] extends z.ZodType<infer U> ? U : void;
+		}
 	: void;
+
+export type InferInput<T> = T extends OperationType<infer I, unknown, any>
+	? InferSchema<I>
+	: T extends GetOperation<infer I, unknown, Env>
+		? InferSchema<I>
+		: T extends PostOperation<infer I, unknown, Env>
+			? InferSchema<I>
+			: T extends WebSocketOperation<infer I, unknown, Env>
+				? InferSchema<I>
+				: void;
 
 export type OptionalPromise<T> = T | Promise<T>;
 type RouterRecord = Record<

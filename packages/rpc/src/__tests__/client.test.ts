@@ -1,5 +1,6 @@
 import type { StatusCode } from "hono/utils/http-status";
 import { assertType, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod/v4";
 import { type ClientRequest, createClient } from "../client";
 import { sqStack } from "../j";
 
@@ -95,6 +96,87 @@ describe("Client", () => {
 				baseUrl: "https://api.example.com",
 			});
 			expect(client).toBeDefined();
+		});
+		it("should make a POST request and return response", async () => {
+			// Setup mock response
+			const mockResponseData = {
+				id: 1,
+				name: "John Doe",
+				email: "john@example.com",
+			};
+			const mockResponse = {
+				ok: true,
+				status: 200,
+				json: vi.fn().mockResolvedValue(mockResponseData),
+				text: vi.fn().mockResolvedValue(JSON.stringify(mockResponseData)),
+				headers: new Headers({ "x-is-superjson": "false" }),
+			};
+
+			global.fetch = vi.fn().mockResolvedValue(mockResponse);
+
+			// Create test router with POST endpoint
+			interface AppEnv {
+				Bindings: { DATABASE_URL: string };
+			}
+
+			const j = sqStack.init<AppEnv>();
+			const userRouter = j.router({
+				create: j.procedure
+					.input(
+						z.object({
+							name: z.string(),
+							email: z.string().email(),
+						}),
+					)
+					.post(({ c, input }) => {
+						return c.json({
+							id: 1,
+							name: input.name,
+							email: input.email,
+						});
+					}),
+			});
+
+			const api = j
+				.router()
+				.basePath("/api")
+				.use(j.defaults.cors)
+				.onError(j.defaults.errorHandler);
+
+			const appRouter = j.mergeRouters(api, {
+				users: userRouter,
+			});
+
+			type AppRouter = typeof appRouter;
+
+			// Create client and make POST request
+			const client = createClient<AppRouter>({
+				baseUrl: "https://api.example.com",
+			});
+
+			const requestData = {
+				name: "John Doe",
+				email: "john@example.com",
+			};
+
+			// Make the actual POST request
+			const response = await client.users.create.$post(requestData);
+
+			// Verify the request was made correctly
+			expect(global.fetch).toHaveBeenCalledWith(
+				expect.stringContaining("/api/users/create"),
+				expect.objectContaining({
+					method: "POST",
+					headers: expect.objectContaining({
+						"content-type": "application/json",
+					}),
+					body: JSON.stringify(requestData),
+				}),
+			);
+
+			// Verify the response
+			expect(response).toEqual(mockResponseData);
+			expect(mockResponse.json).toHaveBeenCalled();
 		});
 	});
 

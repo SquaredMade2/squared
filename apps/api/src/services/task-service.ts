@@ -1,4 +1,5 @@
-import { baseProcedure, j } from "@/utils/jstack";
+import { client } from "@/utils/client";
+import { baseProcedure, j } from "@/utils/sqStack";
 import { subscribeUser } from "@/utils/taskUpdate";
 import {
 	and,
@@ -17,7 +18,6 @@ import {
 } from "@squaredmade/db";
 import { HTTPException } from "hono/http-exception";
 import z from "zod/v4";
-import { eventService } from "./event-service";
 import { labelSchema, priorityEnum, statusEnum } from "./schema";
 
 export const taskService = j.router({
@@ -260,7 +260,7 @@ export const taskService = j.router({
 				}
 
 				// Create log event
-				await eventService.createLogEvent({
+				await client.event.createLogEvent.$post({
 					taskId: updatedTask.id,
 					authorId: updaterId,
 					changes: taskData,

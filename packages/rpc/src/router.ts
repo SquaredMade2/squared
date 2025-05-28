@@ -12,6 +12,7 @@ import type {
 	ContextWithSuperJSON,
 	GetOperation,
 	InferInput,
+	InferSchema,
 	OperationType,
 	PostOperation,
 	RouterConfig,
@@ -305,7 +306,7 @@ export class Router<
 						const result = await operation.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
-							input,
+							input: input as InferSchema<typeof operation.schema>,
 						});
 
 						return result === undefined ? c.json(undefined) : result;
@@ -346,7 +347,7 @@ export class Router<
 						const result = await operation.handler({
 							c: c as ContextWithSuperJSON<E>,
 							ctx,
-							input: input as ZodObject | void,
+							input: input as InferSchema<typeof operation.schema>,
 						});
 
 						return result === undefined ? c.json(undefined) : result;

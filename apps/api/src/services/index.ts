@@ -1,4 +1,4 @@
-import { j } from "@/utils/jstack";
+import { j } from "@/utils/sqStack";
 import { cors, errorHandler } from "@squaredmade/server/middleware";
 import { authService } from "./auth-service";
 import { commentService } from "./comment-service";
