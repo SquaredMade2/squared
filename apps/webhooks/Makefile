@@ -125,13 +125,13 @@ run-with-env:
 .PHONY: dev-webhooks
 dev-webhooks:
 	@which air > /dev/null || (echo "Installing air..." && go install github.com/air-verse/air@latest)
-	air -c .air.webhooks.toml
+	@export PATH="$(shell go env GOPATH)/bin:$$PATH" && air -c .air.webhooks.toml
 
 # Run bot in development mode with hot reload
 .PHONY: dev-bot
 dev-bot:
 	@which air > /dev/null || (echo "Installing air..." && go install github.com/air-verse/air@latest)
-	air -c .air.bot.toml
+	@export PATH="$(shell go env GOPATH)/bin:$$PATH" && air -c .air.bot.toml
 
 # Legacy dev command (runs webhooks dev for backward compatibility)
 .PHONY: dev
