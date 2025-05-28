@@ -152,6 +152,7 @@ export type InferSchema<T> = T extends ZodObject<
 		}
 	: void;
 
+// biome-ignore lint/suspicious/noExplicitAny: We don't know what type the Env is
 export type InferInput<T> = T extends OperationType<infer I, unknown, any>
 	? InferSchema<I>
 	: T extends GetOperation<infer I, unknown, Env>

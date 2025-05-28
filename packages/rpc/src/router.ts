@@ -50,7 +50,7 @@ export type RouterSchema<T extends Record<string, unknown>> = {
 		? {
 				$get: {
 					input: InferInput<T[K]>;
-					output: Record<string, never>;
+					output: {};
 					incoming: NonNullable<T[K]["incoming"]>;
 					outgoing: NonNullable<T[K]["outgoing"]>;
 					outputFormat: "ws";
@@ -81,13 +81,16 @@ export type RouterSchema<T extends Record<string, unknown>> = {
 export type OperationSchema<
 	T,
 	E extends Env = Env,
-> = T extends WebSocketOperation<ZodObject, ZodObject>
+> = T extends WebSocketOperation<
+	infer I extends ZodObject,
+	infer O extends ZodObject
+>
 	? {
 			$get: {
-				input: InferInput<T>;
-				output: {};
-				incoming: NonNullable<T["incoming"]>;
-				outgoing: NonNullable<T["outgoing"]>;
+				input: z.infer<I>;
+				output: z.infer<O>;
+				incoming: z.infer<NonNullable<T["incoming"]>>;
+				outgoing: z.infer<NonNullable<T["outgoing"]>>;
 				outputFormat: "ws";
 				status: StatusCode;
 			};

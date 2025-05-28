@@ -59,8 +59,8 @@ export type ClientRequest<S extends Schema> = {
 					: { param: P }
 				: R extends { query: infer Q }
 					? { query: Q }
-					: Record<string, never>
-			: Record<string, never>,
+					: {}
+			: {},
 	) => URL;
 } & (S["$get"] extends { outputFormat: "ws" }
 		? S["$get"] extends {
@@ -174,14 +174,10 @@ type SerializableValue =
 // Type for HTTP method arguments
 type HttpMethodArgs<T = unknown> = [data?: T, options?: ClientRequestOptions];
 
-// Type for URL method arguments
-type UrlMethodArgs = { query?: Record<string, SerializableValue> };
-
 // Improved proxy target interface
 interface ProxyTarget {
 	$get?: (...args: HttpMethodArgs) => Promise<Response>;
 	$post?: (...args: HttpMethodArgs) => Promise<Response>;
-	$url?: (args?: UrlMethodArgs) => URL;
 	$ws?: () => ClientSocket<SystemEvents, Record<string, unknown>>;
 	[key: string]: unknown;
 }
@@ -283,7 +279,7 @@ function createProxy(
 				}
 
 				if (prop === "$url") {
-					return (args?: UrlMethodArgs): URL => {
+					return (args?: { query: Record<string, SerializableValue> }): URL => {
 						const endpointPath = `/${routePath.slice(0, -1).join("/")}`;
 						const normalizedPath = endpointPath.replace(baseUrl, "");
 						const url = new URL(baseUrl + normalizedPath);
