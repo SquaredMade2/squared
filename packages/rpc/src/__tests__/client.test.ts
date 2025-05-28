@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createClient } from "../client";
+import type { StatusCode } from "hono/utils/http-status";
+import { assertType, beforeEach, describe, expect, it, vi } from "vitest";
+import { type ClientRequest, createClient } from "../client";
 import { sqStack } from "../j";
 
 // Mock superjson
@@ -167,12 +168,42 @@ describe("Client", () => {
 
 	describe("Type inference", () => {
 		it("should infer router types correctly", () => {
-			const j = sqStack.init();
+			interface AppEnv {
+				Bindings: { DATABASE_URL: string };
+			}
+
+			const j = sqStack.init<AppEnv>();
 			const testRouter = j.router({
 				test: j.procedure.get(({ c }) => c.json({ message: "hello" })),
 			});
+			const api = j
+				.router()
+				.basePath("/api")
+				.use(j.defaults.cors)
+				.onError(j.defaults.errorHandler);
 
-			const client = createClient<typeof testRouter>();
+			const appRouter = j.mergeRouters(api, {
+				test: testRouter,
+			});
+
+			type AppRouter = typeof appRouter;
+			type AppRouterClient = {
+				test: {
+					test: ClientRequest<{
+						$get: {
+							input: void;
+							output: {
+								message: string;
+							};
+							outputFormat: "json";
+							status: StatusCode;
+						};
+					}>;
+				};
+			};
+
+			const client = createClient<AppRouter>();
+			assertType<AppRouterClient>(client);
 			expect(client).toBeDefined();
 		});
 	});

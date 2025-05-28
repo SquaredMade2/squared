@@ -194,7 +194,6 @@ describe("Router", () => {
 
 			const router = new Router(procedures);
 			expect(router._metadata.procedures.chat).toBeDefined();
-			console.log("Router Metadata", JSON.stringify(router._metadata, null, 2));
 			expect(router._metadata.procedures.chat.type).toBe("ws");
 		});
 
