@@ -7,7 +7,7 @@ const Leaf = (props: RenderLeafProps) => {
 	const { leaf, attributes, children } = props;
 	const leafStyling = {
 		fontWeight: leaf.bold ? "bold" : "normal",
-		fontStyle: leaf.italic ? "italic" : "",
+		fontStyle: leaf.italic ? "italic" : "normal",
 		borderRadius: leaf.mentionConfirm ? "4px" : "",
 		paddingTop: leaf.mentionConfirm ? "2px" : "",
 		paddingBottom: leaf.mentionConfirm ? "2px" : "",
@@ -38,9 +38,9 @@ const Leaf = (props: RenderLeafProps) => {
 				style={leafStyling}
 				className={cn(
 					(leaf.mentionConfirm || leaf.taskConfirm) && "bg-muted-foreground",
-					leaf.bold && "font-bold",
-					leaf.italic && "italic",
-					leaf.underline && "underline",
+					leaf.bold ? "font-bold" : undefined,
+					leaf.italic ? "italic" : undefined,
+					leaf.underline ? "underline" : undefined,
 				)}
 			>
 				{children}
