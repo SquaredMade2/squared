@@ -9,6 +9,7 @@ import "dotenv/config";
 import http from "node:http";
 import express from "express";
 import { Server } from "socket.io";
+import { registerCronJobs } from "../cron-jobs";
 
 export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
 
@@ -92,6 +93,10 @@ io.on("connection", (socket) => {
 		logger.info("User disconnected");
 	});
 });
+
+// Register and start cron jobs
+registerCronJobs();
+logger.info("Cron jobs registered and started");
 
 // Start the server
 server.listen(port, () => {

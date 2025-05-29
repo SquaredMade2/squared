@@ -85,6 +85,13 @@
 			"when": 1745368733579,
 			"tag": "0011_update_label_defaults",
 			"breakpoints": true
+		},
+		{
+			"idx": 12,
+			"version": "7",
+			"when": 1747285204660,
+			"tag": "0012_update_archive_logic",
+			"breakpoints": true
 		}
 	]
 }
