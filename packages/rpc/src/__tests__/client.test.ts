@@ -391,6 +391,12 @@ describe("Client", () => {
 						z.object({
 							id: z.string(),
 							includeProfile: z.boolean().optional(),
+							searchOptions: z
+								.object({
+									page: z.number().optional(),
+									limit: z.number().optional(),
+								})
+								.optional(),
 						}),
 					)
 					.get(({ c, input }) =>
@@ -416,7 +422,11 @@ describe("Client", () => {
 			// These should be type-safe calls
 			expect(() => {
 				// GET with proper input type
-				client.users.getUser.$get({ id: "123", includeProfile: true });
+				client.users.getUser.$get({
+					id: "123",
+					includeProfile: true,
+					searchOptions: undefined,
+				});
 
 				// POST with proper input type
 				client.users.createUser.$post({

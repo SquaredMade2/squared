@@ -5,7 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Env, ErrorHandler, MiddlewareHandler } from "hono/types";
 import type { StatusCode } from "hono/utils/http-status";
 import type { ZodObject } from "zod/v4";
-import { z } from "zod/v4";
+import { toJSONSchema, z } from "zod/v4";
 import { bodyParsingMiddleware, queryParsingMiddleware } from "./middleware";
 import { IO, ServerSocket } from "./sockets";
 import type {
@@ -141,8 +141,19 @@ type SubRouterValue<
 	>,
 > = Promise<TRouter> | TRouter;
 
+interface JSONSchema {
+	type?: string | string[];
+	properties?: Record<string, JSONSchema>;
+	required?: string[];
+	additionalProperties?: boolean | JSONSchema;
+	$schema?: string;
+}
+
 // Type for procedures metadata
-type ProcedureMetadata = Record<string, "get" | "post" | "ws">;
+type ProcedureMetadata = {
+	type: "get" | "post" | "ws";
+	schema: JSONSchema | null;
+};
 
 export class Router<
 	T extends Record<string, unknown>,
@@ -180,6 +191,15 @@ export class Router<
 			procedures: {},
 			registeredPaths: [],
 		};
+
+		for (const [procName, value] of Object.entries(procedures)) {
+			const procData = value as ProcedureMetadata;
+			const { schema } = procData;
+			this._metadata.procedures[procName] = {
+				type: procData.type,
+				schema: toJSONSchema(schema as unknown as ZodObject),
+			};
+		}
 
 		this.onError = (handler: ErrorHandler<E>) => {
 			this._errorHandler = handler;
@@ -251,6 +271,10 @@ export class Router<
 		if (!this._metadata.procedures[path]) {
 			this._metadata.procedures[path] = {
 				type: operation.type,
+				schema:
+					"schema" in operation && operation.schema
+						? toJSONSchema(operation.schema)
+						: null,
 			};
 		}
 
