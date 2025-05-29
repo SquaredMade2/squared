@@ -5,7 +5,6 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
-import { formatUrl } from "@/utils/formatting";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { CirclePlus } from "@squaredmade/icons";
@@ -96,27 +95,21 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				parentId: parentId,
 			};
 
-			const createdTask = await client.task.createTask
+			const res = await client.task.createTask
 				.$post(newTask)
 				.then((res) => res.json());
-			createdTask.order = subtasks.length + 1;
-			createTask(createdTask);
-			setSubtasks([...subtasks, createdTask]);
+			res.task.order = subtasks.length + 1;
+			createTask(res.task);
+			setSubtasks([...subtasks, res.task]);
 			setWorkspace({
 				...workspace,
 				tasksCreated: workspace.tasksCreated + 1,
 			});
-			return createdTask;
+			return res;
 		},
-		onSuccess(data) {
+		onSuccess({ task, url }) {
 			toast.success("Task Created Successfully", {
-				description: (
-					<Link
-						href={`/${workspace?.url}/task/${data.identifier}/${formatUrl(data.title)}`}
-					>
-						{data.title}
-					</Link>
-				),
+				description: <Link href={url}>{task.title}</Link>,
 			});
 			setNewTaskData({});
 			form.reset({ title: "", description: "" });

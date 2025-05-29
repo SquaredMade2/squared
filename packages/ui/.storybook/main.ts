@@ -32,12 +32,13 @@ const config: StorybookConfig = {
 		},
 	}),
 	webpackFinal: async (webpackConfig) => {
-		webpackConfig.resolve!.plugins = [
-			...(webpackConfig.resolve!.plugins || []),
+		if (!webpackConfig.resolve) return webpackConfig;
+		webpackConfig.resolve.plugins = [
+			...(webpackConfig.resolve.plugins || []),
 			new TsconfigPathsPlugin(),
 		];
-		webpackConfig.resolve!.alias = {
-			...(webpackConfig.resolve!.alias || {}),
+		webpackConfig.resolve.alias = {
+			...(webpackConfig.resolve.alias || {}),
 			"@/storybook": resolve(__dirname, "."),
 		};
 

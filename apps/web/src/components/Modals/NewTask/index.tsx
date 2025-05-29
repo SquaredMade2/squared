@@ -1,5 +1,11 @@
 "use client";
 
+import TextEditor, {
+	initialEditorValue,
+	type CustomDescendant,
+	type CustomElement,
+} from "@/components/TextEditor";
+import { convertSlateToMDX } from "@/components/TextEditor/format";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
@@ -28,9 +34,9 @@ import {
 import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
-import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
@@ -63,6 +69,8 @@ export const NewTaskModal = () => {
 	const { team, setTeams, setTeam } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
 	const [isEditingTitle, setIsEditingTitle] = useState(false);
+	const [editorDescription, setEditorDescription] =
+		useState<CustomDescendant[]>(initialEditorValue);
 
 	const {
 		status,
@@ -106,7 +114,8 @@ export const NewTaskModal = () => {
 
 		const createTaskParams = {
 			title: values.title,
-			description: values.description,
+			description:
+				convertSlateToMDX(editorDescription as CustomElement[]) || "",
 			status: status || "backlog",
 			priority: priority || "noPriority",
 			labels: labels || [],
@@ -118,10 +127,19 @@ export const NewTaskModal = () => {
 		};
 
 		createTask(createTaskParams, {
-			onSuccess: () => {
-				toast.success("Task Created Successfully");
+			onSuccess: ({ url }) => {
+				toast.success("Task Created Successfully", {
+					description: (
+						<Link href={url} passHref>
+							<Button variant="link" className="m-0 p-0">
+								Go to task
+							</Button>
+						</Link>
+					),
+				});
 				setShowNewTask(false);
 				setNewTaskData({});
+				setEditorDescription(initialEditorValue);
 				form.reset();
 			},
 			onError: (error) => {
@@ -137,9 +155,7 @@ export const NewTaskModal = () => {
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization.id,
-				})
+				.$get()
 				.then((res) => res.json());
 			setTeams(teams);
 			setTeam(teams[0]);
@@ -160,7 +176,7 @@ export const NewTaskModal = () => {
 				</DialogHeader>
 				<Form {...form} onSubmit={handleCreateTask}>
 					<div className="flex space-x-4">
-						<div className="w-4/5 space-y-4">
+						<div className="w-4/5">
 							<FormField
 								control={form.control}
 								name="title"
@@ -189,22 +205,22 @@ export const NewTaskModal = () => {
 							<FormField
 								control={form.control}
 								name="description"
-								render={({ field }) => (
+								render={() => (
 									<FormItem>
 										<FormLabel className="text-xl">Description</FormLabel>
 										<FormControl>
-											<Textarea
-												{...field}
+											<TextEditor
+												hasToolbar={false}
 												placeholder="Add Description"
-												className="resize-none text-md"
-												rows={4}
+												value={editorDescription}
+												setValue={setEditorDescription}
 											/>
 										</FormControl>
 									</FormItem>
 								)}
 							/>
 							{upcomingSprints.length === 0 && activeSprint && (
-								<div className="flex items-center gap-2">
+								<div className="mt-4 flex items-center gap-2">
 									<Checkbox
 										checked={activeSprint.id === newTaskData.sprintId}
 										onCheckedChange={(checked) =>

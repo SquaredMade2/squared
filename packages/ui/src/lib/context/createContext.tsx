@@ -43,6 +43,7 @@ function createContext<ContextValueType extends object | null>(
  * createContextScope
  * -----------------------------------------------------------------------------------------------*/
 
+// biome-ignore lint/suspicious/noExplicitAny: We need to support any scope
 type Scope<C = any> =
 	| { [scopeName: string]: Array<React.Context<C>> }
 	| undefined;

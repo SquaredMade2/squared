@@ -1,5 +1,5 @@
 import { cn } from "@squaredmade/ui/cn";
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 
@@ -32,6 +32,7 @@ export const buttonVariants = cva(
 	},
 );
 
+const ButtonSlot = createSlot("Button");
 export interface ButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement>,
 		VariantProps<typeof buttonVariants> {
@@ -61,7 +62,7 @@ export interface ButtonProps
  */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	({ className, variant, size, asChild = false, ...props }, ref) => {
-		const Comp = asChild ? Slot : "button";
+		const Comp = asChild ? ButtonSlot : "button";
 		return (
 			<Comp
 				className={cn(buttonVariants({ variant, size, className }))}

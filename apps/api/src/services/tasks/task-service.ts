@@ -44,7 +44,7 @@ export class TaskService implements TaskRpc {
 		labels,
 		parentId,
 		sprintId,
-	}: CreateTaskParams): Promise<Task> {
+	}: CreateTaskParams): Promise<{ task: Task; url: string }> {
 		this.logger.info("Creating task by payload", {
 			authorId,
 			title,
@@ -125,13 +125,13 @@ export class TaskService implements TaskRpc {
 			const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
 
 			// Update workspace task count
-			const [updatedWorkspace] = await tx
+			const [{ workspaceUrl }] = await tx
 				.update(workspacesTable)
 				.set({ tasksCreated: sql`${workspacesTable.tasksCreated} + 1` })
 				.where(eq(workspacesTable.externalId, workspace.externalId))
-				.returning();
+				.returning({ workspaceUrl: workspacesTable.url });
 
-			if (!updatedWorkspace) {
+			if (!workspaceUrl) {
 				this.throwError("Failed to update workspace task count");
 			}
 
@@ -161,7 +161,10 @@ export class TaskService implements TaskRpc {
 
 			await subscribeUser(author, newTask, tx);
 
-			return newTask;
+			return {
+				task: newTask,
+				url: `/${workspaceUrl}/task/${newTaskIdentifier}/${newTask.title.split(" ").join("-")}`,
+			};
 		});
 	}
 

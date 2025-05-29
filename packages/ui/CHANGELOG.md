@@ -1,5 +1,16 @@
 # @squaredmade/ui
 
+## 3.0.3
+
+### Patch Changes
+
+- 9e31937: Slot: Improved display names for Slot components for easier debugging
+- 9e31937: Slot: Ensure forwardRef is only passed into non-Fragment children in SlotClone
+- 952fd06: Fix watch return from useForm to actually live update with form values
+- 9e31937: Slot: Handlers now return the value of the child handler
+- Updated dependencies [88e00ac]
+  - @squaredmade/icons@1.1.0
+
 ## 3.0.2
 
 ### Patch Changes

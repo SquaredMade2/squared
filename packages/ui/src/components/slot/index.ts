@@ -1,7 +1,9 @@
 export {
+	createSlot,
+	createSlottable,
 	Slot,
 	Slottable,
 	//
-	Root,
+	Slot as Root,
 } from "./Slot";
 export type { SlotProps } from "./Slot";
