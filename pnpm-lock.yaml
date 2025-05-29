@@ -176,8 +176,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.7)
       '@squaredmade/icons':
-        specifier: 1.0.5
-        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 1.1.0
+        version: 1.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/rpc-client':
         specifier: 1.0.2
         version: 1.0.2(@squaredmade/context@1.0.1)
@@ -3284,6 +3284,12 @@ packages:
 
   '@squaredmade/icons@1.0.5':
     resolution: {integrity: sha512-SSDaM8evnSvm3RY0ynrv0Fk1zgPviRsY8yQ7NqsGII2wzX/oqIQuBA2oLlY9gECuDkvry0VkweVX8TIXHPm/pA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+
+  '@squaredmade/icons@1.1.0':
+    resolution: {integrity: sha512-Uo+4Rkro0dMMSQpVyoKyudfaJtw0rKZETf4q5gklbQXTXx6fxZPxwPUAPA1zBY6HMlkAkE4c4fBCVgIB/wNevg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
@@ -12489,6 +12495,11 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   '@squaredmade/icons@1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@squaredmade/icons@1.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
