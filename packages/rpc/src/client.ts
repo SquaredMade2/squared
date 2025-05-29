@@ -193,6 +193,10 @@ export const createClient = <T extends Router<RouterRecord, InferRouterEnv<T>>>(
 		...opts
 	} = options ?? ({} as ClientConfig);
 
+	if (baseUrl !== "" && !baseUrl.startsWith("http")) {
+		throw new Error("baseUrl must start with http:// or https://");
+	}
+
 	const jfetch = async (
 		input: RequestInfo | URL,
 		init?: RequestInit,
