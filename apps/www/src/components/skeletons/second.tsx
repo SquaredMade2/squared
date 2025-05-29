@@ -25,10 +25,10 @@ export const SkeletonTwo = () => {
 	};
 	return (
 		<div className="relative mt-4 h-full w-full">
-			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full bg-linear-to-t from-white via-white to-transparent dark:from-black dark:via-black" />
-			<div className="z-20 h-full rounded-[32px] border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
-				<div className="h-full rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
-					<div className="mx-auto h-6 w-20 rounded-full bg-neutral-200/80 dark:bg-neutral-800/80" />
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full bg-linear-to-t from-background via-background to-transparent" />
+			<div className="z-20 h-full rounded-[32px] border border-neutral-accent bg-neutral-secondary p-4">
+				<div className="h-full rounded-[24px] border border-neutral-accent bg-background p-2">
+					<div className="mx-auto h-6 w-20 rounded-full bg-neutral-accent/80 dark:bg-neutral-secondary/80" />
 					<div
 						onMouseEnter={handleAnimation}
 						ref={scope}
@@ -62,14 +62,14 @@ export const SkeletonTwo = () => {
 
 const UserMessage = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div className="message my-4 rounded-md bg-neutral-100 p-2 text-[10px] text-black sm:p-4 sm:text-xs dark:bg-neutral-800 dark:text-white">
+		<div className="message my-4 rounded-md bg-neutral-secondary p-2 text-[10px] text-foreground sm:p-4 sm:text-xs">
 			{children}
 		</div>
 	);
 };
 const AIMessage = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div className="message my-4 rounded-md bg-black p-2 text-[10px] text-white sm:p-4 sm:text-xs dark:bg-white dark:text-black">
+		<div className="message my-4 rounded-md bg-foreground p-2 text-[10px] text-background sm:p-4 sm:text-xs">
 			{children}
 		</div>
 	);

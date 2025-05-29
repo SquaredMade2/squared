@@ -229,10 +229,10 @@ function Testimonial({
 						alt={name}
 					/>
 					<div>
-						<h3 className="font-medium text-neutral-500 text-sm dark:text-neutral-300">
+						<h3 className="font-medium text-neutral-inverted-accent text-sm">
 							{name}
 						</h3>
-						<p className="font-normal text-neutral-500 text-sm dark:text-neutral-300">
+						<p className="font-normal text-neutral-inverted-accent text-sm">
 							{designation}
 						</p>
 					</div>
