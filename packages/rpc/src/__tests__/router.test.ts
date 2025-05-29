@@ -41,10 +41,12 @@ describe("Router", () => {
 		it("should create router with procedures", () => {
 			const j = sqStack.init();
 			const procedures = {
-				test: j.procedure.get(({ c }) => c.json({ message: "test" })),
+				test: j.procedure
+					.input(z.object({ signal: z.string() }))
+					.get(({ c }) => c.status(200)),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router).toBeDefined();
 			expect(router._metadata.procedures.test).toBeDefined();
 		});
@@ -58,7 +60,7 @@ describe("Router", () => {
 				},
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router).toBeDefined();
 			expect(router._metadata.procedures["users/list"]).toBeDefined();
 			expect(router._metadata.procedures["users/create"]).toBeDefined();
@@ -113,7 +115,7 @@ describe("Router", () => {
 				test: j.procedure.get(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.test).toBeDefined();
 			expect(router._metadata.procedures.test.type).toBe("get");
 		});
@@ -129,7 +131,7 @@ describe("Router", () => {
 				greet: j.procedure.input(schema).get(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.greet).toBeDefined();
 		});
 
@@ -140,7 +142,7 @@ describe("Router", () => {
 				test: j.procedure.get(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 
 			// Test that router is properly set up
 			expect(router._metadata.procedures.test).toBeDefined();
@@ -155,7 +157,7 @@ describe("Router", () => {
 				create: j.procedure.post(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.create).toBeDefined();
 			expect(router._metadata.procedures.create.type).toBe("post");
 		});
@@ -171,7 +173,7 @@ describe("Router", () => {
 				createPost: j.procedure.input(schema).post(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.createPost).toBeDefined();
 		});
 	});
@@ -192,7 +194,7 @@ describe("Router", () => {
 				chat: j.procedure.ws(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.chat).toBeDefined();
 			expect(router._metadata.procedures.chat.type).toBe("ws");
 		});
@@ -222,7 +224,7 @@ describe("Router", () => {
 					.ws(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.chat).toBeDefined();
 		});
 	});
@@ -240,7 +242,7 @@ describe("Router", () => {
 				profile: j.procedure.use(middleware).get(handler),
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures.profile).toBeDefined();
 		});
 	});
@@ -274,7 +276,7 @@ describe("Router", () => {
 				},
 			};
 
-			const router = new Router(procedures);
+			const router = j.router(procedures);
 			expect(router._metadata.procedures["users/profile"]).toBeDefined();
 			// Note: deeply nested routes are not supported in current implementation
 		});
@@ -293,7 +295,7 @@ describe("Router", () => {
 			};
 
 			// Should only register valid operations
-			const testRouter = new Router(procedures);
+			const testRouter = j.router(procedures);
 			expect(testRouter._metadata.procedures.valid).toBeDefined();
 			expect(testRouter._metadata.procedures.invalid).toBeUndefined();
 		});

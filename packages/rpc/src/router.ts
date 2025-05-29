@@ -133,10 +133,7 @@ interface WebSocketBindings {
 type SubRouterValue<
 	E extends Env = Env,
 	TRouter = Router<
-		Record<
-			string,
-			Record<string, unknown> | OperationType<ZodObject, ZodObject>
-		>,
+		Record<string, OperationType<ZodObject | void, ZodObject | void, E>>,
 		E
 	>,
 > = Promise<TRouter> | TRouter;
@@ -145,7 +142,10 @@ type SubRouterValue<
 type ProcedureMetadata = Record<string, "get" | "post" | "ws">;
 
 export class Router<
-	T extends Record<string, unknown>,
+	T extends Record<
+		string,
+		OperationType<ZodObject | void, ZodObject | void, E>
+	>,
 	E extends Env = Env,
 > extends Hono<E, RouterSchema<MergeRoutes<T>>, string> {
 	_metadata: {

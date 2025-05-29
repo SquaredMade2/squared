@@ -164,10 +164,11 @@ export type InferInput<T> = T extends OperationType<infer I, unknown, any>
 				: void;
 
 export type OptionalPromise<T> = T | Promise<T>;
-type RouterRecord = Record<
+type RouterRecord<E extends Env> = Record<
 	string,
-	OperationType<ZodObject, ZodObject> | Record<string, unknown>
+	OperationType<ZodObject | void, ZodObject | void, E>
 >;
-export type InferRouterEnv<T> = T extends Router<RouterRecord, infer E>
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type InferRouterEnv<T> = T extends Router<RouterRecord<any>, infer E>
 	? E
 	: never;
