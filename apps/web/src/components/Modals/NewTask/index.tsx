@@ -176,7 +176,7 @@ export const NewTaskModal = () => {
 				</DialogHeader>
 				<Form {...form} onSubmit={handleCreateTask}>
 					<div className="flex space-x-4">
-						<div className="w-4/5">
+						<div className="w-4/5 space-y-4">
 							<FormField
 								control={form.control}
 								name="title"
@@ -213,7 +213,7 @@ export const NewTaskModal = () => {
 												hasToolbar={false}
 												placeholder="Add Description"
 												value={editorDescription}
-												setValue={setEditorDescription}
+												onChange={setEditorDescription}
 											/>
 										</FormControl>
 									</FormItem>

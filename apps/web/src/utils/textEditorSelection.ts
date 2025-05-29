@@ -24,18 +24,6 @@ export const getCharactersInSelection = (editor: Editor) => {
 	return "";
 };
 
-// check if the current command leaf has a "/" at the beginning of it
-export const isValidCharBlock = (editor: Editor, char: string) => {
-	const { selection } = editor;
-
-	if (!selection) return false;
-
-	const [node] = Editor.node(editor, selection, { edge: "start" });
-
-	const text = Node.string(node);
-	return text.startsWith(char);
-};
-
 export const getMentionFromLeaf = (editor: Editor) => {
 	const { selection } = editor;
 
