@@ -34,6 +34,7 @@
 		"@squaredmade/fonts": "^1.0.7",
 		"@squaredmade/icons": "1.0.5",
 		"@squaredmade/rpc-client": "1.0.2",
+		"@squaredmade/text-editor": "0.0.0",
 		"@squaredmade/ui": "3.0.2",
 		"@tanstack/react-query": "^5.62.7",
 		"@tanstack/react-table": "^8.20.5",
