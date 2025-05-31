@@ -357,6 +357,7 @@ jobs:
     name: CI Pipeline
     needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks, test-ui]
     runs-on: blacksmith-4vcpu-ubuntu-2204
+    timeout-minutes: 30
     if: always()
     steps:
       - name: Check CI status
