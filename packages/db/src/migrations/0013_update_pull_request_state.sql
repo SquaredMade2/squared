@@ -1,0 +1,1 @@
+ALTER TYPE "public"."PullRequestState" ADD VALUE 'merged';
