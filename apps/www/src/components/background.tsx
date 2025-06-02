@@ -38,8 +38,8 @@ const GridBlock = () => {
 
 const Dot = () => {
 	return (
-		<div className="flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-neutral-900">
-			<div className="h-2 w-2 rounded-full bg-neutral-200 dark:bg-neutral-700" />
+		<div className="flex h-6 w-6 items-center justify-center rounded-full bg-background dark:bg-neutral">
+			<div className="h-2 w-2 rounded-full bg-neutral-accent" />
 		</div>
 	);
 };
@@ -56,7 +56,7 @@ const SVGVertical = ({ className }: { className?: string }) => {
 			viewBox={`0 0 ${width} ${height}`}
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className={cn("text-neutral-100 dark:text-neutral-800", className)}
+			className={cn("text-neutral-secondary", className)}
 		>
 			<title>Vertical Line</title>
 			<path d="M0.5 0.5V479" stroke="currentColor" strokeWidth={2} />
@@ -79,7 +79,7 @@ const SVGVertical = ({ className }: { className?: string }) => {
 					gradientUnits="userSpaceOnUse"
 				>
 					<motion.stop offset="0%" stopColor="transparent" />
-					<motion.stop offset="50%" stopColor="var(--neutral-200)" />
+					<motion.stop offset="50%" stopColor="var(--color-neutral-accent)" />
 					<motion.stop offset="100%" stopColor="transparent" />
 				</motion.linearGradient>
 			</defs>
@@ -99,7 +99,7 @@ const SVG = ({ className }: { className?: string }) => {
 			viewBox={`0 0 ${width} ${height}`}
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			className={cn("text-neutral-100 dark:text-neutral-800", className)}
+			className={cn("text-neutral-secondary", className)}
 		>
 			<title>SVG</title>
 			<path d="M0.5 0.5H479" stroke="currentColor" />
@@ -122,7 +122,7 @@ const SVG = ({ className }: { className?: string }) => {
 					gradientUnits="userSpaceOnUse"
 				>
 					<motion.stop offset="0%" stopColor="transparent" />
-					<motion.stop offset="50%" stopColor="var(--neutral-200)" />
+					<motion.stop offset="50%" stopColor="var(--color-neutral-accent)" />
 					<motion.stop offset="100%" stopColor="transparent" />
 				</motion.linearGradient>
 			</defs>

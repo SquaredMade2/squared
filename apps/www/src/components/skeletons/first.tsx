@@ -7,7 +7,7 @@ import { BlurImage } from "../blur-image";
 export const SkeletonOne = () => {
 	return (
 		<div className="relative flex h-full gap-10 p-8">
-			<div className=" group mx-auto h-full w-full bg-white p-5 shadow-2xl md:w-[90%] dark:bg-neutral-900">
+			<div className=" group mx-auto h-full w-full bg-background p-5 shadow-2xl md:w-[90%] dark:bg-dark">
 				<div className="flex h-full w-full flex-1 flex-col space-y-2 opacity-20 dark:opacity-60 ">
 					<UserMessage>
 						I&apos;m having a meeting with the design team to create a more
@@ -29,8 +29,8 @@ export const SkeletonOne = () => {
 				</div>
 			</div>
 			<div className="absolute inset-0 flex flex-col gap-4">
-				<div className="r z-20 mx-auto h-[250px] w-[250px] shrink-0 rounded-[32px] border border-neutral-200 bg-neutral-100 p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-neutral-700 dark:bg-neutral-800">
-					<div className="shrink-0 rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+				<div className="r z-20 mx-auto h-[250px] w-[250px] shrink-0 rounded-[32px] border border-light-accent bg-light-secondary p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-dark-accent dark:bg-dark-secondary">
+					<div className="shrink-0 rounded-[24px] border border-light-accent bg-background p-2 dark:border-dark-accent dark:bg-black">
 						{/* todo change based on light or dark */}
 						<BlurImage
 							src="/track-changes/track-changes-1-dark.png"
@@ -41,8 +41,8 @@ export const SkeletonOne = () => {
 						/>
 					</div>
 				</div>
-				<div className="r z-20 mx-auto h-[250px] w-[250px] shrink-0 rounded-[32px] border border-neutral-200 bg-neutral-100 p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-neutral-700 dark:bg-neutral-800">
-					<div className="shrink-0 rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+				<div className="r z-20 mx-auto h-[250px] w-[250px] shrink-0 rounded-[32px] border border-light-accent bg-light-secondary p-2 transition duration-200 group-hover:scale-[1.02] md:h-[300px] md:w-[300px] dark:border-dark-accent dark:bg-dark-secondary">
+					<div className="shrink-0 rounded-[24px] border border-light-accent bg-background p-2 dark:border-dark-accent dark:bg-black">
 						<BlurImage
 							src="/track-changes/track-changes-2-dark.png"
 							alt="header"
@@ -54,8 +54,8 @@ export const SkeletonOne = () => {
 				</div>
 			</div>
 			{/* Divs are disabled because they don't look good in dark mode.  */}
-			<div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-60 w-full bg-linear-to-t from-white via-white to-transparent dark:from-background dark:via-background" />
-			<div className="pointer-events-none absolute inset-x-0 top-0 z-40 h-60 w-full bg-linear-to-b from-white via-transparent to-transparent dark:from-background" />
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-60 w-full bg-linear-to-t from-background via-background to-transparent" />
+			<div className="pointer-events-none absolute inset-x-0 top-0 z-40 h-60 w-full bg-linear-to-b from-background via-transparent to-transparent" />
 		</div>
 	);
 };
@@ -75,7 +75,7 @@ const UserMessage = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<motion.div
 			variants={variants}
-			className="flex flex-row items-start space-x-2 rounded-2xl bg-white p-2 dark:bg-neutral-900"
+			className="flex flex-row items-start space-x-2 rounded-2xl bg-background p-2 dark:bg-dark"
 		>
 			<Image
 				src="/avatar.jpeg"
@@ -84,7 +84,7 @@ const UserMessage = ({ children }: { children: React.ReactNode }) => {
 				width="100"
 				className="h-4 w-4 rounded-full md:h-10 md:w-10"
 			/>
-			<p className="text-[10px] text-neutral-500 sm:text-sm">{children}</p>
+			<p className="text-[10px] text-muted-foreground sm:text-sm">{children}</p>
 		</motion.div>
 	);
 };
@@ -104,10 +104,10 @@ const AIMessage = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<motion.div
 			variants={variantsSecond}
-			className="flex flex-row items-center justify-start space-x-2 rounded-2xl bg-white p-2 dark:bg-neutral-900 "
+			className="flex flex-row items-center justify-start space-x-2 rounded-2xl bg-background p-2 dark:bg-neutral"
 		>
-			<div className="h-4 w-4 shrink-0 rounded-full bg-linear-to-r from-pink-500 to-violet-500 md:h-10 md:w-10" />
-			<p className="text-[10px] text-neutral-500 sm:text-sm">{children}</p>
+			<div className="h-4 w-4 shrink-0 rounded-full bg-linear-to-r from-pink to-violet md:h-10 md:w-10" />
+			<p className="text-[10px] text-muted-foreground sm:text-sm">{children}</p>
 		</motion.div>
 	);
 };

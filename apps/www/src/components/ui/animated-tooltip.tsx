@@ -68,8 +68,8 @@ export const AnimatedTooltip = ({
 								}}
 								className="-top-16 -left-1/2 absolute z-50 flex translate-x-1/2 flex-col items-center justify-center rounded-md bg-black px-4 py-2 text-xs shadow-xl"
 							>
-								<div className="-bottom-px absolute inset-x-10 z-30 h-px w-[20%] bg-linear-to-r from-transparent via-emerald-500 to-transparent " />
-								<div className="-bottom-px absolute left-10 z-30 h-px w-[40%] bg-linear-to-r from-transparent via-sky-500 to-transparent " />
+								<div className="-bottom-px absolute inset-x-10 z-30 h-px w-[20%] bg-linear-to-r from-transparent via-emerald to-transparent " />
+								<div className="-bottom-px absolute left-10 z-30 h-px w-[40%] bg-linear-to-r from-transparent via-sky to-transparent " />
 								<div className="relative z-30 font-bold text-base text-white">
 									{item.name}
 								</div>
