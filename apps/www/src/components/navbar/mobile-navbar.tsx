@@ -30,23 +30,23 @@ export const MobileNavbar = ({
 	return (
 		<div
 			className={cn(
-				"flex w-full items-center justify-between rounded-full bg-white px-2.5 py-1.5 transition duration-200 dark:bg-neutral-900",
+				"flex w-full items-center justify-between rounded-full bg-background px-2.5 py-1.5 transition duration-200",
 				showBackground &&
-					"bg-neutral-50 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:bg-neutral-900 dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
+					"bg-neutral shadow-[0px_-2px_0px_0px_var(--color-neutral-secondary),0px_2px_0px_0px_var(--color-neutral-secondary)] dark:bg-background",
 			)}
 		>
 			<Logo />
 			<button type="button" onClick={() => setOpen(!open)}>
-				<Menu className="h-6 w-6 text-black dark:text-white" />
+				<Menu className="h-6 w-6 text-foreground" />
 			</button>
 			{open && (
-				<div className="fixed inset-0 z-50 flex flex-col items-start justify-start space-y-10 bg-white pt-5 text-xl text-zinc-600 transition duration-200 hover:text-zinc-800 dark:bg-black">
+				<div className="fixed inset-0 z-50 flex flex-col items-start justify-start space-y-10 bg-background pt-5 text-xl transition duration-200">
 					<div className="flex w-full items-center justify-between px-5">
 						<Logo />
 						<div className="flex items-center space-x-2">
 							<ModeToggle />
 							<button type="button" onClick={() => setOpen(!open)}>
-								<X className="h-8 w-8 text-black dark:text-white" />
+								<X className="h-8 w-8 text-foreground" />
 							</button>
 						</div>
 					</div>
@@ -59,7 +59,7 @@ export const MobileNavbar = ({
 									onClick={() => setOpen(false)}
 									className="relative"
 								>
-									<span className="block text-[26px] text-black dark:text-white">
+									<span className="block text-[26px] text-foreground">
 										{navItem.title}
 									</span>
 								</Link>

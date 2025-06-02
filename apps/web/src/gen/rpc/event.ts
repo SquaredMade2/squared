@@ -66,14 +66,10 @@ export type GetNotificationsResponse = {
 	};
 	Workspace: {
 		admins: string[];
-		archiveConfig: {
-			daysUntilArchive: number;
-			enabled: boolean;
-			lastArchiveRun: Date | null;
-		};
 		avatarUrl: string | null;
 		companySize: number | null;
 		createdAt: Date;
+		daysUntilArchive: number;
 		defaultView: string | null;
 		externalId: string;
 		id: string;
@@ -215,14 +211,10 @@ export type ToggleNotificationResponse = {
 	};
 	Workspace: {
 		admins: string[];
-		archiveConfig: {
-			daysUntilArchive: number;
-			enabled: boolean;
-			lastArchiveRun: Date | null;
-		};
 		avatarUrl: string | null;
 		companySize: number | null;
 		createdAt: Date;
+		daysUntilArchive: number;
 		defaultView: string | null;
 		externalId: string;
 		id: string;

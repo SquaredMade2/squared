@@ -17,16 +17,16 @@ export const Button: React.FC<{
 }) => {
 	const variantClass =
 		variant === "simple"
-			? "bg-black relative z-10 bg-transparent hover:bg-gray-100  border border-transparent text-black text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center dark:text-white dark:hover:bg-background-nav-bar-hover dark:hover:shadow-xl"
+			? "bg-transparent hover:bg-neutral-secondary border border-transparent text-foreground transition duration-200 dark:hover:bg-background-nav-bar-hover dark:hover:shadow-xl"
 			: variant === "outline"
-				? "bg-white relative z-10 hover:bg-black/90 hover:shadow-xl  text-black border border-black hover:text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center"
+				? "bg-white hover:bg-black/90 hover:shadow-xl text-black border border-black hover:text-white transition duration-200"
 				: variant === "primary"
-					? "bg-background-dark-secondary relative z-10 hover:bg-neutral-700 dark:hover:bg-background-nav-bar-hover/90  border border-transparent text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset]"
+					? "bg-background-dark-secondary hover:bg-neutral-inverted-accent dark:hover:bg-background-nav-bar-hover/90  border border-transparent text-white transition duration-200 shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset]"
 					: "";
 	return (
 		<Tag
 			className={cn(
-				"relative z-10 flex items-center justify-center rounded-full bg-black px-4 py-2 font-medium text-sm transition duration-200 hover:bg-black/90 md:text-sm dark:hover:text-white",
+				"relative z-10 flex items-center justify-center rounded-full px-4 py-2 font-medium text-sm transition duration-200",
 				variantClass,
 				className,
 			)}

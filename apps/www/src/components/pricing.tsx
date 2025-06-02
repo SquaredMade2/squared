@@ -112,9 +112,9 @@ export function Pricing() {
 								aria-describedby={tier.id}
 								className={cn(
 									tier.featured
-										? "bg-white text-black shadow-xs hover:bg-white/90 focus-visible:outline-white dark:bg-white"
+										? "bg-white text-black shadow-xs hover:bg-white/90! focus-visible:outline-white"
 										: "",
-									"mt-8 block w-full rounded-xl px-3.5 py-2.5 text-center font-semibold text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10",
+									"mt-8 block w-full rounded-xl px-3.5 py-2.5 text-center font-semibold text-sm focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10",
 								)}
 							>
 								{tier.cta}

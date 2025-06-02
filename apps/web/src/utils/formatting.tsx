@@ -150,9 +150,6 @@ export const formatPriority = (priority: Priority) => {
 // return links;
 // };
 
-// TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
-// export const handleFormatCommentToSlate = (commentStr) => {
-// };
 export const formatFilterName = async (
 	filter: FilterCondition,
 	labels: Label[],

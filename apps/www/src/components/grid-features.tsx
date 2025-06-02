@@ -81,20 +81,21 @@ const Feature = ({
 	return (
 		<div
 			className={cn(
-				"group relative flex flex-col py-10 lg:border-r dark:border-neutral-800",
-				(index === 0 || index === 4) && "lg:border-l dark:border-neutral-800",
-				index < 4 && "lg:border-b dark:border-neutral-800",
+				"group relative flex flex-col py-10 lg:border-r dark:border-neutral-secondary",
+				(index === 0 || index === 4) &&
+					"lg:border-l dark:border-neutral-secondary",
+				index < 4 && "lg:border-b dark:border-neutral-secondary",
 			)}
 		>
 			{index < 4 && (
-				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-linear-to-t from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
+				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-linear-to-t from-neutral-secondary to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
 			)}
 			{index >= 4 && (
-				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-linear-to-b from-neutral-100 to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
+				<div className="group pointer-events-none absolute inset-0 h-full w-full bg-linear-to-b from-neutral-secondary to-transparent opacity-0 transition duration-200 group-hover:opacity-100 dark:from-background-dark" />
 			)}
 			<div className="relative z-10 mb-4 px-10">{icon}</div>
 			<div className="relative z-10 mb-2 px-10 font-bold text-lg">
-				<div className="absolute inset-y-0 left-0 h-6 w-1 rounded-tr-full rounded-br-full bg-neutral-300 transition duration-200 group-hover:bg-blue-500 dark:bg-neutral-700" />
+				<div className="absolute inset-y-0 left-0 h-6 w-1 rounded-tr-full rounded-br-full bg-neutral-accent transition duration-200 group-hover:bg-blue" />
 				<span className="inline-block transition duration-200 group-hover:translate-x-2">
 					{title}
 				</span>
