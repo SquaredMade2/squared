@@ -55,18 +55,8 @@
 		"turbo-ignore": "^2.1.0"
 	},
 	"engines": {
-		"node": ">=23.0.0",
-		"npm": ">=10.0.0"
+		"node": ">=23.0.0"
 	},
-	"pnpm": {
-		"supportedArchitectures": {
-			"os": ["win32", "darwin", "current"],
-			"cpu": ["x64", "arm64"]
-		},
-		"overrides": {
-			"@types/react": "19.1.4",
-			"@types/react-dom": "19.1.5"
-		}
-	},
-	"packageManager": "pnpm@10.11.0"
+	"workspaces": ["apps/*", "packages/*"],
+	"packageManager": "bun@1.2.14"
 }
