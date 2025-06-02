@@ -10,7 +10,7 @@ concurrency:
 jobs:
   detect-changes:
     name: Detect Changes
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     outputs:
       api-changed: ${{ steps.check-changes.outputs.api }}
       web-changed: ${{ steps.check-changes.outputs.web }}
@@ -20,6 +20,7 @@ jobs:
       run-all: ${{ steps.check-label.outputs.run-all }}
       packages-changed: ${{ steps.check-changes.outputs.packages }}
       only-go-changed: ${{ steps.check-changes.outputs.only-go-changed }}
+      cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,145 +64,171 @@ jobs:
             echo "run-all=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Generate cache key
+        id: cache-key
+        run: |
+          echo "key=${{ runner.os }}-turbo-${{ github.sha }}-${{ hashFiles('**/bun.lock', '**/turbo.json') }}" >> $GITHUB_OUTPUT
+
   setup:
     name: Setup
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.only-go-changed == 'true' }}
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    if: ${{ needs.detect-changes.outputs.only-go-changed != 'true' }}
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
-      - uses: useblacksmith/setup-node@v5
-        with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          bun-version: 1.2.14
+
+      # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Bun cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-bun-
+
+      # Cache Turbo build outputs
+      - uses: useblacksmith/cache@v5
+        name: Setup Turbo cache
+        with:
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: Install dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile
 
   lint-and-type-check:
     name: Lint and Type Check
     needs: [setup, detect-changes]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
-      - uses: useblacksmith/setup-node@v5
-        with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          bun-version: 1.2.14
+
+      # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Bun cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --frozen-lockfile
+            ${{ runner.os }}-bun-
+
+      - uses: useblacksmith/cache@v5
+        name: Setup Turbo cache
+        with:
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: bun install --frozen-lockfile
+
       - name: Lint
-        run: pnpm lint
+        run: bun run lint
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
       - name: Type Check
-        run: pnpm check-types
+        run: bun run check-types
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   test-packages:
     name: Test Packages
     needs: [setup, detect-changes]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
-    if: ${{ !needs.detect-changes.outputs.only-go-changed == 'false' && needs.detect-changes.outputs.packages-changed == 'true' }}
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' && needs.detect-changes.outputs.packages-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
-      - uses: useblacksmith/setup-node@v5
-        with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          bun-version: 1.2.14
+
+      # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Bun cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --frozen-lockfile
+            ${{ runner.os }}-bun-
+
+      - uses: useblacksmith/cache@v5
+        name: Setup Turbo cache
+        with:
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: bun install --frozen-lockfile
+
       - name: Run Package tests
-        run: pnpm --filter="./packages/**" test
+        run: bun run --filter="./packages/**" test
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
       - name: Build Packages
-        run: pnpm --filter="./packages/**" build
+        run: bun run --filter="./packages/**" build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   test-api:
     name: Test API
     needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
+          bun-version: 1.2.14
 
-      - uses: useblacksmith/setup-node@v5
+      # Cache Bun dependencies
+      - uses: useblacksmith/cache@v5
+        name: Setup Bun cache
         with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Turbo cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-turbo-
 
-      - run: pnpm install --frozen-lockfile
+      - run: bun install --frozen-lockfile
 
       - uses: KengoTODA/actions-setup-docker-compose@v1
         with:
           version: '2.29.7'
 
       - name: Initialize Database Server
-        run: pnpm run docker:db:init
+        run: bun run docker:db:init
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           REMOTE_DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
           LOCAL_DB: true
 
       - name: Run tests
-        run: pnpm run --filter=api test:ci
+        run: bun run --filter=api test:ci
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
@@ -211,50 +238,61 @@ jobs:
           NODE_ENV: test
           LOCAL_DB: true
           RUNNING_TESTS: true
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       
       - name: Stop Database Server
         if: always()
-        run: pnpm run docker:db:down
+        run: bun run docker:db:down
 
   test-web:
     name: Test Web
     needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
-      - uses: useblacksmith/setup-node@v5
-        with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          bun-version: 1.2.14
+
+      # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Bun cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --frozen-lockfile
+            ${{ runner.os }}-bun-
+
+      - uses: useblacksmith/cache@v5
+        name: Setup Turbo cache
+        with:
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: bun install --frozen-lockfile
+
       - name: Run Web tests
-        run: pnpm --filter=web test
+        run: bun run --filter=web test
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
       - name: Build Web
         env:
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-        run: pnpm --filter=web build
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+        run: bun run --filter=web build
 
   test-webhooks:
     name: Test Webhooks
     needs: [detect-changes]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: ${{ needs.detect-changes.outputs.webhooks-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - name: Check out code
@@ -286,77 +324,102 @@ jobs:
   test-ui:
     name: Test UI
     needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: ${{ needs.detect-changes.outputs.ui-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
-      - uses: useblacksmith/setup-node@v5
-        with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          bun-version: 1.2.14
+
+      # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Bun cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build:ui
+            ${{ runner.os }}-bun-
+
+      - uses: useblacksmith/cache@v5
+        name: Setup Turbo cache
+        with:
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun build:ui
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
       - name: Install Playwright
-        run: pnpm dlx playwright install --with-deps
+        run: bunx playwright install --with-deps
+
       - name: Build Storybook
-        run: pnpm build-storybook --quiet
+        run: bun build-storybook --quiet
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
       - name: Serve Storybook and run tests
         run: |
-          pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-            "pnpm dlx http-server storybook-static --port 6006 --silent" \
-            "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm test-storybook"
+          bunx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "bunx http-server storybook-static --port 6006 --silent" \
+            "bunx wait-on tcp:127.0.0.1:6006 && bun test-storybook"
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
       - name: Run UI tests
-        run: pnpm --filter=ui test
+        run: bun run --filter=ui test
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   test-www:
     name: Test WWW
     needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          version: 10.11.0
-      - uses: useblacksmith/setup-node@v5
-        with:
-          node-version: 23.3.0
-          cache: 'pnpm'
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          bun-version: 1.2.14
+
+      # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
-        name: Setup pnpm cache
+        name: Setup Bun cache
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --frozen-lockfile
+            ${{ runner.os }}-bun-
+
+      - uses: useblacksmith/cache@v5
+        name: Setup Turbo cache
+        with:
+          path: .turbo
+          key: ${{ needs.detect-changes.outputs.cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: bun install --frozen-lockfile
+
       - name: Build WWW
-        run: pnpm --filter=www build
+        run: bun run --filter=www build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   ci-status:
     name: CI Pipeline
     needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks, test-ui]
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 30
     if: always()
     steps:
