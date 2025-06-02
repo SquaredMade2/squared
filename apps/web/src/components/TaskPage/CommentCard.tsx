@@ -33,7 +33,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	>(<p>Loading...</p>);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
-	const { memberships } = useOrganization({
+	const { membership, memberships } = useOrganization({
 		memberships: {
 			infinite: true,
 			pageSize: 100,
@@ -44,6 +44,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		(membership) => membership.publicUserData,
 	);
 
+	const hasMembershipManagePermission = membership?.permissions.includes(
+		"org:sys_memberships:manage",
+	);
 	// Functions
 
 	// !!! Keeping the below here for future use !!! No specific todo here, but will use for testing in the future
@@ -161,8 +164,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 					<p className="mr-4 ml-2 text-foreground">{authorName}</p>
 				</div>
-				{comment.authorId === user?.id && (
-					<div>
+				{(comment.authorId === user?.id || hasMembershipManagePermission) && (
+					<>
 						<Button
 							variant="ghost"
 							className="self-center"
@@ -177,7 +180,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 							showConfirmDelete={showConfirmDelete}
 							setShowConfirmDelete={setShowConfirmDelete}
 						/>
-					</div>
+					</>
 				)}
 			</div>
 			<div className="markdown-content inline-flex min-h-20 min-w-60 flex-col items-start rounded-md bg-secondary p-3">

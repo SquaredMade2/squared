@@ -1,4 +1,5 @@
 import { TODO } from "@squaredmade/context";
+import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import { j, workspaceProcedure } from "../jstack";
 
@@ -28,17 +29,14 @@ export const commentRouter = j.router({
 	deleteComment: workspaceProcedure
 		.input(z.object({ commentId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
-			const { commentService, userId } = ctx;
+			const { commentService } = ctx;
 			const { commentId } = input;
-			const comment = await commentService.getCommentById(TODO, { commentId });
+			const comment = await commentService.deleteComment(TODO, { commentId });
 			if (!comment) {
-				throw new Error("Comment does not exist.");
+				throw new HTTPException(404, {
+					message: `Comment: ${commentId} Does Not Exist`,
+				});
 			}
-			if (comment.authorId !== userId) {
-				throw new Error("You are not authorized to delete this comment.");
-			}
-			return c.superjson(
-				await commentService.deleteComment(TODO, { commentId }),
-			);
+			return c.status(200);
 		}),
 });

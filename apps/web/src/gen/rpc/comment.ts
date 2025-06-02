@@ -20,12 +20,16 @@ export type DeleteCommentRequest = {
 	commentId: string;
 };
 
-export type GetTaskCommentsRequest = {
+export type DeleteCommentResponse = {
+	authorId: string;
+	comment: string;
+	date: Date;
+	id: string;
 	taskId: string;
 };
 
-export type GetCommentByIdRequest = {
-	commentId: string;
+export type GetTaskCommentsRequest = {
+	taskId: string;
 };
 
 export type GetTaskCommentsResponse = {
@@ -35,14 +39,6 @@ export type GetTaskCommentsResponse = {
 	id: string;
 	taskId: string;
 }[];
-
-export type GetCommentByIdResponse = {
-	authorId: string;
-	comment: string;
-	date: Date;
-	id: string;
-	taskId: string;
-};
 
 /**
  * comment service
@@ -65,7 +61,10 @@ export class CommentService extends RPCContextClient {
 	/**
 	 * deleteComment method
 	 */
-	deleteComment(ctx: Context, req: DeleteCommentRequest): Promise<void> {
+	deleteComment(
+		ctx: Context,
+		req: DeleteCommentRequest,
+	): Promise<DeleteCommentResponse> {
 		return this.request(ctx, "deleteComment", req);
 	}
 
@@ -77,15 +76,5 @@ export class CommentService extends RPCContextClient {
 		req: GetTaskCommentsRequest,
 	): Promise<GetTaskCommentsResponse> {
 		return this.request(ctx, "getTaskComments", req);
-	}
-
-	/**
-	 * getCommentById method
-	 */
-	getCommentById(
-		ctx: Context,
-		req: GetCommentByIdRequest,
-	): Promise<GetCommentByIdResponse> {
-		return this.request(ctx, "getCommentById", req);
 	}
 }
