@@ -1,4 +1,5 @@
 import { useOrganization, useUser } from "@clerk/nextjs";
+import type { PublicUserData } from "@clerk/types";
 
 export function useUsers() {
 	const { user, isLoaded: userLoaded } = useUser();
@@ -8,9 +9,10 @@ export function useUsers() {
 			pageSize: 100,
 		},
 	});
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const users: PublicUserData[] =
+		memberships?.data
+			?.map((membership) => membership.publicUserData)
+			.filter((user): user is PublicUserData => Boolean(user)) ?? [];
 
 	return { user, users, loading: !userLoaded || !orgLoaded };
 }
