@@ -88,7 +88,7 @@ export function DataTable({
 				.$get()
 				.then((res) => res.json());
 			return memberships?.data?.map((m) => ({
-				name: m.publicUserData.firstName,
+				name: m.publicUserData?.firstName ?? "Unknown User",
 				role: m.role,
 				teams: teams.map((team) => team.name).join(", "),
 				active: "active",

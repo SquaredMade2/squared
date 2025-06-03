@@ -30,7 +30,7 @@ const MentionHover = ({ mentionedUser }: MentionHoverProps) => {
 		const handleCurrentUser = () => {
 			if (!users) return;
 			const foundUser = users.find(
-				(user) => user.userId === mentionedUser.userId,
+				(user) => user?.userId === mentionedUser.userId,
 			);
 			if (!foundUser) return;
 			setCurrentUser(foundUser);

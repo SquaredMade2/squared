@@ -49,7 +49,9 @@ export const EventTabs = () => {
 			const mentions = getMentionsFromSlate(editorContent);
 
 			for (const mention of mentions) {
-				const mentionedUser = users?.find((user) => user.firstName === mention);
+				const mentionedUser = users?.find(
+					(user) => user?.firstName === mention,
+				);
 
 				if (!mentionedUser || !mentionedUser.userId) continue;
 

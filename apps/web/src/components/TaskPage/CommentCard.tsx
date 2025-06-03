@@ -114,7 +114,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		const handleGetUser = async () => {
 			try {
 				if (!users) return;
-				const user = users.find((u) => u.userId === comment.authorId);
+				const user = users.find((u) => u?.userId === comment.authorId);
 				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
 				if (hasUserAvatarData(user) && user !== null) {
 					setAuthorName(formatName(user));

@@ -16,10 +16,16 @@ export function MembersPage({
 			pageSize: 100,
 		},
 	});
-	const users = memberships?.data?.map((membership) => ({
-		...membership.publicUserData,
-		role: membership.role,
-	}));
+	const users = memberships?.data
+		?.map(
+			(membership) =>
+				membership.publicUserData && {
+					...membership.publicUserData,
+					role: membership.role,
+				},
+		)
+		.filter((user): user is MemberWithRole => Boolean(user));
+
 	const hasMembershipManagePermission = membership?.permissions.includes(
 		"org:sys_memberships:manage",
 	);
