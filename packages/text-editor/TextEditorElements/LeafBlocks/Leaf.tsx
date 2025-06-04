@@ -1,7 +1,7 @@
-import MentionLeaf from "@/components/TextEditor/TextEditorElements/LeafBlocks/MentionLeaf";
 import { cn } from "@squaredmade/ui/cn";
 import type { RenderLeafProps } from "slate-react";
 import CodeLeaf from "./CodeLeaf";
+import MentionLeaf from "./MentionLeaf";
 
 const Leaf = (props: RenderLeafProps) => {
 	const { leaf, attributes, children } = props;
