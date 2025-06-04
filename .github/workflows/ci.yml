@@ -1,84 +1,31 @@
 name: CI Pipeline
 
 on:
+  workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  detect-changes:
-    name: Detect Changes
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    outputs:
-      api-changed: ${{ steps.check-changes.outputs.api }}
-      web-changed: ${{ steps.check-changes.outputs.web }}
-      www-changed: ${{ steps.check-changes.outputs.www }}
-      webhooks-changed: ${{ steps.check-changes.outputs.webhooks }}
-      ui-changed: ${{ steps.check-changes.outputs.ui }}
-      run-all: ${{ steps.check-label.outputs.run-all }}
-      packages-changed: ${{ steps.check-changes.outputs.packages }}
-      only-go-changed: ${{ steps.check-changes.outputs.only-go-changed }}
-      cache-key: ${{ steps.cache-key.outputs.key }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check for changes
-        id: check-changes
-        run: |
-          git fetch origin develop
-          echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "webhooks=$(git diff --name-only origin/develop HEAD | grep -q '^apps/webhooks/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT      
-          echo "ui=$(git diff --name-only origin/develop HEAD | grep -q '^packages/ui/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT          
-
-      - name: Check if only Go-related changes were made
-        run: |
-          go_related_changes=$(git diff --name-only origin/develop HEAD | grep -E '^(apps/webhooks|packages/cli)/' | wc -l)
-          other_changes=$(git diff --name-only origin/develop HEAD | grep -vE '^(apps/webhooks|packages/cli)/' | wc -l)
-
-          if [[ "$go_related_changes" -gt 0 && "$other_changes" -eq 0 ]]; then
-            echo "only-go-changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "only-go-changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Check if packages were updated
-        run: |
-          if [[ $(git diff --name-only origin/develop HEAD | grep -q '^packages/' && echo 'true' || echo 'false') == true ]]; then
-            echo "packages=true" >> $GITHUB_OUTPUT
-          else
-            echo "packages=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Check for Updates label
-        id: check-label
-        run: |
-          if [[ ${{ contains(github.event.pull_request.labels.*.name, 'Updates') }} == true ]]; then
-            echo "run-all=true" >> $GITHUB_OUTPUT
-          else
-            echo "run-all=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Generate cache key
-        id: cache-key
-        run: |
-          echo "key=${{ runner.os }}-turbo-${{ github.sha }}-${{ hashFiles('**/bun.lock', '**/turbo.json') }}" >> $GITHUB_OUTPUT
-
   setup:
     name: Setup
-    needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.only-go-changed != 'true' }}
     runs-on: blacksmith-4vcpu-ubuntu-2404
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.2.14
+
+      # Generate cache key for build outputs
+      - name: Generate cache key
+        id: cache-key
+        run: |
+          echo "key=${{ runner.os }}-turbo-${{ github.sha }}-${{ hashFiles('**/bun.lock', '**/turbo.json') }}" >> $GITHUB_OUTPUT
 
       # Cache Bun dependencies
       - uses: useblacksmith/cache@v5
@@ -89,23 +36,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bun-
 
-      # Cache Turbo build outputs
       - uses: useblacksmith/cache@v5
         name: Setup Turbo cache
         with:
           path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
+          key: ${{ steps.cache-key.outputs.key }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-  lint-and-type-check:
-    name: Lint and Type Check
-    needs: [setup, detect-changes]
+  build:
+    name: Build
+    needs: [setup]
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -125,29 +70,27 @@ jobs:
         name: Setup Turbo cache
         with:
           path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
+          key: ${{ needs.setup.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
       - run: bun install --frozen-lockfile
 
-      - name: Lint
-        run: bun run lint
+      - name: Build packages and applications
+        run: bun run build
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
-      - name: Type Check
-        run: bun run check-types
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-  test-packages:
-    name: Test Packages
-    needs: [setup, detect-changes]
+  test-and-validate:
+    name: Test and Validate
+    needs: [build]
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' && needs.detect-changes.outputs.packages-changed == 'true' }}
+    strategy:
+      matrix:
+        task: [lint, test, check-types]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -167,69 +110,45 @@ jobs:
         name: Setup Turbo cache
         with:
           path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
+          key: ${{ needs.build.needs.setup.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
       - run: bun install --frozen-lockfile
 
-      - name: Run Package tests
-        run: bun run --filter="./packages/**" test
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-      - name: Build Packages
-        run: bun run --filter="./packages/**" build
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-  test-api:
-    name: Test API
-    needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.14
-
-      # Cache Bun dependencies
-      - uses: useblacksmith/cache@v5
-        name: Setup Bun cache
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - uses: useblacksmith/cache@v5
-        name: Setup Turbo cache
-        with:
-          path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - run: bun install --frozen-lockfile
-
+      # Setup Docker Compose for API tests
       - uses: KengoTODA/actions-setup-docker-compose@v1
+        if: matrix.task == 'test'
         with:
           version: '2.29.7'
 
+      # Initialize Database for API tests
       - name: Initialize Database Server
+        if: matrix.task == 'test'
         run: bun run docker:db:init
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           REMOTE_DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
           LOCAL_DB: true
 
-      - name: Run tests
-        run: bun run --filter=api test:ci
+      # Install Playwright for UI tests
+      - name: Install Playwright
+        if: matrix.task == 'test'
+        run: bunx playwright install --with-deps
+
+      # Build Storybook for UI tests
+      - name: Build Storybook
+        if: matrix.task == 'test'
+        run: bun build-storybook --quiet
         env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+      - name: Run ${{ matrix.task }}
+        run: bun run ${{ matrix.task }}
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
@@ -238,62 +157,27 @@ jobs:
           NODE_ENV: test
           LOCAL_DB: true
           RUNNING_TESTS: true
+
+      # Serve Storybook and run tests for UI
+      - name: Serve Storybook and run tests
+        if: matrix.task == 'test'
+        run: |
+          bunx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "bunx http-server storybook-static --port 6006 --silent" \
+            "bunx wait-on tcp:127.0.0.1:6006 && bun test-storybook"
+        env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      
+
+      # Stop Database Server
       - name: Stop Database Server
-        if: always()
+        if: always() && matrix.task == 'test'
         run: bun run docker:db:down
 
-  test-web:
-    name: Test Web
-    needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.web-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.14
-
-      # Cache Bun dependencies
-      - uses: useblacksmith/cache@v5
-        name: Setup Bun cache
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - uses: useblacksmith/cache@v5
-        name: Setup Turbo cache
-        with:
-          path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - run: bun install --frozen-lockfile
-
-      - name: Run Web tests
-        run: bun run --filter=web test
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-      - name: Build Web
-        env:
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-        run: bun run --filter=web build
-
   test-webhooks:
-    name: Test Webhooks
-    needs: [detect-changes]
+    name: Test Webhooks (Go)
+    needs: [setup]
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.webhooks-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -321,116 +205,25 @@ jobs:
           PAPERTRAIL_URL: logs.papertrailapp.com:35736
         run: go test -v ./...
 
-  test-ui:
-    name: Test UI
-    needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.ui-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.14
-
-      # Cache Bun dependencies
-      - uses: useblacksmith/cache@v5
-        name: Setup Bun cache
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - uses: useblacksmith/cache@v5
-        name: Setup Turbo cache
-        with:
-          path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - run: bun install --frozen-lockfile
-
-      - run: bun build:ui
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-      - name: Install Playwright
-        run: bunx playwright install --with-deps
-
-      - name: Build Storybook
-        run: bun build-storybook --quiet
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-      - name: Serve Storybook and run tests
-        run: |
-          bunx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-            "bunx http-server storybook-static --port 6006 --silent" \
-            "bunx wait-on tcp:127.0.0.1:6006 && bun test-storybook"
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-      - name: Run UI tests
-        run: bun run --filter=ui test
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
-  test-www:
-    name: Test WWW
-    needs: [detect-changes, setup]
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    if: ${{ needs.detect-changes.outputs.www-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.2.14
-
-      # Cache Bun dependencies
-      - uses: useblacksmith/cache@v5
-        name: Setup Bun cache
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - uses: useblacksmith/cache@v5
-        name: Setup Turbo cache
-        with:
-          path: .turbo
-          key: ${{ needs.detect-changes.outputs.cache-key }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - run: bun install --frozen-lockfile
-
-      - name: Build WWW
-        run: bun run --filter=www build
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
   ci-status:
     name: CI Pipeline
-    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www, test-webhooks, test-ui]
+    needs: [build, test-and-validate, test-webhooks]
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    timeout-minutes: 30
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check CI status
         run: |
-          if [[ "${{ needs.lint-and-type-check.result }}" == "failure" ]]; then
-            echo "Lint and type check failed"
+          if [[ "${{ needs.build.result }}" == "failure" ]]; then
+            echo "Build failed"
             exit 1
           fi
-          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" || "${{ needs.test-webhooks.result}}" == "failure" || "${{ needs.test-ui.result }}" == "failure" ]]; then
-            echo "One or more tests failed"
+          if [[ "${{ needs.test-and-validate.result }}" == "failure" ]]; then
+            echo "Test and validation tasks failed"
+            exit 1
+          fi
+          if [[ "${{ needs.test-webhooks.result }}" == "failure" ]]; then
+            echo "Webhook tests failed"
             exit 1
           fi
           echo "All checks passed or were skipped"
