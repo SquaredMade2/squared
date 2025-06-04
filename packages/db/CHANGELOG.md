@@ -1,5 +1,11 @@
 # @squaredmade/db
 
+## 1.2.0
+
+### Minor Changes
+
+- e4b006e: Initialization of cron jobs to archive squared tasks
+
 ## 1.1.2
 
 ### Patch Changes
