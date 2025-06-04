@@ -1,4 +1,41 @@
+import type { PublicUserData } from "@clerk/types";
 import type { CustomElement, CustomText } from "./interfaces";
+
+export const formatName = (user: PublicUserData | undefined): string => {
+	if (!user) return "Unknown User";
+	return `${user.firstName} ${user?.lastName}`;
+};
+
+export const formatUrl = (title: string) => {
+	const titleSlug = title
+		.toLowerCase()
+		.replace(/'/g, "")
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/(^-|-$)/g, "");
+	return titleSlug;
+};
+
+export const truncateString = (string: string, maxLength: number): string => {
+	if (string.length > maxLength) {
+		let lastSpace = string.lastIndexOf(" ", maxLength);
+		if (lastSpace === -1) lastSpace = maxLength;
+		return `${string.substring(0, lastSpace)}...`;
+	}
+	return string;
+};
+
+export const getInitials = (name?: string | null): string => {
+	if (!name || typeof name !== "string") return "";
+
+	const words = name.trim().split(/\s+/);
+
+	const initials = words
+		.map((word) => word.charAt(0).toUpperCase())
+		.filter(Boolean)
+		.slice(0, 2);
+
+	return initials.join("");
+};
 
 function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
 	const codeLines: string[] = [];
@@ -32,6 +69,7 @@ export const convertSlateToMDX = (slateArr: CustomElement[]): string => {
 			// Not a code block, process normally
 			const lineStr = line.children
 				.map((leaf) => {
+					if (leaf.text === "") return "";
 					if (leaf.url) return `[${leaf.text}](${leaf.url})`;
 					if (leaf.mentionConfirm)
 						return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
@@ -39,8 +77,10 @@ export const convertSlateToMDX = (slateArr: CustomElement[]): string => {
 					const bold = leaf.bold ? "**" : "";
 					const italic = leaf.italic ? "*" : "";
 					const code = leaf.code ? "`" : ""; // use single backtick for inline code
-					if (leaf.text === "") return "";
-					return `${italic}${bold}${code}${leaf.text.trim()}${code}${bold}${italic} `;
+					const underlineStart = leaf.underline ? "<u>" : "";
+					const underlineEnd = leaf.underline ? "</u>" : "";
+					const formattedText = `${italic}${bold}${underlineStart}${code}${leaf.text}${code}${underlineEnd}${bold}${italic} `;
+					return formattedText;
 				})
 				.join("");
 
@@ -66,49 +106,72 @@ function findMDXLines(text: string): string[] {
 	});
 }
 
-function parseInlineMarkdown(text: string): CustomText[] {
+function splitMdxText(text: string): string[] {
+	return text
+		.split(/(\*\*|\*|<u>|<\/u>|<MentionHover[^>]*\/>|\[.*?\]\(.*?\))/g)
+		.filter((part) => part.trim() !== "");
+}
+
+function trackFormatting(parts: string[]): CustomText[] {
 	const result: CustomText[] = [];
 
-	// Regex to match inline markdown patterns
-	const regex = /(\*\*\*[^*]+?\*\*\*|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+`)/g;
+	let boldOn = false;
+	let italicOn = false;
+	let underlineOn = false;
 
-	let lastIndex = 0;
-	// Iterate through all matches
-	for (const match of text.matchAll(regex)) {
-		if (match === null) break;
-		if (match.index > lastIndex) {
-			// Add plain text before match
-			result.push({ text: text.slice(lastIndex, match.index) });
+	for (const part of parts) {
+		if (part === "") continue;
+
+		// Check for mention hover components
+		if (part.startsWith("<MentionHover") && part.endsWith("/>")) {
+			const mentionData = part.match(/mentionedUser=\{\{(.+?)\}\}/);
+			if (!mentionData) continue;
+			const cleaned = mentionData[1]
+				.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":') // Convert keys to "keys"
+				.replace(/'/g, '"'); // Replace single quotes with double quotes if any
+
+			try {
+				const mentionUser = JSON.parse(`{${cleaned}}`) as PublicUserData;
+				result.push({
+					text: `@${mentionUser.firstName}` || "Error loading name",
+					mentionConfirm: mentionUser,
+				});
+				continue;
+			} catch (e) {
+				console.error("Failed to parse mention data:", e);
+			}
 		}
-		const token = match[0];
-		if (token.startsWith("***")) {
-			result.push({
-				text: token.slice(3, -3),
-				bold: true,
-				italic: true,
-			});
-		} else if (token.startsWith("**")) {
-			result.push({
-				text: token.slice(2, -2),
-				bold: true,
-			});
-		} else if (token.startsWith("*")) {
-			result.push({
-				text: token.slice(1, -1),
-				italic: true,
-			});
-		} else if (token.startsWith("`")) {
-			result.push({
-				text: token.slice(1, -1),
-				code: true,
-			});
+		// Check for links in the format [text](url)
+		if (part.startsWith("[") && part.includes("](")) {
+			const linkMatch = part.match(/\[([^\]]+)\]\(([^)\s]+(?:\)[^)\s]+)*)\)/);
+			if (!linkMatch) continue;
+
+			try {
+				const linkData = {
+					text: `${linkMatch[1]}`,
+					url: linkMatch[2],
+				};
+				result.push(linkData);
+				continue;
+			} catch (e) {
+				console.error("Failed to parse link data:", e);
+			}
 		}
-
-		lastIndex = match.index + token.length;
-	}
-
-	if (lastIndex < text.length) {
-		result.push({ text: text.slice(lastIndex) });
+		if (part === "**") {
+			boldOn = !boldOn;
+		} else if (part === "*") {
+			italicOn = !italicOn;
+		} else if (part === "<u>") {
+			underlineOn = true;
+		} else if (part === "</u>") {
+			underlineOn = false;
+		} else {
+			const currentText: CustomText = { text: part };
+			if (boldOn) currentText.bold = true;
+			if (italicOn) currentText.italic = true;
+			if (underlineOn) currentText.underline = true;
+			result.push(currentText);
+		}
 	}
 
 	return result;
@@ -134,13 +197,13 @@ export const convertMDXToSlate = (mdxString: string) => {
 			const headerText = line.replace("### ", "").trim();
 			slateArr.push({
 				type: "header",
-				children: parseInlineMarkdown(headerText),
+				children: trackFormatting(splitMdxText(headerText)),
 			});
 		} else {
 			const text = line.trim();
 			slateArr.push({
 				type: "paragraph",
-				children: parseInlineMarkdown(text),
+				children: trackFormatting(splitMdxText(text)),
 			});
 		}
 	}
