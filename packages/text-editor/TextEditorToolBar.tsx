@@ -1,8 +1,7 @@
-import { Bold, Heading, Italic } from "@squaredmade/icons";
+import { Bold, Heading, Italic, Underline } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import LinkModal from "./Menus/LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
-
 const TextEditorToolBar = ({
 	createLeaf,
 	markActiveChecks,
@@ -25,7 +24,7 @@ const TextEditorToolBar = ({
 	// Separator
 }: TextEditorToolBarProps) => {
 	return (
-		<div className="flex h-14 flex-row items-center rounded-m border px-2 py-6 shadow-md">
+		<div className="flex h-16 flex-row items-center rounded-m border px-2 py-4 shadow-md">
 			<Button
 				variant="ghost"
 				size="icon"
@@ -50,6 +49,19 @@ const TextEditorToolBar = ({
 			>
 				<Italic className="h-4 w-4" />
 				<span className="sr-only">Italic</span>
+			</Button>
+
+			<Button
+				variant="ghost"
+				size="icon"
+				className={`size-8 ${!markActiveChecks.isUnderlineActive() && "text-muted-foreground"}`}
+				onMouseDown={(e) => {
+					e.preventDefault();
+					createLeaf("underline");
+				}}
+			>
+				<Underline className="h-4 w-4" />
+				<span className="sr-only">Underline</span>
 			</Button>
 
 			<Button

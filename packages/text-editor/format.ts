@@ -6,6 +6,24 @@ export const formatName = (user: PublicUserData | undefined): string => {
 	return `${user.firstName} ${user?.lastName}`;
 };
 
+export const formatUrl = (title: string) => {
+	const titleSlug = title
+		.toLowerCase()
+		.replace(/'/g, "")
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/(^-|-$)/g, "");
+	return titleSlug;
+};
+
+export const truncateString = (string: string, maxLength: number): string => {
+	if (string.length > maxLength) {
+		let lastSpace = string.lastIndexOf(" ", maxLength);
+		if (lastSpace === -1) lastSpace = maxLength;
+		return `${string.substring(0, lastSpace)}...`;
+	}
+	return string;
+};
+
 function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
 	const codeLines: string[] = [];
 	let i = startIndex;
@@ -21,6 +39,19 @@ function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
 
 	return { codeLines, nextIndex: i };
 }
+
+export const getInitials = (name?: string | null): string => {
+	if (!name || typeof name !== "string") return "";
+
+	const words = name.trim().split(/\s+/);
+
+	const initials = words
+		.map((word) => word.charAt(0).toUpperCase())
+		.filter(Boolean)
+		.slice(0, 2);
+
+	return initials.join("");
+};
 
 export const convertSlateToMDX = (slateArr: CustomElement[]): string => {
 	if (slateArr.length === 0) return "";
