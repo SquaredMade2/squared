@@ -627,7 +627,7 @@
 	},
 	"scripts": {
 		"build": "node build.mjs && bun build:css",
-		"build:css": "postcss styles/tailwind.css -o dist/styles/index.css --minify && cp styles/tailwind.css dist/styles/tailwind.css",
+		"build:css": "bunx @tailwindcss/cli -i styles/tailwind.css -o dist/styles/index.css --minify && cp styles/tailwind.css dist/styles/tailwind.css",
 		"build-storybook": "storybook build",
 		"check-types": "tsc --noEmit",
 		"clean": "find . -type d -name 'dist' -exec rm -rf {} +",

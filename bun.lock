@@ -175,10 +175,9 @@
         "tsup": "^8.0.2",
       },
       "devDependencies": {
-        "@squaredmade/logger": "^1.0.0",
         "@squaredmade/typescript-config": "^1.0.0",
         "@types/node": "^22.10.10",
-        "ts-node": "^10.9.2",
+        "rimraf": "^6.0.1",
         "typescript": "^5.8.2",
       },
     },
@@ -251,13 +250,11 @@
       "name": "@squaredmade/icons",
       "version": "1.1.0",
       "devDependencies": {
-        "@squaredmade/builder": "^1.0.1",
+        "@squaredmade/builder": "^1.0.2",
         "@types/fs-extra": "^11.0.4",
-        "@types/node": "^22.10.10",
         "@types/react": "19.1.4",
         "fs-extra": "^11.2.0",
         "glob": "^11.0.0",
-        "ts-node": "^10.9.2",
         "typescript": "^5.6.2",
       },
       "peerDependencies": {
