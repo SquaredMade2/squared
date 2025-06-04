@@ -84,9 +84,19 @@ jobs:
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
+      # Cache build artifacts
+      - uses: useblacksmith/cache@v5
+        name: Cache build artifacts
+        with:
+          path: |
+            packages/*/dist
+          key: build-artifacts-${{ github.sha }}
+          restore-keys: |
+            build-artifacts-
+
   test-and-validate:
     name: Test and Validate
-    needs: [build]
+    needs: [build, setup]
     runs-on: blacksmith-4vcpu-ubuntu-2404
     strategy:
       matrix:
@@ -110,9 +120,19 @@ jobs:
         name: Setup Turbo cache
         with:
           path: .turbo
-          key: ${{ needs.build.needs.setup.outputs.cache-key }}
+          key: ${{ needs.setup.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-turbo-
+
+      # Restore build artifacts
+      - uses: useblacksmith/cache@v5
+        name: Restore build artifacts
+        with:
+          path: |
+            packages/*/dist
+          key: build-artifacts-${{ github.sha }}
+          restore-keys: |
+            build-artifacts-
 
       - run: bun install --frozen-lockfile
 
