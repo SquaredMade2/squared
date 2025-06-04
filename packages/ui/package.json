@@ -626,15 +626,15 @@
 		}
 	},
 	"scripts": {
-		"build": "node build.mjs && pnpm build:css",
+		"build": "node build.mjs && bun build:css",
 		"build:css": "postcss styles/tailwind.css -o dist/styles/index.css --minify && cp styles/tailwind.css dist/styles/tailwind.css",
 		"build-storybook": "storybook build",
 		"check-types": "tsc --noEmit",
 		"clean": "find . -type d -name 'dist' -exec rm -rf {} +",
 		"knip": "knip",
 		"prebuild": "rm -rf dist",
-		"release": "pnpm build && changeset publish",
-		"serve": "pnpm dlx serve storybook-static",
+		"release": "bun build && changeset publish",
+		"serve": "bunx serve storybook-static",
 		"storybook": "storybook dev -p 6006",
 		"test": "vitest",
 		"test-storybook": "test-storybook"

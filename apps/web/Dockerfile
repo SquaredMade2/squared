@@ -1,13 +1,13 @@
 # Base image
-FROM node:22-alpine AS base
+FROM oven/bun:1 AS base
 
 # Builder stage
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install pnpm and turbo globally
-RUN npm install -g pnpm turbo
+# Install turbo globally
+RUN bun install -g turbo
 
 COPY . .
 RUN turbo prune web --docker
@@ -16,16 +16,13 @@ RUN turbo prune web --docker
 FROM base AS installer
 WORKDIR /app
 
-# Re-install pnpm in this stage
-RUN npm install -g pnpm
-
 # Install dependencies
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile --ignore-scripts
+COPY --from=builder /app/out/bun.lock ./bun.lock
+RUN bun install --frozen-lockfile --ignore-scripts
 
 # Remove unnecessary packages
-RUN pnpm prune --prod
+RUN bun prune --prod
 
 # Build the project
 COPY --from=builder /app/out/full/ .
@@ -38,44 +35,11 @@ ENV NEXT_PUBLIC_SERVER=${NEXT_PUBLIC_SERVER}
 ARG NEXT_PUBLIC_URL
 ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
 
-ARG NEXT_PUBLIC_GITHUB_CLIENT_SECRET
-ENV NEXT_PUBLIC_GITHUB_CLIENT_SECRET=${NEXT_PUBLIC_GITHUB_CLIENT_SECRET}
-
-ARG KINDE_CLIENT_ID
-ENV KINDE_CLIENT_ID=${KINDE_CLIENT_ID}
-
-ARG KINDE_CLIENT_SECRET
-ENV KINDE_CLIENT_SECRET=${KINDE_CLIENT_SECRET}
-
-ARG KINDE_ISSUER_URL
-ENV KINDE_ISSUER_URL=${KINDE_ISSUER_URL}
-
-ARG KINDE_SITE_URL
-ENV KINDE_SITE_URL=${KINDE_SITE_URL}
-
-ARG KINDE_POST_LOGOUT_REDIRECT_URL
-ENV KINDE_POST_LOGOUT_REDIRECT_URL=${KINDE_POST_LOGOUT_REDIRECT_URL}
-
-ARG KINDE_POST_LOGIN_REDIRECT_URL
-ENV KINDE_POST_LOGIN_REDIRECT_URL=${KINDE_POST_LOGIN_REDIRECT_URL}
-
-ARG NEXTAUTH_SECRET
-ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-
-ARG GOOGLE_CLIENT_ID
-ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-
-ARG GOOGLE_CLIENT_SECRET
-ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-
-RUN pnpm turbo build --filter=web...
+RUN bun turbo build --filter=web...
 
 # Runner stage
-FROM node:22-slim AS runner
-WORKDIR /app
-
-# Install pnpm again to ensure it's available for the final stage
-RUN npm install -g pnpm
+FROM oven/bun:1 AS runner
+WORKDIR /apps
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs

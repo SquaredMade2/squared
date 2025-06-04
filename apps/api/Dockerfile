@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM oven/bun:1 AS base
 
 FROM base AS builder
 RUN apk update
@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat python3 make g++
 
 # Set working directory
 WORKDIR /app
-RUN npm install -g turbo pnpm tsx
+RUN bun install -g turbo
 COPY . .
 RUN turbo prune api --docker
 
@@ -23,9 +23,9 @@ COPY --from=builder /app/packages/db /app/packages/db
 
 # First install dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
-RUN npm install -g turbo pnpm tsx
+RUN bun install -g turbo
 
-RUN pnpm install
+RUN bun install
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
@@ -49,7 +49,7 @@ ENV GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
 ENV DATABASE_URL=${DATABASE_URL}
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
-RUN pnpm db:migrate
+RUN bun db:migrate
 
 FROM base AS runner
 WORKDIR /app
@@ -57,11 +57,11 @@ RUN apk add --no-cache openssl
 COPY --from=installer /app .
 WORKDIR /app/apps/api
 
-RUN npm install -g turbo pnpm tsx
+RUN bun install -g turbo
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
 
-CMD ["tsx", "src/api/index.ts"]
+CMD ["bun", "src/api/index.ts"]
