@@ -24,6 +24,15 @@ export const truncateString = (string: string, maxLength: number): string => {
 	return string;
 };
 
+export const verifyUrlFormat = (url: string): string | boolean => {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
+};
+
 export const getInitials = (name?: string | null): string => {
 	if (!name || typeof name !== "string") return "";
 

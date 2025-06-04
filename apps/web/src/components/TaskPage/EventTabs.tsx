@@ -113,7 +113,7 @@ export const EventTabs = () => {
 			});
 		},
 	});
-
+	console.log("currentComment", currentComment);
 	return (
 		<Tabs defaultValue="activity" className="mt-8 w-full">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">

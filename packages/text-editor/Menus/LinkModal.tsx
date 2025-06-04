@@ -1,5 +1,4 @@
 import { useModalStore } from "@/store";
-import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -11,6 +10,7 @@ import {
 import { DialogHeader } from "@squaredmade/ui/dialog";
 import { toast } from "@squaredmade/ui/toast";
 import { useState } from "react";
+import { verifyUrlFormat } from "../format";
 import type { LinkModalProps } from "../interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
