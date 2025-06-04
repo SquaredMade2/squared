@@ -1,11 +1,5 @@
 "use client";
 
-import TextEditor, {
-	initialEditorValue,
-	type CustomDescendant,
-	type CustomElement,
-} from "@/components/TextEditor";
-import { convertSlateToMDX } from "@/components/TextEditor/format";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
@@ -13,6 +7,12 @@ import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { ChevronRight } from "@squaredmade/icons";
+import TextEditor, {
+	initialEditorValue,
+	type CustomDescendant,
+	type CustomElement,
+} from "@squaredmade/text-editor";
+import { convertSlateToMDX } from "@squaredmade/text-editor/format";
 import { Button } from "@squaredmade/ui/button";
 import { Checkbox } from "@squaredmade/ui/checkbox";
 import {

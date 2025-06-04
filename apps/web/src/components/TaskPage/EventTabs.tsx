@@ -7,18 +7,18 @@ import { useCommentStore, useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
+import TextEditor, {
+	type CustomDescendant,
+	type CustomElement,
+} from "@squaredmade/text-editor";
+import { initialEditorValue } from "@squaredmade/text-editor";
+import { convertSlateToMDX } from "@squaredmade/text-editor/format";
 import { Button } from "@squaredmade/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { CreatedByInformation } from ".";
-import TextEditor, {
-	type CustomDescendant,
-	type CustomElement,
-} from "../TextEditor";
-import { initialEditorValue } from "../TextEditor";
-import { convertSlateToMDX } from "../TextEditor/format";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
