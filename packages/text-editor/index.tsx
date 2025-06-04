@@ -1,9 +1,4 @@
 import { useModalStore } from "@/store";
-import {
-	clearCurrentLeafContent,
-	getMentionFromLeaf,
-	injectMentionConfirm,
-} from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
 import { toast } from "@squaredmade/ui/toast";
 import {
@@ -34,6 +29,11 @@ import type {
 	MarkTypes,
 	TextEditorProps,
 } from "./interfaces";
+import {
+	clearCurrentLeafContent,
+	getMentionFromLeaf,
+	injectMentionConfirm,
+} from "./textEditorSelection";
 
 declare module "slate" {
 	interface CustomTypes {

@@ -5,11 +5,11 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { useTaskStore, useWorkspaceStore } from "@/store";
-import { injectTaskConfirm } from "@/utils/textEditorSelection";
 import type { Task } from "@squaredmade/db";
 import { cn } from "@squaredmade/ui/cn";
 import { CommandItem } from "cmdk";
 import type { TextEditorTasksProps } from "../interfaces";
+import { injectTaskConfirm } from "../textEditorSelection";
 
 const TextEditorTasks = ({
 	cursorPosition,

@@ -8,10 +8,10 @@ import { parseError } from "@/utils/parseError";
 import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
 import TextEditor, {
-	initialEditorValue,
 	type CustomDescendant,
 	type CustomElement,
 } from "@squaredmade/text-editor";
+import { initialEditorValue } from "@squaredmade/text-editor";
 import { convertSlateToMDX } from "@squaredmade/text-editor/format";
 import { Button } from "@squaredmade/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
@@ -49,7 +49,9 @@ export const EventTabs = () => {
 			const mentions = getMentionsFromSlate(editorContent);
 
 			for (const mention of mentions) {
-				const mentionedUser = users?.find((user) => user.firstName === mention);
+				const mentionedUser = users?.find(
+					(user) => user?.firstName === mention,
+				);
 
 				if (!mentionedUser || !mentionedUser.userId) continue;
 
@@ -128,7 +130,7 @@ export const EventTabs = () => {
 					return <CommentCard key={comment.id} comment={comment} />;
 				})}
 				{currentTask && (
-					<TextEditor value={currentComment} setValue={setCurrentComment} />
+					<TextEditor value={currentComment} onChange={setCurrentComment} />
 				)}
 				<Button
 					disabled={

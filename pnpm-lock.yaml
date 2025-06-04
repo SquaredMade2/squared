@@ -714,8 +714,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.2(@swc/core@1.11.13(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
       '@squaredmade/icons':
-        specifier: ^1.0.5
-        version: 1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^1.1.0
+        version: 1.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/ui':
         specifier: ^3.0.3
         version: 3.0.3(@tailwindcss/postcss@4.1.7)(@types/node@22.15.18)(@types/react@19.1.4)(postcss@8.5.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.7))(tailwindcss@4.1.7)(zod@3.25.28)
@@ -3352,6 +3352,12 @@ packages:
 
   '@squaredmade/icons@1.0.5':
     resolution: {integrity: sha512-SSDaM8evnSvm3RY0ynrv0Fk1zgPviRsY8yQ7NqsGII2wzX/oqIQuBA2oLlY9gECuDkvry0VkweVX8TIXHPm/pA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+
+  '@squaredmade/icons@1.1.0':
+    resolution: {integrity: sha512-Uo+4Rkro0dMMSQpVyoKyudfaJtw0rKZETf4q5gklbQXTXx6fxZPxwPUAPA1zBY6HMlkAkE4c4fBCVgIB/wNevg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
@@ -12694,6 +12700,11 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   '@squaredmade/icons@1.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@squaredmade/icons@1.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)

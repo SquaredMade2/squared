@@ -13,7 +13,7 @@
 	"dependencies": {
 		"@clerk/nextjs": "^6.12.5",
 		"@squaredmade/builder": "^1.0.1",
-		"@squaredmade/icons": "^1.0.5",
+		"@squaredmade/icons": "^1.1.0",
 		"@squaredmade/ui": "^3.0.3",
 		"cmdk": "^1.1.1",
 		"lucide-react": "^0.511.0",
