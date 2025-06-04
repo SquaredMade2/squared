@@ -19,7 +19,7 @@ require (
 )
 
 require (
-	github.com/bradleyfalzon/ghinstallation/v2 v2.15.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.16.0
 	github.com/bwmarrin/discordgo v0.29.0
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
