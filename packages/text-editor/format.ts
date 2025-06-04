@@ -1,4 +1,10 @@
+import type { PublicUserData } from "@clerk/types";
 import type { CustomElement, CustomText } from "./interfaces";
+
+export const formatName = (user: PublicUserData | undefined): string => {
+	if (!user) return "Unknown User";
+	return `${user.firstName} ${user?.lastName}`;
+};
 
 function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
 	const codeLines: string[] = [];

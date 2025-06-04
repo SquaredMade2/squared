@@ -9,5 +9,27 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"packageManager": "pnpm@10.11.0"
+	"packageManager": "pnpm@10.11.0",
+	"dependencies": {
+		"@clerk/nextjs": "^6.12.5",
+		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/icons": "^1.0.5",
+		"@squaredmade/ui": "^3.0.3",
+		"cmdk": "^1.1.1",
+		"lucide-react": "^0.511.0",
+		"slate": "^0.114.0",
+		"slate-react": "^0.114.0"
+	},
+	"devDependencies": {
+		"@clerk/types": "^4.40.3",
+		"@squaredmade/typescript-config": "^1.0.0",
+		"@types/node": "^22.10.10",
+		"@types/react": "^19.0.1",
+		"@squaredmade/db": "workspace:*",
+		"@types/react-dom": "^19.0.2"
+	},
+	"peerDependencies": {
+		"react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
+		"react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
+	}
 }
