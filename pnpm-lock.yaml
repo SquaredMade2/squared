@@ -52,11 +52,11 @@ importers:
         specifier: ^1.24.0
         version: 1.34.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@squaredmade/cron-jobs':
-        specifier: workspace:*
-        version: link:../../packages/cron-jobs
+        specifier: 1.0.0
+        version: 1.0.0
       '@squaredmade/db':
-        specifier: workspace:*
-        version: link:../../packages/db
+        specifier: 1.2.0
+        version: 1.2.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.15.4)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.16.0)(prisma@6.2.1)(utf-8-validate@6.0.4)
       '@squaredmade/logger':
         specifier: 1.1.2
         version: 1.1.2
@@ -3323,6 +3323,12 @@ packages:
 
   '@squaredmade/context@1.0.1':
     resolution: {integrity: sha512-scxG0BnTfo/wj2BV1MIjyGp23k7BYlVI/aqryQzHNOwFnE490ChNh3x1EVXEbTgGL4hchbqlFZKk2hTpG0WRWA==}
+
+  '@squaredmade/cron-jobs@1.0.0':
+    resolution: {integrity: sha512-ifcjSvbweKUD1gZ4PB7FJmX1MwwVjGnYiQeb7pSH0UbUCuwFWhporNPML0TFgJTtXnVTzx3biKIwGJA5HtbsiA==}
+
+  '@squaredmade/db@1.2.0':
+    resolution: {integrity: sha512-pHzmIslxKdNWiBOHaUelpYzjKi4BpJBKJl0kc/UbmeDsg2ybDd9AKyQZwElGfQY34H0QthhvW3ElNRtLLgLSZw==}
 
   '@squaredmade/fonts@1.0.7':
     resolution: {integrity: sha512-e0CJn97tusun1ThzAiaCNtcQcOrYMovW8QMRHC1od43q1G5zcQwTKhzyTOHddLpsNSxh4J6Hgt4GOjL5IErVmA==}
@@ -12592,6 +12598,48 @@ snapshots:
       - yaml
 
   '@squaredmade/context@1.0.1': {}
+
+  '@squaredmade/cron-jobs@1.0.0':
+    dependencies:
+      '@squaredmade/logger': 1.1.1
+      cron: 4.3.1
+
+  '@squaredmade/db@1.2.0(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.15.4)(bufferutil@4.0.8)(gel@2.0.1)(pg@8.16.0)(prisma@6.2.1)(utf-8-validate@6.0.4)':
+    dependencies:
+      '@neondatabase/serverless': 1.0.0
+      drizzle-orm: 0.44.1(@neondatabase/serverless@1.0.0)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.15.4)(gel@2.0.1)(pg@8.16.0)(prisma@6.2.1)
+      ws: 8.18.2(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@prisma/client'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - utf-8-validate
 
   '@squaredmade/fonts@1.0.7(tailwindcss@4.1.8)':
     dependencies:
