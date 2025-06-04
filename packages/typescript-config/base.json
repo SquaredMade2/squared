@@ -22,6 +22,7 @@
 		"listFiles": false,
 		"noEmitHelpers": true,
 		"types": [],
+		"typeRoots": ["../../node_modules/@types"],
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": true,
