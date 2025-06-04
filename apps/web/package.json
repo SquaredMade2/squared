@@ -34,7 +34,7 @@
 		"@squaredmade/fonts": "^1.0.7",
 		"@squaredmade/icons": "1.1.0",
 		"@squaredmade/rpc-client": "1.0.2",
-		"@squaredmade/ui": "3.0.2",
+		"@squaredmade/ui": "3.0.3",
 		"@tanstack/react-query": "^5.62.7",
 		"@tanstack/react-table": "^8.20.5",
 		"@types/react-csv": "^1.1.10",
