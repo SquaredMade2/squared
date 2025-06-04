@@ -3,7 +3,7 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useUser } from "@clerk/nextjs";
+import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Card } from "@squaredmade/ui/card";
 import { Input } from "@squaredmade/ui/input";
@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
+	const { setActive } = useOrganizationList();
 	const router = useRouter();
 
 	// List of restricted routes (initial set)
@@ -55,9 +56,11 @@ const Join = () => {
 
 	const createWorkspaceMutation = useMutation({
 		mutationFn: async (newWorkspace: { name: string; url: string }) => {
-			return await client.workspace.createWorkspace
+			const newCreatedWorkspace = await client.workspace.createWorkspace
 				.$post(newWorkspace)
 				.then((res) => res.json());
+			await setActive?.({ organization: newCreatedWorkspace.externalId });
+			return newWorkspace;
 		},
 		onSuccess: (data) => {
 			if (!data) return;
