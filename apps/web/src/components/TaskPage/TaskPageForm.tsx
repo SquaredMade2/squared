@@ -1,13 +1,17 @@
-import {
-	convertMDXToSlate,
-	convertSlateToMDX,
-} from "@/components/TextEditor/format";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useOrganization } from "@clerk/nextjs";
+import TextEditor, {
+	type CustomDescendant,
+	type CustomElement,
+} from "@squaredmade/text-editor";
+import {
+	convertMDXToSlate,
+	convertSlateToMDX,
+} from "@squaredmade/text-editor/format";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
 import { toast } from "@squaredmade/ui/toast";
@@ -15,10 +19,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { StatusIcon } from "../Icons";
-import TextEditor, {
-	type CustomDescendant,
-	type CustomElement,
-} from "../TextEditor";
 
 export const TaskPageForm = () => {
 	const { organization } = useOrganization();

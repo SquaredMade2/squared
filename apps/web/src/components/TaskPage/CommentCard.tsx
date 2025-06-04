@@ -2,6 +2,7 @@ import type { UserAvatar } from "@/store/users";
 import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Comment } from "@squaredmade/db";
+import MentionHover from "@squaredmade/text-editor/Menus/MentionHover";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { toast } from "@squaredmade/ui/toast";
 import { formatDate } from "date-fns/format";
@@ -9,15 +10,6 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
-import MentionHover from "../TextEditor/Menus/MentionHover";
-// !!! This is all part of the code below !!! line 37
-// import { Text, type Descendant } from "slate";
-// import type { RenderElementProps, RenderLeafProps } from "slate-react";
-// import type { CustomElement, CustomText } from "../TextEditor/interfaces";
-// import CodeElement from "../TextEditor/TextEditorElements/ElementBlocks/CodeElement";
-// import HeaderElement from "../TextEditor/TextEditorElements/ElementBlocks/HeaderElement";
-// import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
-// import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
