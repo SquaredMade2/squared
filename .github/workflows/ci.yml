@@ -100,7 +100,7 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     strategy:
       matrix:
-        task: [lint, test, check-types]
+        task: [lint, test-ci, check-types]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -150,19 +150,6 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           REMOTE_DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
           LOCAL_DB: true
-
-      # Install Playwright for UI tests
-      - name: Install Playwright
-        if: matrix.task == 'test'
-        run: bunx playwright install --with-deps
-
-      # Build Storybook for UI tests
-      - name: Build Storybook
-        if: matrix.task == 'test'
-        run: bun build-storybook --quiet
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
       - name: Run ${{ matrix.task }}
         run: bun run ${{ matrix.task }}

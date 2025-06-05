@@ -636,7 +636,8 @@
 		"release": "bun build && changeset publish",
 		"serve": "bunx serve storybook-static",
 		"storybook": "storybook dev -p 6006",
-		"test": "vitest",
+		"test": "vitest run",
+		"test-ci": "./sbTest.sh",
 		"test-storybook": "test-storybook"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],

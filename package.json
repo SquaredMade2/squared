@@ -37,6 +37,7 @@
 		"storybook": "bun run --filter=@squaredmade/ui storybook",
 		"studio": "turbo run studio",
 		"test": "turbo run test",
+		"test-ci": "turbo run test-ci",
 		"test:api": "turbo run test --filter=api",
 		"test:ci": "bun check-types && bun lint && bun run test && bun run build",
 		"test:web": "turbo run test --filter=web"
