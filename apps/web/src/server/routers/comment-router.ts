@@ -37,6 +37,6 @@ export const commentRouter = j.router({
 					message: `Comment: ${commentId} Does Not Exist`,
 				});
 			}
-			return c.status(200);
+			return c.status(204);
 		}),
 });
