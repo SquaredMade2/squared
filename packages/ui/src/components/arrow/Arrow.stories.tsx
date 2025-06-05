@@ -37,18 +37,6 @@ export const LargeArrow: Story = {
 	},
 };
 
-export const CustomShape: Story = {
-	render: (args) => (
-		<Arrow {...args} asChild>
-			<path d="M0,0 L30,0 Q15,20 0,0" fill="currentColor" />
-		</Arrow>
-	),
-	args: {
-		width: 30,
-		height: 20,
-	},
-};
-
 export const MultipleArrows: Story = {
 	render: () => (
 		<div className="flex space-x-4">

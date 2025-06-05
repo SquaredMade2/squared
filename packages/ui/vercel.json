@@ -1,6 +1,6 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"buildCommand": "bun build:css && bun build-storybook",
+	"buildCommand": "turbo run build --filter=@squaredmade/ui && bun build-storybook",
 	"devCommand": "bun storybook",
 	"installCommand": "bun install",
 	"framework": null,
