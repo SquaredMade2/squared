@@ -66,8 +66,8 @@
 		"test": {
 			"dependsOn": []
 		},
-		"test:ci": {
-			"dependsOn": ["^test:ci"]
+		"test-ci": {
+			"dependsOn": ["^test-ci", "^test"]
 		}
 	}
 }

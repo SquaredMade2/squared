@@ -13,6 +13,7 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"lib": ["DOM", "ESNext", "DOM.Iterable"],
+		"types": ["node"],
 		"moduleResolution": "node",
 		"noEmit": true,
 		"noFallthroughCasesInSwitch": false,
@@ -31,7 +32,6 @@
 		"strictPropertyInitialization": true,
 		"stripInternal": true,
 		"target": "ES2022",
-		"types": ["node"],
-		"typeRoots": ["./node_modules/@types"]
+		"typeRoots": ["../../node_modules/@types"]
 	}
 }

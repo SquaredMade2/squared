@@ -3,26 +3,26 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"api:gen": "pnpm run --filter=api gen",
-		"build": "turbo run build && pnpm format:write",
-		"build:icons": "pnpm --filter=@squaredmade/icons run build",
+		"api:gen": "bun run --filter=api gen",
+		"build": "turbo run build && bun format:write",
+		"build:icons": "bun --filter=@squaredmade/icons run build",
 		"build:packages": "turbo run build --filter='./packages/*'",
-		"build:ui": "pnpm --filter=@squaredmade/ui run build",
+		"build:ui": "bun --filter=@squaredmade/ui run build",
 		"check-types": "turbo run check-types",
 		"clean": "turbo run clean && rimraf node_modules",
-		"db:backup:staging": "pnpm --filter=db db:backup:staging",
-		"db:backup:prod": "pnpm --filter=db db:backup:prod",
+		"db:backup:staging": "bun --filter=db db:backup:staging",
+		"db:backup:prod": "bun --filter=db db:backup:prod",
 		"db:gen": "turbo run db:gen",
-		"db:migrate": "pnpm --filter=@squaredmade/db db:migrate",
-		"db:push": "pnpm --filter=@squaredmade/db db:push",
+		"db:migrate": "bun --filter=@squaredmade/db db:migrate",
+		"db:push": "bun --filter=@squaredmade/db db:push",
 		"dev": "turbo run dev",
 		"dev:go": "turbo run dev:go",
 		"docker:build": "docker compose build",
-		"docker:db": "pnpm --filter=@squaredmade/seed run docker:db",
-		"docker:db:down": "pnpm --filter=@squaredmade/seed run docker:db:down",
-		"docker:db:init": "pnpm docker:db && pnpm docker:db:seed && pnpm db:migrate",
-		"docker:db:rebuild": "pnpm docker:db:down && pnpm docker:db:init",
-		"docker:db:seed": "pnpm --filter=@squaredmade/seed run db:seed",
+		"docker:db": "bun --filter=@squaredmade/seed run docker:db",
+		"docker:db:down": "bun --filter=@squaredmade/seed run docker:db:down",
+		"docker:db:init": "bun docker:db && bun docker:db:seed && bun db:migrate",
+		"docker:db:rebuild": "bun docker:db:down && bun docker:db:init",
+		"docker:db:seed": "bun --filter=@squaredmade/seed run db:seed",
 		"docker:up": "docker compose up",
 		"format:check": "biome format .",
 		"format:write": "biome format --write . && biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
@@ -30,15 +30,16 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"prepare": "husky",
-		"release": "pnpm build:packages && changeset publish",
-		"reset": "pnpm clean && pnpm install",
-		"slicemachine": "pnpm run --filter=www slicemachine",
+		"release": "bun build:packages && changeset publish",
+		"reset": "bun clean && bun install",
+		"slicemachine": "bun run --filter=www slicemachine",
 		"start": "turbo run start",
-		"storybook": "pnpm run --filter=@squaredmade/ui storybook",
+		"storybook": "bun run --filter=@squaredmade/ui storybook",
 		"studio": "turbo run studio",
 		"test": "turbo run test",
+		"test-ci": "turbo run test-ci",
 		"test:api": "turbo run test --filter=api",
-		"test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build",
+		"test:ci": "bun check-types && bun lint && bun run test && bun run build",
 		"test:web": "turbo run test --filter=web"
 	},
 	"devDependencies": {
@@ -55,18 +56,8 @@
 		"turbo-ignore": "^2.1.0"
 	},
 	"engines": {
-		"node": ">=23.0.0",
-		"npm": ">=10.0.0"
+		"node": ">=23.0.0"
 	},
-	"pnpm": {
-		"supportedArchitectures": {
-			"os": ["win32", "darwin", "current"],
-			"cpu": ["x64", "arm64"]
-		},
-		"overrides": {
-			"@types/react": "19.1.4",
-			"@types/react-dom": "19.1.5"
-		}
-	},
-	"packageManager": "pnpm@10.11.0"
+	"workspaces": ["apps/*", "packages/*"],
+	"packageManager": "bun@1.2.14"
 }

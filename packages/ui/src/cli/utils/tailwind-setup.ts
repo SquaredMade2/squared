@@ -13,6 +13,7 @@ export async function installDependencies(
 		npm: "npm install -D",
 		yarn: "yarn add -D",
 		pnpm: "pnpm add -D",
+		bun: "bun add -D",
 	}[packageManager];
 
 	try {

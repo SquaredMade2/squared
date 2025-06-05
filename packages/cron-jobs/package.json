@@ -1,11 +1,15 @@
 {
 	"name": "@squaredmade/cron-jobs",
-	"version": "0.0.0",
+	"version": "1.0.0",
+	"publishConfig": {
+		"access": "public"
+	},
 	"description": "CRON job framework for Squared",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "squared-build src/index.ts/index.ts",
+		"build": "bun ./build.ts",
+		"clean": "rimraf dist && rimraf node_modules",
 		"check-types": "tsc --noEmit",
 		"test": "vitest run",
 		"test:watch": "vitest"
@@ -15,7 +19,7 @@
 		"cron": "^4.3.0"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/builder": "^1.0.2",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/cron": "^2.0.1",
 		"@types/node": "^20.10.5",

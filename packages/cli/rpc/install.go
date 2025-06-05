@@ -350,7 +350,7 @@ func capitalizeFirst(s string) string {
 }
 
 func runBiomeFormat(fileName string) {
-	cmd := exec.Command("pnpm", "format:write", fileName)
+	cmd := exec.Command("bun", "format:write", fileName)
 	err := cmd.Run()
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {

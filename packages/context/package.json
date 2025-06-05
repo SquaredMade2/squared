@@ -20,7 +20,7 @@
 		}
 	},
 	"scripts": {
-		"build": "squared-build src/index.ts/index.ts",
+		"build": "bun ./build.ts",
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist",
@@ -28,7 +28,7 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/builder": "^1.0.2",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.8.1",
 		"typescript": "^5.8.2",

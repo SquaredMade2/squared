@@ -8,9 +8,9 @@ endif
 
 # Variables
 WEBHOOKS_APP_NAME = webhooks
-WEBHOOKS_APP_PATH = cmd/webhooks
+WEBHOOKS_APP_PATH = ./cmd/webhooks
 BOT_APP_NAME = bot
-BOT_APP_PATH = cmd/bot
+BOT_APP_PATH = ./cmd/bot
 GO_CMD = go
 GO_BUILD = $(GO_CMD) build
 GO_CLEAN = $(GO_CMD) clean
