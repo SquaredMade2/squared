@@ -1,4 +1,4 @@
 {
 	"installCommand": "bun install",
-	"buildCommand": "bun run build"
+	"buildCommand": "turbo run build --filter=web"
 }
