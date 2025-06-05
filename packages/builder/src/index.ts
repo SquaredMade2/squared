@@ -1,11 +1,8 @@
 import "tslib";
 import { join, sep } from "node:path";
-import createCustomLogger from "@squaredmade/logger";
 import type { BuildOptions, SameShape } from "esbuild";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";
-
-const logger = createCustomLogger("builder");
 
 export async function build(path: string, external?: string[]) {
 	const normalizedPath = path.split(sep).join("/");
@@ -34,14 +31,14 @@ export async function build(path: string, external?: string[]) {
 	};
 
 	await esbuild.build(esbuildConfig);
-	logger.info(`Built ${path}/dist/index.js`);
+	console.info(`Built ${path}/dist/index.js`);
 
 	await esbuild.build({
 		...esbuildConfig,
 		format: "esm",
 		outExtension: { ".js": ".mjs" },
 	});
-	logger.info(`Built ${path}/dist/index.mjs`);
+	console.info(`Built ${path}/dist/index.mjs`);
 
 	await tsup.build({
 		entry: [file],
@@ -51,5 +48,5 @@ export async function build(path: string, external?: string[]) {
 		silent: true,
 		external,
 	});
-	logger.info(`Built ${path}/dist/index.d.ts`);
+	console.info(`Built ${path}/dist/index.d.ts`);
 }

@@ -40,6 +40,7 @@
 		"stripInternal": true,
 		"target": "ES2022",
 		"types": ["node"],
+		"typeRoots": ["../../node_modules/@types"],
 		"paths": {
 			"@squaredmade/ui/accordion": ["./src/components/accordion"],
 			"@squaredmade/ui/alert": ["./src/components/alert"],

@@ -1,4 +1,4 @@
 import pkg from "@squaredmade/builder";
 const { build } = pkg;
 
-build("components/index.ts");
+build("src/index.ts", ["cron", "@squaredmade/logger"]);
