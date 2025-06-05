@@ -11,7 +11,7 @@ export const CreatedByInformation = () => {
 	const events = useEventStore((state) => state.events);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const foundUser = users?.find(
-		(user: PublicUserData) => user.userId === currentTask?.authorId,
+		(user?: PublicUserData) => user?.userId === currentTask?.authorId,
 	);
 
 	const displayDate = () => {
@@ -49,19 +49,19 @@ export const CreatedByInformation = () => {
 						new Date(getEventTime(a) || getEventTime(a)).getTime(),
 				)
 				.map((event) => {
-					const eventAuthor = users?.find((user: PublicUserData) => {
+					const eventAuthor = users?.find((user) => {
 						if (!("authorId" in event)) return false;
-						return user.userId === event.authorId;
+						return user?.userId === event.authorId;
 					});
 					return (
 						<div
 							key={event.id}
-							className="grid grid-cols-[2fr_1fr_3fr_10fr] items-center gap-x-1 px-8"
+							className="grid grid-cols-17 items-center gap-x-1 px-8"
 						>
-							<div className="items-center break-words text-muted-foreground">
+							<div className="col-span-2 items-center break-words text-muted-foreground">
 								{formatDate(getEventTime(event), "dd MMM yyyy")}
 							</div>
-							<div>
+							<div className="col-span-1">
 								<Avatar className="size-6 text-xxs">
 									<AvatarImage src={eventAuthor?.imageUrl ?? ""} />
 									<AvatarFallback>
@@ -69,24 +69,30 @@ export const CreatedByInformation = () => {
 									</AvatarFallback>
 								</Avatar>
 							</div>
-							<p className="text-foreground">{getName(eventAuthor)}</p>
-							<p className="text-muted-foreground text-sm">{event.message}</p>
+							<p className="col-span-3 text-foreground">
+								{getName(eventAuthor)}
+							</p>
+							<p className="col-span-11 text-muted-foreground text-sm">
+								{event.message}
+							</p>
 						</div>
 					);
 				})}
 			{/* Created by information */}
-			<div className="grid grid-cols-[2fr_1fr_3fr_10fr] items-center gap-x-1 px-8">
-				<div className="items-center break-words text-muted-foreground">
+			<div className="grid grid-cols-17 items-center gap-x-1 px-8">
+				<div className="col-span-2 items-center break-words text-muted-foreground">
 					{displayDate()}
 				</div>
-				<div>
+				<div className="col-span-1">
 					<Avatar className="size-6 text-xxs">
 						<AvatarImage src={foundUser?.imageUrl ?? ""} />
 						<AvatarFallback>{getInitials(getName(foundUser))}</AvatarFallback>
 					</Avatar>
 				</div>
-				<p className="text-foreground">{getName(foundUser)}</p>
-				<p className="text-muted-foreground text-sm">created the task</p>
+				<p className="col-span-3 text-foreground">{getName(foundUser)}</p>
+				<p className="col-span-11 text-muted-foreground text-sm">
+					created the task
+				</p>
 			</div>
 		</div>
 	);
