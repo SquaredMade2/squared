@@ -15,7 +15,7 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@squaredmade/logger": "1.1.1",
+		"@squaredmade/logger": "1.1.2",
 		"cron": "^4.3.0"
 	},
 	"devDependencies": {
