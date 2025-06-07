@@ -24,7 +24,7 @@
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.2",
 		"@types/fs-extra": "^11.0.4",
-		"@types/react": "19.1.4",
+		"@types/react": "19.1.6",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.0.0",
 		"typescript": "^5.6.2"
