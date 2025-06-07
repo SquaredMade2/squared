@@ -24,5 +24,5 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/sync v0.14.0
+	golang.org/x/sync v0.15.0
 )
