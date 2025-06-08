@@ -12,10 +12,12 @@
 		"clean": "rimraf dist && rimraf node_modules",
 		"db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
 		"docker:db": "docker compose -f docker-compose.yml up -d",
-		"docker:db:down": "docker compose -f docker-compose.yml down --volumes"
+		"docker:db:down": "docker compose -f docker-compose.yml down --volumes",
+		"docker:db:check": "ts-node src/docker-check.ts",
+		"docker:db:restore": "ts-node src/docker-restore.ts"
 	},
 	"dependencies": {
-		"@squaredmade/logger": "1.1.1",
+		"@squaredmade/logger": "1.1.2",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.4.1",
 		"pg": "^8.13.1"

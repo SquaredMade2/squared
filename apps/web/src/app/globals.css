@@ -215,6 +215,10 @@
 		letter-spacing: 0.05em;
 		@apply bg-background text-foreground;
 	}
+	.scroll-area-no-table [data-slot="scroll-area-viewport"] > div {
+		display: block !important;
+		min-width: auto !important;
+	}
 }
 
 @layer utilities {

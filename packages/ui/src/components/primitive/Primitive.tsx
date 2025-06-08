@@ -1,4 +1,4 @@
-import { Slot } from "@squaredmade/ui/slot";
+import { createSlot } from "@squaredmade/ui/slot";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
@@ -37,6 +37,7 @@ type PrimitiveForwardRefComponent<E extends React.ElementType> =
  * -----------------------------------------------------------------------------------------------*/
 
 const Primitive = NODES.reduce((primitive, node) => {
+	const Slot = createSlot(`Primitive.${node}`);
 	const Node = React.forwardRef<
 		HTMLElement,
 		PrimitivePropsWithRef<typeof node>
@@ -45,6 +46,7 @@ const Primitive = NODES.reduce((primitive, node) => {
 		const Comp: React.ElementType = asChild ? Slot : node;
 
 		if (typeof window !== "undefined") {
+			// biome-ignore lint/suspicious/noExplicitAny: We need to use any here to dynamically add a Symbol property to the window object
 			(window as any)[Symbol.for("squared")] = true;
 		}
 

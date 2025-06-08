@@ -2,6 +2,7 @@ import {
 	type DBClient,
 	type GithubOrg,
 	type GithubRepo,
+	and,
 	eq,
 	githubCommitsTable,
 	githubOrgTable,
@@ -158,6 +159,105 @@ export class GithubService implements GithubRpc {
 
 		return tasks;
 	}
+
+	async mergePullRequest({ pullRequestId }: { pullRequestId: string }) {
+		this.logger.info(`Merging pull request with id: ${pullRequestId}`);
+
+		return await this.db.transaction(async (tx) => {
+			// 1. Update the pull request state to "closed"
+			await tx
+				.update(githubPullRequestsTable)
+				.set({ state: "closed" })
+				.where(eq(githubPullRequestsTable.externalId, pullRequestId));
+
+			// 2. Find all tasks associated with this pull request
+			const tasksWithPullRequest = await tx
+				.select({
+					taskId: githubPullRequestTaskTable.taskId,
+				})
+				.from(githubPullRequestTaskTable)
+				.where(eq(githubPullRequestTaskTable.pullRequestId, pullRequestId));
+
+			const taskIds = tasksWithPullRequest.map((task) => task.taskId);
+
+			if (taskIds.length === 0) {
+				this.logger.warn(
+					`No tasks found for pull request with id: ${pullRequestId}`,
+				);
+				return;
+			}
+
+			// 3. Get tasks that are in "inReview" status
+			const tasksInReview = await tx
+				.select({
+					id: tasksTable.id,
+				})
+				.from(tasksTable)
+				.where(
+					and(
+						inArray(tasksTable.id, taskIds),
+						eq(tasksTable.status, "inReview"),
+					),
+				);
+
+			if (tasksInReview.length === 0) {
+				this.logger.info(
+					`No tasks in review found for pull request with id: ${pullRequestId}`,
+				);
+				return;
+			}
+
+			// 4. For each task in review, check if all its associated PRs are closed
+			const tasksToUpdate: string[] = [];
+
+			for (const task of tasksInReview) {
+				const associatedPRs = await tx
+					.select({
+						pullRequestId: githubPullRequestTaskTable.pullRequestId,
+						state: githubPullRequestsTable.state,
+					})
+					.from(githubPullRequestTaskTable)
+					.innerJoin(
+						githubPullRequestsTable,
+						eq(
+							githubPullRequestTaskTable.pullRequestId,
+							githubPullRequestsTable.externalId,
+						),
+					)
+					.where(eq(githubPullRequestTaskTable.taskId, task.id));
+
+				// Check if all PRs are closed
+				const allPRsClosed = associatedPRs.every((pr) => pr.state === "closed");
+
+				if (allPRsClosed) {
+					tasksToUpdate.push(task.id);
+				}
+			}
+
+			// 5. Update the tasks to "done" status
+			if (tasksToUpdate.length > 0) {
+				await tx
+					.update(tasksTable)
+					.set({ status: "done" })
+					.where(inArray(tasksTable.id, tasksToUpdate));
+
+				this.logger.info(
+					`Updated ${tasksToUpdate.length} tasks to done status`,
+				);
+			}
+		});
+	}
+
+	async closePullRequest({ pullRequestId }: { pullRequestId: string }) {
+		this.logger.info(`Closing pull request with id: ${pullRequestId}`);
+		return await this.db.transaction(async (tx) => {
+			await tx
+				.update(githubPullRequestsTable)
+				.set({ state: "closed" })
+				.where(eq(githubPullRequestsTable.externalId, pullRequestId));
+		});
+	}
+
 	async pushCommit({
 		id,
 		message,

@@ -4,7 +4,9 @@ import type {
 	CustomText,
 } from "@/components/TextEditor";
 import type { PublicUserData } from "@clerk/types";
+import type { Task, Workspace } from "@squaredmade/db";
 import { Editor, Element, Node, Range, Transforms } from "slate";
+import { formatUrl } from "./formatting";
 
 // getting the current characters selected
 export const getCharactersInSelection = (editor: Editor) => {
@@ -20,18 +22,6 @@ export const getCharactersInSelection = (editor: Editor) => {
 		return selectedText;
 	}
 	return "";
-};
-
-// check if the current command leaf has a "/" at the beginning of it
-export const isValidMentionBlock = (editor: Editor) => {
-	const { selection } = editor;
-
-	if (!selection) return false;
-
-	const [node] = Editor.node(editor, selection, { edge: "start" });
-
-	const text = Node.string(node);
-	return text.startsWith("@");
 };
 
 export const getMentionFromLeaf = (editor: Editor) => {
@@ -83,6 +73,23 @@ export const injectMentionConfirm = (editor: Editor, user: PublicUserData) => {
 	Transforms.insertNodes(editor, {
 		text: `@${user.firstName || "Unknown name"}`,
 		mentionConfirm: user,
+	});
+};
+
+export const injectTaskConfirm = (
+	editor: Editor,
+	task: Task,
+	workspace: Workspace | null,
+) => {
+	if (!editor.selection) return; // Ensure there's a selection
+
+	const [, path] = Editor.node(editor, editor.selection);
+	Transforms.select(editor, Editor.range(editor, path));
+
+	// Insert new text
+	Transforms.insertNodes(editor, {
+		text: `#${task.identifier || "Unknown task"}`,
+		url: `/${workspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
 	});
 };
 

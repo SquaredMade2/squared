@@ -1,9 +1,21 @@
 import type { PublicUserData } from "@clerk/types";
-import type { Dispatch, JSX, MutableRefObject, SetStateAction } from "react";
+import type {
+	CSSProperties,
+	Dispatch,
+	JSX,
+	MutableRefObject,
+	SetStateAction,
+} from "react";
 import type { BaseSelection, Editor, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
-	addAction: (editorContent: CustomDescendant[]) => void;
+	placeholder?: string;
+	onBlur?: React.FocusEventHandler<HTMLDivElement>;
+	onFocus?: React.FocusEventHandler<HTMLDivElement>;
+	onChange?: (value: CustomDescendant[]) => void;
+	style?: CSSProperties | undefined;
+	value?: CustomDescendant[];
+	hasToolbar?: boolean;
 }
 
 export interface TextEditorToolBarProps {
@@ -35,6 +47,13 @@ export interface TextEditorMentionsProps {
 	setToggleMentions: Dispatch<SetStateAction<boolean>>;
 	debounceRef: MutableRefObject<boolean>;
 }
+export interface TextEditorTasksProps {
+	cursorPosition: { x: number; y: number } | null;
+	editor: Editor;
+	setCurrentEnterUser: Dispatch<SetStateAction<PublicUserData | null>>;
+	setToggleTasks: Dispatch<SetStateAction<boolean>>;
+	debounceRef: MutableRefObject<boolean>;
+}
 
 export interface MentionHoverProps {
 	mentionedUser: PublicUserData;
@@ -45,7 +64,9 @@ export type MarkActives = {
 	isItalicActive: () => boolean;
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
+	isUnderlineActive: () => boolean;
 	isMentionActive: () => boolean;
+	isTaskActive: () => boolean;
 };
 
 export type CustomElementAttributes = Omit<
@@ -69,6 +90,8 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 	mention?: boolean;
+	underline?: boolean;
+	taskConfirm?: boolean;
 	mentionConfirm?: PublicUserData;
 };
 

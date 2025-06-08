@@ -117,9 +117,9 @@ export const Hero = ({ title, description, cta }: HeroProps) => {
 					<ArrowRight className="h-3 w-3 stroke-[1px] text-foreground transition-transform duration-200 group-hover:translate-x-1 dark:text-muted-dark" />
 				</Button>
 			</motion.div>
-			<div className="relative mt-20 rounded-[32px] border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
+			<div className="relative mt-20 rounded-[32px] border border-neutral-accent bg-neutral-secondary p-4 dark:border-neutral-accent dark:bg-neutral-secondary">
 				<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full scale-[1.1] bg-linear-to-b from-transparent via-white to-white dark:via-background dark:to-background" />
-				<div className="rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+				<div className="rounded-[24px] border border-neutral-accent bg-white p-2 dark:border-neutral-accent dark:bg-black">
 					{mounted && (
 						<Image
 							src={

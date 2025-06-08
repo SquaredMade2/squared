@@ -10,20 +10,34 @@ export function MembersPage({
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	team?: Team | null;
 }) {
-	const { memberships } = useOrganization({
+	const { membership, memberships } = useOrganization({
 		memberships: {
 			infinite: true,
 			pageSize: 100,
 		},
 	});
-	const users = memberships?.data?.map((membership) => ({
-		...membership.publicUserData,
-		role: membership.role,
-	}));
+	const users = memberships?.data
+		?.map(
+			(membership) =>
+				membership.publicUserData && {
+					...membership.publicUserData,
+					role: membership.role,
+				},
+		)
+		.filter((user): user is MemberWithRole => Boolean(user));
+
+	const hasMembershipManagePermission = membership?.permissions.includes(
+		"org:sys_memberships:manage",
+	);
 	return (
 		<>
 			{users && users.length > 0 && (
-				<DataTable columns={columns} data={users} team={team ? team : null} />
+				<DataTable
+					columns={columns}
+					data={users}
+					team={team ? team : null}
+					membershipManagementPermission={hasMembershipManagePermission}
+				/>
 			)}
 		</>
 	);

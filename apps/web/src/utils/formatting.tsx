@@ -1,4 +1,3 @@
-import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import type { PublicUserData } from "@clerk/types";
@@ -151,54 +150,6 @@ export const formatPriority = (priority: Priority) => {
 // return links;
 // };
 
-export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
-	const arrOfFormattedLines = slateArr.map((line) => {
-		// each formatted line/row
-		const formattedLine = [];
-
-		// if there is a formatted piece of text (this is for each subline of each row)
-		if ("children" in line) {
-			// for every leaf, or subtext that has format, format them as MDX
-			const allLeafs = line.children.map((leaf) => {
-				if (leaf.url) {
-					return `[${leaf.text}](${leaf.url})`;
-				}
-				if (leaf.mentionConfirm) {
-					return `<MentionHover mentionedUser={${JSON.stringify(leaf.mentionConfirm)}} />`;
-				}
-
-				// input mentionConfirms
-				// helper vars
-				const returnBoldMarks = leaf.bold ? "**" : "";
-				const returnItalicMarks = leaf.italic ? "*" : "";
-				const returnCodeMarks = leaf.code ? "```" : "";
-				// add new marks here, needs both left and right bc future might need them
-				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
-				const rightSurrounderMark = leftSurrounderMark;
-				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
-			});
-
-			// Handle current block/row (each row can only have one block)
-			const returnHeaderBlock = line.type === "header" ? "### " : "";
-			const leftSurrounderBlock = `${returnHeaderBlock}`;
-			// will need below for future formatting
-			const rightSurrounderBlock = `${""}`;
-			formattedLine.push(
-				`${leftSurrounderBlock}${allLeafs.join("")}${rightSurrounderBlock}`,
-			);
-		} else {
-			formattedLine.push(line.text);
-		}
-
-		return formattedLine.join("");
-	});
-
-	return arrOfFormattedLines.join("\n");
-};
-
-// TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
-// export const handleFormatCommentToSlate = (commentStr) => {
-// };
 export const formatFilterName = async (
 	filter: FilterCondition,
 	labels: Label[],

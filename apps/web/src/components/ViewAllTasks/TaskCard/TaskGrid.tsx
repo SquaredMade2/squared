@@ -138,7 +138,11 @@ const TaskGrid = ({
 
 						{showLabels && <TaskCardLabels labels={taskLabels} />}
 					</div>
-					{isDisabled && <span className="text-muted-foreground">BLOCKED</span>}
+					{isDisabled && (
+						<span className="inline-block w-full text-end text-muted-foreground">
+							BLOCKED
+						</span>
+					)}
 				</CardContent>
 			</Card>
 		</Link>

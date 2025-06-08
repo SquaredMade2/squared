@@ -3,11 +3,8 @@ import {
 	clearCurrentLeafContent,
 	getMentionFromLeaf,
 	injectMentionConfirm,
-	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
-import { Button } from "@squaredmade/ui/button";
-import { cn } from "@squaredmade/ui/cn";
 import { toast } from "@squaredmade/ui/toast";
 import {
 	type KeyboardEvent,
@@ -25,6 +22,7 @@ import type {
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
 import TextEditorMentions from "./Menus/TextEditorMentions";
+import TextEditorTasks from "./Menus/TextEditorTasks";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
@@ -45,7 +43,7 @@ declare module "slate" {
 	}
 }
 
-const initialValue: CustomDescendant[] = [
+export const initialEditorValue: CustomDescendant[] = [
 	{
 		type: "paragraph",
 		children: [{ text: "" }],
@@ -57,43 +55,50 @@ const defaultSelectionRange = {
 	focus: { path: [0, 0], offset: 0 },
 };
 
-const TextEditor = ({ addAction }: TextEditorProps) => {
+const TextEditor = ({
+	placeholder,
+	style,
+	onBlur,
+	onFocus,
+	onChange,
+	value = initialEditorValue,
+	hasToolbar = true,
+}: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
-	// Holding current content in editor
-	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
 
 	const [toggleMentions, setToggleMentions] = useState(false);
+	const [toggleTask, setToggleTask] = useState(false);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	// Mention search filter
 	const [mentionsFilter, setMentionsFilter] = useState("");
 	const [currentEnterUser, setCurrentEnterUser] =
 		useState<PublicUserData | null>(null);
+	const [editorValue, setEditorValue] = useState<CustomDescendant[]>(value);
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
 
-	// Functions
-	function handleSubmitEditor() {
+	useEffect(() => {
+		setEditorValue(value);
+	}, [value]);
+
+	useEffect(() => {
 		if (checkIfSlateEmpty(editor)) {
-			setEditorContent([]);
-			editor.children = initialValue;
+			editor.children = initialEditorValue;
 			Transforms.select(editor, defaultSelectionRange);
 			return;
 		}
 
-		addAction(editorContent);
+		if (editorValue.length === 0 || editorValue === initialEditorValue) {
+			editor.children = initialEditorValue;
+			Transforms.select(editor, defaultSelectionRange);
+		}
+	}, [editorValue]);
 
-		// reset editor
-
-		setEditorContent([]);
-		editor.children = initialValue;
-		Transforms.select(editor, defaultSelectionRange);
-	}
-
-	const handleMentionKeyUp = (event: KeyboardEvent) => {
-		if (event.key === "@") {
+	const handleCharKeyUp = (event: KeyboardEvent) => {
+		if (event.key === "@" || event.key === "#") {
 			const selection = window.getSelection();
 			if (!selection) {
 				setPosition({ x: 0, y: 0 });
@@ -178,12 +183,16 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 				return "isBoldActive";
 			case "italic":
 				return "isItalicActive";
+			case "underline":
+				return "isUnderlineActive";
 			case "code":
 				return "isCodeActive";
 			case "mention":
 				return "isMentionActive";
 			case "mentionConfirm":
 				return "isMentionConfirmActive";
+			case "taskConfirm":
+				return "isTaskActive";
 			case "url":
 				return "isLinkActive";
 		}
@@ -200,9 +209,11 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 	const useEditorMarks = () => ({
 		isBoldActive: () => isMarkActive("bold"),
 		isItalicActive: () => isMarkActive("italic"),
+		isUnderlineActive: () => isMarkActive("underline"),
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
 		isMentionActive: () => isMarkActive("mention"),
+		isTaskActive: () => isMarkActive("taskConfirm"),
 		isMentionConfirmActive: () => isMarkActive("mentionConfirm"),
 	});
 
@@ -217,6 +228,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
 		//     ctrl <something>, you dont want to add the character <something> in while doing a shortcut
 		// !!!
+		handleCommandComponentOnKey(e.key);
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
 		if (isMarkActive("url")) {
@@ -225,6 +237,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		if (isMarkActive("mentionConfirm") && e.key !== "Backspace") {
 			Editor.removeMark(editor, "mentionConfirm");
 		}
+
 		switch (e.key) {
 			// Element Blocks
 
@@ -249,6 +262,11 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 
 			case "@": {
 				createLeaf("mention", true);
+				break;
+			}
+
+			case "#": {
+				createLeaf("taskConfirm", true);
 				break;
 			}
 
@@ -281,6 +299,13 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 				if (e[universalHotKey]) {
 					e.preventDefault();
 					createLeaf("italic");
+				}
+				break;
+			}
+			case "u": {
+				if (e[universalHotKey]) {
+					e.preventDefault();
+					createLeaf("underline");
 				}
 				break;
 			}
@@ -321,7 +346,7 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 		};
 	}, []);
 
-	useEffect(() => {
+	function handleCommandComponentOnKey(key: string) {
 		const deleteEntireMention = () => {
 			if (useEditorMarks().isMentionActive()) {
 				clearCurrentLeafContent(editor);
@@ -337,41 +362,56 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 			debounceRef.current = false;
 			return;
 		}
-		isValidMentionBlock(editor) ? allowEntireMention() : deleteEntireMention();
+		if ("@" === key) {
+			allowEntireMention();
+		} else {
+			deleteEntireMention();
+		}
 		if (toggleMentions) {
 			setMentionsFilter(getMentionFromLeaf(editor));
 		}
-	}, [editor.selection]);
+
+		setToggleTask("#" === key);
+	}
 
 	return (
 		<Slate
 			editor={editor}
-			initialValue={initialValue}
-			onChange={(newValue) => setEditorContent(newValue)}
+			initialValue={editorValue}
+			onChange={(newValue) => {
+				setEditorValue(newValue);
+				onChange?.(newValue); // Optional external onChange handler
+			}}
 		>
-			<div className="markdown-content" onKeyUp={handleMentionKeyUp}>
+			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
 				<div
-					className={cn(
-						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-					)}
+					className={
+						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+					}
 				>
-					<TextEditorToolBar
-						// Leafs
+					{hasToolbar && (
+						<TextEditorToolBar
+							// Leafs
 
-						createLeaf={createLeaf}
-						markActiveChecks={useEditorMarks()}
-						injectLinkContent={injectLinkContent}
-						// Blocks
-						createHeaderBlock={createHeaderBlock}
-						isHeaderBlock={isHeaderBlock()}
-						// Others
-						selection={editor.selection}
-					/>
+							createLeaf={createLeaf}
+							markActiveChecks={useEditorMarks()}
+							injectLinkContent={injectLinkContent}
+							// Blocks
+							createHeaderBlock={createHeaderBlock}
+							isHeaderBlock={isHeaderBlock()}
+							// Others
+							selection={editor.selection}
+						/>
+					)}
 					<div ref={editorRef}>
 						<Editable
+							placeholder={placeholder || ""}
+							onBlur={onBlur}
+							onFocus={onFocus}
 							onKeyDown={handleSetEditorContent}
 							renderLeaf={renderLeaf}
 							renderElement={renderElement}
+							style={style}
 							className="min-h-[160px] w-full px-3 py-4"
 						/>
 					</div>
@@ -389,12 +429,15 @@ const TextEditor = ({ addAction }: TextEditorProps) => {
 				/>
 			)}
 
-			<Button
-				onClick={handleSubmitEditor}
-				className={`m-5 ml-auto ${checkIfSlateEmpty(editor) && "bg-muted text-muted-foreground hover:bg-muted"}`}
-			>
-				Confirm
-			</Button>
+			{toggleTask && (
+				<TextEditorTasks
+					cursorPosition={position}
+					editor={editor}
+					setCurrentEnterUser={setCurrentEnterUser}
+					setToggleTasks={setToggleTask}
+					debounceRef={debounceRef}
+				/>
+			)}
 		</Slate>
 	);
 };

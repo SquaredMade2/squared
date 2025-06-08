@@ -1,5 +1,7 @@
+import { sql } from "drizzle-orm";
 import {
 	boolean,
+	check,
 	foreignKey,
 	index,
 	integer,
@@ -287,19 +289,16 @@ export const workspacesTable = pgTable(
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		labels: jsonb().$type<Label[]>().default(DEFAULT_LABELS).notNull(),
 		inviteLinks: jsonb().$type<WorkspaceInviteLink[]>().default([]).notNull(),
-		archiveConfig: jsonb()
-			.$type<ArchiveConfig>()
-			.default({
-				enabled: false,
-				daysUntilArchive: 30,
-				lastArchiveRun: null,
-			})
-			.notNull(),
+		daysUntilArchive: integer().default(14).notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
 			"btree",
 			table.url.asc().nullsLast().op("text_ops"),
+		),
+		check(
+			"daysUntilArchive_check",
+			sql`${table.daysUntilArchive} >= 3 AND ${table.daysUntilArchive} <= 30`,
 		),
 	],
 );
@@ -727,11 +726,6 @@ export type Label = {
 	name: string;
 	description?: string | null;
 	color: string;
-};
-export type ArchiveConfig = {
-	enabled: boolean;
-	daysUntilArchive: number;
-	lastArchiveRun: Date | null;
 };
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Project = typeof projectsTable.$inferSelect;

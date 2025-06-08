@@ -1,3 +1,7 @@
+import {
+	convertMDXToSlate,
+	convertSlateToMDX,
+} from "@/components/TextEditor/format";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
@@ -6,12 +10,15 @@ import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
-import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { StatusIcon } from "../Icons";
+import TextEditor, {
+	type CustomDescendant,
+	type CustomElement,
+} from "../TextEditor";
 
 export const TaskPageForm = () => {
 	const { organization } = useOrganization();
@@ -25,10 +32,15 @@ export const TaskPageForm = () => {
 	const queryClient = useQueryClient();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
-	const [updatedDescription, setUpdatedDescription] = useState(
-		task?.description ?? null,
-	);
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
+	const [updatedDescription, setUpdatedDescription] = useState<
+		CustomDescendant[]
+	>(convertMDXToSlate(task?.description ?? ""));
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+
+	const isElement = (node: CustomDescendant): node is CustomElement => {
+		return "children" in node;
+	};
 
 	const parentTask = tasks.find((t) => t.id === task?.parentId);
 
@@ -44,7 +56,6 @@ export const TaskPageForm = () => {
 		onSuccess: async (updatedTask) => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
-
 			const updatedEvents = await client.event.getEvents
 				.$get({
 					taskId: updatedTask.id,
@@ -63,25 +74,29 @@ export const TaskPageForm = () => {
 	});
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setUpdatedTitle(e.target.value);
+		const newValue = e.target.value.slice(0, 50);
+		setUpdatedTitle(newValue);
 	};
-
-	const handleDescriptionChange = (
-		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-	) => {
-		setUpdatedDescription(event.target.value);
+	const handleDescriptionChange = (event: CustomDescendant[]) => {
+		setUpdatedDescription(event);
 	};
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
+		setIsEditingTitle(false);
 		setIsDescriptionFocused(false);
 		const { transformedInput: transformedTitleInput } =
 			transformingMentionInputs(updatedTitle);
+
+		const updatedDescriptionString =
+			convertSlateToMDX(updatedDescription as CustomElement[]) || "";
+
 		const { transformedInput: transformedDescriptionInput } =
-			transformingMentionInputs(updatedDescription ?? "");
+			transformingMentionInputs(updatedDescriptionString);
 
 		const changeMade =
-			updatedTitle !== task?.title || updatedDescription !== task?.description;
+			updatedTitle !== task?.title ||
+			updatedDescriptionString !== task?.description;
 		if (changeMade && task?.id) {
 			updateTaskMutation.mutate({
 				title: transformedTitleInput,
@@ -94,12 +109,14 @@ export const TaskPageForm = () => {
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
 			<div className="space-y-2">
 				<Input
-					className="mt-2 rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-hidden"
+					className="mt-2 truncate rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-hidden"
 					value={updatedTitle}
 					onChange={handleTitleChange}
 					onBlur={handleSubmit}
+					onFocus={() => setIsEditingTitle(true)}
 					placeholder="Title"
 					name="title"
+					maxLength={50}
 					style={{
 						border: "none",
 						boxShadow: "none",
@@ -108,6 +125,13 @@ export const TaskPageForm = () => {
 						minHeight: "1.2em",
 					}}
 				/>
+
+				<p
+					className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isEditingTitle && "opacity-100"}`}
+				>
+					{updatedTitle.length ?? 0} / 50
+				</p>
+
 				{parentTask && (
 					<div className="flex items-center gap-1 text-muted-foreground text-sm">
 						Subtask of
@@ -126,15 +150,17 @@ export const TaskPageForm = () => {
 					</div>
 				)}
 			</div>
-			<Textarea
-				className="mt-2 mb-2 min-h-40 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
-				placeholder={"Add description..."}
+
+			<TextEditor
+				value={updatedDescription.filter(
+					(item) => isElement(item) && item.children.length > 0,
+				)}
 				onChange={handleDescriptionChange}
-				value={updatedDescription ?? ""}
-				name={"editDescription"}
+				placeholder="Add description..."
 				onBlur={handleSubmit}
-				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
 				onFocus={() => setIsDescriptionFocused(true)}
+				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
+				hasToolbar={false}
 			/>
 		</form>
 	);

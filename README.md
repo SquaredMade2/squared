@@ -1,66 +1,143 @@
-# Turborepo Docker starter
+# Squared
 
-This is the official Squared Repo
+Squared is a comprehensive task management and team collaboration platform designed to streamline project workflows, team communication, and task tracking.
 
-## Using this example
+## Project Overview
 
-Run the following command:
+This is a monorepo containing the following applications and services:
 
-```sh
-npx create-turbo@latest -e with-docker
-```
+### Apps
 
-## What's inside?
+- `web`: A Next.js application providing the main user interface for task management and team collaboration.
+- `api`: An Express-based backend service handling data processing, authentication, and business logic.
+- `webhooks`: A Go service for handling webhook integrations (GitHub, etc.).
+- `www`: A marketing website and documentation built with Next.js.
 
-This Turborepo includes the following:
+## Technology Stack
 
-### Apps and Packages
+- **Frontend**: React with Next.js
+- **Backend**: Express (Node.js), Go (webhooks)
+- **Database**: PostgreSQL (implied from DB scripts)
+- **State Management**: Zustand
+- **Build System**: Turborepo
+- **Package Manager**: pnpm
+- **Testing**: Jest
+- **Linting/Formatting**: Biome
+- **CI/CD**: Supports Docker containerization
 
-- `web`: a [Next.js](https://nextjs.org/) app
-- `api`: an [Express](https://expressjs.com/) server
-- `@squaredmade/ui`: a React component library
-- `@squaredmade/logger`: Isomorphic logger (a small wrapper around console.log)
-- `@squaredmade/typescript-config`: tsconfig.json's used throughout the monorepo
+## Key Features
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- User authentication and authorization
+- Workspace management
+- Task tracking and updates
+- Team collaboration tools
+- Sprint planning and management
+- GitHub integration
+- Real-time notifications
 
-### Docker
+## Getting Started
 
-This repo is configured to be built with Docker, and Docker compose. To build all apps in this repo:
+### Prerequisites
 
-```
+- Node.js (>=23.0.0)
+- pnpm (>=10.11.0)
+- Docker and Docker Compose (for containerized development)
+- Go (for webhooks service)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/SquaredMade2/squared.git
+   cd squared
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+3. Set up environment variables:
+   - Copy `.env.example` to `.env` (if available) and fill in the required values
+
+4. Initialize the database (if using Docker):
+
+   ```bash
+   pnpm docker:db:init
+   ```
+
+5. Start the development server:
+
+   ```bash
+   pnpm dev
+   ```
+
+### Docker Setup
+
+This repo is configured to be built with Docker and Docker Compose:
+
+```bash
 # Create a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
 docker network create app_network
 
-# Build prod using new BuildKit engine
-COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
+# Build using Docker BuildKit
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
-# Start prod in detached mode
-docker-compose -f docker-compose.yml up -d
+# Start in detached mode
+docker-compose up -d
 ```
 
-Open <http://localhost:3000>.
+Access the web application at <http://localhost:3000> and the API at <http://localhost:5173>.
 
-To shutdown all running containers:
+## Development
 
+### Available Scripts
+
+- `pnpm dev`: Start all services in development mode
+- `pnpm build`: Build all packages and applications
+- `pnpm test`: Run tests across all packages
+- `pnpm lint`: Run linting across all packages
+- `pnpm format:write`: Format code using Biome
+- `pnpm check-types`: Run TypeScript type checking
+
+For application-specific commands:
+
+- `pnpm test:api`: Run API tests
+- `pnpm test:web`: Run web application tests
+- `pnpm storybook`: Start Storybook for UI components
+
+### Database Management
+
+- `pnpm db:migrate`: Run database migrations
+- `pnpm db:push`: Push schema changes to the database
+- `pnpm db:gen`: Generate database client
+- `pnpm docker:db:seed`: Seed the database with initial data
+
+## Project Structure
+
+```sh
+squared/
+├── apps/
+│   ├── api/              # Backend API service
+│   ├── web/              # Main web application
+│   ├── webhooks/         # Go service for webhooks
+│   └── www/              # Marketing website
+├── packages/             # Shared packages and libraries
+├── docker-compose.yml    # Docker configuration
+├── turbo.json            # Turborepo configuration
+└── package.json          # Root package.json
 ```
-# Stop all running containers
-docker kill $(docker ps -q) && docker rm $(docker ps -a -q)
-```
 
-### Remote Caching
+## Architecture
 
-This example includes optional remote caching. In the Dockerfiles of the apps, uncomment the build arguments for `TURBO_TEAM` and `TURBO_TOKEN`. Then, pass these build arguments to your Docker build.
+The project follows a monorepo structure using Turborepo for build orchestration and pnpm for package management. Each application can be developed and deployed independently while sharing common packages and configurations.
 
-You can test this behavior using a command like:
+## Contributing
 
-`docker build -f apps/web/Dockerfile . --build-arg TURBO_TEAM=“your-team-name” --build-arg TURBO_TOKEN=“your-token“ --no-cache`
+Please follow the existing code style and patterns when contributing. The project uses Biome for formatting and linting, and Husky for Git hooks to ensure code quality.
 
-### Utilities
+## License
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+[Include license information here]

@@ -1,6 +1,7 @@
 import { composeEventHandlers } from "@squaredmade/ui/compose-events";
 import { useComposedRefs } from "@squaredmade/ui/compose-refs";
 import { type Scope, createContextScope } from "@squaredmade/ui/context";
+import { DismissableLayer } from "@squaredmade/ui/dismissable-layer";
 import {
 	Popper,
 	PopperAnchor,
@@ -16,7 +17,6 @@ import { useControllableState } from "@squaredmade/ui/use-controllable-state";
 import { useId } from "@squaredmade/ui/use-id";
 import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import * as React from "react";
-import { DismissableLayer } from "src/lib/dismissable-layer";
 
 import { cn } from "@squaredmade/ui/cn";
 
@@ -195,13 +195,12 @@ const Tooltip: React.FC<TooltipProps> = (props: ScopedProps<TooltipProps>) => {
 		disableHoverableContentProp ?? providerContext.disableHoverableContent;
 	const delayDuration = delayDurationProp ?? providerContext.delayDuration;
 	const wasOpenDelayedRef = React.useRef(false);
-	const [open = false, setOpen] = useControllableState({
+	const [open, setOpen] = useControllableState({
 		prop: openProp,
-		defaultProp: defaultOpen,
+		defaultProp: defaultOpen ?? false,
 		onChange: (open) => {
 			if (open) {
 				providerContext.onOpen();
-
 				// as `onChange` is called within a lifecycle method we
 				// avoid dispatching via `dispatchDiscreteCustomEvent`.
 				document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
@@ -210,6 +209,7 @@ const Tooltip: React.FC<TooltipProps> = (props: ScopedProps<TooltipProps>) => {
 			}
 			onOpenChange?.(open);
 		},
+		caller: TOOLTIP_NAME,
 	});
 	const stateAttribute = React.useMemo(() => {
 		return open

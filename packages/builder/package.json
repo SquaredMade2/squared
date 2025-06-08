@@ -21,15 +21,14 @@
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"scripts": {
-		"build": "ts-node ./build.ts",
+		"build": "bun ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist"
 	},
 	"devDependencies": {
-		"@squaredmade/logger": "^1.0.0",
 		"@squaredmade/typescript-config": "^1.0.0",
 		"@types/node": "^22.10.10",
-		"ts-node": "^10.9.2",
+		"rimraf": "^6.0.1",
 		"typescript": "^5.8.2"
 	},
 	"dependencies": {

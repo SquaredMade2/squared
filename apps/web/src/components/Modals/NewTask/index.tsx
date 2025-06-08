@@ -1,5 +1,11 @@
 "use client";
 
+import TextEditor, {
+	initialEditorValue,
+	type CustomDescendant,
+	type CustomElement,
+} from "@/components/TextEditor";
+import { convertSlateToMDX } from "@/components/TextEditor/format";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
@@ -19,6 +25,7 @@ import {
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -27,10 +34,10 @@ import {
 import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
-import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -43,9 +50,12 @@ export * from "./NewTaskButton";
 export * from "./NewTaskCollapsible";
 
 const formSchema = z.object({
-	title: z.string().min(2, {
-		message: "Title must be at least 2 characters.",
-	}),
+	title: z
+		.string()
+		.min(2, {
+			message: "Title must be at least 2 characters.",
+		})
+		.max(50, { message: "Title must be 50 characters or less." }),
 	description: z.string().optional(),
 });
 
@@ -58,6 +68,9 @@ export const NewTaskModal = () => {
 	const { createTask, isLoading } = useCreateTask();
 	const { team, setTeams, setTeam } = useTeamStore((state) => state);
 	const { organization } = useOrganization();
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
+	const [editorDescription, setEditorDescription] =
+		useState<CustomDescendant[]>(initialEditorValue);
 
 	const {
 		status,
@@ -77,6 +90,8 @@ export const NewTaskModal = () => {
 			description: "",
 		},
 	});
+
+	const titleValue = form.watch("title");
 
 	useEffect(() => {
 		if (title) form.setValue("title", title);
@@ -99,7 +114,8 @@ export const NewTaskModal = () => {
 
 		const createTaskParams = {
 			title: values.title,
-			description: values.description,
+			description:
+				convertSlateToMDX(editorDescription as CustomElement[]) || "",
 			status: status || "backlog",
 			priority: priority || "noPriority",
 			labels: labels || [],
@@ -111,10 +127,19 @@ export const NewTaskModal = () => {
 		};
 
 		createTask(createTaskParams, {
-			onSuccess: () => {
-				toast.success("Task Created Successfully");
+			onSuccess: ({ url }) => {
+				toast.success("Task Created Successfully", {
+					description: (
+						<Link href={url} passHref>
+							<Button variant="link" className="m-0 p-0">
+								Go to task
+							</Button>
+						</Link>
+					),
+				});
 				setShowNewTask(false);
 				setNewTaskData({});
+				setEditorDescription(initialEditorValue);
 				form.reset();
 			},
 			onError: (error) => {
@@ -130,9 +155,7 @@ export const NewTaskModal = () => {
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization.id,
-				})
+				.$get()
 				.then((res) => res.json());
 			setTeams(teams);
 			setTeam(teams[0]);
@@ -163,32 +186,41 @@ export const NewTaskModal = () => {
 										<FormControl>
 											<Input
 												{...field}
+												autoFocus
 												placeholder="Title"
 												className="text-md"
+												onFocus={() => setIsEditingTitle(true)}
+												onBlur={() => setIsEditingTitle(false)}
+												maxLength={50}
 											/>
 										</FormControl>
+										<FormDescription
+											className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isEditingTitle && "opacity-100"}`}
+										>
+											{titleValue?.length ?? 0} / 50
+										</FormDescription>
 									</FormItem>
 								)}
 							/>
 							<FormField
 								control={form.control}
 								name="description"
-								render={({ field }) => (
+								render={() => (
 									<FormItem>
 										<FormLabel className="text-xl">Description</FormLabel>
 										<FormControl>
-											<Textarea
-												{...field}
+											<TextEditor
+												hasToolbar={false}
 												placeholder="Add Description"
-												className="resize-none text-md"
-												rows={4}
+												value={editorDescription}
+												onChange={setEditorDescription}
 											/>
 										</FormControl>
 									</FormItem>
 								)}
 							/>
 							{upcomingSprints.length === 0 && activeSprint && (
-								<div className="flex items-center gap-2">
+								<div className="mt-4 flex items-center gap-2">
 									<Checkbox
 										checked={activeSprint.id === newTaskData.sprintId}
 										onCheckedChange={(checked) =>

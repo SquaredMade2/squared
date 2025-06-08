@@ -1,4 +1,5 @@
 import { useModalStore } from "@/store";
+import { Protect } from "@clerk/nextjs";
 import type { Label } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
@@ -6,6 +7,7 @@ import { Table, TableBody, TableCell, TableRow } from "@squaredmade/ui/table";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type VisibilityState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -16,8 +18,20 @@ import { useState } from "react";
 export function DataTable({
 	columns,
 	data,
-}: { columns: ColumnDef<Label, unknown>[]; data: Label[] }) {
+	workspaceManagePermission,
+}: {
+	columns: ColumnDef<Label, unknown>[];
+	data: Label[];
+	workspaceManagePermission: boolean | undefined;
+}) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		Object.fromEntries(
+			columns
+				.filter((column) => column.id)
+				.map((column) => [column.id, Boolean(workspaceManagePermission)]),
+		),
+	);
 	const [searchTerm, setSearchTerm] = useState("");
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
 
@@ -33,8 +47,9 @@ export function DataTable({
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		onColumnFiltersChange: setColumnFilters,
+		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
-		state: { columnFilters },
+		state: { columnFilters, columnVisibility },
 	});
 
 	return (
@@ -48,14 +63,16 @@ export function DataTable({
 						className="max-w-xs"
 					/>
 					<div className="flex items-center justify-center gap-2">
-						<Button
-							onClick={() => {
-								setShowLabelModal(true);
-								setLabelData({});
-							}}
-						>
-							Add New Label
-						</Button>
+						<Protect permission="org:sys_profile:manage">
+							<Button
+								onClick={() => {
+									setShowLabelModal(true);
+									setLabelData({});
+								}}
+							>
+								Add New Label
+							</Button>
+						</Protect>
 					</div>
 				</div>
 				<Table>

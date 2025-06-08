@@ -62,9 +62,7 @@ function SidebarContent() {
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
-				.$get({
-					workspaceId: organization?.id,
-				})
+				.$get()
 				.then((res) => res.json());
 			setTeams(teams);
 			return teams;
@@ -88,7 +86,10 @@ function SidebarContent() {
 	};
 
 	return (
-		<>
+		<Sidebar
+			collapsible="icon"
+			className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+		>
 			<SidebarHeader
 				className={`space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
 			>
@@ -155,7 +156,7 @@ function SidebarContent() {
 				/>
 				<UserProfile onLogout={handleLogout} />
 			</SidebarFooter>
-		</>
+		</Sidebar>
 	);
 }
 
@@ -163,12 +164,7 @@ export function SidebarNav() {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<SidebarProvider className={"relative"}>
-				<Sidebar
-					collapsible="icon"
-					className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
-				>
-					<SidebarContent />
-				</Sidebar>
+				<SidebarContent />
 				<ToggleSidebarButton />
 			</SidebarProvider>
 		</TooltipProvider>
@@ -217,15 +213,17 @@ function IconButton({
 				size={state === "expanded" ? "sm" : "icon"}
 				aria-label={label}
 				onClick={onClick}
-				className="relative w-full justify-start"
+				className="relative w-full justify-between px-3"
 			>
-				<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-				<span className="ml-2 w-auto opacity-100 transition-all duration-300">
-					{label}
-				</span>
+				<div className="flex items-center">
+					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+					<span className="ml-2 w-auto opacity-100 transition-all duration-300">
+						{label}
+					</span>
+				</div>
 				{!!(notificationCount && notificationCount > 0) && (
 					<div
-						className="absolute top-3 right-3 h-2 w-2 rounded-full bg-primary"
+						className=" h-2 w-2 rounded-full bg-primary"
 						aria-hidden="true"
 					/>
 				)}

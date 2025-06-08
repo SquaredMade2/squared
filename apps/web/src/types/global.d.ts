@@ -1,3 +1,7 @@
+import type {
+	Autocomplete,
+	OrganizationSystemPermissionKey,
+} from "@clerk/types";
 // biome-ignore lint/correctness/noUnusedImports: We are definitely using it
 import type { jest } from "@jest/globals";
 import "@tanstack/react-table";
@@ -19,9 +23,9 @@ declare global {
 			clear: jest.MockedFunction<() => void>;
 		};
 	}
-
 	interface ClerkAuthorization {
-		role: "org:admin" | "org:member" | "org:owner";
+		role: "org:admin" | "org:member";
+		permissions: Autocomplete<OrganizationSystemPermissionKey | string[]>;
 	}
 }
 

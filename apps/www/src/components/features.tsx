@@ -16,20 +16,22 @@ export const Features = () => {
 				"Keep track of what's getting done and what you have to do next.",
 			skeleton: <SkeletonOne />,
 			className:
-				"col-span-1 md:col-span-4 border-b border-r dark:border-neutral-800",
+				"col-span-1 md:col-span-4 border-b border-r dark:border-neutral-secondary",
 		},
 		{
 			title: "Get notified of what your team is doing",
 			description:
 				"Get automatic notifications sent to your inbox so you know exactly what's happening.",
 			skeleton: <SkeletonTwo />,
-			className: "border-b col-span-1 md:col-span-2 dark:border-neutral-800",
+			className:
+				"border-b col-span-1 md:col-span-2 dark:border-neutral-secondary",
 		},
 		{
 			title: "An engaging task tracking interface",
 			description: "We make it easy to create and assign tasks to your team.",
 			skeleton: <SkeletonThree />,
-			className: "col-span-1 md:col-span-3 border-r dark:border-neutral-800",
+			className:
+				"col-span-1 md:col-span-3 border-r dark:border-neutral-secondary",
 		},
 		{
 			title: "All the integrations you need",

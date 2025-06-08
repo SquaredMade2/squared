@@ -6,12 +6,12 @@ export const Badge: React.FC<
 	return (
 		<button
 			{...props}
-			className="group relative mx-auto inline-block w-fit cursor-pointer rounded-full bg-neutral-50 p-px font-semibold text-[10px] text-neutral-700 leading-6 no-underline shadow-zinc-900 sm:text-xs md:shadow-2xl dark:bg-neutral-700 dark:text-neutral-300"
+			className="group relative mx-auto inline-block w-fit cursor-pointer rounded-full bg-neutral p-px font-semibold text-[10px] text-neutral-inverted-accent leading-6 no-underline shadow-secondary-foreground sm:text-xs md:shadow-2xl dark:bg-neutral-accent dark:shadow-background"
 		>
 			<span className="absolute inset-0 overflow-hidden rounded-full">
 				<span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 			</span>
-			<div className="relative z-10 flex items-center space-x-2 rounded-full bg-neutral-100 px-4 py-1.5 ring-1 ring-white/10 dark:bg-background-darkAccent ">
+			<div className="relative z-10 flex items-center space-x-2 rounded-full bg-neutral-secondary px-4 py-1.5 ring-1 ring-white/10 dark:bg-background-dark-accent">
 				<span>{children}</span>
 				<svg
 					fill="none"
@@ -30,7 +30,7 @@ export const Badge: React.FC<
 					/>
 				</svg>
 			</div>
-			<span className="-bottom-0 absolute left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-linear-to-r from-neutral-400/0 via-neutral-400/90 to-neutral-400/0 transition-opacity duration-500 group-hover:opacity-40" />
+			<span className="-bottom-0 absolute left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-linear-to-r from-muted/0 via-muted/90 to-muted/0 transition-opacity duration-500 group-hover:opacity-40 dark:from-muted-foreground/0 dark:via-muted-foreground/90 dark:to-muted-foreground/0" />
 		</button>
 	);
 };

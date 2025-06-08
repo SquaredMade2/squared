@@ -7,13 +7,13 @@ export const Logo = ({ className }: { className?: string }) => {
 		<Link
 			href="/"
 			className={cn(
-				"relative z-20 mr-4 flex items-center justify-center space-x-2 px-2 py-1 font-normal text-black text-sm",
+				"relative z-20 mr-4 flex items-center justify-center space-x-2 px-2 py-1 font-normal text-sm",
 				className,
 			)}
 		>
 			<SquaredLogoDark />
 
-			<span className="font-medium text-black dark:text-white">Squared</span>
+			<span className="font-medium text-foreground">Squared</span>
 		</Link>
 	);
 };

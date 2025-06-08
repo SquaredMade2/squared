@@ -47,7 +47,7 @@ export function useTaskDashboard() {
 			setTasks(teamTasks);
 			return teamTasks;
 		},
-		enabled: !!team && !teamLoading && !workspaceLoading,
+		enabled: !!team?.id && !teamLoading && !workspaceLoading,
 	});
 
 	const allBlockedTaskIdsQuery = useQuery({
@@ -61,7 +61,7 @@ export function useTaskDashboard() {
 			setAllBlockedTaskIds(allIds);
 			return allIds;
 		},
-		enabled: !!team?.id,
+		enabled: !!team?.id && !teamLoading && !workspaceLoading,
 	});
 
 	const updateTaskMutation = useMutation({
@@ -141,7 +141,8 @@ export function useTaskDashboard() {
 		teamLoading ||
 		workspaceLoading ||
 		allBlockedTaskIdsQuery.isLoading ||
-		isLoading;
+		isLoading ||
+		!team?.id;
 	const error =
 		teamError ||
 		workspaceError ||

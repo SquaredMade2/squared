@@ -14,7 +14,6 @@ export default clerkMiddleware(
 	async (auth, request) => {
 		const url = new URL(request.url);
 		const pathSegments = url.pathname.split("/").filter(Boolean);
-
 		if (pathSegments[1] === "undefined" || pathSegments[3] === "undefined") {
 			return NextResponse.redirect(new URL("/", request.url));
 		}

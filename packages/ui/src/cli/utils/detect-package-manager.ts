@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-export type PackageManager = "npm" | "yarn" | "pnpm";
+export type PackageManager = "npm" | "yarn" | "pnpm" | "bun";
 
 /**
  * Detects the package manager being used in the current project
@@ -13,6 +13,7 @@ export async function detectPackageManager(): Promise<PackageManager> {
 	try {
 		// Check for lock files
 		const files = await fs.readdir(currentDir);
+		if (files.includes("bun.lock")) return "bun";
 		if (files.includes("pnpm-lock.yaml")) return "pnpm";
 		if (files.includes("yarn.lock")) return "yarn";
 		if (files.includes("package-lock.json")) return "npm";
@@ -24,7 +25,12 @@ export async function detectPackageManager(): Promise<PackageManager> {
 
 		if (packageJson.packageManager) {
 			const [name] = packageJson.packageManager.split("@");
-			if (name === "npm" || name === "yarn" || name === "pnpm") {
+			if (
+				name === "npm" ||
+				name === "yarn" ||
+				name === "pnpm" ||
+				name === "bun"
+			) {
 				return name as PackageManager;
 			}
 		}

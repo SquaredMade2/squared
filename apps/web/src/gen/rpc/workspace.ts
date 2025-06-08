@@ -12,14 +12,10 @@ export type CreateWorkspaceRequest = {
 
 export type CreateWorkspaceResponse = {
 	admins: string[];
-	archiveConfig: {
-		daysUntilArchive: number;
-		enabled: boolean;
-		lastArchiveRun: Date | null;
-	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
+	daysUntilArchive: number;
 	defaultView: string | null;
 	externalId: string;
 	id: string;
@@ -44,14 +40,10 @@ export type GetWorkspaceRequest = {
 
 export type GetWorkspaceResponse = {
 	admins: string[];
-	archiveConfig: {
-		daysUntilArchive: number;
-		enabled: boolean;
-		lastArchiveRun: Date | null;
-	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
+	daysUntilArchive: number;
 	defaultView: string | null;
 	externalId: string;
 	id: string;
@@ -76,14 +68,10 @@ export type GetWorkspaceByUrlRequest = {
 
 export type GetWorkspaceByUrlResponse = {
 	admins: string[];
-	archiveConfig: {
-		daysUntilArchive: number;
-		enabled: boolean;
-		lastArchiveRun: Date | null;
-	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
+	daysUntilArchive: number;
 	defaultView: string | null;
 	externalId: string;
 	id: string;
@@ -113,14 +101,10 @@ export type UpdateWorkspaceRequest = {
 
 export type UpdateWorkspaceResponse = {
 	admins: string[];
-	archiveConfig: {
-		daysUntilArchive: number;
-		enabled: boolean;
-		lastArchiveRun: Date | null;
-	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
+	daysUntilArchive: number;
 	defaultView: string | null;
 	externalId: string;
 	id: string;
@@ -149,14 +133,10 @@ export type GetUserWorkspacesRequest = {
 
 export type GetUserWorkspacesResponse = {
 	admins: string[];
-	archiveConfig: {
-		daysUntilArchive: number;
-		enabled: boolean;
-		lastArchiveRun: Date | null;
-	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
+	daysUntilArchive: number;
 	defaultView: string | null;
 	externalId: string;
 	id: string;
@@ -187,14 +167,10 @@ export type JoinWorkspaceRequest = {
 
 export type JoinWorkspaceResponse = {
 	admins: string[];
-	archiveConfig: {
-		daysUntilArchive: number;
-		enabled: boolean;
-		lastArchiveRun: Date | null;
-	};
 	avatarUrl: string | null;
 	companySize: number | null;
 	createdAt: Date;
+	daysUntilArchive: number;
 	defaultView: string | null;
 	externalId: string;
 	id: string;

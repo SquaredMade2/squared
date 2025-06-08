@@ -1,10 +1,9 @@
 import { TODO } from "@squaredmade/context";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { router } from "../__internals/router";
-import { publicProcedure } from "../procedures";
+import { j, publicProcedure } from "../jstack";
 
-export const authRouter = router({
+export const authRouter = j.router({
 	register: publicProcedure
 		.input(
 			z.object({

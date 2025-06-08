@@ -84,10 +84,11 @@ const TextEditorMentions = ({
 				<CommandGroup heading="Users" className="h-60 overflow-y-scroll pt-0">
 					{users
 						?.filter((user) =>
-							user.firstName
+							user?.firstName
 								?.toLowerCase()
 								.includes(mentionsFilter.slice(1).toLowerCase()),
 						)
+						.filter((user): user is PublicUserData => Boolean(user))
 						.map((user, index) => {
 							return (
 								<CommandItem

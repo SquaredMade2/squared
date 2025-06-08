@@ -1,6 +1,6 @@
 {
 	"name": "@squaredmade/icons",
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"exports": {
 		".": {
 			"import": {
@@ -17,18 +17,16 @@
 		"access": "public"
 	},
 	"scripts": {
-		"build": "ts-node generateIcons.ts && biome format --write ./components && node build.mjs",
+		"build": "bun ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"devDependencies": {
-		"@squaredmade/builder": "^1.0.1",
+		"@squaredmade/builder": "^1.0.2",
 		"@types/fs-extra": "^11.0.4",
-		"@types/node": "^22.10.10",
-		"@types/react": "19.1.2",
+		"@types/react": "19.1.4",
 		"fs-extra": "^11.2.0",
 		"glob": "^11.0.0",
-		"ts-node": "^10.9.2",
 		"typescript": "^5.6.2"
 	},
 	"peerDependencies": {

@@ -28,7 +28,7 @@ export const Heading = ({
 			className={cn(
 				"mx-auto max-w-5xl text-center text-3xl tracking-tight md:text-5xl md:leading-tight",
 				"font-medium",
-				"text-black dark:text-white",
+				"text-foreground",
 				sizeVariants[size],
 				className,
 			)}

@@ -1,3 +1,4 @@
+name: squared
 services:
   postgres:
     image: postgres:17
@@ -12,9 +13,10 @@ services:
       - POSTGRES_DB=squared-test
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 5s
 
   neon-proxy:
     image: ghcr.io/timowilhelm/local-neon-http-proxy:main
@@ -22,6 +24,14 @@ services:
       - PG_CONNECTION_STRING=postgres://postgres:postgres@postgres:5432/squared-test
     ports:
       - "4444:4444"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  pg-tools:
+    image: postgres:17
+    entrypoint: ["sh", "-c", "echo 'PostgreSQL tools container ready'; tail -f /dev/null"]
+    restart: "no"
     depends_on:
       postgres:
         condition: service_healthy
