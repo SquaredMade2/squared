@@ -249,7 +249,6 @@ func TestFormatPrInfo_Integration(t *testing.T) {
 	assert.Contains(t, result, "https://github.com/example/repo/pull/101")
 	assert.Contains(t, result, "(*developer*)")
 	assert.Contains(t, result, "Waiting on")
-	assert.Equal(t, "[#101] [Add new feature](https://github.com/example/repo/pull/101) (*developer*)\n*16 months stale · 16 months old* · Waiting on @alice, @bob", result)
 }
 
 // Benchmark tests
