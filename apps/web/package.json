@@ -52,7 +52,7 @@
 		"react-dom": "19.1.0",
 		"recharts": "^2.15.1",
 		"slate": "^0.114.0",
-		"slate-react": "^0.114.0",
+		"slate-react": "^0.115.0",
 		"socket.io-client": "^4.8.0",
 		"superjson": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
