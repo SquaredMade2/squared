@@ -8,7 +8,7 @@
 		"build:icons": "bun --filter=@squaredmade/icons run build",
 		"build:packages": "turbo run build --filter='./packages/*'",
 		"build:ui": "bun --filter=@squaredmade/ui run build",
-		"check-types": "turbo run check-types",
+		"tsc": "turbo run check-types",
 		"clean": "turbo run clean && rimraf node_modules",
 		"db:backup:staging": "bun --filter=db db:backup:staging",
 		"db:backup:prod": "bun --filter=db db:backup:prod",

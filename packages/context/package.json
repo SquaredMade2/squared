@@ -29,9 +29,9 @@
 	},
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.2",
-		"@squaredmade/typescript-config": "^1.0.0",
-		"@types/node": "^22.8.1",
-		"typescript": "^5.8.2",
-		"vitest": "^3.0.0"
+		"@squaredmade/typescript-config": "^1.0.2",
+		"@types/node": "^24.0.1",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.3"
 	}
 }
