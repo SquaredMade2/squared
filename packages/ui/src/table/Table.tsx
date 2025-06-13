@@ -1,5 +1,5 @@
+import { cn } from "@squaredmade/ui/cn";
 import * as React from "react";
-import { cn } from "src/cn/Cn";
 
 /**
  * Table component for displaying tabular data

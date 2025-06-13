@@ -3,6 +3,7 @@
 import ImageUpload from "@/components/ImageUpload";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
@@ -12,14 +13,13 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-	useForm,
 } from "@squaredmade/ui/form";
-import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { toast } from "@squaredmade/ui/toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -100,57 +100,64 @@ export default function Profile() {
 				<Separator />
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
 					<div className="md:col-span-2">
-						<Form {...form} onSubmit={onSubmit} className="space-y-6">
-							<div className="space-y-4">
-								<h2 className="font-semibold text-xl">Personal Information</h2>
-								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<Form {...form}>
+							<form
+								onSubmit={form.handleSubmit(onSubmit)}
+								className="space-y-6"
+							>
+								<div className="space-y-4">
+									<h2 className="font-semibold text-xl">
+										Personal Information
+									</h2>
+									<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+										<FormField
+											control={form.control}
+											name="firstName"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>First name</FormLabel>
+													<FormControl>
+														<Input {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="lastName"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Last name</FormLabel>
+													<FormControl>
+														<Input {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</div>
 									<FormField
 										control={form.control}
-										name="firstName"
+										name="username"
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>First name</FormLabel>
+												<FormLabel>Username</FormLabel>
 												<FormControl>
 													<Input {...field} />
 												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="lastName"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Last name</FormLabel>
-												<FormControl>
-													<Input {...field} />
-												</FormControl>
+												<FormDescription>
+													How you want to be called in Squared
+												</FormDescription>
 												<FormMessage />
 											</FormItem>
 										)}
 									/>
 								</div>
-								<FormField
-									control={form.control}
-									name="username"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Username</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormDescription>
-												How you want to be called in Squared
-											</FormDescription>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
-							<Button type="submit" disabled={isUpdating}>
-								{isUpdating ? "Updating..." : "Update Profile"}
-							</Button>
+								<Button type="submit" disabled={isUpdating}>
+									{isUpdating ? "Updating..." : "Update Profile"}
+								</Button>
+							</form>
 						</Form>
 					</div>
 					<div>

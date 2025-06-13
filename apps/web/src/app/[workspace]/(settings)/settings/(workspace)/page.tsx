@@ -6,6 +6,7 @@ import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -26,9 +27,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-	useForm,
 } from "@squaredmade/ui/form";
-import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import {
 	Select,
@@ -43,6 +42,7 @@ import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -206,6 +206,10 @@ export default function WorkspaceSettings() {
 
 	if (!organization) return null;
 
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		updateWorkspace(values);
+	};
+
 	return (
 		<div className="container mx-auto w-full py-10 md:w-3/4 ">
 			<h1 className="mb-2 font-bold text-3xl">Workspace</h1>
@@ -228,139 +232,141 @@ export default function WorkspaceSettings() {
 
 			<Separator className="my-6" />
 
-			<Form {...form} onSubmit={updateWorkspace} className="space-y-8">
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-					<FormField
-						control={form.control}
-						// TODO: Add this prop to the form component
-						// defaultValue={""}
-						name="name"
-						render={({ field }) => (
-							<FormItem className="col-span-1">
-								<FormLabel>Workspace Name</FormLabel>
-								<FormControl>
-									{hasDomainManagePermission ? (
-										<Input {...field} />
-									) : (
-										<div className="rounded-md border border-input px-3 py-2">
-											{organization?.name}
-										</div>
-									)}
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						// TODO: Add this prop to the form component
-						// defaultValue={""}
-						name="url"
-						render={({ field }) => (
-							<FormItem className="col-span-1">
-								<FormLabel>Workspace URL</FormLabel>
-								<FormControl>
-									<div className="flex">
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+						<FormField
+							control={form.control}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
+							name="name"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace Name</FormLabel>
+									<FormControl>
 										{hasDomainManagePermission ? (
-											<>
-												<span className="mr-0 inline-flex items-center rounded-l-md border border-input border-r-0 bg-transparent px-3 pr-0 text-muted-foreground text-sm">
-													https://app.squaredmade.com/
-												</span>
-												<Input
-													{...field}
-													className="ml-0 rounded-l-none border-l-0 pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-												/>
-											</>
+											<Input {...field} />
 										) : (
 											<div className="rounded-md border border-input px-3 py-2">
-												<p>
-													https://app.squaredmade.com/
-													{workspace?.url.replace(
-														"https://app.squaredmade.com/",
-														"",
-													)}
-												</p>
+												{organization?.name}
 											</div>
 										)}
-									</div>
-								</FormControl>
-								<FormDescription>
-									This is your workspace's unique URL on our platform.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<div className="col-span-2">
-						{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
-						<div className="col-span-2">
-							<FormField
-								control={form.control}
-								name="viewPage"
-								render={({ field }) => (
-									<FormItem className="col-span-1 mb-2">
-										{hasDomainManagePermission ? (
-											<>
-												<FormLabel>Set Workspace View</FormLabel>
-												<FormControl>
-													<Select
-														onValueChange={(value) => {
-															field.onChange(value);
-														}}
-														value={field.value}
-														defaultValue={defaultSelect ? defaultSelect : ""}
-													>
-														<SelectTrigger className="w-[180px]">
-															<SelectValue placeholder="Select a page" />
-														</SelectTrigger>
-														<SelectContent>
-															<SelectGroup>
-																{defaultPages.map((page: string) => {
-																	return (
-																		<SelectItem
-																			key={page}
-																			value={page}
-																		>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
-																	);
-																})}
-															</SelectGroup>
-														</SelectContent>
-													</Select>
-												</FormControl>
-											</>
-										) : (
-											<>
-												<p className="m-0">Workspace View</p>
-												<div className="w-[180px] rounded-md border border-input px-3 py-2">
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							// TODO: Add this prop to the form component
+							// defaultValue={""}
+							name="url"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace URL</FormLabel>
+									<FormControl>
+										<div className="flex">
+											{hasDomainManagePermission ? (
+												<>
+													<span className="mr-0 inline-flex items-center rounded-l-md border border-input border-r-0 bg-transparent px-3 pr-0 text-muted-foreground text-sm">
+														https://app.squaredmade.com/
+													</span>
+													<Input
+														{...field}
+														className="ml-0 rounded-l-none border-l-0 pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+													/>
+												</>
+											) : (
+												<div className="rounded-md border border-input px-3 py-2">
 													<p>
-														{defaultSelect?.replace(/^./, (char) =>
-															char.toUpperCase(),
-														)}{" "}
-														Tasks
+														https://app.squaredmade.com/
+														{workspace?.url.replace(
+															"https://app.squaredmade.com/",
+															"",
+														)}
 													</p>
 												</div>
-											</>
-										)}
+											)}
+										</div>
+									</FormControl>
+									<FormDescription>
+										This is your workspace's unique URL on our platform.
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<div className="col-span-2">
+							{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
+							<div className="col-span-2">
+								<FormField
+									control={form.control}
+									name="viewPage"
+									render={({ field }) => (
+										<FormItem className="col-span-1 mb-2">
+											{hasDomainManagePermission ? (
+												<>
+													<FormLabel>Set Workspace View</FormLabel>
+													<FormControl>
+														<Select
+															onValueChange={(value) => {
+																field.onChange(value);
+															}}
+															value={field.value}
+															defaultValue={defaultSelect ? defaultSelect : ""}
+														>
+															<SelectTrigger className="w-[180px]">
+																<SelectValue placeholder="Select a page" />
+															</SelectTrigger>
+															<SelectContent>
+																<SelectGroup>
+																	{defaultPages.map((page: string) => {
+																		return (
+																			<SelectItem
+																				key={page}
+																				value={page}
+																			>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+																		);
+																	})}
+																</SelectGroup>
+															</SelectContent>
+														</Select>
+													</FormControl>
+												</>
+											) : (
+												<>
+													<p className="m-0">Workspace View</p>
+													<div className="w-[180px] rounded-md border border-input px-3 py-2">
+														<p>
+															{defaultSelect?.replace(/^./, (char) =>
+																char.toUpperCase(),
+															)}{" "}
+															Tasks
+														</p>
+													</div>
+												</>
+											)}
 
-										<FormDescription>
-											Set the default page users of a workspace will load into{" "}
-											<br />
-											<small className="text-xs">
-												*If Sprints is disabled, default view will fall back to{" "}
-												<strong>All Tasks</strong>
-											</small>
-										</FormDescription>
-									</FormItem>
-								)}
-							/>
+											<FormDescription>
+												Set the default page users of a workspace will load into{" "}
+												<br />
+												<small className="text-xs">
+													*If Sprints is disabled, default view will fall back
+													to <strong>All Tasks</strong>
+												</small>
+											</FormDescription>
+										</FormItem>
+									)}
+								/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<Protect permission="org:sys_domains:manage">
-					<Button type="submit" disabled={!isFormChanged}>
-						Update
-					</Button>
-				</Protect>
+					<Protect permission="org:sys_domains:manage">
+						<Button type="submit" disabled={!isFormChanged}>
+							Update
+						</Button>
+					</Protect>
+				</form>
 			</Form>
 
 			<Protect permission="org:sys_profile:delete">

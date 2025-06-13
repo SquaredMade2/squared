@@ -56,46 +56,44 @@ export function TeamAccordion({
 	};
 
 	return (
-		<>
-			<ScrollArea className="h-[calc(100vh-16rem)]">
-				<Accordion
-					type="multiple"
-					value={openItems}
-					onValueChange={handleAccordionChange}
-				>
-					{teams?.map((team: Team) => (
-						<AccordionItem value={team.id} key={team.id} className="pb-2">
-							<AccordionTrigger
-								className={cn(
-									buttonVariants({ variant: "ghost" }),
-									"justify-between",
-									"pl-3",
-									"pr-2",
-								)}
-							>
-								<div className="flex items-center">
-									<LayoutGrid className="h-4 w-4 text-primary" />
-									<span className="ml-2 font-medium text-sm">{team.name}</span>
-								</div>
-							</AccordionTrigger>
-							<AccordionContent className="pt-1 pl-6">
-								<NavBarTeams
-									teamIdentifier={team.identifier}
-									currentPage={currentPage}
-									active={currentTeam?.id === team.id}
-								/>
-							</AccordionContent>
-						</AccordionItem>
-					))}
-				</Accordion>
-				{/* NOTE
+		<ScrollArea className="h-[calc(100vh-16rem)]">
+			<Accordion
+				type="multiple"
+				value={openItems}
+				onValueChange={handleAccordionChange}
+			>
+				{teams?.map((team: Team) => (
+					<AccordionItem value={team.id} key={team.id} className="pb-2">
+						<AccordionTrigger
+							className={cn(
+								buttonVariants({ variant: "ghost" }),
+								"justify-between",
+								"pl-3",
+								"pr-2",
+							)}
+						>
+							<div className="flex items-center">
+								<LayoutGrid className="h-4 w-4 text-primary" />
+								<span className="ml-2 font-medium text-sm">{team.name}</span>
+							</div>
+						</AccordionTrigger>
+						<AccordionContent className="pt-1 pl-6">
+							<NavBarTeams
+								teamIdentifier={team.identifier}
+								currentPage={currentPage}
+								active={currentTeam?.id === team.id}
+							/>
+						</AccordionContent>
+					</AccordionItem>
+				))}
+			</Accordion>
+			{/* NOTE
 				Add in check to show button only if user is an Admin of the workspace once Admin privileges are implemented
 				isUserAdmin && <AddTeamButton />
 				*/}
-				<div className="ml-6">
-					<AddTeamButton workspaceUrl={workspaceUrl ?? ""} />
-				</div>
-			</ScrollArea>
-		</>
+			<div className="ml-6">
+				<AddTeamButton workspaceUrl={workspaceUrl ?? ""} />
+			</div>
+		</ScrollArea>
 	);
 }

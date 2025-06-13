@@ -1,5 +1,5 @@
+import { cn } from "@squaredmade/ui/cn";
 import type * as React from "react";
-import { cn } from "src/cn/Cn";
 
 /**
  * Skeleton component for displaying a placeholder while content is loading

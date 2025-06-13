@@ -27,7 +27,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@squaredmade/ui/popover";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useState } from "react";
 
 type NotificationFilter =
@@ -190,9 +189,7 @@ export function MobileInboxSwitcher({
 				</PopoverContent>
 			</Popover>
 			<CommandDialog open={open} onOpenChange={setOpen}>
-				<VisuallyHidden>
-					<DialogTitle>Switch Inbox</DialogTitle>
-				</VisuallyHidden>
+				<DialogTitle className="sr-only">Switch Inbox</DialogTitle>
 				<div className="flex flex-col">
 					<div className="flex-1 border-b p-4">
 						<h2 className="font-semibold text-lg">Switch Inbox</h2>

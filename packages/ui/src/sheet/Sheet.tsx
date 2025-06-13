@@ -1,9 +1,9 @@
 "use client";
 
 import * as SheetPrimitive from "@radix-ui/react-dialog";
+import { cn } from "@squaredmade/ui/cn";
 import { XIcon } from "lucide-react";
 import type * as React from "react";
-import { cn } from "src/cn/Cn";
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
 	return <SheetPrimitive.Root data-slot="sheet" {...props} />;

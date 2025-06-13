@@ -1,5 +1,5 @@
+import { cn } from "@squaredmade/ui/cn";
 import * as React from "react";
-import { cn } from "src/cn/Cn";
 
 /**
  * Card component for containing and organizing content

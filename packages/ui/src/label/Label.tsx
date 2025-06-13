@@ -1,8 +1,8 @@
 "use client";
 
 import * as LabelPrimitive from "@radix-ui/react-label";
+import { cn } from "@squaredmade/ui/cn";
 import type * as React from "react";
-import { cn } from "src/cn/Cn";
 
 function Label({
 	className,

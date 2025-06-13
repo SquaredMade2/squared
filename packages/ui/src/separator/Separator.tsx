@@ -1,6 +1,6 @@
 import { Primitive } from "@radix-ui/react-primitive";
+import { cn } from "@squaredmade/ui/cn";
 import * as React from "react";
-import { cn } from "src/cn/Cn";
 
 /* -------------------------------------------------------------------------------------------------
  *  Separator

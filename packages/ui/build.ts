@@ -7,17 +7,14 @@ const files = [
 	"./src/alert/index.ts",
 	"./src/avatar/index.ts",
 	"./src/badge/index.ts",
-	"./src/button/index.ts",
 	"./src/calendar/index.ts",
 	"./src/card/index.ts",
 	"./src/checkbox/index.ts",
-	"./src/cn/index.ts",
 	"./src/collapsible/index.ts",
 	"./src/dialog/index.ts",
 	"./src/dropdown-menu/index.ts",
 	"./src/form/index.ts",
 	"./src/input/index.ts",
-	"./src/label/index.ts",
 	"./src/popover/index.ts",
 	"./src/select/index.ts",
 	"./src/separator/index.ts",
@@ -32,7 +29,31 @@ const files = [
 ];
 
 await $`rm -rf ./dist`;
+await $`bunx @tailwindcss/cli -i ./styles.css -o dist/index.css --minify`;
 
+build({
+	entrypoints: ["./src/cn/index.ts"],
+	outdir: "./dist/cn",
+	root: "./src",
+	format: "esm",
+	target: "bun",
+	external: ["tailwind-merge", "clsx"],
+	minify: true,
+	packages: "external",
+	plugins: [dts()],
+	naming: "[name].[ext]",
+});
+build({
+	entrypoints: ["./src/label/index.ts", "./src/button/index.ts"],
+	outdir: "./dist",
+	root: "./src",
+	format: "esm",
+	target: "bun",
+	external: ["tailwind-merge", "clsx"],
+	minify: true,
+	packages: "external",
+	plugins: [dts()],
+});
 build({
 	entrypoints: files,
 	outdir: "dist",
@@ -49,6 +70,7 @@ build({
 		"react-dom",
 	],
 	minify: true,
+	splitting: true,
 	packages: "external",
 	plugins: [dts()],
 });

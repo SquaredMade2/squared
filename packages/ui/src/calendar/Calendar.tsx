@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
 import * as React from "react";
-import { Button } from "src/button/Button";
-import { cn } from "src/cn/Cn";
 
 /* -------------------------------------------------------------------------------------------------
  * Types

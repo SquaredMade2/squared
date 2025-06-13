@@ -132,6 +132,10 @@
 				"default": "./dist/skeleton/index.js"
 			}
 		},
+		"./styles": {
+			"import": "./dist/index.css",
+			"require": "./dist/index.css"
+		},
 		"./switch": {
 			"import": {
 				"types": "./dist/switch/index.d.ts",
@@ -178,9 +182,6 @@
 		"release": "bun build && changeset publish"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
-	"bin": {
-		"squared-design": "./dist/cli/index.js"
-	},
 	"peerDependencies": {
 		"@tailwindcss/postcss": "^4",
 		"postcss": "^8",

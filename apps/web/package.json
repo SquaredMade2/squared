@@ -52,6 +52,7 @@
 		"react-dom": "19.1.0",
 		"recharts": "^2.15.3",
 		"slate": "^0.117.0",
+		"slate-dom": "^0.116.0",
 		"slate-react": "^0.116.0",
 		"socket.io-client": "^4.8.1",
 		"superjson": "^2.2.2",

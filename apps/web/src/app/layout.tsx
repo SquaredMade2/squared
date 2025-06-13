@@ -1,3 +1,4 @@
+import "@squaredmade/ui/styles";
 import "./globals.css";
 import "@squaredmade/fonts";
 import type { Metadata } from "next";

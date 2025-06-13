@@ -1,8 +1,8 @@
 "use client";
 
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
+import { cn } from "@squaredmade/ui/cn";
 import type * as React from "react";
-import { cn } from "src/cn/Cn";
 
 function Avatar({
 	className,

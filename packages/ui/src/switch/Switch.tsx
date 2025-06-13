@@ -1,8 +1,8 @@
 "use client";
 
 import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { cn } from "@squaredmade/ui/cn";
 import type * as React from "react";
-import { cn } from "src/cn/Cn";
 
 function Switch({
 	className,

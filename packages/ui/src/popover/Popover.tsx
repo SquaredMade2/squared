@@ -1,8 +1,8 @@
 "use client";
 
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+import { cn } from "@squaredmade/ui/cn";
 import type * as React from "react";
-import { cn } from "src/cn/Cn";
 
 function Popover({
 	...props

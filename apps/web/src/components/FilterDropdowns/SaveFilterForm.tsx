@@ -11,6 +11,7 @@ import {
 import type { SavedFilter } from "@/store/filters";
 import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Badge } from "@squaredmade/ui/badge";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -21,15 +22,14 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-	useForm,
 } from "@squaredmade/ui/form";
-import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -185,52 +185,58 @@ export function SaveFilterForm({
 		},
 	});
 
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		upsertFilter(values);
+	};
+
 	return (
-		<Form {...form} onSubmit={upsertFilter} className="mb-8 space-y-4">
-			<FormField
-				control={control}
-				name="title"
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Filter Name</FormLabel>
-						<FormControl>
-							<Input placeholder="Enter filter name" {...field} />
-						</FormControl>
-						<FormMessage />
-					</FormItem>
-				)}
-			/>
-			<FormField
-				control={control}
-				name="description"
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Description (optional)</FormLabel>
-						<FormControl>
-							<Textarea placeholder="Enter filter description" {...field} />
-						</FormControl>
-						<FormDescription>
-							Provide a brief description of what this filter does.
-						</FormDescription>
-						<FormMessage />
-					</FormItem>
-				)}
-			/>
-			<div className="flex flex-wrap gap-2">
-				{formattedFilters.map(({ name, value }) => (
-					<Badge key={name + value} variant="secondary">
-						{name}: {value}
-					</Badge>
-				))}
-			</div>
-			<div className="flex justify-end space-x-2">
-				<Button type="button" variant="outline" onClick={onCancel}>
-					Cancel
-				</Button>
-				<Button type="submit" disabled={isPending}>
-					{type === "new" ? "Save New Filter" : "Save"}
-				</Button>
-			</div>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="mb-8 space-y-4">
+				<FormField
+					control={control}
+					name="title"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Filter Name</FormLabel>
+							<FormControl>
+								<Input placeholder="Enter filter name" {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={control}
+					name="description"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Description (optional)</FormLabel>
+							<FormControl>
+								<Textarea placeholder="Enter filter description" {...field} />
+							</FormControl>
+							<FormDescription>
+								Provide a brief description of what this filter does.
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<div className="flex flex-wrap gap-2">
+					{formattedFilters.map(({ name, value }) => (
+						<Badge key={name + value} variant="secondary">
+							{name}: {value}
+						</Badge>
+					))}
+				</div>
+				<div className="flex justify-end space-x-2">
+					<Button type="button" variant="outline" onClick={onCancel}>
+						Cancel
+					</Button>
+					<Button type="submit" disabled={isPending}>
+						{type === "new" ? "Save New Filter" : "Save"}
+					</Button>
+				</div>
+			</form>
 		</Form>
 	);
 }
