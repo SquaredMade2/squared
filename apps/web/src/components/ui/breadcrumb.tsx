@@ -1,6 +1,6 @@
+import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
-import { Slot } from "@squaredmade/ui/slot";
 import { MoreHorizontal } from "lucide-react";
 import type * as React from "react";
 
