@@ -6,18 +6,13 @@ import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
-import type { RetrospectiveItem, RetrospectiveItemType } from "@squaredmade/db";
+import type { RetrospectiveItemType } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { type Socket, io } from "socket.io-client";
-
-export type RetroItem = Pick<
-	RetrospectiveItem,
-	"id" | "content" | "type" | "authorId" | "likes" | "createdAt"
->;
 
 export default function SprintRetrospectivePage() {
 	const router = useRouter();
