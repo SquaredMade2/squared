@@ -1,4 +1,4 @@
-import { $, build } from "bun";
+import { $, type BuildConfig, build } from "bun";
 import dts from "bun-plugin-dts";
 
 const files = [
@@ -31,35 +31,32 @@ const files = [
 await $`rm -rf ./dist`;
 await $`bunx @tailwindcss/cli -i ./styles.css -o dist/index.css --minify`;
 
-build({
-	entrypoints: ["./src/cn/index.ts"],
-	outdir: "./dist/cn",
+const config: Partial<BuildConfig> = {
 	root: "./src",
 	format: "esm",
-	target: "bun",
-	external: ["tailwind-merge", "clsx"],
+	target: "browser",
 	minify: true,
 	packages: "external",
 	plugins: [dts()],
+};
+
+build({
+	...config,
+	entrypoints: ["./src/cn/index.ts"],
+	outdir: "./dist/cn",
+	external: ["tailwind-merge", "clsx"],
 	naming: "[name].[ext]",
 });
 build({
+	...config,
 	entrypoints: ["./src/label/index.ts", "./src/button/index.ts"],
 	outdir: "./dist",
-	root: "./src",
-	format: "esm",
-	target: "bun",
 	external: ["tailwind-merge", "clsx"],
-	minify: true,
-	packages: "external",
-	plugins: [dts()],
 });
 build({
+	...config,
 	entrypoints: files,
 	outdir: "dist",
-	root: "./src",
-	format: "esm",
-	target: "bun",
 	external: [
 		"class-variance-authority",
 		"@radix-ui/*",
@@ -69,8 +66,5 @@ build({
 		"react",
 		"react-dom",
 	],
-	minify: true,
 	splitting: true,
-	packages: "external",
-	plugins: [dts()],
 });

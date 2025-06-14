@@ -21,7 +21,7 @@
 		"test:coverage": "jest --coverage"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "^6.21.0",
+		"@clerk/nextjs": "^6.22.0",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@mdx-js/loader": "^3.1.0",
 		"@mdx-js/react": "^3.1.0",
@@ -43,7 +43,7 @@
 		"date-fns": "^4.1.0",
 		"hono": "^4.7.11",
 		"jstack": "^1.1.1",
-		"lucide-react": "^0.514.0",
+		"lucide-react": "^0.515.0",
 		"next-mdx-remote": "^5.0.0",
 		"next-themes": "^0.4.6",
 		"react": "19.1.0",
@@ -53,16 +53,16 @@
 		"recharts": "^2.15.3",
 		"slate": "^0.117.0",
 		"slate-dom": "^0.116.0",
-		"slate-react": "^0.116.0",
+		"slate-react": "^0.117.1",
 		"socket.io-client": "^4.8.1",
 		"superjson": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.8.3",
-		"zod": "^3.25.63",
+		"zod": "^3.25.64",
 		"zustand": "^5.0.5"
 	},
 	"devDependencies": {
-		"@clerk/types": "^4.60.0",
+		"@clerk/types": "^4.60.1",
 		"@jest/globals": "^30.0.0",
 		"@squaredmade/db": "workspace:*",
 		"@squaredmade/typescript-config": "^1.0.2",
