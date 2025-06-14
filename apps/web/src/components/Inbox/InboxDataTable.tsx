@@ -18,7 +18,7 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
-import type { NotificationFilter } from "@/app/inbox/page";
+import type { NotificationFilter } from "@/app/(site)/inbox/page";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
 import { useEventStore } from "@/store";

@@ -1,8 +1,8 @@
 import "@squaredmade/ui/styles";
-import "./globals.css";
+import "../globals.css";
 import "@squaredmade/fonts";
 import type { Metadata } from "next";
-import { ClientWrapper } from "./client-wrapper";
+import ClientLayoutWrapper from "./AppLayoutWrapper";
 
 export const metadata: Metadata = {
 	title: {
@@ -18,11 +18,5 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	return (
-		<html lang="en">
-			<body className="min-h-[100vh] text-sm">
-				<ClientWrapper>{children}</ClientWrapper>
-			</body>
-		</html>
-	);
+	return <ClientLayoutWrapper>{children}</ClientLayoutWrapper>;
 }
