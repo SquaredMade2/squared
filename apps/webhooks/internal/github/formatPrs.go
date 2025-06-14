@@ -5,7 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/data"
+	"webhooks/data"
+
 	"github.com/google/go-github/v72/github"
 )
 

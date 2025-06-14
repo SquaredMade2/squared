@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "@squaredmade/fonts";
-import { ThemeProvider } from "@/context/theme-provider";
 import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { ViewTransitions } from "next-view-transitions";
+import { ClientWrapper } from "./client-wrapper";
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://www.squaredmade.com"),
@@ -25,14 +25,7 @@ export default function RootLayout({
 		<ViewTransitions>
 			<html lang="en">
 				<body className={"h-full w-full antialiased"}>
-					<ThemeProvider
-						attribute="class"
-						enableSystem
-						disableTransitionOnChange
-						defaultTheme="system"
-					>
-						{children}
-					</ThemeProvider>
+					<ClientWrapper>{children}</ClientWrapper>
 				</body>
 				<PrismicPreview repositoryName={repositoryName} />
 			</html>

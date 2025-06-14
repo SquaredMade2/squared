@@ -118,7 +118,7 @@ export function ContactForm() {
 														id="email"
 														type="email"
 														placeholder="Email"
-														className="\ block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
+														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
 														{...field}
 													/>
 												</div>

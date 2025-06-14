@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/config"
+	"webhooks/internal/config"
 )
 
 // MockRPCServer implements a mock server for GitHub RPC calls

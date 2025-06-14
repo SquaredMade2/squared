@@ -9,7 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/rpc"
+	"webhooks/internal/rpc"
+
 	"github.com/google/go-github/v72/github"
 )
 
