@@ -192,6 +192,7 @@
 		"zod": "^3"
 	},
 	"devDependencies": {
+		"@tailwindcss/cli": "^4.1.10",
 		"@types/fs-extra": "^11.0.4",
 		"@types/node": "22.15.18",
 		"@types/react": "^19.0.1",
