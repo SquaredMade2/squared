@@ -174,7 +174,7 @@
 		}
 	},
 	"scripts": {
-		"build": "bun build.ts",
+		"build": "NODE_ENV=production bun build.ts",
 		"check-types": "tsc --noEmit",
 		"clean": "find . -type d -name 'dist' -exec rm -rf {} +",
 		"knip": "knip",
