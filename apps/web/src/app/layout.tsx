@@ -1,7 +1,8 @@
+import "@squaredmade/ui/styles";
 import "./globals.css";
 import "@squaredmade/fonts";
 import type { Metadata } from "next";
-import ClientLayoutWrapper from "./AppLayoutWrapper";
+import { ClientWrapper } from "./client-wrapper";
 
 export const metadata: Metadata = {
 	title: {
@@ -20,7 +21,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className="min-h-[100vh] text-sm">
-				<ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+				<ClientWrapper>{children}</ClientWrapper>
 			</body>
 		</html>
 	);

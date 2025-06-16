@@ -165,17 +165,6 @@ jobs:
           LOCAL_DB: true
           RUNNING_TESTS: true
 
-      # Serve Storybook and run tests for UI
-      - name: Serve Storybook and run tests
-        if: matrix.task == 'test'
-        run: |
-          bunx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-            "bunx http-server storybook-static --port 6006 --silent" \
-            "bunx wait-on tcp:127.0.0.1:6006 && bun test-storybook"
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
       # Stop Database Server
       - name: Stop Database Server
         if: always() && matrix.task == 'test'

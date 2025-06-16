@@ -1,11 +1,8 @@
 import { Droppable } from "@hello-pangea/dnd";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
-
-import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
 import type { RetrospectiveItemType } from "@squaredmade/db";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import AddRetroItemModal from "./AddRetroItemModal";
-import { RetroItemCard } from "./RetroItemCard";
+import { type RetroItem, RetroItemCard } from "./RetroItemCard";
 
 interface RetroColumnProps {
 	title: string;

@@ -26,14 +26,14 @@
 		"prebuild": "rimraf ./dist"
 	},
 	"devDependencies": {
-		"@squaredmade/typescript-config": "^1.0.0",
-		"@types/node": "^22.10.10",
+		"@squaredmade/typescript-config": "^1.0.2",
+		"@types/node": "^24.0.1",
 		"rimraf": "^6.0.1",
-		"typescript": "^5.8.2"
+		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"esbuild": "^0.25.0",
-		"tslib": "^2.7.0",
-		"tsup": "^8.0.2"
+		"esbuild": "^0.25.5",
+		"tslib": "^2.8.1",
+		"tsup": "^8.5.0"
 	}
 }

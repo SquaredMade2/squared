@@ -12,10 +12,9 @@ import {
 } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFilterStore, useModalStore, useViewStore } from "@/store";
+import { useId } from "@radix-ui/react-id";
 import { DialogTitle } from "@squaredmade/ui/dialog";
 import { toast } from "@squaredmade/ui/toast";
-import { useId } from "@squaredmade/ui/use-id";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";
@@ -96,9 +95,7 @@ export default function SearchCommand() {
 
 	return (
 		<CommandDialog open={showCommand} onOpenChange={setShowCommand}>
-			<VisuallyHidden>
-				<DialogTitle>Search</DialogTitle>
-			</VisuallyHidden>
+			<DialogTitle className="sr-only">Search</DialogTitle>
 			<CommandInput placeholder="Type a command or search..." autoFocus />
 			<CommandList>
 				<ScrollArea className="h-[300px]">

@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/discord"
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/scheduler"
+	"webhooks/internal/discord"
+	"webhooks/internal/scheduler"
 )
 
 func main() {

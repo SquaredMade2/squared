@@ -25,9 +25,9 @@
 	},
 	"devDependencies": {
 		"@squaredmade/builder": "1.0.2",
-		"@squaredmade/typescript-config": "^1.0.0",
-		"@types/node": "^22.7.5",
-		"tailwindcss": "^4.0.0",
-		"typescript": "^5.0.0"
+		"@squaredmade/typescript-config": "^1.0.2",
+		"@types/node": "^24.0.1",
+		"tailwindcss": "^4.1.10",
+		"typescript": "^5.8.3"
 	}
 }

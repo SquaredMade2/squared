@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/github"
+	"webhooks/internal/github"
 )
 
 func RunStandupPrNotification() error {

@@ -1,4 +1,4 @@
-import type { NotificationFilter } from "@/app/inbox/page";
+import type { NotificationFilter } from "@/app/(site)/inbox/page";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import type { Notification } from "@squaredmade/db";

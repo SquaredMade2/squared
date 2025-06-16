@@ -9,7 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/testhelpers"
+	"webhooks/internal/testhelpers"
+
 	"github.com/google/go-github/v72/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

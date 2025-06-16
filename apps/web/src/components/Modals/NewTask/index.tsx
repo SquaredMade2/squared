@@ -12,6 +12,7 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Checkbox } from "@squaredmade/ui/checkbox";
@@ -29,15 +30,14 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
-	useForm,
 } from "@squaredmade/ui/form";
-import { zodResolver } from "@squaredmade/ui/form/resolvers";
 import { Input } from "@squaredmade/ui/input";
 import { Separator } from "@squaredmade/ui/separator";
 import { toast } from "@squaredmade/ui/toast";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
@@ -174,100 +174,104 @@ export const NewTaskModal = () => {
 						<DialogTitle className="text-sm">New Task</DialogTitle>
 					</div>
 				</DialogHeader>
-				<Form {...form} onSubmit={handleCreateTask}>
-					<div className="flex space-x-4">
-						<div className="w-4/5 space-y-4">
-							<FormField
-								control={form.control}
-								name="title"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className="text-xl">Title</FormLabel>
-										<FormControl>
-											<Input
-												{...field}
-												autoFocus
-												placeholder="Title"
-												className="text-md"
-												onFocus={() => setIsEditingTitle(true)}
-												onBlur={() => setIsEditingTitle(false)}
-												maxLength={50}
-											/>
-										</FormControl>
-										<FormDescription
-											className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isEditingTitle && "opacity-100"}`}
-										>
-											{titleValue?.length ?? 0} / 50
-										</FormDescription>
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="description"
-								render={() => (
-									<FormItem>
-										<FormLabel className="text-xl">Description</FormLabel>
-										<FormControl>
-											<TextEditor
-												hasToolbar={false}
-												placeholder="Add Description"
-												value={editorDescription}
-												onChange={setEditorDescription}
-											/>
-										</FormControl>
-									</FormItem>
-								)}
-							/>
-							{upcomingSprints.length === 0 && activeSprint && (
-								<div className="mt-4 flex items-center gap-2">
-									<Checkbox
-										checked={activeSprint.id === newTaskData.sprintId}
-										onCheckedChange={(checked) =>
-											setNewTaskData({
-												...newTaskData,
-												sprintId: checked ? activeSprint.id : null,
-											})
-										}
-									/>
-									<p className="text-foreground">Add task to current sprint</p>
-								</div>
-							)}
-						</div>
-						<div>
-							<Separator orientation="vertical" />
-						</div>
-						<div className="w-1/5 space-y-4">
-							<StatusDropdownButton />
-							<LabelDropdownButton />
-							<PriorityDropdownButton />
-							<EffortDropdownButton />
-							{upcomingSprints.length > 0 && (
-								<SprintDropdownButton
-									activeSprint={activeSprint || null}
-									upcomingSprints={upcomingSprints}
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(handleCreateTask)}>
+						<div className="flex space-x-4">
+							<div className="w-4/5 space-y-4">
+								<FormField
+									control={form.control}
+									name="title"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="text-xl">Title</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													autoFocus
+													placeholder="Title"
+													className="text-md"
+													onFocus={() => setIsEditingTitle(true)}
+													onBlur={() => setIsEditingTitle(false)}
+													maxLength={50}
+												/>
+											</FormControl>
+											<FormDescription
+												className={`text-end text-muted-foreground text-xs opacity-0 transition-opacity duration-200 ${isEditingTitle && "opacity-100"}`}
+											>
+												{titleValue?.length ?? 0} / 50
+											</FormDescription>
+										</FormItem>
+									)}
 								/>
-							)}
-							<DateDropdownButton />
+								<FormField
+									control={form.control}
+									name="description"
+									render={() => (
+										<FormItem>
+											<FormLabel className="text-xl">Description</FormLabel>
+											<FormControl>
+												<TextEditor
+													hasToolbar={false}
+													placeholder="Add Description"
+													value={editorDescription}
+													onChange={setEditorDescription}
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								{upcomingSprints.length === 0 && activeSprint && (
+									<div className="mt-4 flex items-center gap-2">
+										<Checkbox
+											checked={activeSprint.id === newTaskData.sprintId}
+											onCheckedChange={(checked) =>
+												setNewTaskData({
+													...newTaskData,
+													sprintId: checked ? activeSprint.id : null,
+												})
+											}
+										/>
+										<p className="text-foreground">
+											Add task to current sprint
+										</p>
+									</div>
+								)}
+							</div>
+							<div>
+								<Separator orientation="vertical" />
+							</div>
+							<div className="w-1/5 space-y-4">
+								<StatusDropdownButton />
+								<LabelDropdownButton />
+								<PriorityDropdownButton />
+								<EffortDropdownButton />
+								{upcomingSprints.length > 0 && (
+									<SprintDropdownButton
+										activeSprint={activeSprint || null}
+										upcomingSprints={upcomingSprints}
+									/>
+								)}
+								<DateDropdownButton />
+							</div>
 						</div>
-					</div>
-					<DialogFooter className="mt-6">
-						<Button
-							onClick={handleDiscard}
-							className="bg-transparent text-foreground hover:cursor-pointer"
-							variant="destructive"
-							type="button"
-						>
-							Discard
-						</Button>
-						<Button
-							type="submit"
-							className="hover:cursor-pointer"
-							disabled={isLoading}
-						>
-							{isLoading ? "Creating..." : "Create Task"}
-						</Button>
-					</DialogFooter>
+						<DialogFooter className="mt-6">
+							<Button
+								onClick={handleDiscard}
+								className="bg-transparent text-foreground hover:cursor-pointer"
+								variant="destructive"
+								type="button"
+							>
+								Discard
+							</Button>
+							<Button
+								type="submit"
+								className="hover:cursor-pointer"
+								disabled={isLoading}
+							>
+								{isLoading ? "Creating..." : "Create Task"}
+							</Button>
+						</DialogFooter>
+					</form>
 				</Form>
 			</DialogContent>
 		</Dialog>

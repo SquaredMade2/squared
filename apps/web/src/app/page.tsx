@@ -2,8 +2,8 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useClerk, useOrganizationList, useUser } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const HomePage = () => {
 	const router = useRouter();
@@ -17,32 +17,50 @@ const HomePage = () => {
 		userMemberships: true,
 	});
 
-	const { error, isLoading } = useQuery({
-		queryKey: ["user", "defaultWorkspace"],
-		queryFn: async () => {
+	useEffect(() => {
+		const handleRedirect = async () => {
+			if (!userLoaded || !orgLoaded) {
+				// Wait for both user and organization data to be loaded
+				return;
+			}
+
 			if (!user) {
 				await signOut();
 				router.push("/sign-in");
-				return null;
+				return;
 			}
+
 			if (organization) {
 				router.push(`/${organization.slug}`);
-				return organization.slug;
+				return;
 			}
+
 			if (userMemberships.data && userMemberships.data.length > 0) {
 				setActive?.({
 					organization: userMemberships.data[0].organization.id,
 				});
 				router.push(`/${userMemberships.data[0].organization.slug}`);
-				return userMemberships.data[0].organization.slug;
+				return;
 			}
-			router.push("/create");
-			return null;
-		},
-		enabled: userLoaded && orgLoaded,
-	});
 
-	if (isLoading) {
+			// If no organization or membership, direct to create workspace
+			router.push("/create");
+		};
+
+		handleRedirect();
+	}, [
+		userLoaded,
+		orgLoaded,
+		user,
+		organization,
+		userMemberships,
+		router,
+		signOut,
+		setActive,
+	]);
+
+	// Show a loader while the data is loading and the redirect is being determined
+	if (!userLoaded || !orgLoaded) {
 		return (
 			<div className="h-screen w-full">
 				<div className="flex h-full items-center justify-center">
@@ -55,11 +73,8 @@ const HomePage = () => {
 		);
 	}
 
-	if (error) {
-		return <div>Error: {error.message}</div>;
-	}
-
-	// Fallback UI instead of returning null
+	// Fallback UI or a brief loading message after data is loaded but before redirect
+	// This will typically be very brief as the useEffect will trigger the redirect
 	return (
 		<div className="flex h-screen w-full items-center justify-center">
 			<div className="flex flex-col items-center gap-4">

@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/config"
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/github"
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/vercel"
+	"webhooks/internal/config"
+	"webhooks/internal/github"
+	"webhooks/internal/vercel"
 )
 
 func main() {

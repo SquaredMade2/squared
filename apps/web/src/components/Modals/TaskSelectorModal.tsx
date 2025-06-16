@@ -13,7 +13,6 @@ import { useModalStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import { DialogTitle } from "@squaredmade/ui/dialog";
-import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
 
@@ -26,9 +25,7 @@ export function TaskSelector() {
 
 	return (
 		<CommandDialog open={open} onOpenChange={setOpen}>
-			<VisuallyHidden>
-				<DialogTitle>Open Task</DialogTitle>
-			</VisuallyHidden>
+			<DialogTitle className="sr-only">Open Task</DialogTitle>
 			<CommandInput placeholder="Open task..." />
 			<CommandList>
 				<ScrollArea className="h-[calc(80vh-53px)]">

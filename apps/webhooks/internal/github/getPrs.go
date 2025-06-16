@@ -6,7 +6,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/SquaredMade2/squared/apps/webhooks/internal/utils"
+	"webhooks/internal/utils"
+
 	"github.com/google/go-github/v72/github"
 )
 
