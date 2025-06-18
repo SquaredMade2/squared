@@ -1,5 +1,5 @@
 import { cn } from "@squaredmade/ui/cn";
-import type { AnimationProps, MotionProps } from "framer-motion";
+import type { MotionProps } from "framer-motion";
 import type React from "react";
 import Balancer from "react-wrap-balancer";
 
@@ -14,7 +14,7 @@ export const Subheading = ({
 	as?: keyof JSX.IntrinsicElements;
 	children: React.ReactNode;
 } & MotionProps &
-	React.HTMLAttributes<HTMLHeadingElement | AnimationProps>) => {
+	React.HTMLAttributes<HTMLHeadingElement>) => {
 	return (
 		<Tag
 			className={cn(
