@@ -21,6 +21,11 @@ export default clerkMiddleware(
 		if (!isPublicRoute(request)) {
 			await auth.protect();
 		}
+
+		const redirectUrl = url.searchParams.get("redirect_url");
+		if (redirectUrl?.includes("join") && url.href.includes("sign-up")) {
+			url.searchParams.set("signup", "true");
+		}
 	},
 	() => ({
 		signInUrl: `${deploymentUrl}/sign-in`,

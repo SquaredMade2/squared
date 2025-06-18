@@ -16,9 +16,8 @@ export type CreateWorkspaceParams = {
 
 export type JoinWorkspaceParams = {
 	token: string;
-	isLink: boolean;
 	userId: string;
-	workspace: { id?: string; name?: string };
+	workspaceSlug: string;
 };
 
 export interface WorkspaceRpc {
@@ -35,7 +34,9 @@ export interface WorkspaceRpc {
 	}) => Promise<Workspace>;
 	deleteWorkspace: (args: { workspaceId: string }) => Promise<void>;
 	getUserWorkspaces: (args: { userId: string }) => Promise<Workspace[]>;
-	joinWorkspace: (args: JoinWorkspaceParams) => Promise<Workspace | null>;
+	joinWorkspaceWithLink: (
+		args: JoinWorkspaceParams,
+	) => Promise<Workspace | null>;
 	removeUserFromWorkspace: (args: {
 		workspaceId: string;
 		userId: string;
