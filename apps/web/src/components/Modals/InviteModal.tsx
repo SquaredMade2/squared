@@ -80,7 +80,7 @@ export const InviteModal = () => {
 	}, []);
 
 	const handleCopy = async () => {
-		const url = `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`;
+		const url = `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?token=${link}`;
 		try {
 			await window.navigator.clipboard.writeText(url);
 			toast.success("URL copied to clipboard");
@@ -169,7 +169,7 @@ export const InviteModal = () => {
 							) : (
 								<p>
 									{link
-										? `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?link=true&token=${link}`
+										? `${process.env.NEXT_PUBLIC_URL}/${organization?.slug}/join?token=${link}`
 										: "Create Invite Link"}
 								</p>
 							)}

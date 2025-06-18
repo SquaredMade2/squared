@@ -15,6 +15,6 @@ export const authStyles: Elements = {
 	alternativeMethodsBlockButton: "bg-primary/20! text-foreground/80!",
 	backLink: "text-muted-foreground!",
 	otpCodeFieldInput:
-		"border! border-primary! hover:border-primary/60! focus:border-primary/60! text-primary-foreground!",
+		"border! border-primary! hover:border-primary/60! focus:border-primary/60! text-foreground!",
 	formResendCodeLink: "text-muted-foreground!",
 };

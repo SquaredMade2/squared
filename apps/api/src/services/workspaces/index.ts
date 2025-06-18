@@ -22,12 +22,8 @@ const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 const joinWorkspaceParamsSchema = createSchema<JoinWorkspaceParams>()(
 	z.object({
 		token: z.string(),
-		isLink: z.boolean(),
 		userId: z.string(),
-		workspace: z.object({
-			id: z.string().optional(),
-			name: z.string().optional(),
-		}),
+		workspaceSlug: z.string(),
 	}),
 );
 
@@ -73,7 +69,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.array(workspaceSchema),
 	},
-	joinWorkspace: {
+	joinWorkspaceWithLink: {
 		input: joinWorkspaceParamsSchema,
 		output: workspaceSchema.nullable(),
 	},
@@ -151,7 +147,8 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		updateWorkspace: (input) => workspaceService.updateWorkspace(input),
 		deleteWorkspace: (input) => workspaceService.deleteWorkspace(input),
 		getUserWorkspaces: (input) => workspaceService.getUserWorkspaces(input),
-		joinWorkspace: (input) => workspaceService.joinWorkspace(input),
+		joinWorkspaceWithLink: (input) =>
+			workspaceService.joinWorkspaceWithLink(input),
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),

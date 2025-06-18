@@ -3,41 +3,49 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
 import { parseError } from "@/utils/parseError";
-import { useOrganization } from "@clerk/nextjs";
+import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 export default function JoinWorkspace() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { organization, isLoaded } = useOrganization();
+	const params = useParams();
+	const workspaceSlug = params.workspace as string;
+	const { setActive } = useOrganizationList();
+	const { user, isLoaded } = useUser();
 
 	const token = searchParams.get("token") || "";
-	const isLink = searchParams.has("link");
-	const currentURL = usePathname();
-	// First non-capturing group matches up to "/" 3 times. Second capture matches up to next "/"
-	const workspaceName = currentURL.match(/^(?:[^\/]*\/){3}([^\/]+)/);
+	const signup = searchParams.get("signup") === "true";
 
 	const { mutate: joinWorkspaceMutation, isPending } = useMutation({
-		mutationKey: ["workspace", "joinWorkspace", organization?.id],
+		mutationKey: ["workspace", "joinWorkspace", workspaceSlug],
 		mutationFn: async () => {
-			if (isLoaded) {
-				await client.workspace.joinWorkspace.$post({
+			const res = await client.workspace.joinWorkspace
+				.$post({
 					token,
-					isLink,
-					workspace: {
-						id: organization?.id,
-						name: workspaceName ? workspaceName[1] : undefined,
-					},
-				});
-			}
+					workspaceSlug,
+					signup:
+						signup && user
+							? {
+									email: user.emailAddresses[0].emailAddress,
+									name: user.fullName,
+									username: user.username,
+									id: user.id,
+								}
+							: undefined,
+				})
+				.then((res) => res.json());
+			return res?.externalId;
 		},
-		onSuccess: () => {
+		onSuccess: (organizationId) => {
 			toast.success("Workspace joined successfully");
-			router.push(`/${organization?.slug}`);
+			console.log("organizationId", organizationId);
+			setActive?.({ organization: organizationId });
+			router.push(`/${workspaceSlug}`);
 		},
 		onError: (error) => {
 			toast.error("Failed to join workspace", {

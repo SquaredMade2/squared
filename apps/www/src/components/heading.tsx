@@ -1,5 +1,5 @@
 import { cn } from "@squaredmade/ui/cn";
-import type { AnimationProps, MotionProps } from "framer-motion";
+import type { MotionProps } from "framer-motion";
 import type React from "react";
 import Balancer from "react-wrap-balancer";
 
@@ -16,7 +16,7 @@ export const Heading = ({
 	children: React.ReactNode;
 	size?: "sm" | "md" | "xl" | "2xl";
 } & MotionProps &
-	React.HTMLAttributes<HTMLHeadingElement | AnimationProps>) => {
+	React.HTMLAttributes<HTMLHeadingElement>) => {
 	const sizeVariants = {
 		sm: "text-xl md:text-2xl md:leading-snug",
 		md: "text-3xl md:text-5xl md:leading-tight",
