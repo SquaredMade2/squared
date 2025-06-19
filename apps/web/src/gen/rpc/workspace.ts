@@ -155,17 +155,13 @@ export type GetUserWorkspacesResponse = {
 	url: string;
 }[];
 
-export type JoinWorkspaceRequest = {
-	isLink: boolean;
+export type JoinWorkspaceWithLinkRequest = {
 	token: string;
 	userId: string;
-	workspace: {
-		id?: string;
-		name?: string;
-	};
+	workspaceSlug: string;
 };
 
-export type JoinWorkspaceResponse = {
+export type JoinWorkspaceWithLinkResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
@@ -347,13 +343,13 @@ export class WorkspaceService extends RPCContextClient {
 	}
 
 	/**
-	 * joinWorkspace method
+	 * joinWorkspaceWithLink method
 	 */
-	joinWorkspace(
+	joinWorkspaceWithLink(
 		ctx: Context,
-		req: JoinWorkspaceRequest,
-	): Promise<JoinWorkspaceResponse> {
-		return this.request(ctx, "joinWorkspace", req);
+		req: JoinWorkspaceWithLinkRequest,
+	): Promise<JoinWorkspaceWithLinkResponse> {
+		return this.request(ctx, "joinWorkspaceWithLink", req);
 	}
 
 	/**

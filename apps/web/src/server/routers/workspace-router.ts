@@ -74,22 +74,34 @@ export const workspaceRouter = j.router({
 		.input(
 			z.object({
 				token: z.string(),
-				isLink: z.boolean(),
-				workspace: z.object({
-					id: z.string().optional(),
-					name: z.string().optional(),
-				}),
+				workspaceSlug: z.string(),
+				signup: z
+					.object({
+						email: z.string(),
+						name: z.string().nullable(),
+						username: z.string().nullable(),
+						id: z.string(),
+					})
+					.optional(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { workspaceService, userId } = ctx;
-			const { token, isLink, workspace } = input;
+			const { workspaceService, userId, authService } = ctx;
+			const { token, workspaceSlug, signup } = input;
+			if (signup) {
+				const { email, name, username, id } = signup;
+				await authService.register(TODO, {
+					email,
+					name: name || "",
+					username: username || "",
+					externalId: id,
+				});
+			}
 			return c.superjson(
-				await workspaceService.joinWorkspace(TODO, {
+				await workspaceService.joinWorkspaceWithLink(TODO, {
 					token,
-					isLink,
 					userId,
-					workspace,
+					workspaceSlug,
 				}),
 			);
 		}),

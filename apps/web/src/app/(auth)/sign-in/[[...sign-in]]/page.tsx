@@ -10,7 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@squaredmade/ui/card";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { authStyles } from "../../authStyles";
 
@@ -19,6 +19,8 @@ const LoginPage = () => {
 	const { user, isLoaded } = useUser();
 	const pathname = usePathname();
 	const incorrectPassword = pathname.includes("factor-one");
+	const searchParams = useSearchParams();
+	const redirectUrl = searchParams.get("redirect_url");
 
 	useEffect(() => {
 		if (isLoaded && user) {
@@ -63,7 +65,10 @@ const LoginPage = () => {
 						<Button
 							variant="link"
 							className="ml-2 p-0"
-							onClick={() => router.push("/sign-up")}
+							onClick={() => {
+								if (!redirectUrl) return router.push("/sign-up");
+								router.push(`/sign-up?${searchParams.toString()}`);
+							}}
 						>
 							Sign up for free
 						</Button>
