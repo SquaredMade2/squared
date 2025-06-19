@@ -100,7 +100,7 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     strategy:
       matrix:
-        task: [lint, test-ci, check-types]
+        task: [lint, test-ci, tsc]
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
