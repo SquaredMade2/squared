@@ -1,4 +1,5 @@
 import { TODO } from "@squaredmade/context";
+import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import { j, workspaceProcedure } from "../jstack";
 
@@ -24,5 +25,18 @@ export const commentRouter = j.router({
 					authorId: userId,
 				}),
 			);
+		}),
+	deleteComment: workspaceProcedure
+		.input(z.object({ commentId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { commentService } = ctx;
+			const { commentId } = input;
+			const comment = await commentService.deleteComment(TODO, { commentId });
+			if (!comment) {
+				throw new HTTPException(404, {
+					message: `Comment: ${commentId} Does Not Exist`,
+				});
+			}
+			return c.status(204);
 		}),
 });

@@ -20,6 +20,14 @@ export type DeleteCommentRequest = {
 	commentId: string;
 };
 
+export type DeleteCommentResponse = {
+	authorId: string;
+	comment: string;
+	date: Date;
+	id: string;
+	taskId: string;
+};
+
 export type GetTaskCommentsRequest = {
 	taskId: string;
 };
@@ -53,7 +61,10 @@ export class CommentService extends RPCContextClient {
 	/**
 	 * deleteComment method
 	 */
-	deleteComment(ctx: Context, req: DeleteCommentRequest): Promise<void> {
+	deleteComment(
+		ctx: Context,
+		req: DeleteCommentRequest,
+	): Promise<DeleteCommentResponse> {
 		return this.request(ctx, "deleteComment", req);
 	}
 

@@ -1,8 +1,11 @@
+import { useUsers } from "@/hooks/useUsers";
 import type { UserAvatar } from "@/store/users";
 import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Comment } from "@squaredmade/db";
+import { Trash } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import { toast } from "@squaredmade/ui/toast";
 import { formatDate } from "date-fns/format";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -10,6 +13,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
 import MentionHover from "../TextEditor/Menus/MentionHover";
+import { DeleteCommentAlertDialog } from "./DeleteCommentAlertDialog";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";
@@ -22,12 +26,14 @@ import MentionHover from "../TextEditor/Menus/MentionHover";
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
 	const [avatarUrl, setAvatarUrl] = useState("");
+	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+	const { user } = useUsers();
 	const [commentData, setCommentData] = useState<
 		MDXRemoteSerializeResult | React.ReactElement
 	>(<p>Loading...</p>);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
-	const { memberships } = useOrganization({
+	const { membership, memberships } = useOrganization({
 		memberships: {
 			infinite: true,
 			pageSize: 100,
@@ -38,6 +44,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		(membership) => membership.publicUserData,
 	);
 
+	const hasMembershipManagePermission = membership?.permissions.includes(
+		"org:sys_memberships:manage",
+	);
 	// Functions
 
 	// !!! Keeping the below here for future use !!! No specific todo here, but will use for testing in the future
@@ -140,19 +149,39 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	// MDX
 
 	return (
-		<div className="m-5 flex flex-col px-8">
-			<div className="my-5 flex flex-row items-center">
-				<div className="mr-4 text-muted-foreground">
-					{formatDate(comment.date, "dd MMM yyyy h:mm a")}
-				</div>
-				<Avatar className="size-6 text-xxs">
-					<AvatarImage src={avatarUrl} className="size-6" />
-					<AvatarFallback className="size-6">
-						{getInitials(authorName)}
-					</AvatarFallback>
-				</Avatar>
+		<div className="my-5 flex flex-col">
+			<div className="flex justify-between">
+				<div className="my-5 flex items-center">
+					<div className="mr-4 text-muted-foreground">
+						{formatDate(comment.date, "dd MMM yyyy h:mm a")}
+					</div>
+					<Avatar className="size-6 text-xxs">
+						<AvatarImage src={avatarUrl} className="size-6" />
+						<AvatarFallback className="size-6">
+							{getInitials(authorName)}
+						</AvatarFallback>
+					</Avatar>
 
-				<p className="mr-4 ml-2 text-foreground">{authorName}</p>
+					<p className="mr-4 ml-2 text-foreground">{authorName}</p>
+				</div>
+				{(comment.authorId === user?.id || hasMembershipManagePermission) && (
+					<>
+						<Button
+							variant="ghost"
+							className="self-center"
+							size="icon"
+							aria-label="Delete comment"
+							onClick={() => setShowConfirmDelete(true)}
+						>
+							<Trash />
+						</Button>
+						<DeleteCommentAlertDialog
+							commentId={comment.id}
+							showConfirmDelete={showConfirmDelete}
+							setShowConfirmDelete={setShowConfirmDelete}
+						/>
+					</>
+				)}
 			</div>
 			<div className="markdown-content inline-flex min-h-20 min-w-60 flex-col items-start rounded-md bg-secondary p-3">
 				{"compiledSource" in commentData && (

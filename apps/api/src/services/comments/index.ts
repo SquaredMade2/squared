@@ -10,7 +10,7 @@ export const commentRpcSchema = createServiceSchema<CommentRpc>()({
 	},
 	deleteComment: {
 		input: z.object({ commentId: z.string() }),
-		output: z.void(),
+		output: commentSchema,
 	},
 	getTaskComments: {
 		input: z.object({ taskId: z.string() }),

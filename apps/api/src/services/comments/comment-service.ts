@@ -33,10 +33,19 @@ export class CommentService implements CommentRpc {
 				return res[0];
 			});
 	}
-	async deleteComment({ commentId }: { commentId: string }): Promise<void> {
+	async deleteComment({ commentId }: { commentId: string }): Promise<Comment> {
 		this.logger.info("Deleting comment with id", commentId);
-		await this.db.delete(commentsTable).where(eq(commentsTable.id, commentId));
-		return;
+		return this.db
+			.delete(commentsTable)
+			.where(eq(commentsTable.id, commentId))
+			.returning()
+			.then((res) => {
+				if (!res[0]) {
+					this.logger.error("No comment found with id", commentId);
+					throw new Error("Comment not found");
+				}
+				return res[0];
+			});
 	}
 	async getTaskComments({ taskId }: { taskId: string }): Promise<Comment[]> {
 		this.logger.info("Getting comments for task with id", taskId);
