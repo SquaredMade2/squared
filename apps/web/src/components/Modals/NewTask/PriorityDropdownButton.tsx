@@ -23,7 +23,7 @@ export const PriorityDropdownButton = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild={true}>
 				<Button variant="outline" className="w-full max-w-full">
 					<span className="cursor-pointer">
 						<PriorityIcon priority={newTaskPriority || "noPriority"} />

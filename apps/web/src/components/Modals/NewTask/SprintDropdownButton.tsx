@@ -46,7 +46,7 @@ export const SprintDropdownButton = ({
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild={true}>
 				<Button variant={"outline"} className={cn("w-full max-w-full")}>
 					<span className="cursor-pointer">
 						<Activity className="mr-2 size-4 text-muted-foreground" />

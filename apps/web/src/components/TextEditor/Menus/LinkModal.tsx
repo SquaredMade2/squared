@@ -45,7 +45,7 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 	};
 	return (
 		<Dialog open={showLinkForm} onOpenChange={handleOpenChange}>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild={true}>
 				<Button
 					variant="ghost"
 					size="icon"

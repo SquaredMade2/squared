@@ -618,7 +618,7 @@ const Toast = ({
 			return "translateY(calc(var(--lift) * -100%))";
 		if (mounted && expanded)
 			return "translateY(calc(var(--lift) * var(--offset)))";
-		if (!expanded && !isFront)
+		if (!(expanded || isFront))
 			return "translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--scale)))";
 		if (mounted) return "translateY(0)";
 		return "translateY(100%)";
@@ -662,10 +662,9 @@ const Toast = ({
 					"transform-[translateY(calc(var(--lift)*var(--offset)))] h-[var(--initial-height)]",
 
 				// Non-expanded and non-front toast (stacked toasts)
-				!expanded &&
-					!isFront &&
+				!(expanded ||isFront ) &&
 					"transform-[translateY(calc(var(--lift-amount)*var(--toasts-before)))] z-[var(--z-index)] h-[var(--front-toast-height)] scale-[calc(1-var(--toasts-before)*0.05)]",
-				!expanded && !isFront && "[&>*]:opacity-0",
+				!(expanded || isFront ) && "[&>*]:opacity-0",
 
 				// Removed and front toast without swipe-out
 				removed &&
@@ -781,7 +780,7 @@ const Toast = ({
 				setSwipeDirection(null);
 			}}
 			onPointerMove={(event) => {
-				if (!pointerStartRef.current || !dismissible) return;
+				if (!(pointerStartRef.current && dismissible)) return;
 				let isHighlighted = false;
 
 				if (window.getSelection() && window.getSelection() !== null) {
@@ -1138,7 +1137,7 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
 			aria-live="polite"
 			aria-relevant="additions text"
 			aria-atomic="false"
-			suppressHydrationWarning
+			suppressHydrationWarning={true}
 		>
 			<ol
 				tabIndex={-1}

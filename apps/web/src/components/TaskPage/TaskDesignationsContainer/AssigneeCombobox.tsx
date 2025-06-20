@@ -79,7 +79,7 @@ const AssigneeCombobox = () => {
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
+			<PopoverTrigger asChild={true}>
 				<Button
 					variant="outline"
 					aria-expanded={open}
@@ -119,7 +119,7 @@ const AssigneeCombobox = () => {
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											!currentTask.assigneeId ? "opacity-100" : "opacity-0",
+											currentTask.assigneeId ? "opacity-0" : "opacity-100",
 										)}
 									/>
 								</CommandPinnedItem>

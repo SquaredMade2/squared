@@ -1,0 +1,28 @@
+{
+	"extends": "//",
+	"linter": {
+		"includes": [
+			"**",
+			"!**/dist/**",
+			"!**/build/**",
+			"!**/.next/**",
+			"!**/.nx/**",
+			"!**/node_modules/**",
+			"!**/bun.lock",
+			"!**/*.md"
+		],
+		"rules": {
+			"correctness": {
+				"noNodejsModules": "error"
+			},
+			"performance": {
+				"noBarrelFile": "off",
+				"noNamespaceImport": "off",
+				"noReExportAll": "off"
+			},
+			"suspicious": {
+				"noConsole": "off"
+			}
+		}
+	}
+}

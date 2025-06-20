@@ -31,7 +31,7 @@ const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild={true}>
 				<Button variant="outline" className="w-full">
 					<CirclePlus className="mr-2 h-4 w-4" />
 					Add Item

@@ -15,7 +15,7 @@ export const DeleteLabelButton = ({
 	const deleteLabelMutation = useMutation({
 		mutationFn: async () => {
 			await client.workspace.deleteWorkspaceLabel
-				.$post({ labelName: labelName })
+				.$post({ labelName })
 				.then((res) => res.json());
 		},
 		onSuccess: () => {

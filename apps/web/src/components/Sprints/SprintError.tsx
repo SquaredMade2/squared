@@ -22,7 +22,7 @@ export const SprintError = ({
 				</h2>
 				<p className="break-words text-muted-foreground">{error}</p>
 				<div className="flex justify-center space-x-4">
-					<Button variant="outline" asChild>
+					<Button variant="outline" asChild={true}>
 						<Link href={`/${workspaceUrl}/team/${teamIdentifier}/all`}>
 							Go to Dashboard
 						</Link>

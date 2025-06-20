@@ -23,12 +23,12 @@ export const SprintNotFound = ({
 					deleted or doesn't exist.
 				</p>
 				<div className="flex justify-center space-x-4">
-					<Button asChild>
+					<Button asChild={true}>
 						<Link href={`/${workspaceUrl}/team/${teamIdentifier}/sprints`}>
 							View All Sprints
 						</Link>
 					</Button>
-					<Button variant="outline" asChild>
+					<Button variant="outline" asChild={true}>
 						<Link href={`/${workspaceUrl}/team/${teamIdentifier}/all`}>
 							Go to Task Dashboard
 						</Link>

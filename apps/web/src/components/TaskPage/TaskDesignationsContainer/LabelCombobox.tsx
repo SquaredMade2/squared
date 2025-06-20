@@ -104,7 +104,7 @@ const LabelCombobox = () => {
 	return (
 		<div className={`${taskLabels.length === 0 && "h-10"} md:w-full`}>
 			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger asChild>
+				<PopoverTrigger asChild={true}>
 					<Button
 						variant="outline"
 						className="h-8 w-fit justify-start md:h-10 md:w-full"

@@ -54,7 +54,7 @@ export default function SprintSettings() {
 	const { team, loading: teamLoading } = useTeams();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintEnabled, setSprintEnabled] = useState(
-		team?.sprintsEnabled || false,
+		team?.sprintsEnabled,
 	);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		team?.sprintStartDate || null,
@@ -207,7 +207,7 @@ export default function SprintSettings() {
 						</p>
 					)}
 					{isSprintInfoExpanded && (
-						<Link href="www.squaredmade.com/docs/sprints" passHref>
+						<Link href="www.squaredmade.com/docs/sprints" passHref={true}>
 							<Button variant="link" className="mt-4 h-auto p-0">
 								Read more <ChevronRight className="ml-2 h-4 w-4" />
 							</Button>
@@ -273,7 +273,7 @@ export default function SprintSettings() {
 									Sprints start on
 								</Label>
 								<Popover>
-									<PopoverTrigger asChild>
+									<PopoverTrigger asChild={true}>
 										<Button
 											variant={"secondary"}
 											className={cn(
@@ -303,7 +303,7 @@ export default function SprintSettings() {
 												setSprintStartDate(value ?? null);
 												handleUpdateTeam({ sprintStartDate: value });
 											}}
-											initialFocus
+											initialFocus={true}
 										/>
 									</PopoverContent>
 								</Popover>
@@ -327,7 +327,7 @@ export default function SprintSettings() {
 									</p>
 								</div>
 								<AlertDialog>
-									<AlertDialogTrigger asChild>
+									<AlertDialogTrigger asChild={true}>
 										<Button variant="outline">Add Active Tasks</Button>
 									</AlertDialogTrigger>
 									<AlertDialogContent>

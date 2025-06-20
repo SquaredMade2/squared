@@ -91,8 +91,8 @@ const TaskList = ({
 									<TooltipProvider>
 										<Tooltip>
 											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<TooltipTrigger asChild>
+												<DropdownMenuTrigger asChild={true}>
+													<TooltipTrigger asChild={true}>
 														<Avatar
 															className="size-6 shrink-0"
 															onClick={(e) => {
@@ -119,8 +119,8 @@ const TaskList = ({
 									<TooltipProvider>
 										<Tooltip>
 											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<TooltipTrigger asChild>
+												<DropdownMenuTrigger asChild={true}>
+													<TooltipTrigger asChild={true}>
 														<UserSearch
 															className="size-6 shrink-0 text-[#9597AD]"
 															onClick={(e) => {

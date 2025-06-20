@@ -800,7 +800,7 @@ describe("stringify & parse", () => {
 				class Currency {
 					constructor(private valueInUsd: number) {}
 
-					// @ts-ignore
+					// @ts-expect-error
 					get inUSD() {
 						return this.valueInUsd;
 					}
@@ -833,7 +833,7 @@ describe("stringify & parse", () => {
 
 	test("regression #65: BigInt on Safari v13", () => {
 		const oldBigInt = global.BigInt;
-		// @ts-ignore
+		// @ts-expect-error
 		global.BigInt = undefined;
 
 		const input = {

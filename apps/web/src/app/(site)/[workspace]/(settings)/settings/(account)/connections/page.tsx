@@ -13,7 +13,7 @@ const Page = () => {
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 
-	if (!isLoaded || !user) return null;
+	if (!(isLoaded && user)) return null;
 
 	const handleConnectAccount = async (
 		strategy: "oauth_google" | "oauth_github",

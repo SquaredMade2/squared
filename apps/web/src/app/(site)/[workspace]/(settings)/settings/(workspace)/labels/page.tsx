@@ -28,7 +28,7 @@ export default function WorkspaceLabelsPage() {
 		meta: {
 			page: "workspaceLabels",
 			pageId: workspace?.id,
-			refetch: refetch,
+			refetch,
 		},
 	}));
 

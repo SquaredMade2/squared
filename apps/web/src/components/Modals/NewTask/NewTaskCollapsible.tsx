@@ -92,7 +92,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				teamId: team.id,
 				workspaceId: workspace.externalId,
 				// updatedAt: new Date(), 		// do we need this for custom timestamp?
-				parentId: parentId,
+				parentId,
 			};
 
 			const res = await client.task.createTask
@@ -137,7 +137,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	return (
 		<Accordion
 			type="single"
-			collapsible
+			collapsible={true}
 			className="w-full"
 			value={isOpen}
 			onValueChange={setIsOpen}

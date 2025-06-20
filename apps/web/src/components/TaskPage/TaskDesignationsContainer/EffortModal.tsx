@@ -15,7 +15,7 @@ const EffortModal = () => {
 	const { team } = useTeamStore((state) => state);
 	return (
 		<Dialog>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild={true}>
 				<Button
 					variant="ghost"
 					size="icon"

@@ -128,7 +128,7 @@ export default function InboxPage() {
 										...n,
 										user,
 									}))
-									.filter((n) => (!filterRead ? true : n.read))}
+									.filter((n) => (filterRead ? n.read : true))}
 								filterType={filterType}
 							/>
 						</div>
@@ -136,7 +136,7 @@ export default function InboxPage() {
 							setFilterType={setFilterType}
 							filterType={filterType}
 							readNotifications={notifications.filter(
-								(n) => !n.read || !n.dismissed,
+								(n) => !(n.read && n.dismissed),
 							)}
 						/>
 					</div>

@@ -28,7 +28,7 @@ const BlockedByTasks = () => {
 			onOpenChange={setIsBlockedByExpanded}
 			className="mt-6 rounded-lg bg-background p-4 shadow-xs"
 		>
-			<CollapsibleTrigger asChild>
+			<CollapsibleTrigger asChild={true}>
 				<div className="mb-2 flex cursor-pointer items-center">
 					{isBlockedByExpanded ? (
 						<ChevronDown className="mr-2 h-4 w-4 transition-transform duration-200" />

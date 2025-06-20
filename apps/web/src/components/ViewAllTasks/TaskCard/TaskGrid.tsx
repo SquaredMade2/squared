@@ -64,8 +64,8 @@ const TaskGrid = ({
 								<TooltipProvider>
 									<Tooltip>
 										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<TooltipTrigger asChild>
+											<DropdownMenuTrigger asChild={true}>
+												<TooltipTrigger asChild={true}>
 													<Avatar
 														className="size-6"
 														onClick={(e) => {
@@ -90,8 +90,8 @@ const TaskGrid = ({
 								<TooltipProvider>
 									<Tooltip>
 										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<TooltipTrigger asChild>
+											<DropdownMenuTrigger asChild={true}>
+												<TooltipTrigger asChild={true}>
 													<UserSearch
 														className="size-6 text-[#9597AD]"
 														onClick={(e) => {

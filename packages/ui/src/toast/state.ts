@@ -11,7 +11,7 @@ let toastsCounter = 1;
  * Type definition for toast titles
  * Allows for both static React nodes and functions that return React nodes
  */
-type titleT = (() => React.ReactNode) | React.ReactNode;
+type TitleT = (() => React.ReactNode) | React.ReactNode;
 
 /**
  * Extended promise result type for complex toast results
@@ -185,7 +185,7 @@ class Observer {
 	 */
 	create = (
 		data: ExternalToast & {
-			message?: titleT;
+			message?: TitleT;
 			type?: ToastTypes;
 			promise?: PromiseT;
 			jsx?: React.ReactElement;
@@ -250,27 +250,27 @@ class Observer {
 		return id;
 	};
 
-	message = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	message = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, message });
 	};
 
-	error = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	error = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, message, type: "error" });
 	};
 
-	success = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	success = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, type: "success", message });
 	};
 
-	info = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	info = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, type: "info", message });
 	};
 
-	warning = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	warning = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, type: "warning", message });
 	};
 
-	loading = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	loading = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, type: "loading", message });
 	};
 
@@ -459,7 +459,7 @@ export const ToastState = new Observer();
 /**
  * Basic toast function that creates a default toast
  */
-const toastFunction = (message: titleT, data?: ExternalToast) => {
+const toastFunction = (message: TitleT, data?: ExternalToast) => {
 	// Check if Toaster is mounted before creating a toast
 	if (!ToastState.checkToasterMounted()) return;
 	const id = data?.id || toastsCounter++;

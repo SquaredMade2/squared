@@ -95,7 +95,7 @@ export default function SearchCommand() {
 	return (
 		<CommandDialog open={showCommand} onOpenChange={setShowCommand}>
 			<DialogTitle className="sr-only">Search</DialogTitle>
-			<CommandInput placeholder="Type a command or search..." autoFocus />
+			<CommandInput placeholder="Type a command or search..." autoFocus={true} />
 			<CommandList>
 				<ScrollArea className="h-[300px]">
 					<CommandEmpty>No results found.</CommandEmpty>

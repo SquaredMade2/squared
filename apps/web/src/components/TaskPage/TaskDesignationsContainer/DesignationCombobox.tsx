@@ -45,7 +45,7 @@ export function DesignationCombobox<T>({
 }: DesignationComboboxProps<T>) {
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
+			<PopoverTrigger asChild={true}>
 				<Button variant="outline" className="w-full justify-between">
 					{triggerText}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

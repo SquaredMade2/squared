@@ -512,7 +512,7 @@ function isDateDisabled(
 	fromDate?: Date,
 	toDate?: Date,
 ): boolean {
-	if (!disabled && !fromDate && !toDate) return false;
+	if (!((disabled || fromDate ) || toDate)) return false;
 
 	if (fromDate && date < fromDate) return true;
 	if (toDate && date > toDate) return true;
@@ -598,7 +598,7 @@ function getWeekNumber(date: Date): number {
 	if (target.getDay() !== 4) {
 		target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
 	}
-	return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);
+	return 1 + Math.ceil((firstThursday - target.valueOf()) / 604_800_000);
 }
 
 /**

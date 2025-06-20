@@ -41,7 +41,7 @@ export function SprintTabs({
 					{activeSprint && (
 						<>
 							<h3 className="mb-2 font-semibold text-lg">Active Sprint</h3>
-							<SprintCard sprint={activeSprint} tasks={tasks} isActive />
+							<SprintCard sprint={activeSprint} tasks={tasks} isActive={true} />
 						</>
 					)}
 					{upcomingSprints.length > 0 && (

@@ -46,7 +46,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 								{organizations?.map(
 									(org: OrganizationResource, index: number) => (
 										<Link
-											legacyBehavior
+											legacyBehavior={true}
 											href={`workspace/${org.slug}`}
 											className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
 											key={org.id}
@@ -70,7 +70,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						<ul className="px-1.5">
 							<Link
 								href="/create"
-								passHref
+								passHref={true}
 								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 							>
 								<li>Create or join a workspace</li>

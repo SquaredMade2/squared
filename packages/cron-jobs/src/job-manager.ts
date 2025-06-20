@@ -203,7 +203,7 @@ export class JobManager {
 		const job = this.jobs.get(jobName);
 		const handler = this.handlers.get(jobName);
 
-		if (!job || !handler) {
+		if (!(job && handler)) {
 			throw new Error(`Job '${jobName}' not found`);
 		}
 

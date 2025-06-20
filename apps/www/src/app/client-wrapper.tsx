@@ -15,8 +15,8 @@ export const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<ThemeProvider
 			attribute="class"
-			enableSystem
-			disableTransitionOnChange
+			enableSystem={true}
+			disableTransitionOnChange={true}
 			defaultTheme="system"
 		>
 			{children}

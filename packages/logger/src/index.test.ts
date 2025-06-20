@@ -263,7 +263,7 @@ describe("@squaredmade/logger", () => {
 
 			// Create a metadata object to be included in the log
 			const metadata = {
-				userId: 12345,
+				userId: 12_345,
 				action: "user.login",
 				requestId: "req-abc-123",
 				duration: 42,
@@ -314,7 +314,7 @@ describe("@squaredmade/logger", () => {
 
 				// We can use the mock logger directly
 				logger.info("User activity", {
-					userId: 12345,
+					userId: 12_345,
 					action: "login",
 					timestamp: new Date().toISOString(),
 				});
@@ -331,7 +331,7 @@ describe("@squaredmade/logger", () => {
 				expect(firstCall[0]).toBe("User activity");
 
 				// The second argument should be our metadata object
-				expect(firstCall[1]).toHaveProperty("userId", 12345);
+				expect(firstCall[1]).toHaveProperty("userId", 12_345);
 				expect(firstCall[1]).toHaveProperty("action", "login");
 				expect(firstCall[1]).toHaveProperty("timestamp");
 			} finally {

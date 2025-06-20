@@ -45,13 +45,13 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					{!task.assigneeId ? (
-						<UserSearch className="size-5 text-[#9597AD]" />
-					) : (
+					{task.assigneeId ? (
 						<Avatar className="mr-2 flex size-4 text-xxs">
 							<AvatarImage src={assignedUser?.imageUrl ?? ""} />
 							<AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
 						</Avatar>
+					) : (
+						<UserSearch className="size-5 text-[#9597AD]" />
 					)}
 				</div>
 				Assignee

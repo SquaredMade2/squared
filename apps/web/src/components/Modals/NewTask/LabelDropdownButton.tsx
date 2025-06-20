@@ -77,7 +77,7 @@ export const LabelDropdownButton = () => {
 
 	return (
 		<DropdownMenu open={open} onOpenChange={setOpen}>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild={true}>
 				<Button variant="outline" className="mr-2 w-full max-w-full">
 					{renderLabelButton()}
 				</Button>

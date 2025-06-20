@@ -25,7 +25,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 	const { organization } = useOrganization();
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild={true}>
 				<Button
 					variant="ghost"
 					size={state === "collapsed" ? "icon" : "sm"}
@@ -54,7 +54,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 			<DropdownMenuContent align="end" className="w-56">
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem asChild>
+				<DropdownMenuItem asChild={true}>
 					<Link href={`/${organization?.slug}/settings/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>

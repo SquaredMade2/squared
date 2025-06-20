@@ -65,7 +65,7 @@ export default function SprintRetrospectivePage() {
 			transports: ["websocket"],
 			reconnectionAttempts: 5,
 			reconnectionDelay: 1000,
-			timeout: 10000,
+			timeout: 10_000,
 		});
 
 		newSocket.on("connect", () => {

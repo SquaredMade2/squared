@@ -32,11 +32,11 @@ export class WorkspaceService implements WorkspaceRpc {
 	private readonly logger: Logger;
 	private readonly clerkClient: ClerkClient;
 
-	constructor(db: DBClient, CLERK_SECRET?: string) {
+	constructor(db: DBClient, ClerkSecret?: string) {
 		this.db = db;
 		this.logger = createCustomLogger("workspace");
-		if (!CLERK_SECRET) this.throwError("CLERK_SECRET is not defined.");
-		this.clerkClient = createClerkClient({ secretKey: CLERK_SECRET });
+		if (!ClerkSecret) this.throwError("CLERK_SECRET is not defined.");
+		this.clerkClient = createClerkClient({ secretKey: ClerkSecret });
 	}
 
 	async createWorkspace({
@@ -88,7 +88,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 			const [_, [newTeam]] = await Promise.all([
 				tx.insert(userWorkspacesTable).values({
-					userId: userId,
+					userId,
 					workspaceId: newWorkspace.externalId,
 				}),
 
@@ -102,7 +102,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					.returning(),
 			]);
 			await tx.insert(userTeamsTable).values({
-				userId: userId,
+				userId,
 				teamId: newTeam.id,
 			});
 

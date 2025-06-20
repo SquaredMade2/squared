@@ -21,7 +21,7 @@ const BlockedByCombobox = () => {
 
 	const { mutate: mutateUpdateBlockedByTasks } = useMutation({
 		mutationFn: async (blockingId: string) => {
-			if (!currentTask || !taskId) throw new Error("Task not found");
+			if (!(currentTask && taskId)) throw new Error("Task not found");
 			if (currentTaskBlockingIds.includes(blockingId)) {
 				toast.error("You can't have two tasks blocking each other");
 				return currentTaskBlockedBy;

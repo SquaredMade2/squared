@@ -45,9 +45,9 @@ const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 	if (hasChildren) {
 		return (
 			<Collapsible open={isOpen} onOpenChange={setIsOpen}>
-				<CollapsibleTrigger asChild>
+				<CollapsibleTrigger asChild={true}>
 					<SidebarMenuButton
-						asChild
+						asChild={true}
 						className="w-full justify-between"
 						isActive={isActive}
 					>
@@ -76,7 +76,7 @@ const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 	}
 
 	return (
-		<SidebarMenuButton asChild isActive={isActive}>
+		<SidebarMenuButton asChild={true} isActive={isActive}>
 			<Link
 				href={`/docs/${page.uid}`}
 				className={`h-fit ${isActive && "bg-accent text-accent-foreground"} w-full`}

@@ -38,7 +38,7 @@ function getLuminance(hex: string): number {
 	const rgb = hexToRGB(hex);
 	const [r, g, b] = rgb.map((value) => {
 		const v = value / 255;
-		return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+		return v <= 0.039_28 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
 	});
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
@@ -63,7 +63,7 @@ export default function LabelBadge({ label }: { label: Label }) {
 	return (
 		<TooltipProvider>
 			<Tooltip>
-				<TooltipTrigger asChild>
+				<TooltipTrigger asChild={true}>
 					<span
 						className={cn(
 							"inline-flex cursor-default items-center rounded-full px-1.5 py-0 font-medium text-[10px]",

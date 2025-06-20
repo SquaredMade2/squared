@@ -33,7 +33,7 @@ const StatusDropdown = () => {
 	const { mutate: updateItem } = useMutation({
 		mutationKey: ["task", "updateStatus", taskId],
 		mutationFn: async (newStatus: Status) => {
-			if (!currentTask || !taskId) throw new Error("Task not found");
+			if (!(currentTask && taskId)) throw new Error("Task not found");
 			const res = await client.task.updateStatus
 				.$post({
 					taskId,

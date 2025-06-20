@@ -112,32 +112,14 @@ const ForgotPasswordPage = () => {
 			<Card className="w-full max-w-md bg-linear-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-center font-bold text-2xl">
-						{!successfulCreation
-							? "Forgot Password"
-							: secondFactor
+						{successfulCreation
+							? secondFactor
 								? "Two-Factor Authentication"
-								: "Reset Your Password"}
+								: "Reset Your Password" : "Forgot Password"}
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{!successfulCreation ? (
-						<form onSubmit={create} className="space-y-4">
-							<div className="space-y-2">
-								<Label htmlFor={getFormId("email")}>Email</Label>
-								<Input
-									id={getFormId("email")}
-									type="email"
-									placeholder="Enter your email"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									required
-								/>
-							</div>
-							<Button type="submit" className="w-full">
-								Send Reset Email
-							</Button>
-						</form>
-					) : secondFactor ? (
+					{successfulCreation ? secondFactor ? (
 						<form onSubmit={completeReset} className="space-y-4">
 							<div className="space-y-2">
 								<Label htmlFor={getFormId("secondFactorCode")}>
@@ -149,7 +131,7 @@ const ForgotPasswordPage = () => {
 									placeholder="Enter your 2FA code"
 									value={secondFactorCode}
 									onChange={(e) => setSecondFactorCode(e.target.value)}
-									required
+									required={true}
 								/>
 							</div>
 							<Button type="submit" className="w-full">
@@ -177,7 +159,7 @@ const ForgotPasswordPage = () => {
 										placeholder="Enter the reset code"
 										value={code}
 										onChange={(e) => setCode(e.target.value)}
-										required
+										required={true}
 									/>
 								</div>
 							</div>
@@ -191,7 +173,7 @@ const ForgotPasswordPage = () => {
 										placeholder="Enter your new password"
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
-										required
+										required={true}
 									/>
 									<Button
 										type="button"
@@ -220,7 +202,7 @@ const ForgotPasswordPage = () => {
 										placeholder="Password confirmation"
 										value={confirmPassword}
 										onChange={(e) => setConfirmPassword(e.target.value)}
-										required
+										required={true}
 									/>
 									<Button
 										type="button"
@@ -240,6 +222,23 @@ const ForgotPasswordPage = () => {
 							</div>
 							<Button type="submit" className="w-full">
 								Reset Password
+							</Button>
+						</form>
+					) : (
+						<form onSubmit={create} className="space-y-4">
+							<div className="space-y-2">
+								<Label htmlFor={getFormId("email")}>Email</Label>
+								<Input
+									id={getFormId("email")}
+									type="email"
+									placeholder="Enter your email"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+									required={true}
+								/>
+							</div>
+							<Button type="submit" className="w-full">
+								Send Reset Email
 							</Button>
 						</form>
 					)}

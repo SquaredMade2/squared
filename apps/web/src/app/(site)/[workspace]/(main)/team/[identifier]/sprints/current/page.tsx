@@ -34,7 +34,7 @@ export default function MyAssignedTasksPage() {
 		);
 	}
 
-	if (!workspace || !sprint) return null;
+	if (!(workspace && sprint)) return null;
 	return (
 		<TaskPageLayout
 			loading={loading || sprintLoading}

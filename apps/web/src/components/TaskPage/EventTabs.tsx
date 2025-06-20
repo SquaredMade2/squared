@@ -46,7 +46,7 @@ export const EventTabs = () => {
 		}: {
 			editorContent: CustomDescendant[];
 		}) => {
-			if (!currentTask || !workspace) return;
+			if (!(currentTask && workspace)) return;
 
 			const mentions = getMentionsFromSlate(editorContent);
 
@@ -55,7 +55,7 @@ export const EventTabs = () => {
 					(user) => user?.firstName === mention,
 				);
 
-				if (!mentionedUser || !mentionedUser.userId) continue;
+				if (!(mentionedUser && mentionedUser.userId)) continue;
 
 				const mentionEvent: CreateNotificationRequest = {
 					description: "Task Comment Mention",

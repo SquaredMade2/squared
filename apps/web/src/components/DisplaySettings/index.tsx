@@ -120,13 +120,13 @@ const TopNavBarDisplay = () => {
 	};
 
 	const handleValueChange = (val: string) =>
-		!val ? setView(view) : setView(val as View);
+		val ? setView(val as View) : setView(view);
 
 	return (
 		<TooltipProvider delayDuration={0}>
 			<div className="relative flex h-10 flex-col items-end gap-2">
 				<Popover>
-					<PopoverTrigger asChild>
+					<PopoverTrigger asChild={true}>
 						<Button variant="ghost" className="gap-2">
 							<SlidersVertical className="size-4" />
 							<div className="hidden items-center gap-2 md:flex">
@@ -283,7 +283,7 @@ const TopNavBarDisplay = () => {
 
 								<div className="col-span-1 text-right">
 									<Tooltip>
-										<TooltipTrigger asChild>
+										<TooltipTrigger asChild={true}>
 											<Button
 												variant="outline"
 												size="sm"
@@ -313,7 +313,7 @@ const TopNavBarDisplay = () => {
 							<div className="flex items-center justify-between">
 								<span className="text-foreground text-xs">Completed tasks</span>
 								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
+									<DropdownMenuTrigger asChild={true}>
 										<Button
 											variant="outline"
 											size="sm"

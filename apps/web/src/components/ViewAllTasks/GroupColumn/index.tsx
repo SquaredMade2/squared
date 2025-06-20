@@ -42,7 +42,12 @@ const GroupColumn = ({
 	return (
 		<div className={isListView ? "mb-2 w-full" : "w-72 shrink-0 pr-2 pb-2"}>
 			{/* When row grouping is active, the Droppable is already created in RowGroupingWrapper */}
-			{!isRowGroupingActive ? (
+			{isRowGroupingActive ? (
+				/* With row grouping active, GroupColumn just renders the tasks */
+				<div className="flex w-full flex-col items-start">
+					{showTasks && <Group tasks={tasks} isListView={isListView} />}
+				</div>
+			) : (
 				<Droppable
 					droppableId={group}
 					type="TASK"
@@ -116,11 +121,6 @@ const GroupColumn = ({
 						</div>
 					)}
 				</Droppable>
-			) : (
-				/* With row grouping active, GroupColumn just renders the tasks */
-				<div className="flex w-full flex-col items-start">
-					{showTasks && <Group tasks={tasks} isListView={isListView} />}
-				</div>
 			)}
 			{!isListView && <GridColumnNewTaskButton group={columnStatus} />}
 		</div>

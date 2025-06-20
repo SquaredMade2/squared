@@ -109,7 +109,34 @@ const TaskColumnTitle = ({
 					isListView && numberOfTasks === 0 ? "rounded-b-lg" : "",
 				)}
 			>
-				{!isListView ? (
+				{isListView ? (
+					<div
+						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
+					>
+						{groupTasksBy === "Status" ? (
+							<StatusIcon status={title as Status} />
+						) : groupTasksBy === "Priority" ? (
+							<PriorityIcon priority={title as Priority} />
+						) : groupTasksBy === "Assignee" && assignee ? (
+							<Avatar className="size-4 text-xxs">
+								<AvatarImage src={assignee.imageUrl ?? ""} />
+								<AvatarFallback>
+									{getInitials(getName(assignee))}
+								</AvatarFallback>
+							</Avatar>
+						) : groupTasksBy === "Label" && label ? (
+							<LabelColor label={label} />
+						) : (
+							<div />
+						)}
+						<div className="flex items-center gap-2">
+							<span>{formatColumnTitle(title)}</span>
+							<span className="ml-2 text-muted-foreground">
+								{numberOfTasks}
+							</span>
+						</div>
+					</div>
+				) : (
 					showTasks && (
 						<div
 							className={
@@ -144,33 +171,6 @@ const TaskColumnTitle = ({
 							</div>
 						</div>
 					)
-				) : (
-					<div
-						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
-					>
-						{groupTasksBy === "Status" ? (
-							<StatusIcon status={title as Status} />
-						) : groupTasksBy === "Priority" ? (
-							<PriorityIcon priority={title as Priority} />
-						) : groupTasksBy === "Assignee" && assignee ? (
-							<Avatar className="size-4 text-xxs">
-								<AvatarImage src={assignee.imageUrl ?? ""} />
-								<AvatarFallback>
-									{getInitials(getName(assignee))}
-								</AvatarFallback>
-							</Avatar>
-						) : groupTasksBy === "Label" && label ? (
-							<LabelColor label={label} />
-						) : (
-							<div />
-						)}
-						<div className="flex items-center gap-2">
-							<span>{formatColumnTitle(title)}</span>
-							<span className="ml-2 text-muted-foreground">
-								{numberOfTasks}
-							</span>
-						</div>
-					</div>
 				)}
 				<div className={cn("flex", isListView && "flex-row items-center")}>
 					<Button
@@ -183,7 +183,7 @@ const TaskColumnTitle = ({
 					</Button>
 
 					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
+						<DropdownMenuTrigger asChild={true}>
 							<Button
 								variant="ghost"
 								size="icon"

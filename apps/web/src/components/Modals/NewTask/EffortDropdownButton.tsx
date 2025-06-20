@@ -50,7 +50,7 @@ export const EffortDropdownButton = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild={true}>
 				<Button variant="outline" className="w-full max-w-full">
 					{buttonContent(effortEstimate)}
 				</Button>

@@ -137,7 +137,7 @@ export function AssignTasksDialog({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild={true}>
 				<Button>Assign Tasks</Button>
 			</DialogTrigger>
 			<DialogContent className="flex h-[90vh] flex-col p-0">

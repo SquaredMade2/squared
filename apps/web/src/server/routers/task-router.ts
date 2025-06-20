@@ -261,7 +261,7 @@ export const taskRouter = j.router({
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					labels: labels,
+					labels,
 					updaterId: userId,
 				}),
 			);

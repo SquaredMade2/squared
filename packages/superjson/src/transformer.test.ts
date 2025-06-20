@@ -7,7 +7,7 @@ test("throws an descriptive error when transforming", () => {
 	class FunnyNumber {
 		constructor(private number: number) {}
 
-		// @ts-ignore
+		// @ts-expect-error
 		get theNumber() {
 			return this.number;
 		}

@@ -95,7 +95,7 @@ export default function CreateTeam() {
 	});
 
 	useEffect(() => {
-		if (!authorized && !teamLoading && organization) {
+		if (!(authorized || teamLoading ) && organization) {
 			router.push(`/${organization.slug}`);
 		} else if (!organization && isLoaded) {
 			router.push("/");

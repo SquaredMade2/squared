@@ -140,7 +140,7 @@ function SettingsNavbarContent() {
 									<Users className="mr-2 h-4 w-4" />
 									Teams
 								</h2>
-								<Accordion type="single" collapsible className="ml-6">
+								<Accordion type="single" collapsible={true} className="ml-6">
 									{teams?.map((team) => (
 										<AccordionItem key={team.id} value={team.id}>
 											<AccordionTrigger className="py-2">

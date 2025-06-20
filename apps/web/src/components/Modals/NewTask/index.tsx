@@ -105,7 +105,7 @@ export const NewTaskModal = () => {
 	};
 
 	const handleCreateTask = (values: FormValues) => {
-		if (!team || !organization) {
+		if (!(team && organization)) {
 			toast.error("Error", {
 				description: "Team or workspace not found",
 			});
@@ -130,7 +130,7 @@ export const NewTaskModal = () => {
 			onSuccess: ({ url }) => {
 				toast.success("Task Created Successfully", {
 					description: (
-						<Link href={url} passHref>
+						<Link href={url} passHref={true}>
 							<Button variant="link" className="m-0 p-0">
 								Go to task
 							</Button>
@@ -187,7 +187,7 @@ export const NewTaskModal = () => {
 											<FormControl>
 												<Input
 													{...field}
-													autoFocus
+													autoFocus={true}
 													placeholder="Title"
 													className="text-md"
 													onFocus={() => setIsEditingTitle(true)}

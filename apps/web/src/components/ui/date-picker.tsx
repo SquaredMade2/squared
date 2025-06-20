@@ -43,7 +43,7 @@ export function DatePicker({
 
 	return (
 		<Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
-			<PopoverTrigger asChild>
+			<PopoverTrigger asChild={true}>
 				<Button
 					variant="outline"
 					size="sm"

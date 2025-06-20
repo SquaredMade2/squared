@@ -26,7 +26,7 @@ const PriorityDropdown = () => {
 	const { mutate: updatePriority } = useMutation({
 		mutationKey: ["task", "updatePriority", taskId],
 		mutationFn: async (newPriority: Priority) => {
-			if (!currentTask || !taskId) throw new Error("Task not found");
+			if (!(currentTask && taskId)) throw new Error("Task not found");
 			const res = await client.task.updatePriority.$post({
 				taskId,
 				priority: newPriority,

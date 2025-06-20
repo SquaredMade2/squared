@@ -97,7 +97,7 @@ function SidebarContent() {
 					<WorkspaceDropdown />
 					{state === "expanded" && (
 						<Tooltip>
-							<TooltipTrigger asChild>
+							<TooltipTrigger asChild={true}>
 								<Button
 									variant="ghost"
 									size="icon"
@@ -233,7 +233,7 @@ function IconButton({
 
 	return (
 		<Tooltip>
-			<TooltipTrigger asChild>
+			<TooltipTrigger asChild={true}>
 				<Button
 					variant="ghost"
 					size="icon"

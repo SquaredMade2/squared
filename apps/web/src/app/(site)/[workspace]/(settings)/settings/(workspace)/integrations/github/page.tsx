@@ -91,7 +91,7 @@ const GithubSettings: React.FC = () => {
 									</div>
 									<DropdownMenu>
 										<Protect permission="org:sys_profile:manage">
-											<DropdownMenuTrigger asChild>
+											<DropdownMenuTrigger asChild={true}>
 												<Button variant="ghost" size="sm">
 													<MoreVertical className="h-4 w-4" />
 												</Button>
@@ -149,7 +149,7 @@ const GithubSettings: React.FC = () => {
 								<p>
 									{githubAccount ? "Github Account Connected" : "Not connected"}
 								</p>
-								<Button variant="outline" asChild>
+								<Button variant="outline" asChild={true}>
 									<Link href={`/${organization?.slug}/settings/connections`}>
 										Manage Connected Accounts
 										<ChevronRight className="ml-2 h-4 w-4" />

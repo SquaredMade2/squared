@@ -56,7 +56,7 @@ export const LabelModal = () => {
 	}, [showLabelModal]);
 
 	const checkLabelExists = (name: string) => {
-		if (!workspace || !name.trim()) {
+		if (!(workspace && name.trim())) {
 			setNameExists(false);
 			return;
 		}

@@ -152,7 +152,7 @@ function CommandPinnedItem({
 	className,
 	...props
 }: React.ComponentProps<typeof CommandPrimitive.Item>) {
-	return <CommandItem forceMount value="always-visible" {...props} />;
+	return <CommandItem forceMount={true} value="always-visible" {...props} />;
 }
 
 function CommandShortcut({

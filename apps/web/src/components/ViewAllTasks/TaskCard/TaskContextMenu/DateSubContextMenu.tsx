@@ -47,7 +47,7 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 					mode="single"
 					selected={task.dueDate ?? undefined}
 					onSelect={handleUpdate}
-					initialFocus
+					initialFocus={true}
 				/>
 			</ContextMenuSubContent>
 		</ContextMenuSub>

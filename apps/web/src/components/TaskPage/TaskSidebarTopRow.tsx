@@ -77,7 +77,7 @@ export const TaskSidebarTopRow = () => {
 			<div className="flex h-full items-center">
 				<TooltipProvider delayDuration={0}>
 					<Tooltip>
-						<TooltipTrigger asChild>
+						<TooltipTrigger asChild={true}>
 							<Button
 								variant="ghost"
 								size="icon"
@@ -97,7 +97,7 @@ export const TaskSidebarTopRow = () => {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger asChild>
+						<TooltipTrigger asChild={true}>
 							<Button
 								variant="ghost"
 								size="icon"
@@ -116,7 +116,7 @@ export const TaskSidebarTopRow = () => {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger asChild>
+						<TooltipTrigger asChild={true}>
 							<Button
 								variant="ghost"
 								size="icon"

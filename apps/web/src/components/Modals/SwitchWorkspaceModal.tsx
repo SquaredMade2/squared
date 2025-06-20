@@ -33,7 +33,7 @@ export function WorkspaceSwitcher() {
 	const router = useRouter();
 	const { switchWorkspace } = useWorkspaces();
 
-	if (!organization || !organizations) return null;
+	if (!(organization && organizations)) return null;
 
 	const handleWorkspaceSwitch = async (org: OrganizationResource) => {
 		await switchWorkspace(org);

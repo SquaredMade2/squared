@@ -69,7 +69,7 @@ export function useSprints(sprintId?: string) {
 	const tasksQuery = useQuery({
 		queryKey: ["tasks", teamQuery.data?.id, sprintQuery.data?.id],
 		queryFn: async () => {
-			if (!teamQuery.data || !sprintQuery.data) return;
+			if (!(teamQuery.data && sprintQuery.data)) return;
 			const [sprintTasksRes, teamTasksRes] = await Promise.all([
 				client.sprint.getSprintTasks.$get({
 					sprintId: sprintQuery.data.id,
@@ -109,7 +109,7 @@ export function useSprints(sprintId?: string) {
 		sprintTasks: tasksQuery.data?.sprintTasks || [],
 		setSprint,
 		loading: isLoading,
-		error: error,
+		error,
 		activeSprint,
 		upcomingSprints,
 	};

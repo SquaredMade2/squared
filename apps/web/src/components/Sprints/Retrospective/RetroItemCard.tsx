@@ -57,7 +57,7 @@ export const RetroItemCard = ({
 							{author && (
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger asChild>
+										<TooltipTrigger asChild={true}>
 											<Button
 												variant={liked ? "secondary" : "outline"}
 												className="gap-2"

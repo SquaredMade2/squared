@@ -136,7 +136,7 @@ export default function TeamsSetting() {
 	const { mutate: handleSubmit } = useMutation({
 		mutationKey: ["team", "update", team?.id],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			if (!team || !organization)
+			if (!(team && organization))
 				throw new Error("Team or workspace not found");
 			return await client.team.updateTeam
 				.$post({
@@ -322,7 +322,7 @@ export default function TeamsSetting() {
 					Squared.
 				</p>
 				<AlertDialog>
-					<AlertDialogTrigger asChild>
+					<AlertDialogTrigger asChild={true}>
 						<Button variant="destructive">Delete Team</Button>
 					</AlertDialogTrigger>
 					<AlertDialogContent>

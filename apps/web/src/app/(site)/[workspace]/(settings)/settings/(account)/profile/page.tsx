@@ -88,7 +88,7 @@ export default function Profile() {
 		}
 	};
 
-	if (!isLoaded || !user) return null;
+	if (!(isLoaded && user)) return null;
 
 	return (
 		<div className="container py-10">

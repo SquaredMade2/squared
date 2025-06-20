@@ -38,7 +38,7 @@ function getExposedMeta(serviceDetails: ServiceDetails) {
 		interfaces: serviceDetails.expose.map((method: MethodDetails) => {
 			const {
 				methodName,
-				methodTimeout = 60000,
+				methodTimeout = 60_000,
 				help,
 				paramNames = [],
 				requestSchema,

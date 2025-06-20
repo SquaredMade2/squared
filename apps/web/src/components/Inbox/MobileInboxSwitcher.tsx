@@ -102,9 +102,9 @@ export function MobileInboxSwitcher({
 				<ChevronDown className="size-4" />
 			</Button>
 			<Popover>
-				<PopoverTrigger asChild>
+				<PopoverTrigger asChild={true}>
 					<Button variant="secondary" className="justify-between">
-						{!filterRead ? "All" : "Unread"}
+						{filterRead ? "Unread" : "All"}
 						<ChevronDown className="ml-2 h-4 w-4" />
 					</Button>
 				</PopoverTrigger>

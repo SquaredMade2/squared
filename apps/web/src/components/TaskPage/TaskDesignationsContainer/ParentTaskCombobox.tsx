@@ -30,7 +30,7 @@ const ParentTaskCombobox = () => {
 	const { mutate: updateTaskMutation } = useMutation({
 		mutationKey: ["task", "updateParent", currentTask?.parentId],
 		mutationFn: async (parentId: string | null) => {
-			if (!currentTask || !taskId) throw new Error("Task not found");
+			if (!(currentTask && taskId)) throw new Error("Task not found");
 			const res = await client.task.updateParent.$post({
 				taskId,
 				parentId,

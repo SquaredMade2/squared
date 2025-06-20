@@ -80,7 +80,7 @@ export function InboxDataTable({
 			rowSelection,
 		},
 		filterFns: {
-			unread: (row) => !showUnreadOnly || !row.original.read,
+			unread: (row) => !(showUnreadOnly && row.original.read),
 		},
 		meta: {
 			hoveredRowId,
@@ -318,7 +318,7 @@ export function InboxDataTable({
 														</Button>
 													) : (
 														<Popover>
-															<PopoverTrigger asChild>
+															<PopoverTrigger asChild={true}>
 																<Button
 																	variant="outline"
 																	className="bg-secondary"

@@ -36,7 +36,7 @@ export function checkCondition(
 				taskValue < condition.value
 			);
 		case "arrayIncludesAll":
-			if (!Array.isArray(taskValue) || !Array.isArray(condition.value)) {
+			if (!(Array.isArray(taskValue) && Array.isArray(condition.value))) {
 				return false;
 			}
 			return condition.value.every((val) =>
@@ -103,7 +103,7 @@ export function getFilterAssignees(
 	users?: PublicUserData[],
 ) {
 	const assigneeFilter = currentFilters.find((f) => f.field === "assigneeId");
-	if (!assigneeFilter || !users) return [];
+	if (!(assigneeFilter && users)) return [];
 
 	// I have to do this array check thing because filter values are a union type, so typescript will complain otherwise
 	const assigneeIds = Array.isArray(assigneeFilter.value)

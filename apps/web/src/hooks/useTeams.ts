@@ -19,7 +19,7 @@ export function useTeams() {
 	const { data: authorized = true, isLoading: authLoading } = useQuery({
 		queryKey: ["team", "teamAuthorization", teamIdentifier],
 		queryFn: async () => {
-			if (!organization || !teamIdentifier) return false;
+			if (!(organization && teamIdentifier)) return false;
 			const authorized = await client.user.isUserAuthorized
 				.$get({
 					teamIdentifier,

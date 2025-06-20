@@ -63,8 +63,8 @@ export const AnimatedTooltip = ({
 								}}
 								exit={{ opacity: 0, y: 20, scale: 0.6 }}
 								style={{
-									translateX: translateX,
-									rotate: rotate,
+									translateX,
+									rotate,
 									whiteSpace: "nowrap",
 								}}
 								className="-top-16 -left-1/2 absolute z-50 flex translate-x-1/2 flex-col items-center justify-center rounded-md bg-black px-4 py-2 text-xs shadow-xl"

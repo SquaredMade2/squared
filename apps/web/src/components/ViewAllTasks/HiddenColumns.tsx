@@ -48,7 +48,7 @@ const HiddenColumns = ({
 	};
 
 	return (
-		<Accordion type="single" collapsible className="min-w-[300px]">
+		<Accordion type="single" collapsible={true} className="min-w-[300px]">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
 				{getHiddenColumns().map((column) => (

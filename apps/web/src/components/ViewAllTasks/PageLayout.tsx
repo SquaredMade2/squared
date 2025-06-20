@@ -51,17 +51,7 @@ export function TaskPageLayout({
 			<div className="w-full px-2 sm:px-5">
 				<TopNavBar pageTitle={pageTitle} />
 			</div>
-			{!authorized ? (
-				<div className="flex h-full w-screen flex-col items-center bg-background">
-					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
-						<h1 className="text-2xl">Not Authorized</h1>
-						<p>
-							You are not authorized to access team with identifier{" "}
-							{`"${teamIdentifier}"`}
-						</p>
-					</div>
-				</div>
-			) : user && tasks.length === 0 ? (
+			{authorized ? user && tasks.length === 0 ? (
 				<div className="flex h-full w-full flex-col items-center justify-center gap-4">
 					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
 						<Clipboard className="h-8 w-8 text-muted-foreground" />
@@ -107,6 +97,16 @@ export function TaskPageLayout({
 					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
 						<h1 className="text-2xl">Team not found</h1>
 						<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
+					</div>
+				</div>
+			) : (
+				<div className="flex h-full w-screen flex-col items-center bg-background">
+					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
+						<h1 className="text-2xl">Not Authorized</h1>
+						<p>
+							You are not authorized to access team with identifier{" "}
+							{`"${teamIdentifier}"`}
+						</p>
 					</div>
 				</div>
 			)}

@@ -23,6 +23,7 @@
 	"dependencies": {
 		"@clerk/nextjs": "^6.22.0",
 		"@hello-pangea/dnd": "^18.0.1",
+		"@hookform/resolvers": "^5.1.1",
 		"@mdx-js/loader": "^3.1.0",
 		"@mdx-js/react": "^3.1.0",
 		"@next/mdx": "15.3.3",
@@ -50,6 +51,7 @@
 		"react-colorful": "^5.6.1",
 		"react-csv": "^2.2.2",
 		"react-dom": "19.1.0",
+		"react-hook-form": "^7.58.1",
 		"recharts": "^2.15.3",
 		"slate": "^0.117.0",
 		"slate-dom": "^0.116.0",

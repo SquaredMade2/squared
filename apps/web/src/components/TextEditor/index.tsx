@@ -362,7 +362,7 @@ const TextEditor = ({
 			debounceRef.current = false;
 			return;
 		}
-		if ("@" === key) {
+		if (key === "@") {
 			allowEntireMention();
 		} else {
 			deleteEntireMention();
@@ -371,7 +371,7 @@ const TextEditor = ({
 			setMentionsFilter(getMentionFromLeaf(editor));
 		}
 
-		setToggleTask("#" === key);
+		setToggleTask(key === "#" );
 	}
 
 	return (

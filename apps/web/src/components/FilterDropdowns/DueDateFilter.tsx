@@ -114,7 +114,7 @@ const DueDateFilterDropDown = ({
 					mode="single"
 					selected={selectedDate}
 					onSelect={handleSelectDate}
-					initialFocus
+					initialFocus={true}
 				/>
 				<div className="my-2 mr-2 flex justify-end gap-2">
 					<Button variant="outline" onClick={() => setOpen(false)}>

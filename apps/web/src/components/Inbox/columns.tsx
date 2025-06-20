@@ -91,7 +91,7 @@ export const columns: ColumnDef<
 					</div>
 					<div className="flex w-full flex-col justify-between sm:flex-row">
 						<div
-							className={`flex flex-col ${!read ? "text-muted-foreground" : ""}`}
+							className={`flex flex-col ${read ? "" : "text-muted-foreground"}`}
 						>
 							<div className="flex gap-2 text-xxs">
 								<div>{workspaceName}</div>
@@ -181,15 +181,11 @@ export const columns: ColumnDef<
 
 			return (
 				<div className="flex h-full items-center justify-end">
-					{!isRowHovered ? (
-						<div className="whitespace-nowrap text-right text-muted-foreground text-xs">
-							{formattedDate}
-						</div>
-					) : (
+					{isRowHovered ? (
 						<div className="flex gap-1">
 							<TooltipProvider>
 								<Tooltip>
-									<TooltipTrigger asChild>
+									<TooltipTrigger asChild={true}>
 										<Button
 											onClick={() =>
 												row.original.dismissed
@@ -219,7 +215,7 @@ export const columns: ColumnDef<
 									</TooltipContent>
 								</Tooltip>
 								<Tooltip>
-									<TooltipTrigger asChild>
+									<TooltipTrigger asChild={true}>
 										<Button
 											onClick={toggleSubscribe}
 											variant="secondary"
@@ -233,7 +229,7 @@ export const columns: ColumnDef<
 									<TooltipContent>Unsubscribe</TooltipContent>
 								</Tooltip>
 								<Tooltip>
-									<TooltipTrigger asChild>
+									<TooltipTrigger asChild={true}>
 										<Button
 											onClick={handleSave}
 											variant="secondary"
@@ -253,6 +249,10 @@ export const columns: ColumnDef<
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
+						</div>
+					) : (
+						<div className="whitespace-nowrap text-right text-muted-foreground text-xs">
+							{formattedDate}
 						</div>
 					)}
 				</div>

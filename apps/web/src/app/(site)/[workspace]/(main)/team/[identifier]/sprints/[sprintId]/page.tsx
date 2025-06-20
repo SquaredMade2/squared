@@ -215,7 +215,7 @@ export default function SprintDashboardPage() {
 	});
 
 	const handleEndSprintConfirm = async () => {
-		if (!sprint || !team) return;
+		if (!(sprint && team)) return;
 		setShowEndSprintDialog(false);
 		if (newSprint) {
 			setShowNextSprint(true);
@@ -413,7 +413,7 @@ export default function SprintDashboardPage() {
 					<Link
 						href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
 						className="flex-1"
-						passHref
+						passHref={true}
 					>
 						<Button className="w-full">Start Sprint Retrospective</Button>
 					</Link>

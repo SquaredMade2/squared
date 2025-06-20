@@ -31,7 +31,7 @@ export const getMentionFromLeaf = (editor: Editor) => {
 		match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
 	});
 
-	if (!block?.[0] || !selection) return "";
+	if (!(block?.[0] && selection)) return "";
 
 	const [node] = block;
 

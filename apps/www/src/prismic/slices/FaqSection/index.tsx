@@ -22,7 +22,7 @@ const FaqSection: FC<FaqSectionProps> = ({ slice }) => {
 	return (
 		<div className="my-8">
 			<h3 className="mb-4 font-bold text-2xl">{slice.primary.section_title}</h3>
-			<Accordion type="single" collapsible className="w-full">
+			<Accordion type="single" collapsible={true} className="w-full">
 				{slice.primary.questions.map((item, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: This is okay because the index is stable.
 					<AccordionItem key={index} value={`item-${index}`}>

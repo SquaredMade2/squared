@@ -45,7 +45,7 @@ export default function ViewsPage() {
 		);
 	}
 
-	if (!isLoading && !team) {
+	if (!(isLoading || team)) {
 		return (
 			<div className="flex h-screen items-center justify-center">
 				<p>

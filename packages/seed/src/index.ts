@@ -100,7 +100,7 @@ async function waitForPostgresReady(maxAttempts = 30) {
 }
 
 async function dumpAndRestore() {
-	if (!remoteDbUrl || !localDbUrl) {
+	if (!(remoteDbUrl && localDbUrl)) {
 		throw new Error("Database URLs are not set in environment variables");
 	}
 
@@ -113,7 +113,7 @@ async function dumpAndRestore() {
 		const isDockerInstalled = await checkDockerInstallation();
 		const isDockerComposeInstalled = await checkDockerComposeInstallation();
 
-		if (!isDockerInstalled || !isDockerComposeInstalled) {
+		if (!(isDockerInstalled && isDockerComposeInstalled)) {
 			throw new Error("Docker or Docker Compose is not available");
 		}
 
@@ -184,7 +184,7 @@ async function checkPgToolsInDocker() {
 
 // Function to use Docker for pg_dump and pg_restore operations
 async function dumpAndRestoreWithDocker() {
-	if (!remoteDbUrl || !localDbUrl) {
+	if (!(remoteDbUrl && localDbUrl)) {
 		throw new Error("Database URLs are not set in environment variables");
 	}
 
@@ -224,7 +224,7 @@ async function main() {
 		const isDockerInstalled = await checkDockerInstallation();
 		const isDockerComposeInstalled = await checkDockerComposeInstalled();
 
-		if (!isDockerInstalled || !isDockerComposeInstalled) {
+		if (!(isDockerInstalled && isDockerComposeInstalled)) {
 			throw new Error("Docker or Docker Compose is not available");
 		}
 

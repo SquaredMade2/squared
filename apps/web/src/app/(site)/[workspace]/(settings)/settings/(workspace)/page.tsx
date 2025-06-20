@@ -380,7 +380,7 @@ export default function WorkspaceSettings() {
 						caution.
 					</p>
 					<AlertDialog>
-						<AlertDialogTrigger asChild>
+						<AlertDialogTrigger asChild={true}>
 							<Button variant="destructive">Delete Workspace</Button>
 						</AlertDialogTrigger>
 						<AlertDialogContent>

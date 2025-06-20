@@ -23,7 +23,7 @@ export const StatusDropdownButton = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild={true}>
 				<Button variant="outline" className="w-full max-w-full">
 					<span className="cursor-pointer">
 						<StatusIcon status={newTaskStatus || "todo"} />
