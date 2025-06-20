@@ -20,7 +20,9 @@ export interface EventRpc {
 	getTaskEvents: ({ taskId }: { taskId: string }) => TaskEventsReturn;
 	getNotifications: ({
 		userId,
-	}: { userId: string }) => Promise<FullNotification[]>;
+	}: {
+		userId: string;
+	}) => Promise<FullNotification[]>;
 	createLogEvent: ({
 		taskId,
 		authorId,
@@ -56,5 +58,7 @@ export interface EventRpc {
 	}) => Promise<FullNotification[]>;
 	deleteNotification: ({
 		notificationIds,
-	}: { notificationIds: string[] }) => Promise<void>;
+	}: {
+		notificationIds: string[];
+	}) => Promise<void>;
 }

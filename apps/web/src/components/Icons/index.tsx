@@ -19,38 +19,34 @@ import { cn } from "@squaredmade/ui/cn";
 export const PriorityIcon = ({
 	priority,
 	className,
-}: { priority: Priority; className?: string }) => {
-	const Icon = () => {
-		switch (priority) {
-			case Priority.low:
-				return (
-					<ArrowDown
-						className={cn("size-4 shrink-0 text-blue-500", className)}
-					/>
-				);
-			case Priority.medium:
-				return (
-					<ArrowRight
-						className={cn("size-4 shrink-0 text-yellow-500", className)}
-					/>
-				);
-			case Priority.high:
-				return (
-					<ArrowUp
-						className={cn("size-4 shrink-0 text-orange-500", className)}
-					/>
-				);
-			case Priority.urgent:
-				return (
-					<TriangleAlert
-						className={cn("size-4 shrink-0 text-destructive", className)}
-					/>
-				);
-			default:
-				return <CircleDot className={cn("size-4 shrink-0", className)} />;
-		}
-	};
-	return <Icon />;
+}: {
+	priority: Priority;
+	className?: string;
+}) => {
+	switch (priority) {
+		case Priority.low:
+			return (
+				<ArrowDown className={cn("size-4 shrink-0 text-blue-500", className)} />
+			);
+		case Priority.medium:
+			return (
+				<ArrowRight
+					className={cn("size-4 shrink-0 text-yellow-500", className)}
+				/>
+			);
+		case Priority.high:
+			return (
+				<ArrowUp className={cn("size-4 shrink-0 text-orange-500", className)} />
+			);
+		case Priority.urgent:
+			return (
+				<TriangleAlert
+					className={cn("size-4 shrink-0 text-destructive", className)}
+				/>
+			);
+		default:
+			return <CircleDot className={cn("size-4 shrink-0", className)} />;
+	}
 };
 
 export const StatusIcon = ({ status }: { status: Status }) => {

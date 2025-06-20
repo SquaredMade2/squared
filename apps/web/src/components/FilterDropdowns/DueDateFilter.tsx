@@ -15,7 +15,9 @@ import type { FilterOption } from "./interfaces";
 
 const DueDateFilterDropDown = ({
 	filterOption,
-}: { filterOption: FilterOption }) => {
+}: {
+	filterOption: FilterOption;
+}) => {
 	const [open, setOpen] = useState(false);
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(

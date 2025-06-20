@@ -30,9 +30,7 @@ export interface UserRpc {
 		userId: string;
 		taskId: string;
 	}) => Promise<User>;
-	getDefaultWorkspace: (args: {
-		userId: string;
-	}) => Promise<Workspace | null>;
+	getDefaultWorkspace: (args: { userId: string }) => Promise<Workspace | null>;
 	isUserAuthorized: (args: {
 		userId: string;
 		teamIdentifier: string;

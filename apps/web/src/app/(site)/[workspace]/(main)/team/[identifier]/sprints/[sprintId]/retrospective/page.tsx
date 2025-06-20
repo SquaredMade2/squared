@@ -110,7 +110,10 @@ export default function SprintRetrospectivePage() {
 		mutationFn: async ({
 			type,
 			content,
-		}: { type: RetrospectiveItemType; content: string }) => {
+		}: {
+			type: RetrospectiveItemType;
+			content: string;
+		}) => {
 			return await client.sprint.addRetroItem
 				.$post({
 					sprintId,

@@ -36,7 +36,11 @@ export class UserService implements UserRpc {
 	async updateUser({
 		userId,
 		...args
-	}: { userId: string; name: string; username?: string }) {
+	}: {
+		userId: string;
+		name: string;
+		username?: string;
+	}) {
 		this.logger.info("Updating user with id: ", userId);
 		return await this.db
 			.update(usersTable)
@@ -49,7 +53,10 @@ export class UserService implements UserRpc {
 	async updateUserAvatar({
 		userId,
 		avatarUrl,
-	}: { userId: string; avatarUrl: string }) {
+	}: {
+		userId: string;
+		avatarUrl: string;
+	}) {
 		this.logger.info(
 			"Updating user avatar with\n\tuserId:  %s\n\turl:     %s",
 			userId,
@@ -171,7 +178,9 @@ export class UserService implements UserRpc {
 
 	async getDefaultWorkspace({
 		userId,
-	}: { userId: string }): Promise<Workspace | null> {
+	}: {
+		userId: string;
+	}): Promise<Workspace | null> {
 		this.logger.info("Fetching default workspace for userId: ", userId);
 		const userWorkspace = await this.db.transaction(async (tx) => {
 			// First, try to get the user's default workspace

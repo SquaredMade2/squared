@@ -1,5 +1,3 @@
-import { client } from "@/lib/client";
-import { useModalStore } from "@/store";
 import { Protect, useOrganization } from "@clerk/nextjs";
 import type { PublicUserData } from "@clerk/types";
 import type { Team } from "@squaredmade/db";
@@ -10,15 +8,16 @@ import { useQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
-	type VisibilityState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
 	useReactTable,
+	type VisibilityState,
 } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CSVLink } from "react-csv";
+import { client } from "@/lib/client";
+import { useModalStore } from "@/store";
 
 export type MemberWithRole = PublicUserData & {
 	role: string;
@@ -36,7 +35,6 @@ export function DataTable({
 	data,
 	membershipManagementPermission,
 }: DataTableProps) {
-	const router = useRouter();
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		Object.fromEntries(
@@ -106,12 +104,12 @@ export function DataTable({
 					On the Free plan all members in a workspace are administrators.
 					Upgrade to a paid plan to add the ability to assign or remove
 					administrator roles.{" "}
-					<span
+					<a
 						className="cursor-pointer text-primary underline-offset-4 hover:underline"
-						onClick={() => router.push("https://www.squaredmade.com/pricing")}
+						href="https://www.squaredmade.com/pricing"
 					>
 						Go to Plans →
-					</span>
+					</a>
 				</p>
 			</div>
 			<div className="w-full">

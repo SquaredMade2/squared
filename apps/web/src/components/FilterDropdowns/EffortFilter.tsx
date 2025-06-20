@@ -27,7 +27,9 @@ const effortOptions = [
 
 export default function EffortFilterDropDown({
 	filterOption,
-}: { filterOption: FilterOption }) {
+}: {
+	filterOption: FilterOption;
+}) {
 	const [selectedEffort, setSelectedEffort] = useState<number | null>(null);
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);

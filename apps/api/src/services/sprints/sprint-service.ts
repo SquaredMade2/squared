@@ -299,7 +299,9 @@ export class SprintService implements SprintRpc {
 
 	async getRetrospectiveItems({
 		sprintId,
-	}: { sprintId: string }): Promise<RetrospectiveData> {
+	}: {
+		sprintId: string;
+	}): Promise<RetrospectiveData> {
 		this.logger.info("Getting retrospective items for sprint", { sprintId });
 		const items = await this.db
 			.select()

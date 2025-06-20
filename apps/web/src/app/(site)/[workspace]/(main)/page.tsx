@@ -1,12 +1,12 @@
 "use client";
 
+import { useOrganization } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import { useOrganization } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
 import WorkspaceNotFoundPage from "./WorkspaceNotFoundPage";
 
 export default function Home() {
@@ -44,20 +44,16 @@ export default function Home() {
 		retry: true,
 	});
 
-	return (
-		<>
-			{isPending || data ? (
-				<div className="h-screen w-full">
-					<div className="flex h-full items-center justify-center">
-						<div className="flex flex-col items-center gap-4">
-							<div className="font-bold text-3xl">Loading Workspace</div>
-							<SquaredLoader />
-						</div>
-					</div>
+	return isPending || data ? (
+		<div className="h-screen w-full">
+			<div className="flex h-full items-center justify-center">
+				<div className="flex flex-col items-center gap-4">
+					<div className="font-bold text-3xl">Loading Workspace</div>
+					<SquaredLoader />
 				</div>
-			) : (
-				<WorkspaceNotFoundPage />
-			)}
-		</>
+			</div>
+		</div>
+	) : (
+		<WorkspaceNotFoundPage />
 	);
 }

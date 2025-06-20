@@ -1,32 +1,22 @@
-import WorkspaceInitials from "@/components/WorkspaceImage";
-import { useUserStore } from "@/store";
-import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import { FileSearch } from "@squaredmade/icons";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import WorkspaceInitials from "@/components/WorkspaceImage";
+import { useUserStore } from "@/store";
+import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {
-	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
 	const user = useUserStore((state) => state.user);
 	const { memberships } = useOrganization({ memberships: true });
 	const organizations = memberships?.data?.map(
 		(membership) => membership.organization,
 	);
-	const handleOffClick: () => void = () => {
-		if (menuOpen) {
-			setMenuOpen(false);
-		}
-	};
 
 	return (
-		<div
-			className="flex h-screen w-full flex-col items-center justify-center bg-background text-3xl text-foreground"
-			onClick={handleOffClick}
-		>
+		<div className="flex h-screen w-full flex-col items-center justify-center bg-background text-3xl text-foreground">
 			<div className="mb-20 flex h-1/2 w-full flex-col items-center justify-around">
 				<FileSearch className="size-16 text-[#717171]" />
 				<h1 className="font-semibold text-5xl">Workspace Not Found</h1>
@@ -78,12 +68,13 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						</div>
 						<span className="block w-full border-border border-t pb-1" />
 						<ul className="px-1.5">
-							<li
-								onClick={() => router.push("/create")}
+							<Link
+								href="/create"
+								passHref
 								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 							>
-								Create or join a workspace
-							</li>
+								<li>Create or join a workspace</li>
+							</Link>
 						</ul>
 					</div>
 				)}

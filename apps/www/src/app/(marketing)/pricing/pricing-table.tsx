@@ -1,14 +1,12 @@
 "use client";
-import { useId } from "react";
-
-import { tiers } from "@/constants/tier";
 import { IconCheck } from "@tabler/icons-react";
+import { useId } from "react";
+import { tiers } from "@/constants/tier";
 
+const CheckIcon = () => {
+	return <IconCheck className="mx-auto h-4 w-4 shrink-0 text-foreground" />;
+};
 export function PricingTable() {
-	const CheckIcon = () => {
-		return <IconCheck className="mx-auto h-4 w-4 shrink-0 text-foreground" />;
-	};
-
 	const tableFeatures = [
 		// {
 		// 	title: "Create APIs",
@@ -118,6 +116,8 @@ export function PricingTable() {
 		},
 	];
 
+	const pricingId = useId();
+
 	return (
 		<div className="relative z-20 mx-auto w-full px-4 py-40">
 			<div className="mt-8 flow-root">
@@ -134,7 +134,7 @@ export function PricingTable() {
 										<th
 											scope="col"
 											className="px-3 py-3.5 text-center font-semibold text-foreground text-lg"
-											key={`pricing-${useId()}`}
+											key={`pricing-${pricingId}`}
 										>
 											{item.name}
 										</th>

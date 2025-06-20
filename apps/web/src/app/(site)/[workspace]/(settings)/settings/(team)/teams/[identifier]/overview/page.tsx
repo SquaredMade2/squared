@@ -1,9 +1,5 @@
 "use client";
 
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useTeams } from "@/hooks/useTeams";
-import { client } from "@/lib/client";
-import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Effort } from "@squaredmade/db";
@@ -44,6 +40,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
+import { useTeamStore } from "@/store";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -114,19 +114,17 @@ export default function TeamsSetting() {
 
 	const [isFormChanged, setIsFormChanged] = useState(false);
 
-	if (!team || !team.name) return null;
-
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: team.name,
-			identifier: team.identifier,
+			name: team?.name ?? "",
+			identifier: team?.identifier ?? "",
 		},
 	});
 
 	useEffect(() => {
 		const subscription = form.watch((value) => {
-			if (value.name !== team.name || value.identifier !== team.identifier) {
+			if (value.name !== team?.name || value.identifier !== team?.identifier) {
 				setIsFormChanged(true);
 			} else {
 				setIsFormChanged(false);
@@ -136,7 +134,7 @@ export default function TeamsSetting() {
 	}, [form, team]);
 
 	const { mutate: handleSubmit } = useMutation({
-		mutationKey: ["team", "update", team.id],
+		mutationKey: ["team", "update", team?.id],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!team || !organization)
 				throw new Error("Team or workspace not found");
@@ -171,7 +169,7 @@ export default function TeamsSetting() {
 	});
 
 	const { mutate: handleDelete, isPending: isDeleting } = useMutation({
-		mutationKey: ["team", "delete", team.id],
+		mutationKey: ["team", "delete", team?.id],
 		mutationFn: async () => {
 			if (!team) throw new Error("Team not found");
 			return await client.team.deleteTeam
@@ -181,7 +179,7 @@ export default function TeamsSetting() {
 				.then((res: Response) => res.json());
 		},
 		onSuccess: () => {
-			deleteTeam(team.id);
+			deleteTeam(team?.id ?? "");
 			router.push(`/${organization?.slug}`);
 			toast.success("Team deleted");
 		},
@@ -223,7 +221,7 @@ export default function TeamsSetting() {
 
 	return (
 		<div className="container mx-auto w-full py-10 md:w-3/4">
-			<h1 className="mb-2 font-bold text-3xl">{team.name}</h1>
+			<h1 className="mb-2 font-bold text-3xl">{team?.name}</h1>
 			<p className="mb-6 text-muted-foreground">Manage team settings</p>
 
 			<Separator className="my-6" />

@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 
 export default function MyTasksLayout({
 	children,
-}: { children: React.ReactNode }) {
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<main className="container flex h-screen w-full grow flex-col overflow-hidden">
 			<MyTasksNavbar />

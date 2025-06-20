@@ -40,7 +40,10 @@ const formSchema = z.object({
 export function SaveFilterForm({
 	onCancel,
 	type,
-}: { onCancel: () => void; type: string }) {
+}: {
+	onCancel: () => void;
+	type: string;
+}) {
 	const {
 		currentFilters,
 		saveFilter,

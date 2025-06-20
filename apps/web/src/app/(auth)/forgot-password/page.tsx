@@ -13,7 +13,7 @@ import {
 import { Input } from "@squaredmade/ui/input";
 import { Label } from "@squaredmade/ui/label";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
@@ -30,6 +30,8 @@ const ForgotPasswordPage = () => {
 	const router = useRouter();
 	const { isSignedIn } = useAuth();
 	const { isLoaded, signIn, setActive } = useSignIn();
+	const id = useId();
+	const getFormId = (el: string) => `${id}-${el}`;
 
 	if (!isLoaded) {
 		return null;
@@ -121,9 +123,9 @@ const ForgotPasswordPage = () => {
 					{!successfulCreation ? (
 						<form onSubmit={create} className="space-y-4">
 							<div className="space-y-2">
-								<Label htmlFor="email">Email</Label>
+								<Label htmlFor={getFormId("email")}>Email</Label>
 								<Input
-									id="email"
+									id={getFormId("email")}
 									type="email"
 									placeholder="Enter your email"
 									value={email}
@@ -138,9 +140,11 @@ const ForgotPasswordPage = () => {
 					) : secondFactor ? (
 						<form onSubmit={completeReset} className="space-y-4">
 							<div className="space-y-2">
-								<Label htmlFor="secondFactorCode">Two-Factor Code</Label>
+								<Label htmlFor={getFormId("secondFactorCode")}>
+									Two-Factor Code
+								</Label>
 								<Input
-									id="secondFactorCode"
+									id={getFormId("secondFactorCode")}
 									type="text"
 									placeholder="Enter your 2FA code"
 									value={secondFactorCode}
@@ -156,7 +160,7 @@ const ForgotPasswordPage = () => {
 						<form onSubmit={reset} className="space-y-4">
 							<div className="space-y-2">
 								<div className="mt-2 flex w-full justify-between">
-									<Label htmlFor="code">Reset Code</Label>
+									<Label htmlFor={getFormId("code")}>Reset Code</Label>
 									<Button
 										variant="link"
 										className="m-0 h-fit p-0"
@@ -168,7 +172,7 @@ const ForgotPasswordPage = () => {
 								</div>
 								<div className="relative">
 									<Input
-										id="code"
+										id={getFormId("code")}
 										type="text"
 										placeholder="Enter the reset code"
 										value={code}
@@ -179,10 +183,10 @@ const ForgotPasswordPage = () => {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="password">New Password</Label>
+								<Label htmlFor={getFormId("password")}>New Password</Label>
 								<div className="relative">
 									<Input
-										id="password"
+										id={getFormId("password")}
 										type={hidePassword ? "password" : "text"}
 										placeholder="Enter your new password"
 										value={password}
@@ -206,10 +210,12 @@ const ForgotPasswordPage = () => {
 								</div>
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="password">Confirm Password</Label>
+								<Label htmlFor={getFormId("confirm-password")}>
+									Confirm Password
+								</Label>
 								<div className="relative">
 									<Input
-										id="confirm-password"
+										id={getFormId("confirm-password")}
 										type={hideConfirmPassword ? "password" : "text"}
 										placeholder="Password confirmation"
 										value={confirmPassword}

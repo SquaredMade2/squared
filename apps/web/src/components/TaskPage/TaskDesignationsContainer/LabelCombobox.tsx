@@ -1,16 +1,5 @@
 "use client";
 
-import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
-import { client } from "@/lib/client";
-import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, TaskEvent } from "@squaredmade/db";
 import { Check, Plus, Tag } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -21,6 +10,17 @@ import {
 } from "@squaredmade/ui/popover";
 import { useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
+import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import LabelBadge from "../../LabelBadges";
 
 const LabelCombobox = () => {
@@ -29,21 +29,21 @@ const LabelCombobox = () => {
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((event) => event);
 
-	if (!currentTask) return null;
-
-	const { id: taskId, labels } = currentTask;
+	const taskId = currentTask?.id;
+	const labels = currentTask?.labels;
 
 	const allLabels = useMemo(() => workspace?.labels || [], [workspace]);
 
 	const taskLabels = useMemo(
 		() =>
-			allLabels.filter((label) => labels.some((l) => l.name === label.name)),
+			allLabels.filter((label) => labels?.some((l) => l.name === label.name)),
 		[allLabels, labels],
 	);
 
 	const { mutate: updateLabels } = useMutation({
 		mutationKey: ["task", "updateLabels", taskId],
 		mutationFn: async (newLabels: Label[]) => {
+			if (!taskId) throw new Error("Task not found");
 			const res = await client.task.updateLabels.$post({
 				taskId,
 				labels: newLabels,
@@ -109,15 +109,13 @@ const LabelCombobox = () => {
 						variant="outline"
 						className="h-8 w-fit justify-start md:h-10 md:w-full"
 					>
-						<>
-							<div className="item hidden items-center md:flex">
-								<Plus className="mr-2 size-4" />
-								<span>Add label</span>
-							</div>
-							<div className="flex items-center md:hidden">
-								{renderLabelButton()}
-							</div>
-						</>
+						<div className="item hidden items-center md:flex">
+							<Plus className="mr-2 size-4" />
+							<span>Add label</span>
+						</div>
+						<div className="flex items-center md:hidden">
+							{renderLabelButton()}
+						</div>
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent

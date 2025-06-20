@@ -699,7 +699,7 @@ const Day: React.FC<DayProps> = ({
 			ref={dayRef}
 			type="button"
 			className={cn(
-				"h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+				"h-9 w-9 p-0 font-normal data-[selected]:opacity-100",
 				"flex items-center justify-center rounded-md text-sm transition-colors",
 				"hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground",
 				selected &&
@@ -711,7 +711,7 @@ const Day: React.FC<DayProps> = ({
 			onClick={handleClick}
 			disabled={disabled}
 			tabIndex={isOutside ? -1 : 0}
-			aria-selected={selected}
+			data-selected={selected}
 			data-outside={isOutside || undefined}
 			data-today={today || undefined}
 			data-range-start={isRangeStart || undefined}

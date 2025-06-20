@@ -22,12 +22,8 @@ export type JoinWorkspaceParams = {
 
 export interface WorkspaceRpc {
 	createWorkspace: (args: CreateWorkspaceParams) => Promise<Workspace>;
-	getWorkspace: (args: {
-		workspaceId: string;
-	}) => Promise<Workspace | null>;
-	getWorkspaceByUrl: (args: {
-		url: string;
-	}) => Promise<Workspace | null>;
+	getWorkspace: (args: { workspaceId: string }) => Promise<Workspace | null>;
+	getWorkspaceByUrl: (args: { url: string }) => Promise<Workspace | null>;
 	updateWorkspace: (args: {
 		workspaceId: string;
 		workspace: WorkspaceParams;

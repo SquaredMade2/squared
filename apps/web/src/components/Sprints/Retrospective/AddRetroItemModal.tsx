@@ -44,7 +44,6 @@ const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
 						<Input
-							id="new-item"
 							value={newItemContent}
 							onChange={(e) => setNewItemContent(e.target.value)}
 							placeholder="Enter item content"

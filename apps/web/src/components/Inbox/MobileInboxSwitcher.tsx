@@ -1,14 +1,5 @@
 "use client";
 
-import {
-	CommandDialog,
-	CommandEmpty,
-	CommandGroup,
-	CommandItem,
-	CommandList,
-	CommandSeparator,
-} from "@/components/ui/command";
-import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import {
 	BadgePlus,
@@ -28,6 +19,15 @@ import {
 	PopoverTrigger,
 } from "@squaredmade/ui/popover";
 import { useState } from "react";
+import {
+	CommandDialog,
+	CommandEmpty,
+	CommandGroup,
+	CommandItem,
+	CommandList,
+	CommandSeparator,
+} from "@/components/ui/command";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
 
 type NotificationFilter =
 	| "INBOX"
@@ -91,65 +91,6 @@ export function MobileInboxSwitcher({
 		return readNotifications.filter((n) => n.type === type).length;
 	};
 
-	const FilterItem = ({
-		type,
-		label,
-		icon: Icon,
-		unreadCount,
-	}: {
-		type: NotificationFilter;
-		label: string;
-		icon: React.ElementType;
-		unreadCount?: number;
-	}) => (
-		<CommandItem
-			value={type}
-			onSelect={handleSelect}
-			className="relative flex items-center justify-between"
-		>
-			<div className="flex items-center gap-2">
-				{filterType === type && (
-					<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
-				)}
-				<Icon className="h-5 w-5" />
-				{label}
-			</div>
-			{unreadCount !== undefined && unreadCount > 0 && (
-				<div
-					className={`w-7 rounded-full ${filterType === type ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
-				>
-					{unreadCount}
-				</div>
-			)}
-		</CommandItem>
-	);
-
-	const WorkspaceItem = ({
-		id,
-		name,
-		unreadCount,
-	}: { id: string; name: string; unreadCount: number }) => (
-		<CommandItem
-			value={id}
-			onSelect={handleSelect}
-			className="relative flex items-center justify-between"
-		>
-			<div>
-				{organization?.id === id && filterType === "WORKSPACE" && (
-					<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
-				)}
-				{name}
-			</div>
-			{unreadCount > 0 && (
-				<div
-					className={`w-7 rounded-full ${organization?.id === id && filterType === "WORKSPACE" ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
-				>
-					{unreadCount}
-				</div>
-			)}
-		</CommandItem>
-	);
-
 	return (
 		<div className="flex w-full gap-2 lg:hidden">
 			<Button
@@ -203,35 +144,57 @@ export function MobileInboxSwitcher({
 							<FilterItem
 								type="INBOX"
 								label="Inbox"
+								filterType={filterType}
+								handleSelect={handleSelect}
 								icon={Inbox}
 								unreadCount={getUnreadCount("INBOX")}
 							/>
-							<FilterItem type="SAVED" label="Saved" icon={Bookmark} />
-							<FilterItem type="DONE" label="Done" icon={Check} />
+							<FilterItem
+								type="SAVED"
+								label="Saved"
+								icon={Bookmark}
+								filterType={filterType}
+								handleSelect={handleSelect}
+							/>
+							<FilterItem
+								type="DONE"
+								label="Done"
+								icon={Check}
+								filterType={filterType}
+								handleSelect={handleSelect}
+							/>
 						</CommandGroup>
 						<CommandSeparator />
 						<CommandGroup heading="Filters">
 							<FilterItem
 								type="ASSIGNED"
 								label="Assigned"
+								filterType={filterType}
+								handleSelect={handleSelect}
 								icon={MapPin}
 								unreadCount={getUnreadCount("ASSIGNED")}
 							/>
 							<FilterItem
 								type="PARTICIPATING"
 								label="Participating"
+								filterType={filterType}
+								handleSelect={handleSelect}
 								icon={Handshake}
 								unreadCount={getUnreadCount("PARTICIPATING")}
 							/>
 							<FilterItem
 								type="MENTIONED"
 								label="Mentioned"
+								filterType={filterType}
+								handleSelect={handleSelect}
 								icon={MessageCircleMore}
 								unreadCount={getUnreadCount("MENTIONED")}
 							/>
 							<FilterItem
 								type="CREATED"
 								label="Created"
+								filterType={filterType}
+								handleSelect={handleSelect}
 								icon={BadgePlus}
 								unreadCount={getUnreadCount("CREATED")}
 							/>
@@ -239,15 +202,31 @@ export function MobileInboxSwitcher({
 						<CommandSeparator />
 						<CommandGroup heading="Workspaces">
 							{userMemberships.data?.map(({ organization: w }) => (
-								<WorkspaceItem
+								<CommandItem
 									key={w.id}
-									id={w.id}
-									name={w.name}
-									unreadCount={
-										readNotifications.filter((n) => n.workspaceId === w.id)
-											.length
-									}
-								/>
+									value={w.id}
+									onSelect={handleSelect}
+									className="relative flex items-center justify-between"
+								>
+									<div>
+										{organization?.id === w.id &&
+											filterType === "WORKSPACE" && (
+												<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
+											)}
+										{w.name}
+									</div>
+									{readNotifications.filter((n) => n.workspaceId === w.id)
+										.length > 0 && (
+										<div
+											className={`w-7 rounded-full ${organization?.id === w.id && filterType === "WORKSPACE" ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
+										>
+											{
+												readNotifications.filter((n) => n.workspaceId === w.id)
+													.length
+											}
+										</div>
+									)}
+								</CommandItem>
 							))}
 						</CommandGroup>
 					</CommandList>
@@ -256,3 +235,40 @@ export function MobileInboxSwitcher({
 		</div>
 	);
 }
+
+const FilterItem = ({
+	type,
+	filterType,
+	handleSelect,
+	label,
+	icon: Icon,
+	unreadCount,
+}: {
+	type: NotificationFilter;
+	filterType: NotificationFilter;
+	handleSelect: (value: string) => void;
+	label: string;
+	icon: React.ElementType;
+	unreadCount?: number;
+}) => (
+	<CommandItem
+		value={type}
+		onSelect={handleSelect}
+		className="relative flex items-center justify-between"
+	>
+		<div className="flex items-center gap-2">
+			{filterType === type && (
+				<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
+			)}
+			<Icon className="h-5 w-5" />
+			{label}
+		</div>
+		{unreadCount !== undefined && unreadCount > 0 && (
+			<div
+				className={`w-7 rounded-full ${filterType === type ? "bg-primary/20" : "bg-muted"} p-1 text-xs`}
+			>
+				{unreadCount}
+			</div>
+		)}
+	</CommandItem>
+);

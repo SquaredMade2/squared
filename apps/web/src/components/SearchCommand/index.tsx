@@ -1,5 +1,11 @@
 "use client";
 
+import { useOrganization } from "@clerk/nextjs";
+import { useId } from "@radix-ui/react-id";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { toast } from "@squaredmade/ui/toast";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -11,11 +17,12 @@ import {
 	CommandShortcut,
 } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useFilterStore, useModalStore, useViewStore } from "@/store";
-import { useId } from "@radix-ui/react-id";
-import { DialogTitle } from "@squaredmade/ui/dialog";
-import { toast } from "@squaredmade/ui/toast";
-import { useEffect } from "react";
+import {
+	useFilterStore,
+	useModalStore,
+	useTeamStore,
+	useViewStore,
+} from "@/store";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";
 
@@ -29,6 +36,11 @@ export default function SearchCommand() {
 	} = useModalStore((state) => state);
 	const { setShowNavbar } = useViewStore((state) => state);
 	const { clearFilter } = useFilterStore((state) => state);
+	const router = useRouter();
+	const pathname = usePathname();
+	const organization = useOrganization().organization;
+	const showNavbar = useViewStore((state) => state.showNavbar);
+	const team = useTeamStore((state) => state.team);
 
 	const showToast = (title: string) => {
 		toast.success(title);
@@ -41,6 +53,11 @@ export default function SearchCommand() {
 		setShowTaskSelector,
 		clearFilter,
 		showToast,
+		router,
+		pathname,
+		organization,
+		showNavbar,
+		team,
 	});
 
 	useEffect(() => {
@@ -55,28 +72,6 @@ export default function SearchCommand() {
 		return () => document.removeEventListener("keydown", down);
 	}, [setShowCommand, showCommand]);
 
-	const renderCommandItem = (item: SearchbarItem, key: string) => (
-		<CommandItem
-			key={key}
-			onSelect={() => {
-				item.function();
-				setShowCommand(false);
-			}}
-		>
-			{item.icon}
-			<span>{item.text}</span>
-			{item.shortcut.length > 0 && (
-				<CommandShortcut>
-					{item.shortcut.map((shortcut) => (
-						<kbd key={`${shortcut}-${useId()}`} className="mr-1">
-							{shortcut}
-						</kbd>
-					))}
-				</CommandShortcut>
-			)}
-		</CommandItem>
-	);
-
 	const renderCommandItems = (schema: SearchbarStructure) => {
 		return Object.entries(schema).map(([key, value]) => {
 			if (typeof value === "string" && value === "separator") {
@@ -85,9 +80,13 @@ export default function SearchCommand() {
 
 			return (
 				<CommandGroup key={key} heading={key.includes("Ungrouped") ? "" : key}>
-					{Object.entries(value).map(([subKey, subValue]) =>
-						renderCommandItem(subValue, `${key}-${subKey}`),
-					)}
+					{Object.entries(value).map(([subKey, subValue]) => (
+						<SearchCommandItem
+							item={subValue}
+							key={`${key}-${subKey}`}
+							setShowCommand={setShowCommand}
+						/>
+					))}
 				</CommandGroup>
 			);
 		});
@@ -106,3 +105,33 @@ export default function SearchCommand() {
 		</CommandDialog>
 	);
 }
+
+const SearchCommandItem = ({
+	item,
+	setShowCommand,
+}: {
+	item: SearchbarItem;
+	setShowCommand: (show: boolean) => void;
+}) => {
+	const id = useId();
+	return (
+		<CommandItem
+			onSelect={() => {
+				item.function();
+				setShowCommand(false);
+			}}
+		>
+			{item.icon}
+			<span>{item.text}</span>
+			{item.shortcut.length > 0 && (
+				<CommandShortcut>
+					{item.shortcut.map((shortcut) => (
+						<kbd key={`${shortcut}-${id}`} className="mr-1">
+							{shortcut}
+						</kbd>
+					))}
+				</CommandShortcut>
+			)}
+		</CommandItem>
+	);
+};

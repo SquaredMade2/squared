@@ -25,7 +25,6 @@ export const InfiniteMovingCards = ({
 		if (containerRef.current && scrollerRef.current) {
 			const scrollerContent = Array.from(scrollerRef.current.children);
 
-			// biome-ignore lint/complexity/noForEach: <explanation>
 			scrollerContent.forEach((item) => {
 				const duplicatedItem = item.cloneNode(true);
 				if (scrollerRef.current) {

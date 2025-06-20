@@ -1,7 +1,6 @@
+import React from "react";
 import type { ToastToDismiss } from ".";
 import type { PromiseT, ToastT, ToastTypes } from "./Toast";
-
-import React from "react";
 
 /**
  * Counter to generate unique IDs for toasts when not explicitly provided
@@ -287,7 +286,7 @@ class Observer {
 			return;
 		}
 
-		let id: string | number | undefined = undefined;
+		let id: string | number | undefined;
 		if (data.loading !== undefined) {
 			id = this.create({
 				...data,

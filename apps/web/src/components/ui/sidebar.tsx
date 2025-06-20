@@ -1,4 +1,3 @@
-import { useIsMobile } from "@/hooks/useMobile";
 import { Slot } from "@radix-ui/react-slot";
 import { PanelLeft } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -13,8 +12,9 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
-import { type VariantProps, cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
+import { useIsMobile } from "@/hooks/useMobile";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -81,6 +81,7 @@ const SidebarProvider = React.forwardRef<
 				}
 
 				// This sets the cookie to keep the sidebar state.
+				// biome-ignore lint/suspicious/noDocumentCookie: Shadcn implementation
 				document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
 			},
 			[setOpenProp, open],

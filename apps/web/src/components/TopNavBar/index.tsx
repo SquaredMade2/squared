@@ -13,7 +13,10 @@ import { useEffect, useState } from "react";
 
 const TopNavBar = ({
 	pageTitle,
-}: { pageTitle?: string; sprintId?: string }) => {
+}: {
+	pageTitle?: string;
+	sprintId?: string;
+}) => {
 	const {
 		currentFilters,
 		clearFilter,

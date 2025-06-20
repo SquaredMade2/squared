@@ -4,7 +4,10 @@ import type { ReactNode } from "react";
 export default function MemberSettingsWrapper({
 	children,
 	page,
-}: { children: ReactNode; page: "workspace" | "team" }) {
+}: {
+	children: ReactNode;
+	page: "workspace" | "team";
+}) {
 	return (
 		<div className="container flex w-full flex-col gap-4 py-8 md:w-3/4">
 			<div className="flex flex-col items-start gap-2">

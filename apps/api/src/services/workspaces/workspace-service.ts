@@ -112,7 +112,9 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	async getWorkspace({
 		workspaceId,
-	}: { workspaceId: string }): Promise<Workspace | null> {
+	}: {
+		workspaceId: string;
+	}): Promise<Workspace | null> {
 		this.logger.info("Getting workspace with id %s", workspaceId);
 		return await this.db
 			.select()
@@ -153,7 +155,9 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	async deleteWorkspace({
 		workspaceId,
-	}: { workspaceId: string }): Promise<void> {
+	}: {
+		workspaceId: string;
+	}): Promise<void> {
 		this.logger.info("Deleting workspace with id %s", workspaceId);
 
 		await this.db
@@ -165,7 +169,9 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	async getUserWorkspaces({
 		userId,
-	}: { userId: string }): Promise<Workspace[]> {
+	}: {
+		userId: string;
+	}): Promise<Workspace[]> {
 		this.logger.info("Getting workspaces for user: ", userId);
 		const workspaces = await this.db
 			.select()
@@ -387,7 +393,9 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	async getWorkspaceLabels({
 		workspaceId,
-	}: { workspaceId: string }): Promise<Label[]> {
+	}: {
+		workspaceId: string;
+	}): Promise<Label[]> {
 		this.logger.info("Getting labels for workspace with id %s", workspaceId);
 		return await this.db
 			.select()
@@ -399,7 +407,10 @@ export class WorkspaceService implements WorkspaceRpc {
 	async createWorkspaceLabel({
 		workspaceId,
 		label,
-	}: { workspaceId: string; label: Label }): Promise<{
+	}: {
+		workspaceId: string;
+		label: Label;
+	}): Promise<{
 		success: boolean;
 		labels?: Label[];
 	}> {
@@ -489,7 +500,10 @@ export class WorkspaceService implements WorkspaceRpc {
 	async deleteWorkspaceLabel({
 		workspaceId,
 		labelName,
-	}: { workspaceId: string; labelName: string }): Promise<{
+	}: {
+		workspaceId: string;
+		labelName: string;
+	}): Promise<{
 		success: boolean;
 	}> {
 		this.logger.info(

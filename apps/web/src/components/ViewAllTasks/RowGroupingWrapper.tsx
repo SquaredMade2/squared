@@ -1,14 +1,14 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useViewStore } from "@/store";
 import { Droppable } from "@hello-pangea/dnd";
 import { ChevronDown, ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useViewStore } from "@/store";
 import GroupColumn from "./GroupColumn";
+import type { GroupedColumn } from "./interfaces";
 import { RowGroupHeader } from "./RowGroupHeader";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { GroupedColumn } from "./interfaces";
 
 /**
  * A component that handles row-based task grouping across multiple columns
@@ -30,11 +30,6 @@ export const RowGroupingWrapper = ({
 				visibleColumns.get(columnGroup)!
 			: true;
 	};
-
-	// This component is only used when groupRowsBy !== "None"
-	if (groupRowsBy === "None") {
-		return null;
-	}
 
 	// Get all unique row groups across all columns
 	const allRowGroups = new Set<string>();
@@ -116,7 +111,8 @@ export const RowGroupingWrapper = ({
 						{groupedColumns.map((column) => (
 							<div key={column.group} className="mb-6">
 								{/* Column header */}
-								<div
+								<button
+									type="button"
 									className="mb-2 flex cursor-pointer items-center justify-between rounded bg-secondary/40 p-2"
 									onClick={() => toggleColumnCollapsed(column.group)}
 								>
@@ -138,7 +134,7 @@ export const RowGroupingWrapper = ({
 											count={column.tasks.length}
 										/>
 									</div>
-								</div>
+								</button>
 
 								{/* Row groups within this column */}
 								{!isColumnCollapsed(column.group) && (
@@ -160,7 +156,8 @@ export const RowGroupingWrapper = ({
 													className="mb-4"
 												>
 													{/* Row group subheader */}
-													<div
+													<button
+														type="button"
 														className="mb-2 flex cursor-pointer items-center rounded bg-secondary/20 p-2"
 														onClick={() =>
 															toggleRowGroupCollapsed(column.group, rowGroup)
@@ -182,7 +179,7 @@ export const RowGroupingWrapper = ({
 															groupType={groupRowsBy}
 															count={matchingRowGroup.tasks.length}
 														/>
-													</div>
+													</button>
 
 													{/* Tasks within this row group */}
 													{!isRowGroupCollapsed(column.group, rowGroup) && (

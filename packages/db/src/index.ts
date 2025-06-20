@@ -19,7 +19,10 @@ declare global {
 export const createDb = ({
 	databaseUrl,
 	isRemote = false,
-}: { databaseUrl?: string; isRemote?: boolean }) => {
+}: {
+	databaseUrl?: string;
+	isRemote?: boolean;
+}) => {
 	// Function to create the database connection
 	const config = {
 		databaseUrl:

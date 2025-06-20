@@ -27,7 +27,9 @@ import type { FilterOption } from "./interfaces";
 
 export default function AssigneeFilterDropDown({
 	filterOption,
-}: { filterOption: FilterOption }) {
+}: {
+	filterOption: FilterOption;
+}) {
 	const { users } = useUsers();
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);

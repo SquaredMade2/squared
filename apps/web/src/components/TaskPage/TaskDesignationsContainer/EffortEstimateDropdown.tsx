@@ -1,9 +1,5 @@
 "use client";
 
-import { high, low, medium } from "@/components/Svg";
-import { client } from "@/lib/client";
-import { effortEstimateOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { TaskEvent } from "@squaredmade/db";
 import { ChevronDown } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -16,6 +12,11 @@ import {
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { type JSX, useState } from "react";
+import { high, low, medium } from "@/components/Svg";
+import { client } from "@/lib/client";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useEventStore, useTaskStore, useTeamStore } from "@/store";
+
 const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
 
@@ -23,9 +24,7 @@ const EffortEstimateDropdown = () => {
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
-	if (!currentTask) return null;
-
-	const { id: taskId } = currentTask;
+	const taskId = currentTask?.id;
 
 	const sidebarEffortEstimate = ():
 		| { text: string; value: number }
@@ -45,6 +44,7 @@ const EffortEstimateDropdown = () => {
 	const { mutate: updateEffortEstimate } = useMutation({
 		mutationKey: ["task", "updateEffort", taskId],
 		mutationFn: async (newEffortEstimate: number) => {
+			if (!taskId) throw new Error("Task not found");
 			const res = await client.task.updateEffort.$post({
 				taskId,
 				effortEstimate: newEffortEstimate,

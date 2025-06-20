@@ -1,11 +1,11 @@
 "use client";
 
-import { DatePicker } from "@/components/ui/date-picker";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { DatePicker } from "@/components/ui/date-picker";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
 
 const DesignationsDatePicker = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
@@ -14,8 +14,7 @@ const DesignationsDatePicker = () => {
 
 	const queryClient = useQueryClient();
 
-	if (!currentTask) return null;
-	const { id: taskId } = currentTask;
+	const taskId = currentTask?.id;
 
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
@@ -27,6 +26,7 @@ const DesignationsDatePicker = () => {
 
 	const updateTaskMutation = useMutation({
 		mutationFn: async (date: Date | null) => {
+			if (!taskId) throw new Error("Invalid Task is required");
 			const res = await client.task.updateDueDate.$post({
 				taskId: taskId,
 				dueDate: date,

@@ -1,7 +1,5 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useWorkspaceStore } from "@/store";
 import type { Priority, Sprint, Status, Task } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
 import { Checkbox } from "@squaredmade/ui/checkbox";
@@ -25,7 +23,9 @@ import {
 } from "@squaredmade/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { toast } from "@squaredmade/ui/toast";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useWorkspaceStore } from "@/store";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
 
@@ -132,6 +132,8 @@ export function AssignTasksDialog({
 					: 0;
 			});
 	}, [unassignedTasks, searchQuery, filterPriority, filterStatus, filterLabel]);
+	const id = useId();
+	const getFormId = (el: string) => `${id}-${el}`;
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -149,7 +151,7 @@ export function AssignTasksDialog({
 					<div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
 						<div className="mt-2 flex w-full items-center gap-2">
 							<Label
-								htmlFor="sprint"
+								htmlFor={getFormId("sprint")}
 								className="ml-auto hidden whitespace-nowrap sm:block"
 							>
 								Sprint
@@ -158,7 +160,10 @@ export function AssignTasksDialog({
 								onValueChange={setTargetSprint}
 								defaultValue={selectedSprintId}
 							>
-								<SelectTrigger className="w-full sm:w-72" id="sprint">
+								<SelectTrigger
+									className="w-full sm:w-72"
+									id={getFormId("sprint")}
+								>
 									<SelectValue placeholder="Select a sprint" />
 								</SelectTrigger>
 								<SelectContent className="w-full sm:w-72">
@@ -246,11 +251,14 @@ export function AssignTasksDialog({
 								<div className="w-full p-4">
 									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">
 										<Checkbox
-											id="select-all"
+											id={getFormId("select-all")}
 											checked={selectedTasks.length === filteredTasks.length}
 											onCheckedChange={handleSelectAll}
 										/>
-										<Label htmlFor="select-all" className="ml-3 font-semibold">
+										<Label
+											htmlFor={getFormId("select-all")}
+											className="ml-3 font-semibold"
+										>
 											Select All
 										</Label>
 									</div>
@@ -267,7 +275,7 @@ export function AssignTasksDialog({
 											>
 												<div className="flex min-w-0 shrink items-center gap-2">
 													<Checkbox
-														id={task.id}
+														id={getFormId(task.id)}
 														checked={selectedTasks.includes(task)}
 														onCheckedChange={() => handleTaskSelection(task)}
 														className="mr-2 shrink-0"
@@ -309,11 +317,14 @@ export function AssignTasksDialog({
 								<div className="p-4">
 									<div className="mb-2 flex items-center">
 										<Checkbox
-											id="select-all-grid"
+											id={getFormId("select-all-grid")}
 											checked={selectedTasks.length === filteredTasks.length}
 											onCheckedChange={handleSelectAll}
 										/>
-										<Label htmlFor="select-all-grid" className="ml-2">
+										<Label
+											htmlFor={getFormId("select-all-grid")}
+											className="ml-2"
+										>
 											Select All
 										</Label>
 									</div>
@@ -329,7 +340,7 @@ export function AssignTasksDialog({
 												>
 													<div className="mb-2 flex items-center justify-between">
 														<Checkbox
-															id={task.id}
+															id={getFormId(task.id)}
 															checked={selectedTasks.includes(task)}
 															onCheckedChange={() => handleTaskSelection(task)}
 														/>

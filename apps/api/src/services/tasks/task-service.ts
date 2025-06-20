@@ -234,7 +234,9 @@ export class TaskService implements TaskRpc {
 
 	async deleteTask({
 		taskId,
-	}: { taskId: string }): Promise<{ success: boolean }> {
+	}: {
+		taskId: string;
+	}): Promise<{ success: boolean }> {
 		this.logger.info("Deleting task by ID", taskId);
 
 		return await this.db.transaction(async (tx) => {
@@ -313,7 +315,9 @@ export class TaskService implements TaskRpc {
 
 	async addActiveSprintTasks({
 		sprintId,
-	}: { sprintId: string }): Promise<number> {
+	}: {
+		sprintId: string;
+	}): Promise<number> {
 		this.logger.info("Adding active sprints to sprint with id", sprintId);
 
 		return await this.db.transaction(async (tx) => {
@@ -508,7 +512,9 @@ export class TaskService implements TaskRpc {
 
 	async getAllBlockedTaskIds({
 		teamId,
-	}: { teamId: string }): Promise<string[]> {
+	}: {
+		teamId: string;
+	}): Promise<string[]> {
 		this.logger.info("Getting all blocking taskIds for team with id", teamId);
 
 		return await this.db.transaction(async (tx) => {

@@ -20,7 +20,11 @@
 		"build": "bun ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules"
 	},
-	"files": ["dist", "README.md", "CHANGELOG.md"],
+	"files": [
+		"dist",
+		"README.md",
+		"CHANGELOG.md"
+	],
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.2",
 		"@types/fs-extra": "^11.0.4",

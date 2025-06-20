@@ -6,7 +6,7 @@ function valuesOfObj<T>(record: Record<string, T>): T[] {
 	const values: T[] = [];
 
 	for (const key in record) {
-		// biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+		// biome-ignore lint/suspicious/noPrototypeBuiltins: Typescript isn't using the prototype
 		if (record.hasOwnProperty(key)) {
 			values.push(record[key]);
 		}

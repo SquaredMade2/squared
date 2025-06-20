@@ -86,5 +86,7 @@ export interface SprintRpc {
 	}) => Promise<RetroItemReturn>;
 	getRetrospectiveItems: ({
 		sprintId,
-	}: { sprintId: string }) => Promise<RetrospectiveData>;
+	}: {
+		sprintId: string;
+	}) => Promise<RetrospectiveData>;
 }

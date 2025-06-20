@@ -1,10 +1,10 @@
 "use client";
-import { client } from "@/lib/client";
-import { useEventStore, useTaskStore } from "@/store";
 import type { Task, TaskEvent } from "@squaredmade/db";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore } from "@/store";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const ParentTaskCombobox = () => {
@@ -14,7 +14,6 @@ const ParentTaskCombobox = () => {
 	);
 	const { setEvents } = useEventStore((state) => state);
 
-	if (!currentTask) return null;
 	const queryClient = useQueryClient();
 
 	const taskId = currentTask?.id ?? "";
@@ -31,6 +30,7 @@ const ParentTaskCombobox = () => {
 	const { mutate: updateTaskMutation } = useMutation({
 		mutationKey: ["task", "updateParent", currentTask?.parentId],
 		mutationFn: async (parentId: string | null) => {
+			if (!currentTask || !taskId) throw new Error("Task not found");
 			const res = await client.task.updateParent.$post({
 				taskId,
 				parentId,

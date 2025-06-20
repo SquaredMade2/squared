@@ -68,7 +68,10 @@ export function useTaskDashboard() {
 		mutationFn: async ({
 			taskId,
 			status,
-		}: { taskId: string; status: Status }) => {
+		}: {
+			taskId: string;
+			status: Status;
+		}) => {
 			const res = await client.task.updateStatus.$post({
 				taskId,
 				status,

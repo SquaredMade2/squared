@@ -81,7 +81,7 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor="name"
+												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
 											>
 												Full Name
@@ -89,7 +89,7 @@ export function ContactForm() {
 											<FormControl>
 												<div className="mt-2">
 													<input
-														id="name"
+														id={field.name}
 														type="name"
 														placeholder="Full Name"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
@@ -107,7 +107,7 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor="email"
+												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
 											>
 												Email address
@@ -115,7 +115,7 @@ export function ContactForm() {
 											<FormControl>
 												<div className="mt-2">
 													<input
-														id="email"
+														id={field.name}
 														type="email"
 														placeholder="Email"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
@@ -133,7 +133,7 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor="company"
+												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
 											>
 												Company
@@ -141,7 +141,7 @@ export function ContactForm() {
 											<FormControl>
 												<div className="mt-2">
 													<input
-														id="company"
+														id={field.name}
 														type="company"
 														placeholder="Company"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
@@ -159,7 +159,7 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor="message"
+												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
 											>
 												Message
@@ -168,7 +168,7 @@ export function ContactForm() {
 												<div className="mt-2">
 													<textarea
 														rows={5}
-														id="message"
+														id={field.name}
 														placeholder="Enter your message here"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
 														{...field}

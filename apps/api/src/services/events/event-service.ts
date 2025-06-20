@@ -34,7 +34,9 @@ export class EventService implements EventRpc {
 	}
 	async getTaskEvents({
 		taskId,
-	}: { taskId: string }): Promise<(TaskEvent | GithubCommit)[]> {
+	}: {
+		taskId: string;
+	}): Promise<(TaskEvent | GithubCommit)[]> {
 		this.logger.info(
 			`Fetching TaskEvents and Commits for Task ID ${taskId}...`,
 		);
@@ -82,7 +84,9 @@ export class EventService implements EventRpc {
 	}
 	async getNotifications({
 		userId,
-	}: { userId: string }): Promise<FullNotification[]> {
+	}: {
+		userId: string;
+	}): Promise<FullNotification[]> {
 		this.logger.info("Fetching Notifications for userId: ", userId);
 		const notifications = await this.db
 			.select({
@@ -248,7 +252,9 @@ export class EventService implements EventRpc {
 	}
 	async deleteNotification({
 		notificationIds,
-	}: { notificationIds: string[] }): Promise<void> {
+	}: {
+		notificationIds: string[];
+	}): Promise<void> {
 		await this.db
 			.delete(notificationsTable)
 			.where(inArray(notificationsTable.id, notificationIds));

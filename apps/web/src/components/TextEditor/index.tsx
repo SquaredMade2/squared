@@ -1,9 +1,3 @@
-import { useModalStore } from "@/store";
-import {
-	clearCurrentLeafContent,
-	getMentionFromLeaf,
-	injectMentionConfirm,
-} from "@/utils/textEditorSelection";
 import type { PublicUserData } from "@clerk/types";
 import { toast } from "@squaredmade/ui/toast";
 import {
@@ -14,19 +8,19 @@ import {
 	useState,
 } from "react";
 import type { BaseEditor, Descendant } from "slate";
-import { Editor, Element, Transforms, createEditor } from "slate";
+import { createEditor, Editor, Element, Transforms } from "slate";
 import type {
 	ReactEditor,
 	RenderElementProps,
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
-import TextEditorMentions from "./Menus/TextEditorMentions";
-import TextEditorTasks from "./Menus/TextEditorTasks";
-import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
-import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
-import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
-import TextEditorToolBar from "./TextEditorToolBar";
+import { useModalStore } from "@/store";
+import {
+	clearCurrentLeafContent,
+	getMentionFromLeaf,
+	injectMentionConfirm,
+} from "@/utils/textEditorSelection";
 import type {
 	CustomDescendant,
 	CustomElement,
@@ -34,6 +28,12 @@ import type {
 	MarkTypes,
 	TextEditorProps,
 } from "./interfaces";
+import TextEditorMentions from "./Menus/TextEditorMentions";
+import TextEditorTasks from "./Menus/TextEditorTasks";
+import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
+import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
+import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
+import TextEditorToolBar from "./TextEditorToolBar";
 
 declare module "slate" {
 	interface CustomTypes {
@@ -177,7 +177,7 @@ const TextEditor = ({
 
 	// Create Leafs (Portion of Row)
 
-	const useLeafActive = (markType: MarkTypes) => {
+	const getActiveLeaf = (markType: MarkTypes) => {
 		switch (markType) {
 			case "bold":
 				return "isBoldActive";
@@ -206,7 +206,7 @@ const TextEditor = ({
 			: Boolean(marks?.[type]);
 	};
 
-	const useEditorMarks = () => ({
+	const getEditorMarks = () => ({
 		isBoldActive: () => isMarkActive("bold"),
 		isItalicActive: () => isMarkActive("italic"),
 		isUnderlineActive: () => isMarkActive("underline"),
@@ -219,7 +219,7 @@ const TextEditor = ({
 
 	const createLeaf = (
 		markType: MarkTypes,
-		markState = !useEditorMarks()[useLeafActive(markType)](),
+		markState = !getEditorMarks()[getActiveLeaf(markType)](),
 	) => {
 		Editor.addMark(editor, markType, markState);
 	};
@@ -348,7 +348,7 @@ const TextEditor = ({
 
 	function handleCommandComponentOnKey(key: string) {
 		const deleteEntireMention = () => {
-			if (useEditorMarks().isMentionActive()) {
+			if (getEditorMarks().isMentionActive()) {
 				clearCurrentLeafContent(editor);
 				createLeaf("mention", false);
 				setToggleMentions(false);
@@ -383,6 +383,7 @@ const TextEditor = ({
 				onChange?.(newValue); // Optional external onChange handler
 			}}
 		>
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: This is our wrapper for the textarea */}
 			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
 				<div
 					className={
@@ -394,7 +395,7 @@ const TextEditor = ({
 							// Leafs
 
 							createLeaf={createLeaf}
-							markActiveChecks={useEditorMarks()}
+							markActiveChecks={getEditorMarks()}
 							injectLinkContent={injectLinkContent}
 							// Blocks
 							createHeaderBlock={createHeaderBlock}

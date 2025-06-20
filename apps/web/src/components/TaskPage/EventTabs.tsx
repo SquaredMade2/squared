@@ -43,7 +43,9 @@ export const EventTabs = () => {
 		mutationKey: ["notification", "createMention"],
 		mutationFn: async ({
 			editorContent,
-		}: { editorContent: CustomDescendant[] }) => {
+		}: {
+			editorContent: CustomDescendant[];
+		}) => {
 			if (!currentTask || !workspace) return;
 
 			const mentions = getMentionsFromSlate(editorContent);

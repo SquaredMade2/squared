@@ -1,8 +1,5 @@
 "use client";
 
-import { client } from "@/lib/client";
-import { LINK_EXPIRATION_TIMES } from "@/lib/constants";
-import { useModalStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import { Copy } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -26,7 +23,10 @@ import {
 } from "@squaredmade/ui/select";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { client } from "@/lib/client";
+import { LINK_EXPIRATION_TIMES } from "@/lib/constants";
+import { useModalStore } from "@/store";
 
 export const InviteModal = () => {
 	const [expirationPeriod, setExpirationPeriod] = useState<string>("7d");
@@ -90,6 +90,8 @@ export const InviteModal = () => {
 			});
 		}
 	};
+	const id = useId();
+	const getFormId = (el: string) => `${id}-${el}`;
 
 	return (
 		<Dialog open={showInvite} onOpenChange={() => setShowInvite(!showInvite)}>
@@ -137,11 +139,11 @@ export const InviteModal = () => {
 							</Select>
 						</div>
 						<div className="flex flex-col gap-3">
-							<Label htmlFor="name" className="">
+							<Label htmlFor={getFormId("uses")} className="">
 								Number of Uses
 							</Label>
 							<Input
-								id="uses"
+								id={getFormId("uses")}
 								type="number"
 								min={1}
 								disabled={isUnlimitedUses}

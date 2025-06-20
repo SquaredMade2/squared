@@ -55,7 +55,9 @@ const groupPriority = [
 
 const PriorityFilterDropDown = ({
 	filterOption,
-}: { filterOption: FilterOption }) => {
+}: {
+	filterOption: FilterOption;
+}) => {
 	const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);

@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Camera } from "lucide-react";
+import { useId } from "react";
 
 interface ImageUploadProps {
 	imageUrl?: string;
@@ -16,9 +17,10 @@ const ImageUpload = ({
 	alt,
 	handleImageUpload,
 }: ImageUploadProps) => {
+	const id = useId();
 	return (
 		<div className="group relative">
-			<label htmlFor="image-upload" className="block cursor-pointer">
+			<label htmlFor={id} className="block cursor-pointer">
 				<Avatar className="size-28">
 					<AvatarImage src={imageUrl} alt={alt} />
 					<AvatarFallback className="text-5xl">{fallbackText}</AvatarFallback>
@@ -28,7 +30,7 @@ const ImageUpload = ({
 				</div>
 			</label>
 			<input
-				id="image-upload"
+				id={id}
 				type="file"
 				accept="image/*"
 				className="hidden"

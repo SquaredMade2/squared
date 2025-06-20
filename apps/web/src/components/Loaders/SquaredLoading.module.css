@@ -2,7 +2,9 @@
 	--_g: no-repeat linear-gradient(currentColor 0 0);
 	background: var(--_g), var(--_g), var(--_g);
 	background-size: 50.1% 50.1%;
-	animation: l6-0 1.5s infinite steps(1) alternate, l6-0-0 3s infinite steps(1);
+	animation:
+		l6-0 1.5s infinite steps(1) alternate,
+		l6-0-0 3s infinite steps(1);
 }
 
 .loaderBefore {
@@ -15,13 +17,22 @@
 
 @keyframes l6-0 {
 	0% {
-		background-position: 0 100%, 100% 100%, 100% 0;
+		background-position:
+			0 100%,
+			100% 100%,
+			100% 0;
 	}
 	33% {
-		background-position: 100% 100%, 100% 100%, 100% 0;
+		background-position:
+			100% 100%,
+			100% 100%,
+			100% 0;
 	}
 	66% {
-		background-position: 100% 0, 100% 0, 100% 0;
+		background-position:
+			100% 0,
+			100% 0,
+			100% 0;
 	}
 }
 

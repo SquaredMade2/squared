@@ -558,12 +558,12 @@ const Toast = ({
 		const pauseTimer = () => {
 			if (previousCloseTimerStartTime < closeTimerStartTime) {
 				// Get the elapsed time since the timer started
-				const elapsedTime = new Date().getTime() - closeTimerStartTime;
+				const elapsedTime = Date.now() - closeTimerStartTime;
 
 				remainingTime.current = remainingTime.current - elapsedTime;
 			}
 
-			setCloseTimerStartTime(new Date().getTime());
+			setCloseTimerStartTime(Date.now());
 		};
 
 		const startTimer = () => {
@@ -572,7 +572,7 @@ const Toast = ({
 			// See: https://github.com/denysdovhan/wtfjs?tab=readme-ov-file#an-infinite-timeout
 			if (remainingTime.current === Number.POSITIVE_INFINITY) return;
 
-			closeTimerStartTimeRef.current = new Date().getTime();
+			closeTimerStartTimeRef.current = Date.now();
 
 			// Let the toast know it has started
 			timeoutId = setTimeout(() => {
@@ -748,7 +748,7 @@ const Toast = ({
 						.replace("px", "") || 0,
 				);
 				const timeTaken =
-					new Date().getTime() -
+					Date.now() -
 					(dragStartTime.current ? dragStartTime.current.getTime() : 0);
 
 				const swipeAmount =

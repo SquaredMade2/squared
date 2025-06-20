@@ -1,8 +1,8 @@
 echo "Running Formatting..."
 
 # Format Project before committing
-bun format:write || true
-bun lint:fix || true
+bun format || true
+bun lint || true
 git add .
 
 

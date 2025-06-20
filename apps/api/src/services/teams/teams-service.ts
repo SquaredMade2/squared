@@ -162,7 +162,10 @@ export class TeamService implements TeamRpc {
 	async getUserTeams({
 		userId,
 		workspaceId,
-	}: { userId: string; workspaceId: string }): Promise<Team[]> {
+	}: {
+		userId: string;
+		workspaceId: string;
+	}): Promise<Team[]> {
 		this.logger.info("Finding teams for user: ", userId);
 		return await this.db
 			.select()
@@ -179,7 +182,9 @@ export class TeamService implements TeamRpc {
 
 	async getWorkspaceTeams({
 		workspaceId,
-	}: { workspaceId: string }): Promise<Team[]> {
+	}: {
+		workspaceId: string;
+	}): Promise<Team[]> {
 		this.logger.info("Finding workspace teams");
 
 		return await this.db.transaction(async (tx) => {

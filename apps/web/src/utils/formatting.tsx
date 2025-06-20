@@ -1,8 +1,8 @@
-import type { FilterCondition } from "@/store/filters";
-import { getFilterAssignees } from "@/store/filters/helpers";
 import type { PublicUserData } from "@clerk/types";
 import { type Label, Priority, Status } from "@squaredmade/db";
 import { format } from "date-fns";
+import type { FilterCondition } from "@/store/filters";
+import { getFilterAssignees } from "@/store/filters/helpers";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -32,8 +32,8 @@ export const sanitizeBranchName = (str: string): string => {
 
 	const sanitized = str
 		.toLowerCase()
-		.replace(/[^a-z0-9\s\/]/g, "")
-		.split(/[\s\/]+/)
+		.replace(/[^a-z0-9\s/]/g, "")
+		.split(/[\s/]+/)
 		.filter((word) => word && !excludedWords.has(word))
 		.slice(0, 8)
 		.join("-");

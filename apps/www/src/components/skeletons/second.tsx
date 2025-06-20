@@ -29,7 +29,8 @@ export const SkeletonTwo = () => {
 			<div className="z-20 h-full rounded-[32px] border border-neutral-accent bg-neutral-secondary p-4">
 				<div className="h-full rounded-[24px] border border-neutral-accent bg-background p-2">
 					<div className="mx-auto h-6 w-20 rounded-full bg-neutral-accent/80 dark:bg-neutral-secondary/80" />
-					<div
+					<button
+						type="button"
 						onMouseEnter={handleAnimation}
 						ref={scope}
 						className="content mx-auto mt-4 w-[90%]"
@@ -53,7 +54,7 @@ export const SkeletonTwo = () => {
 							Now Playing <br />{" "}
 							<span className="italic">Something in the way - Nirvana</span>
 						</AIMessage> */}
-					</div>
+					</button>
 				</div>
 			</div>
 		</div>

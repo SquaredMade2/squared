@@ -1,6 +1,3 @@
-import { client } from "@/lib/client";
-import { useEventStore, useUserStore } from "@/store";
-import { formatUrl, getInitials } from "@/utils/formatting";
 import type { Notification, Task, Workspace } from "@squaredmade/db";
 import {
 	BellOff,
@@ -12,9 +9,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
 import { Checkbox } from "@squaredmade/ui/checkbox";
-import { TooltipContent } from "@squaredmade/ui/tooltip";
 import {
 	Tooltip,
+	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
@@ -22,6 +19,9 @@ import { useMutation } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
+import { client } from "@/lib/client";
+import { useEventStore, useUserStore } from "@/store";
+import { formatUrl, getInitials } from "@/utils/formatting";
 import { StatusIcon } from "../Icons";
 
 export const columns: ColumnDef<
@@ -81,7 +81,8 @@ export const columns: ColumnDef<
 			});
 
 			return (
-				<div
+				<button
+					type="button"
 					className="flex w-full cursor-pointer items-start gap-4 sm:items-center"
 					onClick={() => handleMarkAsUnread()}
 				>
@@ -112,7 +113,7 @@ export const columns: ColumnDef<
 							<div className="block text-xs lowercase sm:hidden">{type}</div>
 						</div>
 					</div>
-				</div>
+				</button>
 			);
 		},
 	},

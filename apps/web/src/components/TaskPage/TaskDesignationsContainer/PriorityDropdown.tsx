@@ -1,10 +1,5 @@
 "use client";
 
-import { PriorityIcon } from "@/components/Icons";
-import { client } from "@/lib/client";
-import { priorityOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore } from "@/store";
-import { formatPriority } from "@/utils/formatting";
 import type { Priority, TaskEvent } from "@squaredmade/db";
 import {
 	Select,
@@ -15,17 +10,23 @@ import {
 } from "@squaredmade/ui/select";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
+import { PriorityIcon } from "@/components/Icons";
+import { client } from "@/lib/client";
+import { priorityOptions } from "@/lib/constants";
+import { useEventStore, useTaskStore } from "@/store";
+import { formatPriority } from "@/utils/formatting";
+
 const PriorityDropdown = () => {
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
-	if (!currentTask) return null;
-
-	const { priority: sidebarPriority, id: taskId } = currentTask;
+	const taskId = currentTask?.id;
+	const sidebarPriority = currentTask?.priority;
 
 	const { mutate: updatePriority } = useMutation({
 		mutationKey: ["task", "updatePriority", taskId],
 		mutationFn: async (newPriority: Priority) => {
+			if (!currentTask || !taskId) throw new Error("Task not found");
 			const res = await client.task.updatePriority.$post({
 				taskId,
 				priority: newPriority,

@@ -63,7 +63,9 @@ const groupStatus = [
 
 const StatusFilterDropDown = ({
 	filterOption,
-}: { filterOption: FilterOption }) => {
+}: {
+	filterOption: FilterOption;
+}) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);

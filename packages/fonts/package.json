@@ -11,13 +11,21 @@
 		}
 	},
 	"main": "dist/styles.css",
-	"files": ["dist", "README.md", "CHANGELOG.md"],
+	"files": [
+		"dist",
+		"README.md",
+		"CHANGELOG.md"
+	],
 	"scripts": {
 		"build": "node build.mjs",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf dist"
 	},
-	"keywords": ["font", "noirden-sans", "tailwindcss"],
+	"keywords": [
+		"font",
+		"noirden-sans",
+		"tailwindcss"
+	],
 	"author": "squared",
 	"license": "MIT",
 	"peerDependencies": {

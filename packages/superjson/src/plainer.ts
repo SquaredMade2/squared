@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: This isn't externally exposed */
 import { getDeep, setDeep } from "./accessDeep.js";
 import type SuperJSON from "./index.js";
 import {
@@ -8,11 +9,10 @@ import {
 	isPrimitive,
 	isSet,
 } from "./is.js";
-import { escapeKey, stringifyPath } from "./pathstringifier.js";
-import { parsePath } from "./pathstringifier.js";
+import { escapeKey, parsePath, stringifyPath } from "./pathstringifier.js";
 import {
-	type TypeAnnotation,
 	isInstanceOfRegisteredClass,
+	type TypeAnnotation,
 	transformValue,
 	untransformValue,
 } from "./transformer.js";
@@ -126,7 +126,7 @@ export function generateReferentialEqualityAnnotations(
 	dedupe: boolean,
 ): ReferentialEqualityAnnotations | undefined {
 	const result: Record<string, string[]> = {};
-	let rootEqualityPaths: string[] | undefined = undefined;
+	let rootEqualityPaths: string[] | undefined;
 
 	for (let [_, paths] of identities.entries()) {
 		if (paths.length <= 1) {

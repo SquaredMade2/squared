@@ -1,7 +1,7 @@
-import LabelBadge from "@/components/LabelBadges";
-import { useViewStore } from "@/store";
 import type { Label } from "@squaredmade/db";
 import { useEffect, useRef, useState } from "react";
+import LabelBadge from "@/components/LabelBadges";
+import { useViewStore } from "@/store";
 import type { TaskCardLabelsProps } from "./interfaces";
 
 export const LabelColor = ({ label }: { label: Label }) => {
@@ -50,13 +50,11 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 					))}
 				</div>
 			) : (
-				<>
-					{labels.map((label) => (
-						<div key={label.name} className="label-badge mb-1 shrink">
-							<LabelBadge label={label} />
-						</div>
-					))}
-				</>
+				labels.map((label) => (
+					<div key={label.name} className="label-badge mb-1 shrink">
+						<LabelBadge label={label} />
+					</div>
+				))
 			)}
 		</>
 	);

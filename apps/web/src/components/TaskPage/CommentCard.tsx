@@ -1,6 +1,3 @@
-import { useUsers } from "@/hooks/useUsers";
-import type { UserAvatar } from "@/store/users";
-import { formatName, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Comment } from "@squaredmade/db";
 import { Trash } from "@squaredmade/icons";
@@ -10,10 +7,14 @@ import { toast } from "@squaredmade/ui/toast";
 import { formatDate } from "date-fns/format";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
-import { useEffect, useState } from "react";
 import type React from "react";
+import { useEffect, useState } from "react";
+import { useUsers } from "@/hooks/useUsers";
+import type { UserAvatar } from "@/store/users";
+import { formatName, getInitials } from "@/utils/formatting";
 import MentionHover from "../TextEditor/Menus/MentionHover";
 import { DeleteCommentAlertDialog } from "./DeleteCommentAlertDialog";
+
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";
@@ -130,7 +131,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				});
 			}
 		};
-		const JSXCommentData = async () => {
+		const jSXCommentData = async () => {
 			try {
 				const formattedComment = comment.comment;
 
@@ -142,7 +143,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				});
 			}
 		};
-		JSXCommentData();
+		jSXCommentData();
 		handleGetUser();
 	}, [comment]);
 

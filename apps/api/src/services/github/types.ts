@@ -9,9 +9,9 @@ export interface UpsertPullRequestResponse {
 }
 
 export interface GithubRpc {
-	getWorkspaceOrganizations: (args: { workspaceId: string }) => Promise<
-		{ name: string; createdAt: Date }[]
-	>;
+	getWorkspaceOrganizations: (args: {
+		workspaceId: string;
+	}) => Promise<{ name: string; createdAt: Date }[]>;
 	upsertPullRequest: (args: {
 		id: string;
 		number: number;
@@ -26,12 +26,8 @@ export interface GithubRpc {
 		org: Omit<GithubOrg, "externalId" | "workspaceId" | "createdAt">;
 		repo: Omit<GithubRepo, "externalId">;
 	}) => Promise<UpsertPullRequestResponse>;
-	mergePullRequest: (args: {
-		pullRequestId: string;
-	}) => Promise<void>;
-	closePullRequest: (args: {
-		pullRequestId: string;
-	}) => Promise<void>;
+	mergePullRequest: (args: { pullRequestId: string }) => Promise<void>;
+	closePullRequest: (args: { pullRequestId: string }) => Promise<void>;
 	pushCommit: (args: {
 		id: string;
 		message: string;

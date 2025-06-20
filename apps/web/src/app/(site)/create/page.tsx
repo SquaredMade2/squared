@@ -1,8 +1,5 @@
 "use client";
 
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
 import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Card } from "@squaredmade/ui/card";
@@ -14,6 +11,10 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
@@ -178,7 +179,6 @@ const Join = () => {
 							<Label>Workspace Name</Label>
 							<Input
 								type="text"
-								id="workSpace"
 								autoComplete="off"
 								className="relative bg-card xs:pl-0 xs:indent-2"
 								value={inputValue}
@@ -193,7 +193,6 @@ const Join = () => {
 								</span>
 								<Input
 									className="relative bg-card pl-44 xs:pl-0 xs:indent-2"
-									id="workSpaceUrl"
 									autoComplete="off"
 									value={urlInputValue}
 									onChange={(e) => setUrlInputValue(e.target.value)}

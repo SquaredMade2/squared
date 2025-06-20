@@ -1,11 +1,5 @@
 "use client";
 
-import { StatusIcon } from "@/components/Icons";
-import { client } from "@/lib/client";
-import { statusOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
 import type { Status } from "@squaredmade/db";
 import {
 	Select,
@@ -16,14 +10,20 @@ import {
 } from "@squaredmade/ui/select";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
+import { StatusIcon } from "@/components/Icons";
+import { client } from "@/lib/client";
+import { statusOptions } from "@/lib/constants";
+import { useEventStore, useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
 
 const StatusDropdown = () => {
 	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
 		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
-	if (!currentTask) return null;
-	const { id: taskId, status: sidebarStatus } = currentTask;
+	const taskId = currentTask?.id;
+	const sidebarStatus = currentTask?.status;
 
 	const handleSelectStatus = (newStatus: Status) => {
 		if (newStatus === sidebarStatus || !taskId) return;
@@ -33,6 +33,7 @@ const StatusDropdown = () => {
 	const { mutate: updateItem } = useMutation({
 		mutationKey: ["task", "updateStatus", taskId],
 		mutationFn: async (newStatus: Status) => {
+			if (!currentTask || !taskId) throw new Error("Task not found");
 			const res = await client.task.updateStatus
 				.$post({
 					taskId,

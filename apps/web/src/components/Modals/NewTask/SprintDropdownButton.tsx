@@ -25,7 +25,10 @@ import { useMemo } from "react";
 export const SprintDropdownButton = ({
 	activeSprint,
 	upcomingSprints,
-}: { activeSprint: Sprint | null; upcomingSprints: Sprint[] }) => {
+}: {
+	activeSprint: Sprint | null;
+	upcomingSprints: Sprint[];
+}) => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 
 	const handleSelectSprint = (sprint: Sprint | null) => {

@@ -13,7 +13,10 @@ import TaskCard from "../TaskCard";
 const Group = ({
 	tasks,
 	isListView,
-}: { tasks: Task[]; isListView: boolean }) => {
+}: {
+	tasks: Task[];
+	isListView: boolean;
+}) => {
 	const { displayOptions } = useViewStore((state) => state);
 
 	const { orderBy, orderAscending } = displayOptions.taskOrder;

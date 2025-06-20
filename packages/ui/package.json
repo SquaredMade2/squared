@@ -181,7 +181,11 @@
 		"prebuild": "rm -rf dist",
 		"release": "bun build && changeset publish"
 	},
-	"files": ["dist", "README.md", "CHANGELOG.md"],
+	"files": [
+		"dist",
+		"README.md",
+		"CHANGELOG.md"
+	],
 	"peerDependencies": {
 		"@tailwindcss/postcss": "^4",
 		"postcss": "^8",

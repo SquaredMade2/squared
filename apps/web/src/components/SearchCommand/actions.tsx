@@ -1,5 +1,4 @@
-import { useTeamStore, useViewStore } from "@/store";
-import { useClerk, useOrganization } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import type { Team } from "@squaredmade/db";
 import {
@@ -19,7 +18,8 @@ import {
 	Settings,
 	Trash2,
 } from "@squaredmade/icons";
-import { usePathname, useRouter } from "next/navigation";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import type { useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./interfaces";
 
 export class CommandSchema {
@@ -45,6 +45,11 @@ export class CommandSchema {
 		setShowTaskSelector,
 		clearFilter,
 		showToast,
+		router,
+		pathname,
+		organization,
+		showNavbar,
+		team,
 	}: {
 		setShowNewTask: (input: boolean) => void;
 		setShowSwitchWorkspace: (input: boolean) => void;
@@ -55,12 +60,17 @@ export class CommandSchema {
 			title: string,
 			variant?: "destructive" | "default" | null,
 		) => void;
+		router: AppRouterInstance;
+		pathname: string;
+		organization?: OrganizationResource | null;
+		showNavbar: boolean;
+		team: Team | null;
 	}) {
-		this.router = useRouter();
-		this.pathname = usePathname();
-		this.organization = useOrganization().organization;
-		this.showNavbar = useViewStore((state) => state.showNavbar);
-		this.team = useTeamStore((state) => state.team);
+		this.router = router;
+		this.pathname = pathname;
+		this.organization = organization;
+		this.showNavbar = showNavbar;
+		this.team = team;
 		this.setShowNewTask = setShowNewTask;
 		this.setShowSwitchWorkspace = setShowSwitchWorkspace;
 		this.setShowNavbar = setShowNavbar;

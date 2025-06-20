@@ -16,7 +16,11 @@
 			}
 		}
 	},
-	"files": ["dist", "README.md", "CHANGELOG.md"],
+	"files": [
+		"dist",
+		"README.md",
+		"CHANGELOG.md"
+	],
 	"scripts": {
 		"build": "node build.mjs",
 		"check-types": "tsc --noEmit",
