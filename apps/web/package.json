@@ -5,11 +5,10 @@
 	"scripts": {
 		"build": "next build",
 		"build:digitalocean": "bun install --production=false && bun run build && rimraf node_modules && bun install --production --frozen-lockfile",
-		"format:write": "biome format --write .",
+		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"check-types": "tsc --pretty --noEmit",
 		"dev": "next dev --turbopack",
-		"format": "biome format --write .",
 		"jest": "jest",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
