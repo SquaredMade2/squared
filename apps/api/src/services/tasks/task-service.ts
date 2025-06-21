@@ -1,16 +1,15 @@
-import { subscribeUser } from "@/utils/taskUpdate";
 import {
-	type DBClient,
-	type Task,
 	and,
 	asc,
 	blockedTasksTable,
+	type DBClient,
 	eq,
 	inArray,
 	isNull,
 	max,
 	sprintsTable,
 	sql,
+	type Task,
 	tasksTable,
 	teamsTable,
 	usersTable,
@@ -18,6 +17,7 @@ import {
 } from "@squaredmade/db";
 import type { Logger } from "@squaredmade/logger";
 import createCustomLogger from "@squaredmade/logger";
+import { subscribeUser } from "@/utils/taskUpdate";
 import type { EventService } from "../events/event-service";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
@@ -47,15 +47,15 @@ export class TaskService implements TaskRpc {
 	}: CreateTaskParams): Promise<{ task: Task; url: string }> {
 		this.logger.info("Creating task by payload", {
 			authorId,
-			title,
 			description,
 			dueDate,
 			effortEstimate,
-			teamId,
-			status,
-			priority,
 			labels,
 			parentId,
+			priority,
+			status,
+			teamId,
+			title,
 		});
 
 		return await this.db.transaction(async (tx) => {
@@ -140,18 +140,18 @@ export class TaskService implements TaskRpc {
 				.insert(tasksTable)
 				.values({
 					authorId,
-					title,
 					description,
 					dueDate,
 					effortEstimate,
-					teamId,
+					identifier: newTaskIdentifier,
 					labels,
 					parentId,
-					status,
 					priority,
 					sprintId,
+					status,
+					teamId,
+					title,
 					workspaceId: workspace.externalId,
-					identifier: newTaskIdentifier,
 				})
 				.returning();
 
@@ -223,10 +223,10 @@ export class TaskService implements TaskRpc {
 			}
 			// Create log event
 			await this.eventService.createLogEvent({
-				taskId: updatedTask.id,
 				authorId: updaterId,
 				changes: taskData,
 				previousTask,
+				taskId: updatedTask.id,
 			});
 			return updatedTask;
 		});
@@ -392,19 +392,22 @@ export class TaskService implements TaskRpc {
 		newOrder: string[];
 	}): Promise<Task[]> {
 		return await this.db.transaction(async (tx) => {
-			// Update the order of tasks
-			for (let index = 0; index < args.newOrder.length; index++) {
-				await tx
-					.update(tasksTable)
-					.set({ order: index })
-					.where(eq(tasksTable.id, args.newOrder[index]));
-			}
-
+			// Get the team ID first
 			const teamId = await tx
 				.select({ teamId: tasksTable.teamId })
 				.from(tasksTable)
 				.where(eq(tasksTable.id, args.parentId))
 				.then((result) => result[0].teamId);
+
+			// Batch update using Promise.all to update all tasks concurrently
+			const updatePromises = args.newOrder.map((taskId, index) =>
+				tx
+					.update(tasksTable)
+					.set({ order: index })
+					.where(eq(tasksTable.id, taskId)),
+			);
+
+			await Promise.all(updatePromises);
 
 			// Fetch and return the reordered subtasks
 			const reorderedTasks = await tx
@@ -466,7 +469,7 @@ export class TaskService implements TaskRpc {
 				.innerJoin(blockedTasksTable, eq(blockedTasksTable.a, tasksTable.id))
 				.where(eq(blockedTasksTable.b, taskId));
 
-			return blockedByTasks.map(({ Task }) => Task);
+			return blockedByTasks.map(({ Task: t }) => t);
 		});
 	}
 
@@ -504,7 +507,7 @@ export class TaskService implements TaskRpc {
 			}
 
 			return {
-				blockedBy: blockedByTasks.map(({ Task }) => Task),
+				blockedBy: blockedByTasks.map(({ Task: t }) => t),
 				blockingIds: blockingTasks.map(({ id }) => id),
 			};
 		});

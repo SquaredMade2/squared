@@ -48,14 +48,11 @@ export const EventTabs = () => {
 			if (!(currentTask && workspace)) return;
 
 			const mentions = getMentionsFromSlate(editorContent);
-
-			for (const mention of mentions) {
+			const mentionsPromises = mentions.map(async (mention) => {
 				const mentionedUser = users?.find(
 					(user) => user?.firstName === mention,
 				);
-
-				if (!(mentionedUser && mentionedUser.userId)) continue;
-
+				if (!mentionedUser?.userId) return;
 				const mentionEvent: CreateNotificationRequest = {
 					description: "Task Comment Mention",
 					taskId: currentTask.id,
@@ -64,7 +61,9 @@ export const EventTabs = () => {
 					workspaceId: workspace.externalId,
 				};
 				await client.notification.createMention.$post(mentionEvent);
-			}
+			});
+
+			await Promise.all(mentionsPromises);
 		},
 		mutationKey: ["notification", "createMention"],
 		onError: (error) => {

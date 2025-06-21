@@ -41,9 +41,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		},
 	});
 
-	const users = memberships?.data?.map(
-		(membership) => membership.publicUserData,
-	);
+	const users = memberships?.data?.map((m) => m.publicUserData);
 
 	const hasMembershipManagePermission = membership?.permissions.includes(
 		"org:sys_memberships:manage",
@@ -102,13 +100,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	// 	});
 	// };
 
-	const hasUserAvatarData = (user: UserAvatar | unknown) => {
-		return (
-			user &&
-			typeof user === "object" &&
-			"imageUrl" in user &&
-			"firstName" in user
-		);
+	const hasUserAvatarData = (u: UserAvatar | unknown) => {
+		return u && typeof u === "object" && "imageUrl" in u && "firstName" in u;
 	};
 
 	useEffect(() => {

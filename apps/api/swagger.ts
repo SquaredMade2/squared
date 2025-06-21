@@ -13,11 +13,9 @@ const logger = createCustomLogger("swagger");
 async function scanForDocs(dir: string): Promise<Record<string, string>> {
 	let docs: Record<string, string> = {};
 	const files = await fs.readdir(dir);
-
-	for (const file of files) {
+	const filePromises = files.map(async (file) => {
 		const filePath = path.join(dir, file);
 		const stat = await fs.stat(filePath);
-
 		if (stat.isDirectory()) {
 			const subDocs = await scanForDocs(filePath);
 			docs = { ...docs, ...subDocs };
@@ -26,7 +24,8 @@ async function scanForDocs(dir: string): Promise<Record<string, string>> {
 			const routeDocs = require(filePath).default;
 			docs = { ...docs, ...routeDocs };
 		}
-	}
+	});
+	await Promise.all(filePromises);
 
 	return docs;
 }

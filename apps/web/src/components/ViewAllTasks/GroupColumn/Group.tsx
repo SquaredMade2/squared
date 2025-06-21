@@ -1,3 +1,6 @@
+import { Droppable } from "@hello-pangea/dnd";
+import type { Task } from "@squaredmade/db";
+import { usePathname } from "next/navigation";
 import {
 	useFilterStore,
 	useTaskStore,
@@ -5,9 +8,6 @@ import {
 	useViewStore,
 } from "@/store";
 import { orderTasks } from "@/utils/compareSorting";
-import { Droppable } from "@hello-pangea/dnd";
-import type { Task } from "@squaredmade/db";
-import { usePathname } from "next/navigation";
 import TaskCard from "../TaskCard";
 
 const Group = ({
@@ -50,57 +50,53 @@ const Group = ({
 
 	const renderTask = (task: Task, index: number) => (
 		<div
-			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			key={task.id}
 		>
 			<TaskCard
-				task={task}
 				index={index}
-				location="dashboard"
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
+				location="dashboard"
+				task={task}
 			/>
 		</div>
 	);
 
-	const renderTaskWithSubtasks = (
-		task: Task,
-		index: number,
-		subtasks: Task[],
-	) => (
+	const renderTaskWithSubtasks = (task: Task, index: number, st: Task[]) => (
 		<div
-			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			key={task.id}
 		>
 			<TaskCard
-				task={task}
 				index={index}
-				location="dashboard"
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
+				location="dashboard"
+				task={task}
 			/>
-			{subtasks.length > 0 && showSubTasks && (
+			{st.length > 0 && showSubTasks && (
 				<Droppable droppableId={`${task.identifier}Subtasks`}>
 					{(provided) => (
 						<div
 							{...provided.droppableProps}
-							ref={provided.innerRef}
 							className={`mt-1 bg-secondary dark:bg-secondary/30 ${
 								isListView
 									? "w-full rounded-b-lg px-2 pb-2"
 									: "w-72 rounded-lg p-2"
 							}`}
+							ref={provided.innerRef}
 						>
-							{subtasks
+							{st
 								.toSorted((a, b) => a.order - b.order)
 								.map((subtask, subIndex) => (
 									<TaskCard
-										key={subtask.id}
-										task={subtask}
 										index={subIndex}
-										location="dashboard"
-										isSubtask={true}
 										isDisabled={
 											!!allBlockedTaskIds.find((id) => id === subtask.id)
 										}
+										isSubtask={true}
+										key={subtask.id}
+										location="dashboard"
+										task={subtask}
 									/>
 								))}
 							{provided.placeholder}
@@ -111,12 +107,12 @@ const Group = ({
 		</div>
 	);
 
-	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
+	const renderSubtasks = (parentTask: Task | undefined, st: Task[]) => (
 		<div
-			key={parentTask?.id}
 			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
 				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
 			}`}
+			key={parentTask?.id}
 		>
 			<span
 				className={`inline-block max-w-[250px] truncate text-accent-foreground ${isListView ? "ml-10" : "ml-2"}`}
@@ -124,14 +120,14 @@ const Group = ({
 				{parentTask?.identifier}: {parentTask?.title}
 			</span>
 			{showSubTasks &&
-				subtasks.map((subtask, index) => (
+				st.map((subtask, index) => (
 					<TaskCard
-						key={subtask.id}
-						task={subtask}
 						index={index}
-						location="dashboard"
-						isSubtask={true}
 						isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
+						isSubtask={true}
+						key={subtask.id}
+						location="dashboard"
+						task={subtask}
 					/>
 				))}
 		</div>
@@ -151,14 +147,14 @@ const Group = ({
 		if (isParentTask) {
 			const taskSubtasks = subtasks.filter((t) => t.parentId === task.id);
 			return {
-				task,
 				render: (index: number) =>
 					renderTaskWithSubtasks(task, index, taskSubtasks),
+				task,
 			};
 		}
 		return {
-			task,
 			render: (index: number) => renderTask(task, index),
+			task,
 		};
 	});
 
@@ -170,8 +166,8 @@ const Group = ({
 					const parentTask = allTasks.find((t) => t.id === id);
 					const taskSubtasks = subtasks.filter((t) => t.parentId === id);
 					return {
-						task: parentTask,
 						render: () => renderSubtasks(parentTask, taskSubtasks),
+						task: parentTask,
 					};
 				})
 				.filter(Boolean)
@@ -199,18 +195,16 @@ const Group = ({
 		// if no sprintId then render all tasks
 		if (!sprintId) {
 			return sortedItems.map((sortedTask, index) => {
-				const item = allItems.find((item) => {
-					return item?.task?.id === sortedTask.id;
+				const item = allItems.find((i) => {
+					return i?.task?.id === sortedTask.id;
 				});
 				return item?.render(index);
 			});
 		}
 		// else render items with matching sprintId
 		return sortedItems.map((sortedTask, index) => {
-			const item = allItems.find((item) => {
-				return (
-					item?.task?.id === sortedTask.id && item?.task.sprintId === sprintId
-				);
+			const item = allItems.find((i) => {
+				return i?.task?.id === sortedTask.id && i?.task.sprintId === sprintId;
 			});
 			return item?.render(index);
 		});
@@ -218,8 +212,8 @@ const Group = ({
 
 	// Render the sorted items
 	return sortedItems.map((sortedTask, index) => {
-		const item = allItems.find((item) => {
-			return item?.task?.id === sortedTask.id;
+		const item = allItems.find((i) => {
+			return i?.task?.id === sortedTask.id;
 		});
 		return item?.render(index);
 	});

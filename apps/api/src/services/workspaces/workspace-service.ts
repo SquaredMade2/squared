@@ -268,7 +268,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 			// Remove user from teams
 			if (workspaceTeams.length > 0) {
-				for (const team of workspaceTeams) {
+				const userTeamsPromises = workspaceTeams.map(async (team) => {
 					const userTeam = await tx
 						.select()
 						.from(userTeamsTable)
@@ -290,7 +290,8 @@ export class WorkspaceService implements WorkspaceRpc {
 								),
 							);
 					}
-				}
+				});
+				await Promise.all(userTeamsPromises);
 			}
 
 			// Remove user from workspace

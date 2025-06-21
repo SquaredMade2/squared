@@ -74,7 +74,7 @@ export default function CreateTeam() {
 					identifier: values.teamIdentifier.toUpperCase(),
 					name: values.teamName.trim(),
 				})
-				.then((res) => res.json());
+				.then((r) => r.json());
 
 			if (!res) throw new Error("Failed to create team");
 			return res;

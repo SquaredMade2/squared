@@ -96,7 +96,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 
 			const res = await client.task.createTask
 				.$post(newTask)
-				.then((res) => res.json());
+				.then((r) => r.json());
 			res.task.order = subtasks.length + 1;
 			createTask(res.task);
 			setSubtasks([...subtasks, res.task]);

@@ -22,13 +22,13 @@ export default function TeamSelector() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{teams.map((team) => (
+				{teams.map((t) => (
 					<DropdownMenuItem
 						className="truncate"
-						key={team.id}
-						onClick={() => setTeam(team)}
+						key={t.id}
+						onClick={() => setTeam(t)}
 					>
-						{team.identifier}
+						{t.identifier}
 					</DropdownMenuItem>
 				))}
 			</DropdownMenuContent>

@@ -39,7 +39,7 @@ const Join = () => {
 			queryFn: async () => {
 				const res = await client.workspace.getTakenUrls
 					.$get()
-					.then((res) => res.json());
+					.then((r) => r.json());
 				return res;
 			},
 			queryKey: ["workspaces", user?.id],

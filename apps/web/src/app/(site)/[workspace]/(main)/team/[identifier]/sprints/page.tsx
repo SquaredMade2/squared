@@ -80,10 +80,8 @@ export default function SprintDashboard() {
 
 	useEffect(() => {
 		if (sprints.length > 0) {
-			const upcoming = sprints.filter((sprint) => sprint.status === "PLANNED");
-			const completed = sprints.filter(
-				(sprint) => sprint.status === "COMPLETED",
-			);
+			const upcoming = sprints.filter((s) => s.status === "PLANNED");
+			const completed = sprints.filter((s) => s.status === "COMPLETED");
 
 			setUpcomingSprints(upcoming);
 			setCompletedSprints(completed);
@@ -96,8 +94,8 @@ export default function SprintDashboard() {
 	}, [tasks]);
 
 	const calculateProgress = useCallback(
-		(sprint: Sprint) => {
-			const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
+		(s: Sprint) => {
+			const sprintTasks = tasks.filter((task) => task.sprintId === s.id);
 			const completedTasks = sprintTasks.filter(
 				(task) => task.status === "done",
 			);
@@ -171,12 +169,11 @@ export default function SprintDashboard() {
 
 	const getVelocity = useCallback(() => {
 		if (completedSprints.length === 0) return 0;
-		const totalCompletedTasks = completedSprints.reduce((sum, sprint) => {
+		const totalCompletedTasks = completedSprints.reduce((sum, s) => {
 			return (
 				sum +
-				tasks.filter(
-					(task) => task.sprintId === sprint.id && task.status === "done",
-				).length
+				tasks.filter((task) => task.sprintId === s.id && task.status === "done")
+					.length
 			);
 		}, 0);
 		return totalCompletedTasks / completedSprints.length;

@@ -1,3 +1,5 @@
+import { Priority, Status, type Task } from "@squaredmade/db";
+import { isAfter, startOfDay, subDays, subMonths } from "date-fns";
 import type { GroupedColumn } from "@/components/ViewAllTasks/interfaces";
 import {
 	useTaskStore,
@@ -6,8 +8,6 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import type { CompletedTaskPeriod, TaskGroup } from "@/store/views";
-import { Priority, Status, type Task } from "@squaredmade/db";
-import { isAfter, startOfDay, subDays, subMonths } from "date-fns";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { tasks } = useTaskStore((state) => state);
@@ -20,7 +20,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 	// Helper to get pre-defined sort order for statuses and priorities
 	const getSortOrderIndex = (group: string, groupType: TaskGroup): number => {
-		if (groupType === "Status") {
+		if (groupType === "status") {
 			const statusOrder = [
 				Status.backlog,
 				Status.todo,
@@ -34,7 +34,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			return statusOrder.indexOf(group as Status);
 		}
 
-		if (groupType === "Priority") {
+		if (groupType === "priority") {
 			const priorityOrder = [
 				Priority.urgent,
 				Priority.high,
@@ -52,7 +52,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const getGroupColumnTitles = (group: TaskGroup) => {
 		let groupTitles: string[];
 		switch (group) {
-			case "Status":
+			case "status":
 				groupTitles = [
 					Status.backlog,
 					Status.todo,
@@ -61,12 +61,12 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 					Status.done,
 				];
 				break;
-			case "Assignee": {
+			case "assignee": {
 				const assigneeIds = tasks.map((t) => t.assigneeId || "Unassigned");
 				groupTitles = [...assigneeIds];
 				break;
 			}
-			case "Priority":
+			case "priority":
 				groupTitles = [
 					Priority.noPriority,
 					Priority.low,
@@ -75,7 +75,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 					Priority.urgent,
 				];
 				break;
-			case "Label": {
+			case "label": {
 				const workspaceLabels = workspace?.labels.map((l) => l.name) || [];
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
@@ -92,7 +92,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const getTasksForGroup = (group: string) => {
 		const taskFilter = filterTasks(tasks);
 		switch (groupTasksBy) {
-			case "Status":
+			case "status":
 				if (group === Status.done) {
 					return taskFilter.filter(
 						(task) =>
@@ -102,11 +102,11 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 					);
 				}
 				return taskFilter.filter((task) => task.status === group);
-			case "Assignee":
+			case "assignee":
 				return taskFilter.filter((task) => task.assigneeId === group);
-			case "Priority":
+			case "priority":
 				return taskFilter.filter((task) => task.priority === group);
-			case "Label":
+			case "label":
 				return taskFilter.filter((task) =>
 					task.labels.map((l) => l.name).includes(group),
 				);
@@ -133,7 +133,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		groupType: TaskGroup,
 	): boolean => {
 		switch (groupType) {
-			case "Status":
+			case "status":
 				if (groupValue === Status.done) {
 					return (
 						task.status === Status.done ||
@@ -142,11 +142,11 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 					);
 				}
 				return task.status === groupValue;
-			case "Assignee":
+			case "assignee":
 				return task.assigneeId === groupValue;
-			case "Priority":
+			case "priority":
 				return task.priority === groupValue;
-			case "Label":
+			case "label":
 				return task.labels.map((l) => l.name).includes(groupValue);
 			// case "Parent Task":
 			// 	if (groupValue === "No parent") {
@@ -159,7 +159,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	};
 
 	const filterTasksByPeriod = (
-		tasks: Task[],
+		ts: Task[],
 		period: CompletedTaskPeriod,
 	): Task[] => {
 		const now = new Date();
@@ -167,26 +167,26 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		switch (period) {
 			case "Past day": {
 				const oneDayAgo = startOfDay(subDays(now, 1));
-				return tasks.filter((task) =>
+				return ts.filter((task) =>
 					isAfter(new Date(task.updatedAt), oneDayAgo),
 				);
 			}
 			case "Past week": {
 				const oneWeekAgo = subDays(now, 7);
-				return tasks.filter((task) =>
+				return ts.filter((task) =>
 					isAfter(new Date(task.updatedAt), oneWeekAgo),
 				);
 			}
 			case "Past month": {
 				const oneMonthAgo = subMonths(now, 1);
-				return tasks.filter((task) =>
+				return ts.filter((task) =>
 					isAfter(new Date(task.updatedAt), oneMonthAgo),
 				);
 			}
 			case "None":
 				return []; // If period is 'None', return no tasks
 			default:
-				return tasks; // Return all tasks for "All" or unrecognized period
+				return ts; // Return all tasks for "All" or unrecognized period
 		}
 	};
 
@@ -199,7 +199,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 		return [...groups].sort((a, b) => {
 			// Handle special cases first
-			if (groupType === "Assignee") {
+			if (groupType === "assignee") {
 				if (a.group === "Unassigned") return 1;
 				if (b.group === "Unassigned") return -1;
 
@@ -213,7 +213,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			}
 
 			// Use predefined order for Status and Priority
-			if (groupType === "Status" || groupType === "Priority") {
+			if (groupType === "status" || groupType === "priority") {
 				const aIndex = getSortOrderIndex(a.group, groupType);
 				const bIndex = getSortOrderIndex(b.group, groupType);
 
@@ -235,7 +235,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			.map((columnGroup) => {
 				let tasksForColumn = getTasksForGroup(columnGroup);
 
-				if (groupTasksBy === "Status") {
+				if (groupTasksBy === "status") {
 					if (columnGroup === Status.archived) return null;
 					if (columnGroup === Status.done) {
 						const { period, show } = displayOptions.showCompletedTasks;
@@ -279,8 +279,8 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 					return {
 						group: columnGroup,
-						tasks: tasksForColumn, // Keep original tasks array for compatibility
-						rowGroups,
+						rowGroups, // Keep original tasks array for compatibility
+						tasks: tasksForColumn,
 					};
 				}
 
@@ -301,14 +301,14 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const getHiddenColumns = (): string[] => {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
 		return groupColumnTitles.filter((group) => {
-			const tasks = getTasksForGroup(group);
-			if (displayOptions.groupTasksBy === "Status") {
+			const ts = getTasksForGroup(group);
+			if (displayOptions.groupTasksBy === "status") {
 				if (group === Status.archived) return false;
 				if (group === Status.done && !displayOptions.showCompletedTasks.show) {
-					return tasks;
+					return ts;
 				}
 			}
-			return tasks && tasks.length === 0;
+			return ts && ts.length === 0;
 		});
 	};
 

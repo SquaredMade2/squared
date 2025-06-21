@@ -13,12 +13,12 @@ export async function getPrismicDocStructure(client: Client) {
 	const documents = await client.getAllByType("documentation");
 
 	const pages: DocPage[] = documents.map((doc) => ({
-		id: doc.id,
-		uid: doc.uid ?? "",
-		title: doc.data.title as string,
-		parent: doc.data.parent_page?.id ?? null,
-		order: doc.data.order as number,
 		children: [],
+		id: doc.id,
+		order: doc.data.order as number,
+		parent: doc.data.parent_page?.id ?? null,
+		title: doc.data.title as string,
+		uid: doc.uid ?? "",
 	}));
 
 	const structure: DocPage[] = [];
@@ -36,9 +36,9 @@ export async function getPrismicDocStructure(client: Client) {
 	}
 
 	// Sort pages and their children
-	const sortPages = (pages: DocPage[]) => {
-		pages.sort((a, b) => a.order - b.order);
-		for (const page of pages) {
+	const sortPages = (p: DocPage[]) => {
+		p.sort((a, b) => a.order - b.order);
+		for (const page of p) {
 			if (page.children.length > 0) {
 				sortPages(page.children);
 			}

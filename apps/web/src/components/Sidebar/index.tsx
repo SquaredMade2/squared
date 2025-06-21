@@ -1,16 +1,5 @@
 "use client";
 
-import {
-	Sidebar,
-	SidebarContent as SidebarContainer,
-	SidebarFooter,
-	SidebarHeader,
-	SidebarProvider,
-	SidebarTrigger,
-	useSidebar,
-} from "@/components/ui/sidebar";
-import { client } from "@/lib/client";
-import { useModalStore, useTeamStore } from "@/store";
 import { useClerk, useOrganization, useUser } from "@clerk/nextjs";
 import {
 	Clipboard,
@@ -29,9 +18,20 @@ import {
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import {
+	Sidebar,
+	SidebarContent as SidebarContainer,
+	SidebarFooter,
+	SidebarHeader,
+	SidebarProvider,
+	SidebarTrigger,
+	useSidebar,
+} from "@/components/ui/sidebar";
+import { client } from "@/lib/client";
+import { useModalStore, useTeamStore } from "@/store";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
@@ -43,31 +43,29 @@ function SidebarContent() {
 	const { setShowCommand } = useModalStore((state) => state);
 	const router = useRouter();
 	const { resolvedTheme: theme, setTheme } = useTheme();
-	const { state } = useSidebar();
+	const { state: sidebarState } = useSidebar();
 	const { signOut } = useClerk();
 	const { organization } = useOrganization();
 
 	const { data: notifications = [] } = useQuery({
-		queryKey: ["notification", user?.id],
 		queryFn: async () => {
-			const notifications = await client.event.getNotifications
+			const n = await client.event.getNotifications
 				.$get()
 				.then((res) => res.json());
-			return notifications;
+			return n;
 		},
+		queryKey: ["notification", user?.id],
 	});
 
 	const { data: teams = [] } = useQuery({
-		queryKey: ["team", user?.id, organization?.id],
+		enabled: !!organization,
 		queryFn: async () => {
 			if (!organization) return [];
-			const teams = await client.team.getUserTeams
-				.$get()
-				.then((res) => res.json());
-			setTeams(teams);
-			return teams;
+			const t = await client.team.getUserTeams.$get().then((res) => res.json());
+			setTeams(t);
+			return t;
 		},
-		enabled: !!organization,
+		queryKey: ["team", user?.id, organization?.id],
 	});
 
 	const handleLogout = async (): Promise<void> => {
@@ -86,24 +84,24 @@ function SidebarContent() {
 
 	return (
 		<Sidebar
-			collapsible="icon"
 			className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+			collapsible="icon"
 		>
 			<SidebarHeader
-				className={`space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
+				className={`space-y-2 ${sidebarState === "expanded" ? "px-2" : "px-0"}`}
 			>
 				<div className="flex items-center justify-between gap-2">
 					<WorkspaceDropdown />
-					{state === "expanded" && (
+					{sidebarState === "expanded" && (
 						<Tooltip>
 							<TooltipTrigger asChild={true}>
 								<Button
-									variant="ghost"
-									size="icon"
 									aria-label="search"
 									onClick={() => setShowCommand(true)}
+									size="icon"
+									variant="ghost"
 								>
-									<Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+									<Search aria-hidden="true" className="h-4 w-4 shrink-0" />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side="right">Search</TooltipContent>
@@ -112,7 +110,7 @@ function SidebarContent() {
 				</div>
 				<NewTaskButton />
 				<div className="flex flex-col space-y-2">
-					{state === "collapsed" && (
+					{sidebarState === "collapsed" && (
 						<IconButton
 							icon={Search}
 							label="Search"
@@ -122,8 +120,8 @@ function SidebarContent() {
 					<IconButton
 						icon={Inbox}
 						label="Inbox"
-						onClick={() => navigateTo("inbox")}
 						notificationCount={notifications.length}
+						onClick={() => navigateTo("inbox")}
 					/>
 					<IconButton
 						icon={Clipboard}
@@ -134,17 +132,17 @@ function SidebarContent() {
 					/>
 				</div>
 			</SidebarHeader>
-			{state === "expanded" && organization?.slug && (
+			{sidebarState === "expanded" && organization?.slug && (
 				<SidebarContainer className="px-2">
 					<TeamAccordion
-						teams={teams}
 						currentTeam={team}
+						teams={teams}
 						workspaceUrl={organization.slug}
 					/>
 				</SidebarContainer>
 			)}
 			<SidebarFooter
-				className={`mt-auto space-y-2 ${state === "expanded" ? "px-2" : "px-0"}`}
+				className={`mt-auto space-y-2 ${sidebarState === "expanded" ? "px-2" : "px-0"}`}
 			>
 				<IconButton
 					icon={theme === "dark" ? Moon : Sun}
@@ -208,22 +206,22 @@ function IconButton({
 	if (state === "expanded") {
 		return (
 			<Button
-				variant="ghost"
-				size={state === "expanded" ? "sm" : "icon"}
 				aria-label={label}
-				onClick={onClick}
 				className="relative w-full justify-between px-3"
+				onClick={onClick}
+				size={state === "expanded" ? "sm" : "icon"}
+				variant="ghost"
 			>
 				<div className="flex items-center">
-					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+					<Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
 					<span className="ml-2 w-auto opacity-100 transition-all duration-300">
 						{label}
 					</span>
 				</div>
 				{!!(notificationCount && notificationCount > 0) && (
 					<div
-						className=" h-2 w-2 rounded-full bg-primary"
 						aria-hidden="true"
+						className=" h-2 w-2 rounded-full bg-primary"
 					/>
 				)}
 			</Button>
@@ -234,20 +232,20 @@ function IconButton({
 		<Tooltip>
 			<TooltipTrigger asChild={true}>
 				<Button
-					variant="ghost"
-					size="icon"
 					aria-label={label}
-					onClick={onClick}
 					className="relative mx-1 justify-start px-3"
+					onClick={onClick}
+					size="icon"
+					variant="ghost"
 				>
-					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+					<Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
 					<span className="ml-2 w-0 overflow-hidden opacity-0 transition-all duration-300">
 						{label}
 					</span>
 					{!!(notificationCount && notificationCount > 0) && (
 						<div
-							className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-primary"
 							aria-hidden="true"
+							className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-primary"
 						/>
 					)}
 				</Button>

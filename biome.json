@@ -55,6 +55,7 @@
 			"complexity": {
 				"noForEach": "error",
 				"noVoid": "error",
+				"useOptionalChain": { "fix": "safe", "level": "error" },
 				"useSimplifiedLogicExpression": "error",
 				"useWhile": "error"
 			},
@@ -62,21 +63,21 @@
 				"useImportExtensions": "off"
 			},
 			"nursery": {
-				"noAwaitInLoop": "warn",
-				"noConstantBinaryExpression": "warn",
+				"noAwaitInLoop": "error",
+				"noConstantBinaryExpression": "error",
 				"noFloatingPromises": "off",
 				"noImportCycles": "off",
-				"noShadow": "warn",
-				"noTsIgnore": "warn",
+				"noShadow": "error",
+				"noTsIgnore": "error",
 				"noUnresolvedImports": "off",
-				"useAdjacentGetterSetter": "warn",
-				"useConsistentObjectDefinition": "warn",
-				"useConsistentResponse": "warn",
-				"useIterableCallbackReturn": "warn",
-				"useNumericSeparators": "warn",
-				"useObjectSpread": "warn",
-				"useSingleJsDocAsterisk": "warn",
-				"useSymbolDescription": "warn"
+				"useAdjacentGetterSetter": "error",
+				"useConsistentObjectDefinition": "error",
+				"useConsistentResponse": "error",
+				"useIterableCallbackReturn": "error",
+				"useNumericSeparators": "error",
+				"useObjectSpread": "error",
+				"useSingleJsDocAsterisk": "error",
+				"useSymbolDescription": "error"
 			},
 			"performance": {
 				"noDelete": "error",
@@ -92,6 +93,7 @@
 				"noNamespace": "error",
 				"noNegationElse": "error",
 				"noNestedTernary": "error",
+				"noNonNullAssertion": "error",
 				"noParameterAssign": "error",
 				"noParameterProperties": "error",
 				"noProcessEnv": "error",
@@ -168,6 +170,10 @@
 			],
 			"linter": {
 				"rules": {
+					"nursery": {
+						"noShadow": "off",
+						"useSymbolDescription": "off"
+					},
 					"style": {
 						"noProcessEnv": "off",
 						"useNamingConvention": "off",

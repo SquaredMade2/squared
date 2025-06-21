@@ -48,18 +48,18 @@ const TaskColumnTitle = ({
 			: "Unassigned";
 	};
 
-	const formatColumnTitle = (title: string) => {
+	const formatColumnTitle = (t: string) => {
 		switch (groupTasksBy) {
 			case "status":
-				return formatStatus(title as Status);
+				return formatStatus(t as Status);
 			case "assignee":
 				return getName(assignee);
 			case "priority":
-				return formatPriority(title as Priority);
+				return formatPriority(t as Priority);
 			case "label":
 				return label ? label.name : "No label";
 			default:
-				return title;
+				return t;
 		}
 	};
 

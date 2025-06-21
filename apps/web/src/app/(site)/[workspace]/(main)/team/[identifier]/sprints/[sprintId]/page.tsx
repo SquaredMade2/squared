@@ -181,9 +181,9 @@ export default function SprintDashboardPage() {
 				.then((res: Response) => res.json());
 		},
 		mutationKey: ["sprint", "sprintAssign", sprint?.id],
-		onError: (error) => {
+		onError: (e) => {
 			toast.error("Failed to assign tasks to sprint", {
-				description: parseError(error, "Unknown error"),
+				description: e.message,
 			});
 		},
 		onSuccess: (data) => {
@@ -203,9 +203,9 @@ export default function SprintDashboardPage() {
 				.then((res: Response) => res.json());
 		},
 		mutationKey: ["sprint", "sprintEnd", sprint?.id],
-		onError: (error) => {
+		onError: (e) => {
 			toast.error("Failed to end the sprint.", {
-				description: parseError(error, "Unknown error"),
+				description: e.message,
 			});
 		},
 		onSuccess: () => {

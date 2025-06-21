@@ -27,8 +27,8 @@ const BlockedByCombobox = () => {
 				return currentTaskBlockedBy;
 			}
 			const res = await client.task.updateBlockedOrBlockingTasks.$post({
-				taskId,
 				key: "blockedBy",
+				taskId,
 				updatingIds: currentTaskBlockedBy.find((t) => t.id === blockingId)
 					? [
 							...currentTaskBlockedBy
@@ -45,21 +45,21 @@ const BlockedByCombobox = () => {
 		},
 	});
 
-	const handleUpdateBlockedByTasks = (taskId: string) => {
-		mutateUpdateBlockedByTasks(taskId);
+	const handleUpdateBlockedByTasks = (t: string) => {
+		mutateUpdateBlockedByTasks(t);
 	};
 
 	return (
 		<DesignationComboboxMany
+			emptyText="No tasks found."
+			itemId={(task: Task) => task.id}
+			itemLabel={(task: Task) => task.title}
+			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
+			onItemSelect={handleUpdateBlockedByTasks}
 			open={open}
+			selectedItemIds={currentTaskBlockedBy.map((task) => task.id)}
 			setOpen={setOpen}
 			triggerText="Add / Remove"
-			emptyText="No tasks found."
-			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
-			selectedItemIds={currentTaskBlockedBy.map((task) => task.id)}
-			itemLabel={(task: Task) => task.title}
-			itemId={(task: Task) => task.id}
-			onItemSelect={handleUpdateBlockedByTasks}
 		/>
 	);
 };

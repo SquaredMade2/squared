@@ -31,22 +31,22 @@ const StatusDropdown = () => {
 	};
 
 	const { mutate: updateItem } = useMutation({
-		mutationKey: ["task", "updateStatus", taskId],
 		mutationFn: async (newStatus: Status) => {
 			if (!(currentTask && taskId)) throw new Error("Task not found");
 			const res = await client.task.updateStatus
 				.$post({
-					taskId,
 					status: newStatus,
+					taskId,
 				})
-				.then((res) => res.json());
+				.then((r) => r.json());
 			setCurrentTask({ ...currentTask, status: newStatus });
 			updateTask({ ...currentTask, status: newStatus });
 			setEvents(
-				await client.event.getEvents.$get({ taskId }).then((res) => res.json()),
+				await client.event.getEvents.$get({ taskId }).then((r) => r.json()),
 			);
 			return res;
 		},
+		mutationKey: ["task", "updateStatus", taskId],
 		onError: (error) => {
 			toast.error("Error updating status", {
 				description: parseError(error),
@@ -72,14 +72,14 @@ const StatusDropdown = () => {
 			<SelectContent>
 				{statusOptions.map((status) => (
 					<SelectItem
-						key={status}
-						value={status}
 						disabled={
 							currentTaskBlockedBy.length > 0 &&
 							(status === "done" ||
 								status === "inReview" ||
 								status === "inProgress")
 						}
+						key={status}
+						value={status}
 					>
 						<div className="flex w-full items-center justify-between">
 							<div className="flex items-center">

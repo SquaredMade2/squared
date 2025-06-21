@@ -73,7 +73,7 @@ export class GithubService implements GithubRpc {
 		].map((match) => match[1]);
 
 		const tasks = await this.db.transaction(async (tx) => {
-			const tasks = await tx
+			const tasksFromDb = await tx
 				.select({
 					id: tasksTable.id,
 					identifier: tasksTable.identifier,
@@ -88,7 +88,7 @@ export class GithubService implements GithubRpc {
 				)
 				.where(inArray(tasksTable.identifier, taskIdMatches));
 
-			if (tasks.length === 0) {
+			if (tasksFromDb.length === 0) {
 				this.logger.warn(
 					`No tasks found for pull request with id: ${id} and number: ${number}`,
 				);
@@ -98,14 +98,14 @@ export class GithubService implements GithubRpc {
 			const { id: repoExternalId, ...repoRest } = repo;
 			const { id: orgExternalId, ...orgRest } = org;
 
-			this.logger.debug("Tasks found for pull request: ", tasks);
+			this.logger.debug("Tasks found for pull request: ", tasksFromDb);
 
 			await tx
 				.insert(githubOrgTable)
 				.values({
 					...orgRest,
 					externalId: orgExternalId,
-					workspaceId: tasks[0].workspaceId,
+					workspaceId: tasksFromDb[0].workspaceId,
 				})
 				.onConflictDoNothing();
 			await tx
@@ -137,7 +137,7 @@ export class GithubService implements GithubRpc {
 				.returning();
 
 			const newTasks = await Promise.all(
-				tasks.flatMap((task) =>
+				tasksFromDb.flatMap((task) =>
 					tx
 						.insert(githubPullRequestTaskTable)
 						.values({ pullRequestId: pull.externalId, taskId: task.id })
@@ -147,8 +147,8 @@ export class GithubService implements GithubRpc {
 			).then((results) => results.flat().map((row) => row.taskId));
 
 			return {
-				tasks: tasks
-					.filter(({ id }) => newTasks.includes(id))
+				tasks: tasksFromDb
+					.filter(({ id: taskId }) => newTasks.includes(taskId))
 					.map((task) => ({
 						identifier: task.identifier,
 						title: task.title,
@@ -207,34 +207,49 @@ export class GithubService implements GithubRpc {
 				return;
 			}
 
-			// 4. For each task in review, check if all its associated PRs are closed
-			const tasksToUpdate: string[] = [];
+			const reviewTaskIds = tasksInReview.map((task) => task.id);
 
-			for (const task of tasksInReview) {
-				const associatedPRs = await tx
-					.select({
-						pullRequestId: githubPullRequestTaskTable.pullRequestId,
-						state: githubPullRequestsTable.state,
-					})
-					.from(githubPullRequestTaskTable)
-					.innerJoin(
-						githubPullRequestsTable,
-						eq(
-							githubPullRequestTaskTable.pullRequestId,
-							githubPullRequestsTable.externalId,
-						),
-					)
-					.where(eq(githubPullRequestTaskTable.taskId, task.id));
+			// 4. Get all associated PRs for tasks in review in a single query
+			const allAssociatedPRs = await tx
+				.select({
+					pullRequestId: githubPullRequestTaskTable.pullRequestId,
+					state: githubPullRequestsTable.state,
+					taskId: githubPullRequestTaskTable.taskId,
+				})
+				.from(githubPullRequestTaskTable)
+				.innerJoin(
+					githubPullRequestsTable,
+					eq(
+						githubPullRequestTaskTable.pullRequestId,
+						githubPullRequestsTable.externalId,
+					),
+				)
+				.where(inArray(githubPullRequestTaskTable.taskId, reviewTaskIds));
 
-				// Check if all PRs are closed
-				const allPRsClosed = associatedPRs.every((pr) => pr.state === "closed");
+			// 5. Group PRs by task and check which tasks have all PRs closed
+			const prsByTask = new Map<
+				string,
+				Array<{ pullRequestId: string; state: string }>
+			>();
 
-				if (allPRsClosed) {
-					tasksToUpdate.push(task.id);
+			for (const pr of allAssociatedPRs) {
+				if (!prsByTask.has(pr.taskId)) {
+					prsByTask.set(pr.taskId, []);
 				}
+				prsByTask.get(pr.taskId)?.push({
+					pullRequestId: pr.pullRequestId,
+					state: pr.state,
+				});
 			}
 
-			// 5. Update the tasks to "done" status
+			const tasksToUpdate = reviewTaskIds.filter((taskId) => {
+				const taskPRs = prsByTask.get(taskId) || [];
+				return (
+					taskPRs.length > 0 && taskPRs.every((pr) => pr.state === "closed")
+				);
+			});
+
+			// 6. Update the tasks to "done" status
 			if (tasksToUpdate.length > 0) {
 				await tx
 					.update(tasksTable)

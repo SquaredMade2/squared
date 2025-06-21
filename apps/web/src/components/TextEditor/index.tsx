@@ -140,8 +140,8 @@ const TextEditor = ({
 
 	// Helper Functions
 
-	const checkIfSlateEmpty = (editor: BaseEditor & ReactEditor) => {
-		const editorContent = editor.children.reduce(
+	const checkIfSlateEmpty = (e: BaseEditor & ReactEditor) => {
+		const editorContent = e.children.reduce(
 			(accRow: string, nextRow: Descendant) => {
 				if ("children" in nextRow) {
 					const flattenedRow = nextRow.children.reduce(

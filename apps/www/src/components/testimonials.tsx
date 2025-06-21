@@ -26,7 +26,7 @@ interface Testimonial {
 	designation?: string;
 }
 
-const testimonials = [
+const TESTIMONIALS = [
 	{
 		designation: "Tech Innovator & Entrepreneur",
 		name: "Manu Arora",
@@ -290,7 +290,7 @@ function splitArray<T>(array: T[], numParts: number) {
 
 function TestimonialGrid() {
 	// biome-ignore lint/style/useConst: came with template
-	let columns = splitArray(testimonials, 3);
+	let columns = splitArray(TESTIMONIALS, 3);
 	// biome-ignore lint/style/useConst: came with template
 	let column1 = columns[0];
 	// biome-ignore lint/style/useConst: came with template

@@ -32,17 +32,17 @@ export const EffortDropdownButton = () => {
 	const extractNumber = (str: string): number =>
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
-	const handleSelectEffort = (effortEstimate: number) => {
-		setNewTaskData({ ...newTaskData, effortEstimate });
+	const handleSelectEffort = (e: number) => {
+		setNewTaskData({ ...newTaskData, effortEstimate: e });
 	};
 
-	const buttonContent = (effortEstimate: number | null | undefined) => (
+	const buttonContent = (e: number | null | undefined) => (
 		<>
 			<span className="mr-2 inline-block h-4 w-4 cursor-pointer">
-				{effortEstimate ? showIcon(effortEstimate) : medium()}
+				{e ? showIcon(e) : medium()}
 			</span>
 			<span className="cursor-pointer font-medium text-sm">
-				{effortEstimate || "Effort"}
+				{e || "Effort"}
 			</span>
 		</>
 	);

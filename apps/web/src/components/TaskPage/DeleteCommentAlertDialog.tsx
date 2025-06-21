@@ -1,7 +1,4 @@
 "use client";
-import { client } from "@/lib/client";
-import { useCommentStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,6 +13,9 @@ import { buttonVariants } from "@squaredmade/ui/button";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import type { Dispatch, SetStateAction } from "react";
+import { client } from "@/lib/client";
+import { useCommentStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 
 export const DeleteCommentAlertDialog = ({
 	commentId,
@@ -29,12 +29,17 @@ export const DeleteCommentAlertDialog = ({
 	const { comments, setComments } = useCommentStore((state) => state);
 
 	const { mutate: deleteCommentFromTask } = useMutation({
-		mutationKey: ["comment", "deleteComment"],
-		mutationFn: async (commentId: string) => {
-			if (!commentId) {
+		mutationFn: async (cId: string) => {
+			if (!cId) {
 				throw new Error("Comment ID is required");
 			}
-			return await client.comment.deleteComment.$post({ commentId });
+			return await client.comment.deleteComment.$post({ commentId: cId });
+		},
+		mutationKey: ["comment", "deleteComment"],
+		onError: (error) => {
+			toast.error("Error deleting comment", {
+				description: parseError(error),
+			});
 		},
 		onSuccess: () => {
 			setComments(comments.filter((comment) => comment.id !== commentId));
@@ -42,15 +47,10 @@ export const DeleteCommentAlertDialog = ({
 				description: "Comment has been successfully deleted.",
 			});
 		},
-		onError: (error) => {
-			toast.error("Error deleting comment", {
-				description: parseError(error),
-			});
-		},
 	});
 
 	return (
-		<AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
+		<AlertDialog onOpenChange={setShowConfirmDelete} open={showConfirmDelete}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Delete Comment</AlertDialogTitle>

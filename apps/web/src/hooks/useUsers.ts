@@ -12,7 +12,7 @@ export function useUsers() {
 	const users: PublicUserData[] =
 		memberships?.data
 			?.map((membership) => membership.publicUserData)
-			.filter((user): user is PublicUserData => Boolean(user)) ?? [];
+			.filter((u): u is PublicUserData => Boolean(u)) ?? [];
 
-	return { user, users, loading: !(userLoaded && orgLoaded) };
+	return { loading: !(userLoaded && orgLoaded), user, users };
 }
