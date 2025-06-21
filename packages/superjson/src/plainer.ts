@@ -4,6 +4,7 @@ import type SuperJSON from "./index.js";
 import {
 	isArray,
 	isEmptyObject,
+	isError,
 	isMap,
 	isPlainObject,
 	isPrimitive,
@@ -99,7 +100,8 @@ const isDeep = (object: any, superJson: SuperJSON): boolean =>
 	isArray(object) ||
 	isMap(object) ||
 	isSet(object) ||
-	isInstanceOfRegisteredClass(object, superJson);
+	isInstanceOfRegisteredClass(object, superJson) ||
+	(isError(object) && superJson.allowedErrorProps.length > 0);
 
 function addIdentity(object: any, path: any[], identities: Map<any, any[][]>) {
 	const existingSet = identities.get(object);

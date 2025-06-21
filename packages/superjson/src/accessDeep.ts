@@ -27,13 +27,15 @@ export const getDeep = (object: object, path: (string | number)[]): object => {
 	validatePath(path);
 	let newObject = object;
 
-	for (let i = 0; i < path.length; i++) {
+	for (let i = 0; i < path.length; ) {
 		const key = path[i];
+
 		if (isSet(newObject)) {
 			newObject = getNthKey(newObject, +key);
+			i++;
 		} else if (isMap(newObject)) {
 			const row = +key;
-			const type = +path[++i] === 0 ? "key" : "value";
+			const type = +path[i + 1] === 0 ? "key" : "value";
 
 			const keyOfRow = getNthKey(newObject, row);
 			switch (type) {
@@ -44,8 +46,10 @@ export const getDeep = (object: object, path: (string | number)[]): object => {
 					newObject = newObject.get(keyOfRow);
 					break;
 			}
+			i += 2; // Skip both the row and type indices
 		} else {
 			newObject = (newObject as any)[key];
+			i++;
 		}
 	}
 
@@ -99,6 +103,10 @@ export const setDeep = (
 
 	const lastKey = path.at(-1);
 
+	if (lastKey === undefined) {
+		return object;
+	}
+
 	if (isArray(parent)) {
 		parent[+lastKey] = mapper(parent[+lastKey]);
 	} else if (isPlainObject(parent)) {
@@ -113,9 +121,10 @@ export const setDeep = (
 			parent.add(newValue);
 		}
 	}
+	const secondLastKey = path.at(-2);
 
-	if (isMap(parent)) {
-		const row = +path.at(-2);
+	if (isMap(parent) && !(secondLastKey === undefined)) {
+		const row = +secondLastKey;
 		const keyToRow = getNthKey(parent, row);
 
 		const type = +lastKey === 0 ? "key" : "value";

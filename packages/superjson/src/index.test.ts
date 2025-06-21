@@ -934,11 +934,11 @@ describe("allowErrorProps(...) (#91)", () => {
 
 		SuperJSON.allowErrorProps("map");
 
+		console.log(SuperJSON.stringify(errorWithAdditionalProps));
+
 		const errorAfterTransition: any = SuperJSON.parse(
 			SuperJSON.stringify(errorWithAdditionalProps),
 		);
-
-		expect(errorAfterTransition.map).toEqual(undefined);
 
 		expect(errorAfterTransition.map).toBeInstanceOf(Map);
 	});

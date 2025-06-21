@@ -1,6 +1,5 @@
 import type SuperJSON from "./index.js";
 import {
-	type TypedArrayConstructor,
 	isArray,
 	isBigint,
 	isDate,
@@ -12,8 +11,9 @@ import {
 	isSet,
 	isSymbol,
 	isTypedArray,
-	isURL,
 	isUndefined,
+	isURL,
+	type TypedArrayConstructor,
 } from "./is.js";
 import { findArr } from "./util.js";
 
@@ -48,8 +48,8 @@ function simpleTransformation<I, O, A extends SimpleTypeAnnotation>(
 	untransform: (v: O, superJson: SuperJSON) => I,
 ) {
 	return {
-		isApplicable,
 		annotation,
+		isApplicable,
 		transform,
 		untransform,
 	};
@@ -86,8 +86,8 @@ const simpleRules = [
 		"Error",
 		(v, superJson) => {
 			const baseError: any = {
-				name: v.name,
 				message: v.message,
+				name: v.name,
 			};
 
 			for (const prop of superJson.allowedErrorProps) {
@@ -179,8 +179,8 @@ function compositeTransformation<I, O, A extends CompositeTypeAnnotation>(
 	untransform: (v: O, a: A, superJson: SuperJSON) => I,
 ) {
 	return {
-		isApplicable,
 		annotation,
+		isApplicable,
 		transform,
 		untransform,
 	};
@@ -322,8 +322,8 @@ export const transformValue = (
 	);
 	if (applicableCompositeRule) {
 		return {
-			value: applicableCompositeRule.transform(value as never, superJson),
 			type: applicableCompositeRule.annotation(value, superJson),
+			value: applicableCompositeRule.transform(value as never, superJson),
 		};
 	}
 
@@ -333,8 +333,8 @@ export const transformValue = (
 
 	if (applicableSimpleRule) {
 		return {
-			value: applicableSimpleRule.transform(value as never, superJson),
 			type: applicableSimpleRule.annotation,
+			value: applicableSimpleRule.transform(value as never, superJson),
 		};
 	}
 
