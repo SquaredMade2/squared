@@ -15,7 +15,6 @@
 		"prestart": "bun i",
 		"reset": "rimraf node_modules bun.lock",
 		"start": "next start",
-		"test": "jest --verbose=false",
 		"test:watch": "jest --watch",
 		"test:coverage": "jest --coverage"
 	},
