@@ -2,7 +2,6 @@ echo "Running Formatting..."
 
 # Format Project before committing
 bun format || true
-bun lint || true
 git add .
 
 
