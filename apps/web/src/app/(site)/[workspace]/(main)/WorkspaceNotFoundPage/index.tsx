@@ -24,11 +24,9 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 					The workspace you are looking for can&apos;t be found.
 				</h2>
 				<button
-					type="button"
+					className="h-20 w-1/7 cursor-pointer rounded border border-blueGlow bg-blueGlowLight px-5 text-2xl shadow-lg duration-200 hover:shadow-glow focus:shadow-xs focus:outline-hidden active:shadow-3xl dark:bg-blueButton"
 					onClick={() => setMenuOpen(!menuOpen)}
-					className={
-						"h-20 w-1/7 cursor-pointer rounded border border-blueGlow bg-blueGlowLight px-5 text-2xl shadow-lg duration-200 hover:shadow-glow focus:shadow-xs focus:outline-hidden active:shadow-3xl dark:bg-blueButton"
-					}
+					type="button"
 				>
 					Select Another Workspace
 				</button>
@@ -46,17 +44,17 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 								{organizations?.map(
 									(org: OrganizationResource, index: number) => (
 										<Link
-											legacyBehavior={true}
-											href={`workspace/${org.slug}`}
 											className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
+											href={`workspace/${org.slug}`}
 											key={org.id}
+											legacyBehavior={true}
 										>
 											<div>
 												<div className="flex">
 													<WorkspaceInitials
-														workspaceName={org.name ?? ""}
 														backgroundColor={index}
 														location="workspaceList"
+														workspaceName={org.name ?? ""}
 													/>
 													<li>{handleWorkspaceNameOverflow(org.name ?? "")}</li>
 												</div>
@@ -69,9 +67,9 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						<span className="block w-full border-border border-t pb-1" />
 						<ul className="px-1.5">
 							<Link
+								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 								href="/create"
 								passHref={true}
-								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 							>
 								<li>Create or join a workspace</li>
 							</Link>

@@ -1,6 +1,3 @@
-import { high, low, medium } from "@/components/Svg";
-import { effortEstimateOptions } from "@/lib/constants";
-import { useModalStore, useTeamStore } from "@/store";
 import { Check } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -9,8 +6,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
-
 import type { JSX } from "react";
+import { high, low, medium } from "@/components/Svg";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useModalStore, useTeamStore } from "@/store";
 
 export const EffortDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
@@ -51,18 +50,18 @@ export const EffortDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild={true}>
-				<Button variant="outline" className="w-full max-w-full">
+				<Button className="w-full max-w-full" variant="outline">
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[240px]" side="left" align="start">
+			<DropdownMenuContent align="start" className="w-[240px]" side="left">
 				{difficultyLevels.map((effortLevel) => {
 					const estimateNumber = extractNumber(effortLevel.text);
 
 					return (
 						<DropdownMenuItem
-							key={effortLevel.value}
 							className="flex cursor-pointer items-center gap-2"
+							key={effortLevel.value}
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
 							<div>{showIcon(estimateNumber)}</div>

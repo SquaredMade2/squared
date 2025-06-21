@@ -163,7 +163,7 @@ function SidebarContent() {
 export function SidebarNav() {
 	return (
 		<TooltipProvider delayDuration={0}>
-			<SidebarProvider className={"relative"}>
+			<SidebarProvider className="relative">
 				<SidebarContent />
 				<ToggleSidebarButton />
 			</SidebarProvider>

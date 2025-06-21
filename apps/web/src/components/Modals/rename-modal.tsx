@@ -1,8 +1,5 @@
 "use client";
 
-import { client } from "@/lib/client";
-import { useModalStore, useTaskStore } from "@/store";
-import type { InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { Pencil } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -17,6 +14,9 @@ import { Input } from "@squaredmade/ui/input";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { client } from "@/lib/client";
+import { useModalStore, useTaskStore } from "@/store";
+import type { InputChangeEvent } from "@/types";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
@@ -33,7 +33,6 @@ export const RenameModal = () => {
 	};
 
 	const { mutate: handleSubmit, isPending } = useMutation({
-		mutationKey: ["task", "updateMetadata", task?.id],
 		mutationFn: async () => {
 			if (task && inputValue.length > 2 && user && inputValue !== task.title) {
 				const updatedTask = await client.task.updateMetadata
@@ -46,14 +45,15 @@ export const RenameModal = () => {
 				toast.success("Task updated successfully");
 			}
 		},
-		onSuccess: () => {
-			toast.success("Task updated successfully");
-			setShowRename(false);
-		},
+		mutationKey: ["task", "updateMetadata", task?.id],
 		onError: (error) => {
 			toast.error("Error Updating Task", {
 				description: error.message,
 			});
+		},
+		onSuccess: () => {
+			toast.success("Task updated successfully");
+			setShowRename(false);
 		},
 	});
 
@@ -64,7 +64,7 @@ export const RenameModal = () => {
 	}, [task]);
 
 	return (
-		<Dialog open={showRename} onOpenChange={setShowRename}>
+		<Dialog onOpenChange={setShowRename} open={showRename}>
 			<DialogContent>
 				<form onSubmit={() => handleSubmit()}>
 					<div className="flex flex-col gap-4 px-5">
@@ -72,13 +72,13 @@ export const RenameModal = () => {
 							<DialogTitle>Title</DialogTitle>
 						</DialogHeader>
 						<Input
-							type="text"
 							className="block w-full py-5 text-lg focus:outline-hidden"
-							value={inputValue}
-							onFocus={(e) => e.target.select()}
-							spellCheck="false"
-							placeholder="Rename..."
 							onChange={handleChange}
+							onFocus={(e) => e.target.select()}
+							placeholder="Rename..."
+							spellCheck="false"
+							type="text"
+							value={inputValue}
 						/>
 						{inputValue.length < 2 && (
 							<span

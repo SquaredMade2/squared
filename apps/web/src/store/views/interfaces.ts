@@ -6,46 +6,40 @@ export type DisplayProperty = Record<
 
 // Using const assertions for more type-safe string literal unions
 export const TaskOrderOptions = [
-	"Title",
-	"Status",
-	"Priority",
-	"Assignee",
-	"Effort",
-	"Due Date",
-	"Updated",
-	"Created",
+	"title",
+	"status",
+	"priority",
+	"assignee",
+	"effort",
+	"dueDate",
+	"updated",
+	"created",
 ] as const;
 
 export type TaskOrder = (typeof TaskOrderOptions)[number];
 
 export const taskGroupOptions = [
-	"Status",
-	"Assignee",
-	"Priority",
-	"Label",
+	"status",
+	"assignee",
+	"priority",
+	"label",
 	// "Parent Task",
 ] as const;
 
 export type TaskGroup = (typeof taskGroupOptions)[number];
 
 export enum CompletedTaskPeriod {
-	all = "All",
-	pastDay = "Past day",
-	pastWeek = "Past week",
-	pastMonth = "Past month",
-	none = "None",
+	All = "All",
+	PastDay = "Past day",
+	PastWeek = "Past week",
+	PastMonth = "Past month",
+	None = "None",
 }
 
-// Grouping related types
-export namespace ViewOptions {
-	export interface Common {
-		showEmptyGroups: boolean;
-		displayProperties: DisplayProperty;
-	}
-
-	export interface List extends Common {}
-	export interface Grid extends Common {}
-}
+export type ViewOptions = {
+	showEmptyGroups: boolean;
+	displayProperties: DisplayProperty;
+};
 
 export interface DisplayOptions {
 	taskOrder: {
@@ -60,8 +54,8 @@ export interface DisplayOptions {
 	};
 	showSubTasks: boolean;
 	viewOptions: {
-		listOptions: ViewOptions.List;
-		gridOptions: ViewOptions.Grid;
+		listOptions: ViewOptions;
+		gridOptions: ViewOptions;
 	};
 }
 
@@ -91,12 +85,12 @@ export interface ViewState {
 
 interface ViewActions {
 	setView: (view: View) => void;
-	getListOptions: () => ViewOptions.List;
-	getGridOptions: () => ViewOptions.Grid;
+	getListOptions: () => ViewOptions;
+	getGridOptions: () => ViewOptions;
 	setShowNavbar: (input: boolean) => void;
 	setShowMobileNavbar: (input: boolean) => void;
 	setDisplayOptions: (input: Partial<DisplayOptions>) => void;
-	setViewOptions: (input: ViewOptions.Common) => void;
+	setViewOptions: (input: ViewOptions) => void;
 	setLastVisitedPage: (input: LastVisitedPathOption) => void;
 }
 

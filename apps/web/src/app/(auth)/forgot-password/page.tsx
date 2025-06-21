@@ -46,8 +46,8 @@ const ForgotPasswordPage = () => {
 		e.preventDefault();
 		await signIn
 			?.create({
-				strategy: "reset_password_email_code",
 				identifier: email,
+				strategy: "reset_password_email_code",
 			})
 			.then((_) => {
 				setSuccessfulCreation(true);
@@ -67,9 +67,9 @@ const ForgotPasswordPage = () => {
 		}
 		await signIn
 			?.attemptFirstFactor({
-				strategy: "reset_password_email_code",
 				code,
 				password,
+				strategy: "reset_password_email_code",
 			})
 			.then((result) => {
 				if (result.status === "needs_second_factor") {
@@ -91,8 +91,8 @@ const ForgotPasswordPage = () => {
 		e.preventDefault();
 		await signIn
 			?.attemptSecondFactor({
-				strategy: "totp",
 				code: secondFactorCode,
+				strategy: "totp",
 			})
 			.then((result) => {
 				if (result.status === "complete") {
@@ -107,49 +107,52 @@ const ForgotPasswordPage = () => {
 			});
 	}
 
+	const getCardTitle = () => {
+		if (successfulCreation) {
+			return secondFactor ? "Two-Factor Authentication" : "Reset Your Password";
+		}
+		return "Forgot Password";
+	};
+
 	return (
 		<div className="flex min-h-screen w-full items-center justify-center bg-linear-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
 			<Card className="w-full max-w-md bg-linear-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-center font-bold text-2xl">
-						{successfulCreation
-							? secondFactor
-								? "Two-Factor Authentication"
-								: "Reset Your Password"
-							: "Forgot Password"}
+						{getCardTitle()}
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{successfulCreation ? (
 						secondFactor ? (
-							<form onSubmit={completeReset} className="space-y-4">
+							<form className="space-y-4" onSubmit={completeReset}>
 								<div className="space-y-2">
 									<Label htmlFor={getFormId("secondFactorCode")}>
 										Two-Factor Code
 									</Label>
 									<Input
 										id={getFormId("secondFactorCode")}
-										type="text"
-										placeholder="Enter your 2FA code"
-										value={secondFactorCode}
 										onChange={(e) => setSecondFactorCode(e.target.value)}
+										placeholder="Enter your 2FA code"
 										required={true}
+										type="text"
+										value={secondFactorCode}
 									/>
 								</div>
-								<Button type="submit" className="w-full">
+								<Button className="w-full" type="submit">
 									Verify 2FA Code
 								</Button>
 							</form>
 						) : (
-							<form onSubmit={reset} className="space-y-4">
+							<form className="space-y-4" onSubmit={reset}>
 								<div className="space-y-2">
 									<div className="mt-2 flex w-full justify-between">
 										<Label htmlFor={getFormId("code")}>Reset Code</Label>
 										<Button
-											variant="link"
 											className="m-0 h-fit p-0"
-											type="button"
 											onClick={() => setSuccessfulCreation(false)}
+											type="button"
+											variant="link"
 										>
 											Resend code
 										</Button>
@@ -157,11 +160,11 @@ const ForgotPasswordPage = () => {
 									<div className="relative">
 										<Input
 											id={getFormId("code")}
-											type="text"
-											placeholder="Enter the reset code"
-											value={code}
 											onChange={(e) => setCode(e.target.value)}
+											placeholder="Enter the reset code"
 											required={true}
+											type="text"
+											value={code}
 										/>
 									</div>
 								</div>
@@ -171,19 +174,19 @@ const ForgotPasswordPage = () => {
 									<div className="relative">
 										<Input
 											id={getFormId("password")}
-											type={hidePassword ? "password" : "text"}
-											placeholder="Enter your new password"
-											value={password}
 											onChange={(e) => setPassword(e.target.value)}
+											placeholder="Enter your new password"
 											required={true}
+											type={hidePassword ? "password" : "text"}
+											value={password}
 										/>
 										<Button
-											type="button"
-											variant="ghost"
-											size="icon"
 											aria-label="Toggle Password"
 											className="absolute top-0 right-0 text-muted-foreground"
 											onClick={() => setHidePassword(!hidePassword)}
+											size="icon"
+											type="button"
+											variant="ghost"
 										>
 											{hidePassword ? (
 												<Eye className="h-6 w-6" />
@@ -200,21 +203,21 @@ const ForgotPasswordPage = () => {
 									<div className="relative">
 										<Input
 											id={getFormId("confirm-password")}
-											type={hideConfirmPassword ? "password" : "text"}
-											placeholder="Password confirmation"
-											value={confirmPassword}
 											onChange={(e) => setConfirmPassword(e.target.value)}
+											placeholder="Password confirmation"
 											required={true}
+											type={hideConfirmPassword ? "password" : "text"}
+											value={confirmPassword}
 										/>
 										<Button
-											type="button"
-											variant="ghost"
-											size="icon"
 											aria-label="Toggle Password"
 											className="absolute top-0 right-0 text-muted-foreground"
 											onClick={() =>
 												setHideConfirmPassword(!hideConfirmPassword)
 											}
+											size="icon"
+											type="button"
+											variant="ghost"
 										>
 											{hideConfirmPassword ? (
 												<Eye className="h-6 w-6" />
@@ -224,25 +227,25 @@ const ForgotPasswordPage = () => {
 										</Button>
 									</div>
 								</div>
-								<Button type="submit" className="w-full">
+								<Button className="w-full" type="submit">
 									Reset Password
 								</Button>
 							</form>
 						)
 					) : (
-						<form onSubmit={create} className="space-y-4">
+						<form className="space-y-4" onSubmit={create}>
 							<div className="space-y-2">
 								<Label htmlFor={getFormId("email")}>Email</Label>
 								<Input
 									id={getFormId("email")}
-									type="email"
-									placeholder="Enter your email"
-									value={email}
 									onChange={(e) => setEmail(e.target.value)}
+									placeholder="Enter your email"
 									required={true}
+									type="email"
+									value={email}
 								/>
 							</div>
-							<Button type="submit" className="w-full">
+							<Button className="w-full" type="submit">
 								Send Reset Email
 							</Button>
 						</form>
@@ -253,9 +256,9 @@ const ForgotPasswordPage = () => {
 					<p className="text-muted-foreground text-sm">
 						Remember your password?{" "}
 						<Button
-							variant="link"
 							className="p-0"
 							onClick={() => router.push("/sign-in")}
+							variant="link"
 						>
 							Back to login
 						</Button>

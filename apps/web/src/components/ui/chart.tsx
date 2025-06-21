@@ -8,7 +8,7 @@ import RechartsPrimitive from "recharts";
 const THEMES = { dark: ".dark", light: "" } as const;
 
 export type ChartConfig = {
-	[k in string]: {
+	[K in string]: {
 		label?: React.ReactNode;
 		icon?: React.ComponentType;
 	} & (
@@ -73,7 +73,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 		([, config]) => config.theme || config.color,
 	);
 
-	if (!colorConfig.length) {
+	if (colorConfig.length === 0) {
 		return null;
 	}
 
@@ -129,7 +129,7 @@ function ChartTooltipContent({
 	const { config } = useChart();
 
 	const tooltipLabel = React.useMemo(() => {
-		if (hideLabel || !payload?.length) {
+		if (hideLabel || payload?.length === 0 || !payload) {
 			return null;
 		}
 
@@ -164,7 +164,7 @@ function ChartTooltipContent({
 		labelKey,
 	]);
 
-	if (!(active && payload?.length)) {
+	if (!(payload && active && payload.length > 0)) {
 		return null;
 	}
 
@@ -263,7 +263,7 @@ function ChartLegendContent({
 	}) {
 	const { config } = useChart();
 
-	if (!payload?.length) {
+	if (payload?.length === 0) {
 		return null;
 	}
 
@@ -275,7 +275,7 @@ function ChartLegendContent({
 				className,
 			)}
 		>
-			{payload.map((item) => {
+			{payload?.map((item) => {
 				const key = `${nameKey || item.dataKey || "value"}`;
 				const itemConfig = getPayloadConfigFromPayload(config, item, key);
 

@@ -35,7 +35,7 @@ export const PriorityDropdownButton = () => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
 				sideOffset={4}
-				side={"left"}
+				side="left"
 				align="start"
 				className="w-[150px]"
 			>

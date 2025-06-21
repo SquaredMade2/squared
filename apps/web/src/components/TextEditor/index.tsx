@@ -37,8 +37,11 @@ import TextEditorToolBar from "./TextEditorToolBar";
 
 declare module "slate" {
 	interface CustomTypes {
+		// biome-ignore lint/style/useNamingConvention: This is a type
 		Editor: BaseEditor & ReactEditor;
+		// biome-ignore lint/style/useNamingConvention: This is a type
 		Element: CustomElement;
+		// biome-ignore lint/style/useNamingConvention: This is a type
 		Text: CustomText;
 	}
 }
@@ -385,11 +388,7 @@ const TextEditor = ({
 		>
 			{/** biome-ignore lint/a11y/noStaticElementInteractions: This is our wrapper for the textarea */}
 			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
-				<div
-					className={
-						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-					}
-				>
+				<div className="min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
 					{hasToolbar && (
 						<TextEditorToolBar
 							// Leafs

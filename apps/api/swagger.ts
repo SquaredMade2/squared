@@ -22,6 +22,7 @@ async function scanForDocs(dir: string): Promise<Record<string, string>> {
 			const subDocs = await scanForDocs(filePath);
 			docs = { ...docs, ...subDocs };
 		} else if (file === "index.docs.ts") {
+			// biome-ignore lint/style/noCommonJs: Required for swagger-jsdoc
 			const routeDocs = require(filePath).default;
 			docs = { ...docs, ...routeDocs };
 		}
@@ -43,18 +44,18 @@ async function generateSwaggerOptions() {
 	const docs = await aggregateDocs();
 
 	return {
+		apis: [],
 		swaggerDefinition: {
-			openapi: "3.0.0",
+			components: {
+				schemas,
+			},
 			info: {
 				title: "API Documentation",
 				version: "1.0.0",
 			},
+			openapi: "3.0.0",
 			paths: docs,
-			components: {
-				schemas,
-			},
 		},
-		apis: [],
 	};
 }
 

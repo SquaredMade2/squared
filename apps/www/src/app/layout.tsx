@@ -24,7 +24,7 @@ export default function RootLayout({
 	return (
 		<ViewTransitions>
 			<html lang="en">
-				<body className={"h-full w-full antialiased"}>
+				<body className="h-full w-full antialiased">
 					<ClientWrapper>{children}</ClientWrapper>
 				</body>
 				<PrismicPreview repositoryName={repositoryName} />

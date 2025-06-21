@@ -41,6 +41,7 @@
 		"enabled": true,
 		"includes": [
 			"**",
+			"!**/gen/rpc/**",
 			"!**/.turbo/**",
 			"!**/coverage/**",
 			"!**/dist/**",
@@ -85,17 +86,17 @@
 			},
 			"recommended": true,
 			"style": {
-				"noCommonJs": "warn",
-				"noImplicitBoolean": "warn",
-				"noInferrableTypes": "warn",
-				"noNamespace": "warn",
-				"noNegationElse": "warn",
-				"noNestedTernary": "warn",
-				"noParameterAssign": "warn",
-				"noParameterProperties": "warn",
-				"noProcessEnv": "warn",
+				"noCommonJs": "error",
+				"noImplicitBoolean": "error",
+				"noInferrableTypes": "error",
+				"noNamespace": "error",
+				"noNegationElse": "error",
+				"noNestedTernary": "error",
+				"noParameterAssign": "error",
+				"noParameterProperties": "error",
+				"noProcessEnv": "error",
 				"noRestrictedGlobals": {
-					"level": "warn",
+					"level": "error",
 					"options": {
 						"deniedGlobals": {
 							"event": "Use the event parameter instead",
@@ -104,44 +105,43 @@
 						}
 					}
 				},
-				"noShoutyConstants": "warn",
-				"noSubstr": "warn",
-				"noUnusedTemplateLiteral": "warn",
-				"noUselessElse": "warn",
-				"noYodaExpression": "warn",
-				"useAsConstAssertion": "warn",
-				"useAtIndex": "warn",
-				"useCollapsedElseIf": "warn",
-				"useCollapsedIf": "warn",
+				"noShoutyConstants": "error",
+				"noSubstr": "error",
+				"noUnusedTemplateLiteral": "error",
+				"noUselessElse": "error",
+				"noYodaExpression": "error",
+				"useAsConstAssertion": "error",
+				"useAtIndex": "error",
+				"useCollapsedElseIf": "error",
+				"useCollapsedIf": "error",
 				"useConsistentArrayType": {
-					"level": "warn",
+					"level": "error",
 					"options": { "syntax": "shorthand" }
 				},
-				"useConsistentBuiltinInstantiation": "warn",
-				"useConsistentCurlyBraces": "warn",
-				"useConsistentMemberAccessibility": "warn",
-				"useDefaultParameterLast": "warn",
-				"useDefaultSwitchClause": "warn",
-				"useEnumInitializers": "warn",
-				"useExplicitLengthCheck": "warn",
+				"useConsistentBuiltinInstantiation": "error",
+				"useConsistentCurlyBraces": { "fix": "safe", "level": "error" },
+				"useConsistentMemberAccessibility": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useExplicitLengthCheck": { "fix": "safe", "level": "error" },
 				"useFilenamingConvention": "warn",
-				"useForOf": "warn",
-				"useFragmentSyntax": "warn",
+				"useForOf": "error",
+				"useFragmentSyntax": "error",
 				"useNamingConvention": {
-					"level": "warn",
+					"level": "error",
 					"options": {
 						"requireAscii": true,
 						"strictCase": false
 					}
 				},
-				"useNodeAssertStrict": "warn",
-				"useNumberNamespace": "warn",
-				"useSelfClosingElements": "warn",
-				"useShorthandAssign": "warn",
-				"useSingleVarDeclarator": "warn",
-				"useThrowNewError": "warn",
-				"useThrowOnlyError": "warn",
-				"useTrimStartEnd": "warn"
+				"useNodeAssertStrict": "error",
+				"useNumberNamespace": "error",
+				"useSelfClosingElements": "error",
+				"useShorthandAssign": "error",
+				"useSingleVarDeclarator": "error",
+				"useThrowNewError": "error",
+				"useThrowOnlyError": "error",
+				"useTrimStartEnd": "error"
 			},
 			"suspicious": {
 				"noConsole": "warn",
@@ -169,6 +169,16 @@
 				"rules": {
 					"suspicious": {
 						"noConsole": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.js"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noCommonJs": "off"
 					}
 				}
 			}

@@ -64,28 +64,6 @@ export {
 	workspaceRepositoriesTable,
 	workspacesTable,
 } from "./schema";
-export type {
-	Activity,
-	Effort,
-	FilterCondition,
-	FilterValue,
-	NotificationType,
-	Priority,
-	PullRequest,
-	PullRequestState,
-	RetrospectiveItemType,
-	SavedFilterType,
-	SprintStatus,
-	Status,
-} from "./types";
-export {
-	activityType,
-	effortType,
-	notificationType,
-	priorityType,
-	pullRequestState,
-	retrospectiveItemType,
-	savedFilterType,
-	sprintStatusType,
-	statusType,
-} from "./types";
+
+// biome-ignore lint/performance/noReExportAll: This is needed because we have types / enums that are named the same
+export * from "./types";

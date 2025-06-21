@@ -17,14 +17,13 @@ export type {
 	LastVisitedPathOption,
 	TaskGroup,
 	TaskOrder,
-	TaskOrderOptions,
-	taskGroupOptions,
 	View,
 	ViewOptions,
 	ViewPath,
 	ViewState,
 	ViewStore,
 } from "./interfaces";
+export { TaskOrderOptions, taskGroupOptions } from "./interfaces";
 export { useViewStore, ViewStoreProvider } from "./store";
 
 export const createViewStore = (
@@ -32,7 +31,7 @@ export const createViewStore = (
 		displayOptions: {
 			groupRowsBy: "None",
 			groupTasksBy: "Status",
-			showCompletedTasks: { period: CompletedTaskPeriod.all, show: true },
+			showCompletedTasks: { period: CompletedTaskPeriod.All, show: true },
 			showSubTasks: false,
 			taskOrder: { orderAscending: false, orderBy: "Priority" },
 			viewOptions: {
@@ -90,7 +89,7 @@ export const createViewStore = (
 					set({ showMobileNavbar: input }),
 				setShowNavbar: (input: boolean) => set({ showNavbar: input }),
 				setView: (view: View) => set({ view }),
-				setViewOptions: (input: ViewOptions.Common) => {
+				setViewOptions: (input: ViewOptions) => {
 					set(({ displayOptions, view }) => ({
 						displayOptions: {
 							...displayOptions,

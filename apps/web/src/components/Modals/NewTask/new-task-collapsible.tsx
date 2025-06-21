@@ -1,11 +1,3 @@
-import { client } from "@/lib/client";
-import {
-	useModalStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CirclePlus } from "@squaredmade/icons";
@@ -13,8 +5,8 @@ import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
+	AccordionTrigger,
 } from "@squaredmade/ui/accordion";
-import { AccordionTrigger } from "@squaredmade/ui/accordion";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
@@ -31,11 +23,19 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { DateDropdownButton } from "./DateDropdownButton";
-import { EffortDropdownButton } from "./EffortDropdownButton";
-import { LabelDropdownButton } from "./LabelDropdownButton";
-import { PriorityDropdownButton } from "./PriorityDropdownButton";
-import { StatusDropdownButton } from "./StatusDropdownButton";
+import { client } from "@/lib/client";
+import {
+	useModalStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { DateDropdownButton } from "./date-dropdown-button";
+import { EffortDropdownButton } from "./effort-dropdown-button";
+import { LabelDropdownButton } from "./label-dropdown-button";
+import { PriorityDropdownButton } from "./priority-dropdown-button";
+import { StatusDropdownButton } from "./status-dropdown-button";
 
 export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");
@@ -50,22 +50,21 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
 	const formSchema = z.object({
+		description: z.string().optional(),
 		title: z.string().min(2, {
 			message: "Title must be at least 2 characters.",
 		}),
-		description: z.string().optional(),
 	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
-			title: "",
 			description: "",
+			title: "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 
 	const { mutate: handleCreateTask, isPending } = useMutation({
-		mutationKey: ["task", "create"],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			const { title, description } = values;
 			if (tasks.some((task) => task.title === title))
@@ -81,18 +80,18 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				transformingMentionInputs(description ?? "");
 
 			const newTask = {
-				title: transformedTitle,
 				description: transformedDescriptionInput,
-				status: status ?? "backlog",
-				priority: priority ?? "noPriority",
-				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
-				// dateCreated: new Date(),		// do we need this for custom timestamp?
-				teamId: team.id,
-				workspaceId: workspace.externalId,
+				labels: labels || [],
 				// updatedAt: new Date(), 		// do we need this for custom timestamp?
 				parentId,
+				priority: priority ?? "noPriority",
+				status: status ?? "backlog",
+				// dateCreated: new Date(),		// do we need this for custom timestamp?
+				teamId: team.id,
+				title: transformedTitle,
+				workspaceId: workspace.externalId,
 			};
 
 			const res = await client.task.createTask
@@ -107,26 +106,27 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return res;
 		},
+		mutationKey: ["task", "create"],
+		onError: (error) => {
+			toast.error("Error creating Task", {
+				description: error.message,
+			});
+		},
 		onSuccess({ task, url }) {
 			toast.success("Task Created Successfully", {
 				description: <Link href={url}>{task.title}</Link>,
 			});
 			setNewTaskData({});
-			form.reset({ title: "", description: "" });
+			form.reset({ description: "", title: "" });
 			setIsOpen("");
-		},
-		onError: (error) => {
-			toast.error("Error creating Task", {
-				description: error.message,
-			});
 		},
 	});
 
 	const handleCancel = () => {
 		setIsOpen("");
 		form.reset({
-			title: "",
 			description: "",
+			title: "",
 		});
 	};
 
@@ -136,11 +136,11 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 
 	return (
 		<Accordion
-			type="single"
-			collapsible={true}
 			className="w-full"
-			value={isOpen}
+			collapsible={true}
 			onValueChange={setIsOpen}
+			type="single"
+			value={isOpen}
 		>
 			<AccordionItem value="subtask-collapsible">
 				<AccordionTrigger className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-input bg-transparent px-3 hover:bg-accent hover:text-accent-foreground hover:no-underline">
@@ -149,7 +149,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				</AccordionTrigger>
 				<AccordionContent className="px-1">
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+						<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
 							<div className="flex flex-col space-y-4">
 								<FormField
 									control={form.control}
@@ -160,8 +160,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 											<FormControl>
 												<Input
 													{...field}
-													placeholder="Title"
 													className="text-md"
+													placeholder="Title"
 												/>
 											</FormControl>
 										</FormItem>
@@ -176,8 +176,8 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 											<FormControl>
 												<Textarea
 													{...field}
-													placeholder="Add Description"
 													className="resize-none text-md"
+													placeholder="Add Description"
 													rows={4}
 												/>
 											</FormControl>
@@ -194,17 +194,17 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 							</div>
 							<div className="mt-4 flex justify-end space-x-2">
 								<Button
-									onClick={handleCancel}
 									className="bg-transparent hover:cursor-pointer"
-									variant="outline"
+									onClick={handleCancel}
 									type="button"
+									variant="outline"
 								>
 									Cancel
 								</Button>
 								<Button
-									type="submit"
 									className="hover:cursor-pointer"
 									disabled={isPending}
+									type="submit"
 								>
 									{isPending ? "Creating..." : "Create Task"}
 								</Button>

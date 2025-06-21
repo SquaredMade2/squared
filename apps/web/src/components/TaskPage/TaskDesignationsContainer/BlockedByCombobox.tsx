@@ -53,7 +53,7 @@ const BlockedByCombobox = () => {
 		<DesignationComboboxMany
 			open={open}
 			setOpen={setOpen}
-			triggerText={"Add / Remove"}
+			triggerText="Add / Remove"
 			emptyText="No tasks found."
 			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
 			selectedItemIds={currentTaskBlockedBy.map((task) => task.id)}

@@ -75,7 +75,7 @@ const StatusDropdown = () => {
 						key={status}
 						value={status}
 						disabled={
-							!!currentTaskBlockedBy.length &&
+							currentTaskBlockedBy.length > 0 &&
 							(status === "done" ||
 								status === "inReview" ||
 								status === "inProgress")

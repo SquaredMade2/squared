@@ -19,17 +19,17 @@ export default function AllTasksPage() {
 	if (!workspace) return null;
 	return (
 		<TaskPageLayout
-			loading={loading}
 			authorized={authorized}
 			currentWorkspace={workspace}
-			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
+			loading={loading}
 			pageTitle="All Tasks"
+			teamIdentifier={teamIdentifier}
 		>
 			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 			{view === "grid" &&
 				!getGridOptions().showEmptyGroups &&
-				getHiddenColumns().length >= 1 && (
+				getHiddenColumns().length > 0 && (
 					<div className="ml-auto">
 						<HiddenColumns
 							getHiddenColumns={getHiddenColumns}

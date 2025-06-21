@@ -51,7 +51,7 @@ export default function MyAssignedTasksPage() {
 				/>
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
-					getHiddenColumns().length >= 1 && (
+					getHiddenColumns().length > 0 && (
 						<div className="ml-auto">
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}

@@ -38,7 +38,7 @@ export function useSprints(sprintId?: string) {
 				teamId: teamQuery.data.id,
 			});
 			const sprints = await res.json();
-			if (!sprints.length) throw new Error("No sprints found");
+			if (sprints.length === 0) throw new Error("No sprints found");
 			return sprints;
 		},
 		enabled: !!teamQuery.data?.id,

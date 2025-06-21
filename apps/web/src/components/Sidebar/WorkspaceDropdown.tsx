@@ -50,7 +50,7 @@ export function WorkspaceDropdown() {
 	};
 
 	useEffect(() => {
-		if (!organization && userMemberships.data?.length) {
+		if (!organization && userMemberships.data?.length > 0) {
 			updateActiveWorkspace(userMemberships.data[0].organization);
 		}
 	}, [userMemberships.data, organization]);
@@ -74,16 +74,10 @@ export function WorkspaceDropdown() {
 					</Avatar>
 					{state === "expanded" && (
 						<>
-							<span
-								className={"truncate transition-all duration-300 ease-in-out"}
-							>
+							<span className="truncate transition-all duration-300 ease-in-out">
 								{organization?.name}
 							</span>
-							<ChevronDown
-								className={
-									"ml-auto h-4 w-4 shrink-0 opacity-50 transition-all duration-300 ease-in-out"
-								}
-							/>
+							<ChevronDown className="ml-auto h-4 w-4 shrink-0 opacity-50 transition-all duration-300 ease-in-out" />
 						</>
 					)}
 				</Button>

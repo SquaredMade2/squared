@@ -1,5 +1,3 @@
-import { client } from "@/lib/client";
-import { useModalStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -23,13 +21,15 @@ import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { client } from "@/lib/client";
+import { useModalStore, useWorkspaceStore } from "@/store";
 
 const formSchema = z.object({
+	color: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i, "Invalid HEX color"),
+	description: z.string().optional(),
 	name: z
 		.string()
 		.min(2, { message: "Label name must be at least 2 characters." }),
-	description: z.string().optional(),
-	color: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i, "Invalid HEX color"),
 });
 
 export const LabelModal = () => {
@@ -41,16 +41,16 @@ export const LabelModal = () => {
 	const [nameExists, setNameExists] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
+		defaultValues: { color: "#000000", description: "", name: "" },
 		resolver: zodResolver(formSchema),
-		defaultValues: { name: "", description: "", color: "#000000" },
 	});
 
 	useEffect(() => {
 		if (showLabelModal) {
 			form.reset({
-				name: labelData.name || "",
-				description: labelData.description || "",
 				color: labelData.color || "#000000",
+				description: labelData.description || "",
+				name: labelData.name || "",
 			});
 		}
 	}, [showLabelModal]);
@@ -86,6 +86,12 @@ export const LabelModal = () => {
 			});
 			return res.json();
 		},
+		onError: (error) => {
+			toast.error("Error updating label", {
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+			});
+		},
 		onSuccess: async (_, variables) => {
 			toast.success("Label updated successfully", {
 				description: `Label "${variables.name}" has been updated`,
@@ -94,12 +100,6 @@ export const LabelModal = () => {
 				queryKey: ["workspace", "workspaceLabels", workspace?.id],
 			});
 			handleResetForm();
-		},
-		onError: (error) => {
-			toast.error("Error updating label", {
-				description:
-					error instanceof Error ? error.message : "An unknown error occurred",
-			});
 		},
 	});
 
@@ -111,6 +111,12 @@ export const LabelModal = () => {
 			});
 			return res.json();
 		},
+		onError: (error) => {
+			toast.error("Error creating label", {
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+			});
+		},
 		onSuccess: async (_, variables) => {
 			toast.success("Label created successfully", {
 				description: `Label "${variables.name}" has been created`,
@@ -119,12 +125,6 @@ export const LabelModal = () => {
 				queryKey: ["workspace", "workspaceLabels", workspace?.id],
 			});
 			handleResetForm();
-		},
-		onError: (error) => {
-			toast.error("Error creating label", {
-				description:
-					error instanceof Error ? error.message : "An unknown error occurred",
-			});
 		},
 	});
 
@@ -137,7 +137,7 @@ export const LabelModal = () => {
 	};
 
 	return (
-		<Dialog open={showLabelModal} onOpenChange={setShowLabelModal}>
+		<Dialog onOpenChange={setShowLabelModal} open={showLabelModal}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>
@@ -164,11 +164,11 @@ export const LabelModal = () => {
 											<FormControl>
 												<Input
 													{...field}
-													placeholder="Label Name"
 													onChange={(e) => {
 														field.onChange(e);
 														checkLabelExists(e.target.value);
 													}}
+													placeholder="Label Name"
 												/>
 											</FormControl>
 										</FormItem>
@@ -200,8 +200,8 @@ export const LabelModal = () => {
 													/>
 													<Input
 														{...field}
-														value={field.value}
 														onChange={(e) => field.onChange(e.target.value)}
+														value={field.value}
 													/>
 												</div>
 											</FormControl>
@@ -218,17 +218,17 @@ export const LabelModal = () => {
 						</div>
 						<DialogFooter>
 							<Button
-								type="button"
-								onClick={handleResetForm}
 								className="bg-transparent text-foreground hover:cursor-pointer"
+								onClick={handleResetForm}
+								type="button"
 								variant="destructive"
 							>
 								Discard
 							</Button>
 							<Button
-								type="submit"
 								className="hover:cursor-pointer"
 								disabled={nameExists}
+								type="submit"
 							>
 								Save
 							</Button>

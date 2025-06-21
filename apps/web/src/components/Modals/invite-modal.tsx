@@ -24,6 +24,7 @@ import {
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { config } from "@/config";
 import { client } from "@/lib/client";
 import { LINK_EXPIRATION_TIMES } from "@/lib/constants";
 import { useModalStore } from "@/store";
@@ -56,13 +57,13 @@ export const InviteModal = () => {
 				})
 				.then((res) => res.text());
 		},
-		onSuccess: (inviteLink) => setLink(inviteLink),
 		onError: (error) => {
 			toast.error("Error creating link", {
 				description: error.message,
 			});
 			if (link) setLink("");
 		},
+		onSuccess: (inviteLink) => setLink(inviteLink),
 	});
 
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -80,7 +81,7 @@ export const InviteModal = () => {
 	}, []);
 
 	const handleCopy = async () => {
-		const url = `${process.env.NEXT_PUBLIC_URL}/${organization?.name}/join?token=${link}`;
+		const url = `${config.NEXT_PUBLIC_URL}/${organization?.name}/join?token=${link}`;
 		try {
 			await window.navigator.clipboard.writeText(url);
 			toast.success("URL copied to clipboard");
@@ -94,7 +95,7 @@ export const InviteModal = () => {
 	const getFormId = (el: string) => `${id}-${el}`;
 
 	return (
-		<Dialog open={showInvite} onOpenChange={() => setShowInvite(!showInvite)}>
+		<Dialog onOpenChange={() => setShowInvite(!showInvite)} open={showInvite}>
 			<DialogContent>
 				<div className="flex flex-col gap-6 px-1">
 					<DialogHeader>
@@ -105,11 +106,11 @@ export const InviteModal = () => {
 						<div className="flex flex-col gap-3">
 							<Label htmlFor="expire">Expire after</Label>
 							<Select
+								defaultValue="7d"
 								onValueChange={(value) => {
 									setExpirationPeriod(value);
 								}}
 								value={expirationPeriod}
-								defaultValue="7d"
 							>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select an expiration" />
@@ -123,9 +124,9 @@ export const InviteModal = () => {
 														/(\d+)([mhd])/g,
 														(_, num: string, unit: string) => {
 															const units: Record<string, string> = {
-																m: "minute",
-																h: "hour",
 																d: "day",
+																h: "hour",
+																m: "minute",
 															};
 															return `${num} ${units[unit]}${Number(num) > 1 ? "s" : ""}`;
 														},
@@ -139,15 +140,15 @@ export const InviteModal = () => {
 							</Select>
 						</div>
 						<div className="flex flex-col gap-3">
-							<Label htmlFor={getFormId("uses")} className="">
+							<Label className="" htmlFor={getFormId("uses")}>
 								Number of Uses
 							</Label>
 							<Input
-								id={getFormId("uses")}
-								type="number"
-								min={1}
 								disabled={isUnlimitedUses}
+								id={getFormId("uses")}
+								min={1}
 								onChange={(e: { target: HTMLInputElement }) => updateUses(e)}
+								type="number"
 							/>
 							<div className="flex gap-2">
 								<Checkbox
@@ -157,8 +158,8 @@ export const InviteModal = () => {
 							</div>
 						</div>
 						<Button
-							onClick={() => createWorkspaceLinkMutation()}
 							disabled={!organization}
+							onClick={() => createWorkspaceLinkMutation()}
 						>
 							Generate Link
 						</Button>
@@ -171,14 +172,14 @@ export const InviteModal = () => {
 							) : (
 								<p>
 									{link
-										? `${process.env.NEXT_PUBLIC_URL}/${organization?.slug}/join?token=${link}`
+										? `${config.NEXT_PUBLIC_URL}/${organization?.slug}/join?token=${link}`
 										: "Create Invite Link"}
 								</p>
 							)}
 							<Button
+								aria-label="Copy invite link"
 								className="h-8"
 								disabled={!link || link.includes("Failed")}
-								aria-label="Copy invite link"
 								onClick={handleCopy}
 							>
 								<Copy className="mr-2 size-4" />

@@ -30,7 +30,7 @@ export function DateDropdownButton() {
 						"w-full justify-center text-left font-normal",
 						!date && "text-muted-foreground",
 					)}
-					variant={"outline"}
+					variant="outline"
 				>
 					<CalendarIcon className="mr-2 h-4 w-4" />
 					{date ? format(date, "dd MMM yyyy") : <span>Pick a date</span>}

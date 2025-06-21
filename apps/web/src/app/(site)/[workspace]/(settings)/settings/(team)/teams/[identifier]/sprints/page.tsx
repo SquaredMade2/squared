@@ -273,7 +273,7 @@ export default function SprintSettings() {
 								<Popover>
 									<PopoverTrigger asChild={true}>
 										<Button
-											variant={"secondary"}
+											variant="secondary"
 											className={cn(
 												"w-60 justify-start pr-3 text-left font-normal",
 												!sprintStartDate && "text-muted-foreground",

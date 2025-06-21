@@ -391,7 +391,7 @@ export function AssignTasksDialog({
 								} to ${activeSprint?.name}.`,
 							);
 						}}
-						disabled={selectedTasks.length < 1}
+						disabled={selectedTasks.length === 0}
 					>
 						Assign {selectedTasks.length} Selected Task
 						{selectedTasks.length !== 1 ? "s" : ""}

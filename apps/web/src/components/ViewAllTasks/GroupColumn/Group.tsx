@@ -56,7 +56,7 @@ const Group = ({
 			<TaskCard
 				task={task}
 				index={index}
-				location={"dashboard"}
+				location="dashboard"
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
 			/>
 		</div>
@@ -74,7 +74,7 @@ const Group = ({
 			<TaskCard
 				task={task}
 				index={index}
-				location={"dashboard"}
+				location="dashboard"
 				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
 			/>
 			{subtasks.length > 0 && showSubTasks && (
@@ -96,7 +96,7 @@ const Group = ({
 										key={subtask.id}
 										task={subtask}
 										index={subIndex}
-										location={"dashboard"}
+										location="dashboard"
 										isSubtask={true}
 										isDisabled={
 											!!allBlockedTaskIds.find((id) => id === subtask.id)
@@ -129,7 +129,7 @@ const Group = ({
 						key={subtask.id}
 						task={subtask}
 						index={index}
-						location={"dashboard"}
+						location="dashboard"
 						isSubtask={true}
 						isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
 					/>

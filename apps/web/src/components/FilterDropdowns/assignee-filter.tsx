@@ -1,5 +1,14 @@
 "use client";
 
+import type { PublicUserData } from "@clerk/types";
+import { Check, UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import {
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+} from "@squaredmade/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 import {
 	Command,
 	CommandEmpty,
@@ -14,15 +23,6 @@ import { useUsers } from "@/hooks/useUsers";
 import { useFilterStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import { formatName, getInitials } from "@/utils/formatting";
-import type { PublicUserData } from "@clerk/types";
-import { Check, UserSearch } from "@squaredmade/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import {
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-	DropdownMenuSubTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 export default function AssigneeFilterDropDown({
@@ -51,8 +51,8 @@ export default function AssigneeFilterDropDown({
 		if (selectedAssignees.length > 0) {
 			addFilter({
 				field: "assigneeId",
-				value: selectedAssignees.map((u) => u?.userId || null),
 				operator: "arrayIncludesAny",
+				value: selectedAssignees.map((u) => u?.userId || null),
 			});
 		}
 	}, [selectedAssignees]);
@@ -82,9 +82,9 @@ export default function AssigneeFilterDropDown({
 			<DropdownMenuSubContent className="w-[17.5rem]">
 				<Command>
 					<CommandInput
+						onValueChange={setSearchQuery}
 						placeholder="Search users..."
 						value={searchQuery}
-						onValueChange={setSearchQuery}
 					/>
 					<CommandList>
 						<CommandEmpty>No users found.</CommandEmpty>
@@ -93,9 +93,9 @@ export default function AssigneeFilterDropDown({
 						>
 							<CommandGroup>
 								<CommandPinnedItem
+									className="flex h-8 cursor-pointer items-center space-x-2"
 									key="unassigned"
 									onSelect={() => handleAssigneeChange(null)}
-									className="flex h-8 cursor-pointer items-center space-x-2"
 								>
 									<div className="flex flex-1 items-center space-x-2">
 										{selectedAssignees.some((l) => l === null) ? (
@@ -111,9 +111,9 @@ export default function AssigneeFilterDropDown({
 									.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
 										<CommandItem
+											className="flex h-8 cursor-pointer items-center space-x-2"
 											key={user.userId}
 											onSelect={() => handleAssigneeChange(user)}
-											className="flex h-8 cursor-pointer items-center space-x-2"
 										>
 											<div className="flex flex-1 items-center space-x-2">
 												{selectedAssignees.some(

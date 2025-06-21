@@ -1,25 +1,26 @@
-import {
-	expirationTimeFormat,
-	generateSecureRandomString,
-} from "@/utils/helpers";
 import { type ClerkClient, createClerkClient } from "@clerk/backend";
 import {
-	type DBClient,
-	type Label,
-	type Workspace,
-	type WorkspaceInviteLink,
 	and,
 	arrayContains,
+	type DBClient,
 	eq,
+	type Label,
 	sql,
 	teamsTable,
+	usersTable,
 	userTeamsTable,
 	userWorkspacesTable,
-	usersTable,
+	type Workspace,
+	type WorkspaceInviteLink,
 	workspacesTable,
 } from "@squaredmade/db";
 import type { Logger } from "@squaredmade/logger";
 import createCustomLogger from "@squaredmade/logger";
+import config from "@/config";
+import {
+	expirationTimeFormat,
+	generateSecureRandomString,
+} from "@/utils/helpers";
 import type {
 	CreateWorkspaceParams,
 	JoinWorkspaceParams,
@@ -68,17 +69,17 @@ export class WorkspaceService implements WorkspaceRpc {
 			}
 			const organization =
 				await this.clerkClient.organizations.createOrganization({
+					createdBy: user.externalId,
 					name: workspace.name,
 					slug: workspace.url,
-					createdBy: user.externalId,
 				});
 
 			const [newWorkspace] = await tx
 				.insert(workspacesTable)
 				.values({
 					...workspace,
-					externalId: organization.id,
 					admins: [userId],
+					externalId: organization.id,
 				})
 				.returning();
 
@@ -95,15 +96,15 @@ export class WorkspaceService implements WorkspaceRpc {
 				tx
 					.insert(teamsTable)
 					.values({
-						workspaceId: newWorkspace.externalId,
-						name: newWorkspace.name,
 						identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
+						name: newWorkspace.name,
+						workspaceId: newWorkspace.externalId,
 					})
 					.returning(),
 			]);
 			await tx.insert(userTeamsTable).values({
-				userId,
 				teamId: newTeam.id,
+				userId,
 			});
 
 			return newWorkspace;
@@ -202,8 +203,8 @@ export class WorkspaceService implements WorkspaceRpc {
 		);
 		await this.clerkClient.organizations.updateOrganizationMembership({
 			organizationId: workspaceId,
-			userId,
 			role,
+			userId,
 		});
 	}
 
@@ -231,8 +232,8 @@ export class WorkspaceService implements WorkspaceRpc {
 				const inviteLinksUpdate = [
 					...filteredLinks,
 					{
-						link: inviteLink.link,
 						expiration: inviteLink.expiration,
+						link: inviteLink.link,
 						uses: inviteLink.uses - 1,
 					},
 				];
@@ -326,11 +327,11 @@ export class WorkspaceService implements WorkspaceRpc {
 		await Promise.all(
 			emails.map((e) =>
 				inviteUser({
-					organizationId: workspaceId,
 					emailAddress: e,
 					inviterUserId: userId,
+					organizationId: workspaceId,
+					redirectUrl: `${config.nextPublicConfirmUrl}/${slug}/create`,
 					role: "member",
-					redirectUrl: `${process.env.NEXT_PUBLIC_CONFIRM_URL}/${slug}/create`,
 				}),
 			),
 		);
@@ -373,8 +374,8 @@ export class WorkspaceService implements WorkspaceRpc {
 				: undefined;
 
 			const newInviteLink = {
-				link,
 				expiration: expirationTime,
+				link,
 				uses,
 			};
 
@@ -441,7 +442,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				throw new Error("Update failed.");
 			}
 
-			return { success: true, labels: updated.labels };
+			return { labels: updated.labels, success: true };
 		});
 	}
 
@@ -493,7 +494,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			if (!updated) {
 				throw new Error("Update failed.");
 			}
-			return { success: true, labels: updated.labels };
+			return { labels: updated.labels, success: true };
 		});
 	}
 
@@ -615,8 +616,8 @@ export class WorkspaceService implements WorkspaceRpc {
 						tx
 							.insert(userTeamsTable)
 							.values({
-								userId,
 								teamId: team.id,
+								userId,
 							})
 							.onConflictDoNothing({
 								target: [userTeamsTable.userId, userTeamsTable.teamId],
@@ -626,8 +627,8 @@ export class WorkspaceService implements WorkspaceRpc {
 
 				await this.clerkClient.organizations.createOrganizationMembership({
 					organizationId: workspaceId,
-					userId,
 					role: "org:member",
+					userId,
 				});
 
 				return await tx
@@ -637,14 +638,14 @@ export class WorkspaceService implements WorkspaceRpc {
 			});
 		} catch (error) {
 			this.logger.error("Error adding user to workspace", {
+				error,
 				userId,
 				workspaceId,
-				error,
 			});
 			throw error;
 		}
 
-		return { workspace, isAlreadyJoined };
+		return { isAlreadyJoined, workspace };
 	}
 
 	private throwError(message: string): never {

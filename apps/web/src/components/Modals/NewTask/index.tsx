@@ -39,20 +39,20 @@ import { useSprints } from "@/hooks/useSprints";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { DateDropdownButton } from "./DateDropdownButton";
-import { EffortDropdownButton } from "./EffortDropdownButton";
-import { LabelDropdownButton } from "./LabelDropdownButton";
-import { PriorityDropdownButton } from "./PriorityDropdownButton";
-import { SprintDropdownButton } from "./SprintDropdownButton";
-import { StatusDropdownButton } from "./StatusDropdownButton";
-import TeamSelector from "./TeamSelector";
+import { DateDropdownButton } from "./date-dropdown-button";
+import { EffortDropdownButton } from "./effort-dropdown-button";
+import { LabelDropdownButton } from "./label-dropdown-button";
+import { PriorityDropdownButton } from "./priority-dropdown-button";
+import { SprintDropdownButton } from "./sprint-dropdown-button";
+import { StatusDropdownButton } from "./status-dropdown-button";
+import TeamSelector from "./team-selector";
 
 export {
 	GridColumnNewTaskButton,
 	NewTaskButton,
 	NoTasksNewTaskButton,
 } from "./NewTaskButton";
-export { NewTaskCollapsible } from "./NewTaskCollapsible";
+export { NewTaskCollapsible } from "./new-task-collapsible";
 
 const formSchema = z.object({
 	description: z.string().optional(),

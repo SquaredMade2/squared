@@ -45,7 +45,7 @@ const BlockedByTasks = () => {
 					{currentTaskBlockedBy.map((task) => (
 						<li
 							key={task.id}
-							className={"transition-all duration-200 ease-in-out"}
+							className="transition-all duration-200 ease-in-out"
 						>
 							<ContextMenu>
 								<ContextMenuTrigger>

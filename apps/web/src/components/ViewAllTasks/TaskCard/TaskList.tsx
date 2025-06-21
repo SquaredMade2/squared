@@ -44,9 +44,7 @@ const TaskList = ({
 
 	return (
 		<Link
-			className={
-				"group/main grid w-full grid-cols-24 items-center border-border border-t border-solid bg-card py-2 hover:bg-accent"
-			}
+			className="group/main grid w-full grid-cols-24 items-center border-border border-t border-solid bg-card py-2 hover:bg-accent"
 			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<div className="col-span-1 min-h-9" />

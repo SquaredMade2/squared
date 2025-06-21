@@ -63,18 +63,16 @@ const TopNavBarDisplay = () => {
 
 	useEffect(() => {
 		if (groupTasksBy === taskOrder.orderBy) {
-			const orderMap: { [key in "Priority" | "Status" | "Assignee"]: string } =
+			const orderMap: { [Key in "assignee" | "priority" | "status"]: string } =
 				{
-					Assignee: "Status",
-					Priority: "Status",
-					Status: "Priority",
+					assignee: "Status",
+					priority: "Status",
+					status: "Priority",
 				};
 			setDisplayOptions({
 				taskOrder: {
 					...taskOrder,
-					orderBy: orderMap[
-						groupTasksBy as "Priority" | "Status" | "Assignee"
-					] as TaskOrder,
+					orderBy: orderMap[groupTasksBy] as TaskOrder,
 				},
 			});
 		}
@@ -218,7 +216,7 @@ const TopNavBarDisplay = () => {
 												setDisplayOptions({
 													groupRowsBy: value,
 													groupTasksBy:
-														value === "Status" ? "Priority" : "Status",
+														value === "status" ? "priority" : "status",
 												});
 											} else {
 												setDisplayOptions({

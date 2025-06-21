@@ -1,6 +1,3 @@
-import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
-import { useTaskStore } from "@/store";
-import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import { Copy, GitPullRequestArrow, Link } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -12,6 +9,10 @@ import {
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
 import { useCallback, useEffect } from "react";
+import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
+import { config } from "@/config";
+import { useTaskStore } from "@/store";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 
 export const TaskSidebarTopRow = () => {
 	const task = useTaskStore((state) => state.currentTask);
@@ -20,7 +21,7 @@ export const TaskSidebarTopRow = () => {
 	const identifier = task?.identifier ?? "";
 	const title = task?.title ?? "";
 
-	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${organization?.slug}/task/${identifier}/${formatUrl(title)}`;
+	const TaskUrl = `${config.NEXT_PUBLIC_URL}/${organization?.slug}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
 	const copyUrl = async (): Promise<void> => {
@@ -79,10 +80,10 @@ export const TaskSidebarTopRow = () => {
 					<Tooltip>
 						<TooltipTrigger asChild={true}>
 							<Button
-								variant="ghost"
-								size="icon"
 								aria-label="Copy Task URL"
 								onClick={copyUrl}
+								size="icon"
+								variant="ghost"
 							>
 								<Link className="size-4" />
 							</Button>
@@ -99,10 +100,10 @@ export const TaskSidebarTopRow = () => {
 					<Tooltip>
 						<TooltipTrigger asChild={true}>
 							<Button
-								variant="ghost"
-								size="icon"
 								aria-label="Copy Task ID"
 								onClick={copyTaskId}
+								size="icon"
+								variant="ghost"
 							>
 								<Copy className="size-4" />
 							</Button>
@@ -118,10 +119,10 @@ export const TaskSidebarTopRow = () => {
 					<Tooltip>
 						<TooltipTrigger asChild={true}>
 							<Button
-								variant="ghost"
-								size="icon"
 								aria-label="Copy Git Branch Name"
 								onClick={copyGitBranchName}
+								size="icon"
+								variant="ghost"
 							>
 								<GitPullRequestArrow className="size-4" />
 							</Button>

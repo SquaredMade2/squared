@@ -1,11 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { config as configEnv } from "@/config";
 
 const getDeploymentUrl = () => {
-	if (process.env.VERCEL_TARGET_ENV === "preview") {
-		return `https://${process.env.VERCEL_URL}`;
+	if (configEnv.VERCEL_TARGET_ENV === "preview") {
+		return `https://${configEnv.VERCEL_URL}`;
 	}
-	return process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+	return configEnv.NEXT_PUBLIC_URL || "http://localhost:3000";
 };
 
 const deploymentUrl = getDeploymentUrl();
@@ -28,11 +29,11 @@ export default clerkMiddleware(
 		}
 	},
 	() => ({
-		signInUrl: `${deploymentUrl}/sign-in`,
-		signUpUrl: `${deploymentUrl}/sign-up`,
 		organizationSyncOptions: {
 			organizationPatterns: ["/:slug", "/:slug/(.*)"],
 		},
+		signInUrl: `${deploymentUrl}/sign-in`,
+		signUpUrl: `${deploymentUrl}/sign-up`,
 	}),
 );
 

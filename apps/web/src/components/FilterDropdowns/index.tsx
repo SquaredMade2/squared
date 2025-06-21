@@ -7,78 +7,77 @@ import {
 	User,
 	X,
 } from "@squaredmade/icons";
-
-import { useFilterStore } from "@/store";
 import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { useFilterStore } from "@/store";
 import { PriorityIcon } from "../Icons";
-import AssigneeFilterDropDown from "./AssigneeFilter";
-import DueDateFilterDropDown from "./DueDateFilter";
-import EffortFilterDropDown from "./EffortFilter";
-import LabelFilterDropDown from "./LabelFilter";
-import PriorityFilterDropDown from "./PriorityFilter";
-import StatusFilterDropDown from "./StatusFilter";
+import AssigneeFilterDropDown from "./assignee-filter";
+import DueDateFilterDropDown from "./due-date-filter";
+import EffortFilterDropDown from "./effort-filter";
 import type { FilterOption } from "./interfaces";
+import LabelFilterDropDown from "./label-filter";
+import PriorityFilterDropDown from "./priority-filter";
+import StatusFilterDropDown from "./status-filter";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
 	{
-		id: 1,
-		name: "Status",
-		svg: <CircleDashed className="size-4" />,
 		group: "Status",
+		id: 1,
 		menuContent: (filterOption) => (
 			<StatusFilterDropDown filterOption={filterOption} />
 		),
+		name: "Status",
+		svg: <CircleDashed className="size-4" />,
 	},
 	{
-		id: 2,
-		name: "Priority",
-		svg: <PriorityIcon priority={"urgent"} />,
 		group: "Priority",
+		id: 2,
 		menuContent: (filterOption) => (
 			<PriorityFilterDropDown filterOption={filterOption} />
 		),
+		name: "Priority",
+		svg: <PriorityIcon priority="urgent" />,
 	},
 	{
-		id: 3,
-		name: "Labels",
-		svg: <Tag className="size-4 cursor-pointer" />,
 		group: "Labels",
+		id: 3,
 		menuContent: (filterOption) => (
 			<LabelFilterDropDown filterOption={filterOption} />
 		),
+		name: "Labels",
+		svg: <Tag className="size-4 cursor-pointer" />,
 	},
 	{
-		id: 4,
-		name: "Due Date",
-		svg: <Calendar className="size-4 cursor-pointer" />,
 		group: "Due Date",
+		id: 4,
 		menuContent: (filterOption) => (
 			<DueDateFilterDropDown filterOption={filterOption} />
 		),
+		name: "Due Date",
+		svg: <Calendar className="size-4 cursor-pointer" />,
 	},
 	{
-		id: 5,
-		name: "Effort",
-		svg: <Clock className="size-4 cursor-pointer" />,
 		group: "effortEstimate",
+		id: 5,
 		menuContent: (filterOption) => (
 			<EffortFilterDropDown filterOption={filterOption} />
 		),
+		name: "Effort",
+		svg: <Clock className="size-4 cursor-pointer" />,
 	},
 	{
-		id: 6,
-		name: "Assignee",
-		svg: <User className="size-4 cursor-pointer" />,
 		group: "Assignee",
+		id: 6,
 		menuContent: (filterOption) => (
 			<AssigneeFilterDropDown filterOption={filterOption} />
 		),
+		name: "Assignee",
+		svg: <User className="size-4 cursor-pointer" />,
 	},
 	// Future filter options to be implemented:
 	// {
@@ -111,7 +110,7 @@ const FilterDropDown: React.FunctionComponent = () => {
 				</DropdownMenuContent>
 			</DropdownMenu>
 			{currentFilters?.length > 0 && (
-				<Button variant="outline" onClick={clearFilter} className="gap-2">
+				<Button className="gap-2" onClick={clearFilter} variant="outline">
 					Clear Filters <X className="size-4" />
 				</Button>
 			)}

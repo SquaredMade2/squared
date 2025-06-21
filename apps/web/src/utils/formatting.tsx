@@ -209,7 +209,7 @@ export const formatFilterName = async (
 			);
 			return {
 				name:
-					filteredLabels?.length && filteredLabels.length > 1
+					filteredLabels?.length > 0 && filteredLabels.length > 1
 						? "Labels"
 						: "Label",
 				value: filteredLabels?.map((l) => l.name).join(", ") ?? "",
