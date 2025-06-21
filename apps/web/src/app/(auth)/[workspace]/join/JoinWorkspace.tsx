@@ -43,7 +43,6 @@ export default function JoinWorkspace() {
 		},
 		onSuccess: (organizationId) => {
 			toast.success("Workspace joined successfully");
-			console.log("organizationId", organizationId);
 			setActive?.({ organization: organizationId });
 			router.push(`/${workspaceSlug}`);
 		},

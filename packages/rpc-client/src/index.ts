@@ -61,7 +61,6 @@ class BaseClient {
 
 			return superjson.parse(await response.json());
 		} catch (error) {
-			console.error("Error occurred during RPC request: ", error);
 			if (error instanceof Error) {
 				throw error;
 			}
@@ -136,6 +135,6 @@ export class RPCContextClient extends BaseClient {
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
 		params?: Record<string, any>,
 	) {
-		return super.doRequest(ctx, methodName, params);
+		return await super.doRequest(ctx, methodName, params);
 	}
 }

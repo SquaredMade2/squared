@@ -54,7 +54,6 @@ const ForgotPasswordPage = () => {
 				setError("");
 			})
 			.catch((err) => {
-				console.error("error", err.errors[0].longMessage);
 				setError(err.errors[0].longMessage);
 			});
 	}
@@ -82,7 +81,6 @@ const ForgotPasswordPage = () => {
 				}
 			})
 			.catch((err) => {
-				console.error("error", err.errors[0].longMessage);
 				setError(err.errors[0].longMessage);
 			});
 	}
@@ -102,7 +100,6 @@ const ForgotPasswordPage = () => {
 				}
 			})
 			.catch((err) => {
-				console.error("error", err.errors[0].longMessage);
 				setError(err.errors[0].longMessage);
 			});
 	}

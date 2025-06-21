@@ -596,7 +596,7 @@ const Toast = ({
 		}
 	}, [deleteToast, toast.delete]);
 
-	let icon = null;
+	let icon: React.ReactNode | null = null;
 	if (toastType) {
 		if (toast.icon) {
 			icon = toast.icon;
@@ -874,7 +874,7 @@ const Toast = ({
 					className="absolute top-1 right-1 z-[1] flex transform cursor-pointer items-center justify-center rounded-full p-0 transition-[opacity_100ms,background_200ms,border-color_200ms] focus-visible:shadow-[0px_4px_12px_rgba(0,0,0,0.1),0_0_0_2px_rgba(0,0,0,0.2)] disabled:cursor-not-allowed"
 					onClick={
 						disabled || !dismissible
-							? () => {}
+							? () => null
 							: () => {
 									deleteToast();
 									toast.onDismiss?.(toast);

@@ -76,7 +76,6 @@ function SidebarContent() {
 			router.replace("/sign-in");
 			toast.success("Logged out successfully.");
 		} catch (error) {
-			console.error("Logout failed", error);
 			toast.error("Failed to log out");
 		}
 	};

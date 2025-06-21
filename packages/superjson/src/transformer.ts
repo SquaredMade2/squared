@@ -71,8 +71,6 @@ const simpleRules = [
 				return BigInt(v);
 			}
 
-			console.error("Please add a BigInt polyfill.");
-
 			return v as any;
 		},
 	),

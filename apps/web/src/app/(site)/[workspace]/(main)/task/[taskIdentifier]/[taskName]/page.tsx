@@ -39,7 +39,6 @@ const TaskPage = () => {
 			});
 		},
 		onError: (error) => {
-			console.error(error);
 			toast.error("Error updating task", {
 				description: parseError(error),
 			});

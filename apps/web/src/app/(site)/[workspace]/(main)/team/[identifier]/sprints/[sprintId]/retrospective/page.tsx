@@ -192,7 +192,6 @@ export default function SprintRetrospectivePage() {
 
 				toast.success("Item moved successfully");
 			} catch (error) {
-				console.error("Error moving item:", error);
 				toast.error("Failed to move item");
 			}
 		},

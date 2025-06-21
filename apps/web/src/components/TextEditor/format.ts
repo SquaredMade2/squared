@@ -1,4 +1,5 @@
 import type { PublicUserData } from "@clerk/types";
+import { toast } from "@squaredmade/ui/toast";
 import { mdxLinkRegex, mdxMentionRegex } from "@/lib/regex";
 import type { CustomElement, CustomText } from "./interfaces";
 
@@ -99,11 +100,15 @@ function trackFormatting(parts: string[]): CustomText[] {
 				const mentionUser = JSON.parse(`{${cleaned}}`) as PublicUserData;
 				result.push({
 					mentionConfirm: mentionUser,
-					text: `@${mentionUser.firstName}` || "Error loading name",
+					text: mentionUser.firstName?.trim()
+						? `@${mentionUser.firstName}`
+						: "Error loading name",
 				});
 				continue;
 			} catch (e) {
-				console.error("Failed to parse mention data:", e);
+				toast.error("Error parsing mention data", {
+					description: e instanceof Error ? e.message : "Unknown error",
+				});
 			}
 		}
 		// Check for links in the format [text](url)
@@ -119,7 +124,9 @@ function trackFormatting(parts: string[]): CustomText[] {
 				result.push(linkData);
 				continue;
 			} catch (e) {
-				console.error("Failed to parse link data:", e);
+				toast.error("Error parsing link data", {
+					description: e instanceof Error ? e.message : "Unknown error",
+				});
 			}
 		}
 		if (part === "**") {

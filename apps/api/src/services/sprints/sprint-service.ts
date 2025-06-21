@@ -37,7 +37,7 @@ export class SprintService implements SprintRpc {
 
 	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
 		this.logger.info("Getting sprints for team", { teamId });
-		return this.db
+		return await this.db
 			.select()
 			.from(sprintsTable)
 			.where(eq(sprintsTable.teamId, teamId));
@@ -185,7 +185,7 @@ export class SprintService implements SprintRpc {
 
 	async getSprintTasks({ sprintId }: { sprintId: string }): Promise<Task[]> {
 		this.logger.info("Getting tasks for sprint", { sprintId });
-		return this.db
+		return await this.db
 			.select()
 			.from(tasksTable)
 			.where(eq(tasksTable.sprintId, sprintId));

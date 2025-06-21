@@ -145,15 +145,15 @@
 				"useTrimStartEnd": "error"
 			},
 			"suspicious": {
-				"noConsole": "warn",
-				"noEmptyBlockStatements": "warn",
-				"noEvolvingTypes": "warn",
-				"noSkippedTests": "warn",
-				"useAwait": "warn",
-				"useErrorMessage": "warn",
-				"useGuardForIn": "warn",
-				"useNumberToFixedDigitsArgument": "warn",
-				"useStrictMode": "warn"
+				"noConsole": { "fix": "safe", "level": "error" },
+				"noEmptyBlockStatements": "error",
+				"noEvolvingTypes": "error",
+				"noSkippedTests": "error",
+				"useAwait": "error",
+				"useErrorMessage": "error",
+				"useGuardForIn": "error",
+				"useNumberToFixedDigitsArgument": "error",
+				"useStrictMode": "error"
 			}
 		}
 	},
@@ -175,7 +175,8 @@
 					},
 					"suspicious": {
 						"noConsole": "off",
-						"noExplicitAny": "off"
+						"noExplicitAny": "off",
+						"useAwait": "off"
 					}
 				}
 			}

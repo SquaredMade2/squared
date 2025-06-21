@@ -1,24 +1,24 @@
 "use client";
 
-import type { CreateNotificationRequest } from "@/gen/rpc/event";
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { client } from "@/lib/client";
-import { useCommentStore, useTaskStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { CreatedByInformation } from ".";
+import type { CreateNotificationRequest } from "@/gen/rpc/event";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { client } from "@/lib/client";
+import { useCommentStore, useTaskStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { getMentionsFromSlate } from "@/utils/textEditorSelection";
 import TextEditor, {
 	type CustomDescendant,
 	type CustomElement,
+	initialEditorValue,
 } from "../TextEditor";
-import { initialEditorValue } from "../TextEditor";
 import { convertSlateToMDX } from "../TextEditor/format";
+import { CreatedByInformation } from ".";
 import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
@@ -40,7 +40,6 @@ export const EventTabs = () => {
 	);
 
 	const { mutate: createMentionNotifications } = useMutation({
-		mutationKey: ["notification", "createMention"],
 		mutationFn: async ({
 			editorContent,
 		}: {
@@ -67,6 +66,7 @@ export const EventTabs = () => {
 				await client.notification.createMention.$post(mentionEvent);
 			}
 		},
+		mutationKey: ["notification", "createMention"],
 		onError: (error) => {
 			toast.error("Error creating mention", {
 				description: parseError(error),
@@ -75,7 +75,6 @@ export const EventTabs = () => {
 	});
 
 	const { mutate: addCommentToTask, isPending } = useMutation({
-		mutationKey: ["comment", "addComment", currentTask?.id],
 		mutationFn: async () => {
 			if (currentTask) {
 				const newComment = {
@@ -100,15 +99,13 @@ export const EventTabs = () => {
 				createMentionNotifications({
 					editorContent: currentComment,
 				});
-			} else {
-				if (!users) console.error("No users found", users);
-				if (!workspace) console.error("No workspace found", workspace);
+			} else if (!(users || workspace))
 				toast.error("Mentions could not be processed", {
 					description:
 						"Your comment was saved, but user mentions couldn't be processed",
 				});
-			}
 		},
+		mutationKey: ["comment", "addComment", currentTask?.id],
 		onError: (error) => {
 			toast.error("Error adding comment", {
 				description: parseError(error),
@@ -117,7 +114,7 @@ export const EventTabs = () => {
 	});
 
 	return (
-		<Tabs defaultValue="activity" className="mt-8 w-full">
+		<Tabs className="mt-8 w-full" defaultValue="activity">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
 				<TabsTrigger value="activity">Activity</TabsTrigger>
 				<TabsTrigger value="comments">Comments</TabsTrigger>
@@ -129,19 +126,19 @@ export const EventTabs = () => {
 			</TabsContent>
 			<TabsContent value="comments">
 				{comments.map((comment) => {
-					return <CommentCard key={comment.id} comment={comment} />;
+					return <CommentCard comment={comment} key={comment.id} />;
 				})}
 				{currentTask && (
-					<TextEditor value={currentComment} onChange={setCurrentComment} />
+					<TextEditor onChange={setCurrentComment} value={currentComment} />
 				)}
 				<Button
+					className={`m-5 ml-auto ${(currentComment.length === 0 || currentComment === initialEditorValue) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 					disabled={
 						isPending ||
 						currentComment.length === 0 ||
 						currentComment === initialEditorValue
 					}
 					onClick={() => addCommentToTask()}
-					className={`m-5 ml-auto ${(currentComment.length === 0 || currentComment === initialEditorValue) && "bg-muted text-muted-foreground hover:bg-muted"}`}
 				>
 					{isPending ? "Loading..." : "Confirm"}
 				</Button>

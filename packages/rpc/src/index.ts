@@ -183,7 +183,7 @@ export function createRequestHandler(
 			return next();
 		}
 
-		handler(req, res, next);
+		await handler(req, res, next);
 	};
 }
 

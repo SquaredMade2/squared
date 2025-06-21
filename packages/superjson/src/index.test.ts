@@ -688,7 +688,7 @@ describe("stringify & parse", () => {
 		alreadySeenObjects.add(object);
 
 		if (isPlainObject(object)) {
-			for (const o in Object.values(object)) {
+			for (const o of Object.values(object)) {
 				deepFreeze(o, alreadySeenObjects);
 			}
 		}
@@ -926,8 +926,10 @@ describe("allowErrorProps(...) (#91)", () => {
 		expect(errorAfterTransition.meta).toEqual("👾");
 	});
 
-	it.skip("works with complex prop values", () => {
-		const errorWithAdditionalProps: any = new Error();
+	it("works with complex prop values", () => {
+		const errorWithAdditionalProps: any = new Error(
+			"I have additional props 😄",
+		);
 		errorWithAdditionalProps.map = new Map();
 
 		SuperJSON.allowErrorProps("map");
@@ -982,8 +984,8 @@ test("regression https://github.com/blitz-js/babel-plugin-superjson-next/issues/
 test("performance regression", () => {
 	const data: any[] = [];
 	for (let i = 0; i < 100; i++) {
-		const nested1 = [];
-		const nested2 = [];
+		const nested1: any[] = [];
+		const nested2: any[] = [];
 		for (let j = 0; j < 10; j++) {
 			nested1[j] = {
 				createdAt: new Date(),

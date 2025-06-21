@@ -151,11 +151,11 @@ export const formatPriority = (priority: Priority) => {
 // return links;
 // };
 
-export const formatFilterName = async (
+export const formatFilterName = (
 	filter: FilterCondition,
 	labels: Label[],
 	users: PublicUserData[],
-): Promise<{ name: string; value: string }> => {
+): { name: string; value: string } => {
 	if (!filter.value) return { name: filter.field, value: "" };
 	switch (filter.field) {
 		case "assigneeId": {

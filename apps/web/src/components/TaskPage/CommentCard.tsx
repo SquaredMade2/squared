@@ -112,14 +112,14 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	};
 
 	useEffect(() => {
-		const handleGetUser = async () => {
+		const handleGetUser = () => {
 			try {
 				if (!users) return;
-				const user = users.find((u) => u?.userId === comment.authorId);
-				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
-				if (hasUserAvatarData(user) && user !== null) {
-					setAuthorName(formatName(user));
-					setAvatarUrl(user?.imageUrl ?? "");
+				const author = users.find((u) => u?.userId === comment.authorId);
+				// Needs author !== null despite using hasUserAvatar here for some reason to pass checks
+				if (hasUserAvatarData(author) && author !== null) {
+					setAuthorName(formatName(author));
+					setAvatarUrl(author?.imageUrl ?? "");
 				} else {
 					toast.error("Error getting author", {
 						description: "User data not returned",
@@ -157,7 +157,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 						{formatDate(comment.date, "dd MMM yyyy h:mm a")}
 					</div>
 					<Avatar className="size-6 text-xxs">
-						<AvatarImage src={avatarUrl} className="size-6" />
+						<AvatarImage className="size-6" src={avatarUrl} />
 						<AvatarFallback className="size-6">
 							{getInitials(authorName)}
 						</AvatarFallback>
@@ -168,18 +168,18 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				{(comment.authorId === user?.id || hasMembershipManagePermission) && (
 					<>
 						<Button
-							variant="ghost"
-							className="self-center"
-							size="icon"
 							aria-label="Delete comment"
+							className="self-center"
 							onClick={() => setShowConfirmDelete(true)}
+							size="icon"
+							variant="ghost"
 						>
 							<Trash />
 						</Button>
 						<DeleteCommentAlertDialog
 							commentId={comment.id}
-							showConfirmDelete={showConfirmDelete}
 							setShowConfirmDelete={setShowConfirmDelete}
+							showConfirmDelete={showConfirmDelete}
 						/>
 					</>
 				)}

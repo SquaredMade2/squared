@@ -68,7 +68,7 @@ test("Primitive tests", () => {
 	expect(isPrimitive(0)).toBe(true);
 	expect(isPrimitive("")).toBe(true);
 	expect(isPrimitive("str")).toBe(true);
-	expect(isPrimitive(Symbol())).toBe(true);
+	expect(isPrimitive(Symbol("symbol"))).toBe(true);
 	expect(isPrimitive(true)).toBe(true);
 	expect(isPrimitive(false)).toBe(true);
 	expect(isPrimitive(null)).toBe(true);
@@ -81,7 +81,7 @@ test("Primitive tests", () => {
 
 	expect(isPrimitive(new Object())).toBe(false);
 	expect(isPrimitive(new Date())).toBe(false);
-	expect(isPrimitive(() => {})).toBe(false);
+	expect(isPrimitive(() => null)).toBe(false);
 });
 
 test("Date exception", () => {

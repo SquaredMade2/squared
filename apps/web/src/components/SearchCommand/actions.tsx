@@ -193,7 +193,7 @@ export class CommandSchema {
 								`${this.organization?.slug}/settings/teams/${this.team.identifier}`,
 							);
 						} else {
-							console.error("Current workspace or team is null null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <Settings className="mr-2 h-4 w-4" />,
@@ -271,7 +271,7 @@ export class CommandSchema {
 								`/${this.organization?.slug}/team/${this.team.identifier}/active`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
@@ -285,7 +285,7 @@ export class CommandSchema {
 								`/${this.organization?.slug}/team/${this.team.identifier}/all`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
@@ -299,7 +299,7 @@ export class CommandSchema {
 								`/${this.organization?.slug}/team/${this.team.identifier}/backlog`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
@@ -315,7 +315,15 @@ export class CommandSchema {
 					text: "Go to inbox",
 				},
 				"Go to my tasks": {
-					function: () => {},
+					function: () => {
+						if (this.organization && this.team) {
+							this.router.push(
+								`/${this.organization?.slug}/team/${this.team.identifier}/my-tasks`,
+							);
+						} else {
+							toast.error("Current workspace or team is null");
+						}
+					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					shortcut: ["G", "then", "M"],
 					text: "Go to my tasks",
@@ -337,7 +345,7 @@ export class CommandSchema {
 								`/${this.organization?.slug}/team/${this.team.identifier}/views`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
@@ -351,7 +359,7 @@ export class CommandSchema {
 						if (this.organization && this.team) {
 							this.router.push(`/${this.organization?.slug}/archive/tasks`);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
@@ -381,7 +389,7 @@ export class CommandSchema {
 								`/${this.organization?.slug}/archive/recently-deleted-tasks`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
 					icon: <Trash2 className="mr-2 h-4 w-4" />,

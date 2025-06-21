@@ -92,7 +92,7 @@ export const LabelModal = () => {
 					error instanceof Error ? error.message : "An unknown error occurred",
 			});
 		},
-		onSuccess: async (_, variables) => {
+		onSuccess: (_, variables) => {
 			toast.success("Label updated successfully", {
 				description: `Label "${variables.name}" has been updated`,
 			});
@@ -117,7 +117,7 @@ export const LabelModal = () => {
 					error instanceof Error ? error.message : "An unknown error occurred",
 			});
 		},
-		onSuccess: async (_, variables) => {
+		onSuccess: (_, variables) => {
 			toast.success("Label created successfully", {
 				description: `Label "${variables.name}" has been created`,
 			});
@@ -128,7 +128,7 @@ export const LabelModal = () => {
 		},
 	});
 
-	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
+	const handleLabelSubmit = (values: z.infer<typeof formSchema>) => {
 		if (labelData.name) {
 			updateLabelMutation.mutate(values);
 		} else {

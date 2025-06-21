@@ -1,13 +1,5 @@
 "use client";
 
-import { PriorityIcon } from "@/components/Icons";
-import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSprints } from "@/hooks/useSprints";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
 import type { Priority, Sprint, Task } from "@squaredmade/db";
 import { CircleAlert } from "@squaredmade/icons";
 import { Alert, AlertDescription, AlertTitle } from "@squaredmade/ui/alert";
@@ -51,6 +43,14 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { PriorityIcon } from "@/components/Icons";
+import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSprints } from "@/hooks/useSprints";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
 export default function SprintDashboard() {
 	const { sprints, sprint, team: currentTeam } = useSprints();
 	const { tasks, setTasks } = useTaskStore((state) => state);
@@ -154,8 +154,8 @@ export default function SprintDashboard() {
 
 			return {
 				day: i,
-				tasks: Math.max(0, totalTasks - completedTasksCount),
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
+				tasks: Math.max(0, totalTasks - completedTasksCount),
 			};
 		});
 
@@ -188,13 +188,18 @@ export default function SprintDashboard() {
 	}, [sprint, tasks]);
 
 	const { mutate: handleBulkAssign } = useMutation({
-		mutationKey: ["task", "addSprintTasks", targetSprint],
 		mutationFn: async () => {
 			if (!targetSprint) throw new Error("Sprint not found");
 			if (!currentTeam) throw new Error("Team not found");
 			await client.sprint.addSprintTasks.$post({
 				sprintId: targetSprint,
 				taskIds: selectedTasks.map((t) => t.id),
+			});
+		},
+		mutationKey: ["task", "addSprintTasks", targetSprint],
+		onError: (error) => {
+			toast.error("Error Assigning Tasks", {
+				description: error.message,
 			});
 		},
 		onSuccess: async () => {
@@ -205,11 +210,6 @@ export default function SprintDashboard() {
 					.$get({ teamId: currentTeam.id })
 					.then((res) => res.json()),
 			);
-		},
-		onError: (error) => {
-			toast.error("Error Assigning Tasks", {
-				description: error.message,
-			});
 		},
 	});
 
@@ -252,13 +252,18 @@ export default function SprintDashboard() {
 	};
 
 	const { mutate: handleAutoAssign } = useMutation({
-		mutationKey: ["task", "addSprintTasks", targetSprint],
 		mutationFn: async () => {
 			if (!targetSprint) throw new Error("Sprint not found");
 			if (!currentTeam) throw new Error("Team not found");
 			await client.sprint.addSprintTasks.$post({
 				sprintId: targetSprint,
 				taskIds: tasksToAutoAssign.map((t) => t.id),
+			});
+		},
+		mutationKey: ["task", "addSprintTasks", targetSprint],
+		onError: (error) => {
+			toast.error("Error Auto-Assigning Tasks", {
+				description: error.message,
 			});
 		},
 		onSuccess: async () => {
@@ -269,11 +274,6 @@ export default function SprintDashboard() {
 					.$get({ teamId: currentTeam.id })
 					.then((res) => res.json()),
 			);
-		},
-		onError: (error) => {
-			toast.error("Error Auto-Assigning Tasks", {
-				description: error.message,
-			});
 		},
 	});
 
@@ -291,7 +291,7 @@ export default function SprintDashboard() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<Progress value={calculateProgress(sprint)} className="w-full" />
+							<Progress className="w-full" value={calculateProgress(sprint)} />
 							<p className="mt-2 text-muted-foreground text-sm">
 								{Math.round(calculateProgress(sprint))}% Complete
 							</p>
@@ -304,12 +304,12 @@ export default function SprintDashboard() {
 							<CardTitle>Burndown Chart</CardTitle>
 						</CardHeader>
 						<CardContent className="h-80">
-							<ResponsiveContainer width="100%" height="100%">
+							<ResponsiveContainer height="100%" width="100%">
 								<LineChart
 									data={burndownData}
-									margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
+									margin={{ bottom: 5, left: 20, right: 20, top: 15 }}
 								>
-									<XAxis dataKey="day" tick={false} axisLine={false} />
+									<XAxis axisLine={false} dataKey="day" tick={false} />
 									<YAxis hide={true} />
 									<Tooltip
 										contentStyle={{
@@ -320,31 +320,31 @@ export default function SprintDashboard() {
 										formatter={(value) => Math.floor(Number(value))}
 									/>
 									<Line
-										type="monotone"
 										dataKey="tasks"
-										stroke="var(--primary)"
-										strokeWidth={2}
 										dot={false}
 										name="Actual"
+										stroke="var(--primary)"
+										strokeWidth={2}
+										type="monotone"
 									/>
 									<Line
-										type="monotone"
 										dataKey="ideal"
-										stroke="var(--muted-foreground)"
-										strokeWidth={2}
-										strokeDasharray="5 5"
 										dot={false}
 										name="Ideal"
+										stroke="var(--muted-foreground)"
+										strokeDasharray="5 5"
+										strokeWidth={2}
+										type="monotone"
 									/>
 									<ReferenceLine
-										x={currentDay}
+										label={{
+											fill: "var(--destructive)",
+											position: "top",
+											value: "Today",
+										}}
 										stroke="var(--destructive)"
 										strokeWidth={1}
-										label={{
-											value: "Today",
-											position: "top",
-											fill: "var(--destructive)",
-										}}
+										x={currentDay}
 									/>
 								</LineChart>
 							</ResponsiveContainer>
@@ -383,14 +383,14 @@ export default function SprintDashboard() {
 							unassignedTasks={unassignedTasks}
 							upcomingSprints={upcomingSprints}
 						/>
-						<Button variant="outline" onClick={prepareAutoAssign}>
+						<Button onClick={prepareAutoAssign} variant="outline">
 							Auto-Assign Tasks
 						</Button>
 					</div>
 				</div>
 				<AlertDialog
-					open={isCustomizeAutoAssignOpen}
 					onOpenChange={setIsCustomizeAutoAssignOpen}
+					open={isCustomizeAutoAssignOpen}
 				>
 					<AlertDialogContent>
 						<AlertDialogHeader>
@@ -402,10 +402,10 @@ export default function SprintDashboard() {
 						</AlertDialogHeader>
 						<div className="py-4">
 							<Input
-								type="number"
-								value={customTaskCount}
 								onChange={(e) => setCustomTaskCount(e.target.value)}
 								placeholder="Number of tasks to assign"
+								type="number"
+								value={customTaskCount}
 							/>
 						</div>
 						<AlertDialogFooter>
@@ -417,8 +417,8 @@ export default function SprintDashboard() {
 					</AlertDialogContent>
 				</AlertDialog>
 				<Dialog
-					open={isAutoAssignConfirmOpen}
 					onOpenChange={setIsAutoAssignConfirmOpen}
+					open={isAutoAssignConfirmOpen}
 				>
 					<DialogContent>
 						<DialogHeader>
@@ -430,7 +430,7 @@ export default function SprintDashboard() {
 						</DialogHeader>
 						<ScrollArea className="h-[200px] w-full rounded-md border p-4">
 							{tasksToAutoAssign.map((task) => (
-								<div key={task.id} className="mb-2 flex items-center space-x-2">
+								<div className="mb-2 flex items-center space-x-2" key={task.id}>
 									<PriorityIcon priority={task.priority} />
 									<span className="text-sm">{task.title}</span>
 								</div>
@@ -447,8 +447,8 @@ export default function SprintDashboard() {
 						</Alert>
 						<DialogFooter>
 							<Button
-								variant="outline"
 								onClick={() => setIsAutoAssignConfirmOpen(false)}
+								variant="outline"
 							>
 								Cancel
 							</Button>
@@ -459,11 +459,11 @@ export default function SprintDashboard() {
 					</DialogContent>
 				</Dialog>
 				<SprintTabs
-					upcomingSprints={upcomingSprints}
-					completedSprints={completedSprints}
 					activeSprint={sprint || null}
-					tasks={tasks}
 					calculateProgress={calculateProgress}
+					completedSprints={completedSprints}
+					tasks={tasks}
+					upcomingSprints={upcomingSprints}
 				/>
 			</div>
 		</ScrollArea>

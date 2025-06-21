@@ -86,7 +86,6 @@ export function checkCondition(
 				)
 			);
 		default:
-			console.warn(`Unknown operator: ${condition.operator}`);
 			return false;
 	}
 }

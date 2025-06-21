@@ -1,10 +1,10 @@
-import { client } from "@/lib/client";
-import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
-import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
 import type { Sprint } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { client } from "@/lib/client";
+import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
 
 export function useSprints(sprintId?: string) {
 	const { organization, isLoaded } = useOrganization();
@@ -14,7 +14,7 @@ export function useSprints(sprintId?: string) {
 	const { setTeam } = useTeamStore((state) => state);
 
 	const teamQuery = useQuery({
-		queryKey: ["team", organization?.id, teamIdentifier],
+		enabled: !!organization && !!teamIdentifier,
 		queryFn: async () => {
 			const parsedTeamIdentifier = parseParams(teamIdentifier);
 			if (!organization) return;
@@ -27,11 +27,11 @@ export function useSprints(sprintId?: string) {
 			setTeam(team);
 			return team;
 		},
-		enabled: !!organization && !!teamIdentifier,
+		queryKey: ["team", organization?.id, teamIdentifier],
 	});
 
 	const sprintsQuery = useQuery({
-		queryKey: ["sprints", teamQuery.data?.id],
+		enabled: !!teamQuery.data?.id,
 		queryFn: async () => {
 			if (!teamQuery.data) return;
 			const res = await client.sprint.getSprints.$get({
@@ -41,7 +41,7 @@ export function useSprints(sprintId?: string) {
 			if (sprints.length === 0) throw new Error("No sprints found");
 			return sprints;
 		},
-		enabled: !!teamQuery.data?.id,
+		queryKey: ["sprints", teamQuery.data?.id],
 	});
 
 	const activeSprint =
@@ -51,8 +51,8 @@ export function useSprints(sprintId?: string) {
 		sprintsQuery.data?.filter((s) => s.status === "PLANNED") ?? [];
 
 	const sprintQuery = useQuery({
-		queryKey: ["sprint", sprintsQuery.data, sprintId],
-		queryFn: async () => {
+		enabled: !!sprintsQuery.data,
+		queryFn: () => {
 			if (!sprintsQuery.data) return;
 			const foundSprint = sprintId
 				? sprintsQuery.data.find((sprint: Sprint) => sprint.id === sprintId)
@@ -63,11 +63,11 @@ export function useSprints(sprintId?: string) {
 			setSprint(foundSprint);
 			return foundSprint;
 		},
-		enabled: !!sprintsQuery.data,
+		queryKey: ["sprint", sprintsQuery.data, sprintId],
 	});
 
 	const tasksQuery = useQuery({
-		queryKey: ["tasks", teamQuery.data?.id, sprintQuery.data?.id],
+		enabled: !!teamQuery.data && !!sprintQuery.data,
 		queryFn: async () => {
 			if (!(teamQuery.data && sprintQuery.data)) return;
 			const [sprintTasksRes, teamTasksRes] = await Promise.all([
@@ -85,7 +85,7 @@ export function useSprints(sprintId?: string) {
 			setTasks(teamTasks);
 			return { sprintTasks, teamTasks };
 		},
-		enabled: !!teamQuery.data && !!sprintQuery.data,
+		queryKey: ["tasks", teamQuery.data?.id, sprintQuery.data?.id],
 	});
 
 	const isLoading =
@@ -102,15 +102,15 @@ export function useSprints(sprintId?: string) {
 		tasksQuery.error;
 
 	return {
-		organization,
-		team: teamQuery.data,
-		sprints: sprintsQuery.data || [],
-		sprint: sprintQuery.data,
-		sprintTasks: tasksQuery.data?.sprintTasks || [],
-		setSprint,
-		loading: isLoading,
-		error,
 		activeSprint,
+		error,
+		loading: isLoading,
+		organization,
+		setSprint,
+		sprint: sprintQuery.data,
+		sprints: sprintsQuery.data || [],
+		sprintTasks: tasksQuery.data?.sprintTasks || [],
+		team: teamQuery.data,
 		upcomingSprints,
 	};
 }
