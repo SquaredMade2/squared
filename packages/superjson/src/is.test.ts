@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import {
 	isArray,
 	isBoolean,
@@ -10,11 +11,9 @@ import {
 	isString,
 	isSymbol,
 	isTypedArray,
-	isURL,
 	isUndefined,
+	isURL,
 } from "./is.js";
-
-import { expect, test } from "vitest";
 
 test("Basic true tests", () => {
 	expect(isUndefined(undefined)).toBe(true);
@@ -27,6 +26,7 @@ test("Basic true tests", () => {
 
 	expect(isBoolean(true)).toBe(true);
 	expect(isBoolean(false)).toBe(true);
+	// biome-ignore lint/performance/useTopLevelRegex: This is a test
 	expect(isRegExp(/./)).toBe(true);
 	expect(isRegExp(/./gi)).toBe(true);
 	expect(isNumber(0)).toBe(true);

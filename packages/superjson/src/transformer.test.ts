@@ -1,13 +1,11 @@
-import SuperJSON from "./index.js";
-
 import { expect, test } from "vitest";
+import SuperJSON from "./index.js";
 
 test("throws an descriptive error when transforming", () => {
 	const instance = new SuperJSON();
 	class FunnyNumber {
 		constructor(private number: number) {}
 
-		// @ts-expect-error
 		get theNumber() {
 			return this.number;
 		}

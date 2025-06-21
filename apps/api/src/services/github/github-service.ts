@@ -1,13 +1,13 @@
 import {
+	and,
 	type DBClient,
+	eq,
 	type GithubOrg,
 	type GithubRepo,
-	and,
-	eq,
 	githubCommitsTable,
 	githubOrgTable,
-	githubPullRequestTaskTable,
 	githubPullRequestsTable,
+	githubPullRequestTaskTable,
 	githubRepoTable,
 	inArray,
 	tasksTable,
@@ -29,13 +29,13 @@ export class GithubService implements GithubRpc {
 		this.logger.info("Fetching workspace repositories with id: ", workspaceId);
 		return await this.db
 			.select({
-				name: githubOrgTable.name,
 				createdAt: githubOrgTable.createdAt,
+				name: githubOrgTable.name,
 			})
 			.from(githubOrgTable)
 			.where(eq(githubOrgTable.workspaceId, workspaceId))
 			.then((repos) =>
-				repos.map((repo) => ({ name: repo.name, createdAt: repo.createdAt })),
+				repos.map((repo) => ({ createdAt: repo.createdAt, name: repo.name })),
 			);
 	}
 	async upsertPullRequest({
@@ -77,9 +77,9 @@ export class GithubService implements GithubRpc {
 				.select({
 					id: tasksTable.id,
 					identifier: tasksTable.identifier,
-					workspaceUrl: workspacesTable.url,
 					title: tasksTable.title,
 					workspaceId: tasksTable.workspaceId,
+					workspaceUrl: workspacesTable.url,
 				})
 				.from(tasksTable)
 				.leftJoin(
@@ -112,27 +112,27 @@ export class GithubService implements GithubRpc {
 				.insert(githubRepoTable)
 				.values({ ...repoRest, externalId: repoExternalId })
 				.onConflictDoUpdate({
-					target: githubRepoTable.externalId,
 					set: { ...repoRest },
+					target: githubRepoTable.externalId,
 				});
 
 			const [pull] = await tx
 				.insert(githubPullRequestsTable)
 				.values({
+					author,
+					body,
+					branch,
 					externalId: id,
+					githubRepoInfoId: repo.id,
 					number,
 					state,
+					timestamp: new Date(timestamp),
 					title,
 					url,
-					branch,
-					body,
-					author,
-					githubRepoInfoId: repo.id,
-					timestamp: new Date(timestamp),
 				})
 				.onConflictDoUpdate({
+					set: { body, state, title },
 					target: githubPullRequestsTable.externalId,
-					set: { state, title, body },
 				})
 				.returning();
 
@@ -140,7 +140,7 @@ export class GithubService implements GithubRpc {
 				tasks.flatMap((task) =>
 					tx
 						.insert(githubPullRequestTaskTable)
-						.values({ taskId: task.id, pullRequestId: pull.externalId })
+						.values({ pullRequestId: pull.externalId, taskId: task.id })
 						.onConflictDoNothing()
 						.returning(),
 				),
@@ -151,8 +151,8 @@ export class GithubService implements GithubRpc {
 					.filter(({ id }) => newTasks.includes(id))
 					.map((task) => ({
 						identifier: task.identifier,
-						url: `/${task.workspaceUrl}/task/${task.identifier}/${this.formatUrl(task.title)}`,
 						title: task.title,
+						url: `/${task.workspaceUrl}/task/${task.identifier}/${this.formatUrl(task.title)}`,
 					})),
 			};
 		});
@@ -285,13 +285,13 @@ export class GithubService implements GithubRpc {
 			if (!pull) return;
 
 			await tx.insert(githubCommitsTable).values({
+				author,
 				externalId: id,
 				message,
-				url,
-				author,
-				repoId,
 				pullId: pull.externalId,
+				repoId,
 				timestamp: new Date(timestamp),
+				url,
 			});
 		});
 	}
@@ -312,9 +312,9 @@ export class GithubService implements GithubRpc {
 			await tx
 				.insert(githubOrgTable)
 				.values({
+					description,
 					externalId: id,
 					name,
-					description,
 					workspaceId,
 				})
 				.onConflictDoNothing();

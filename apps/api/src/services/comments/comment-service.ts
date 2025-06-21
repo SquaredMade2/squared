@@ -1,7 +1,7 @@
 import {
 	type Comment,
-	type DBClient,
 	commentsTable,
+	type DBClient,
 	eq,
 } from "@squaredmade/db";
 import type { Logger } from "@squaredmade/logger";
@@ -18,7 +18,7 @@ export class CommentService implements CommentRpc {
 	}
 	async addComment(comment: Omit<Comment, "id" | "date">): Promise<Comment> {
 		this.logger.info("Adding comment with payload", comment);
-		return this.db
+		return await this.db
 			.insert(commentsTable)
 			.values(comment)
 			.returning()
@@ -35,7 +35,7 @@ export class CommentService implements CommentRpc {
 	}
 	async deleteComment({ commentId }: { commentId: string }): Promise<Comment> {
 		this.logger.info("Deleting comment with id", commentId);
-		return this.db
+		return await this.db
 			.delete(commentsTable)
 			.where(eq(commentsTable.id, commentId))
 			.returning()
@@ -49,7 +49,7 @@ export class CommentService implements CommentRpc {
 	}
 	async getTaskComments({ taskId }: { taskId: string }): Promise<Comment[]> {
 		this.logger.info("Getting comments for task with id", taskId);
-		return this.db
+		return await this.db
 			.select()
 			.from(commentsTable)
 			.where(eq(commentsTable.taskId, taskId));

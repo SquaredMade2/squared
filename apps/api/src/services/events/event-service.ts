@@ -1,20 +1,20 @@
 import {
-	type DBClient,
-	type GithubCommit,
-	type Notification,
-	type NotificationType,
-	type Task,
-	type TaskEvent,
 	and,
 	asc,
+	type DBClient,
 	desc,
 	eq,
+	type GithubCommit,
 	githubCommitsTable,
-	githubPullRequestTaskTable,
 	githubPullRequestsTable,
+	githubPullRequestTaskTable,
 	inArray,
+	type Notification,
+	type NotificationType,
 	notificationsTable,
 	sprintsTable,
+	type Task,
+	type TaskEvent,
 	taskEventsTable,
 	tasksTable,
 	usersTable,
@@ -49,14 +49,14 @@ export class EventService implements EventRpc {
 				.orderBy(asc(taskEventsTable.createdAt)),
 			this.db
 				.select({
-					id: githubCommitsTable.id,
-					externalId: githubCommitsTable.externalId,
-					message: githubCommitsTable.message,
-					url: githubCommitsTable.url,
 					author: githubCommitsTable.author,
-					timestamp: githubCommitsTable.timestamp,
-					repoId: githubCommitsTable.repoId,
+					externalId: githubCommitsTable.externalId,
+					id: githubCommitsTable.id,
+					message: githubCommitsTable.message,
 					pullId: githubPullRequestsTable.externalId,
+					repoId: githubCommitsTable.repoId,
+					timestamp: githubCommitsTable.timestamp,
+					url: githubCommitsTable.url,
 				})
 				.from(githubCommitsTable)
 				.innerJoin(
@@ -107,8 +107,8 @@ export class EventService implements EventRpc {
 			if (!(task && workspace)) throw new Error("Task or Workspace not found");
 			return {
 				...notification,
-				Task: task,
-				Workspace: workspace,
+				task,
+				workspace,
 			};
 		});
 	}
@@ -137,31 +137,31 @@ export class EventService implements EventRpc {
 		const [taskEvent] = await this.db
 			.insert(taskEventsTable)
 			.values({
-				taskId,
 				authorId,
 				message: diff,
+				taskId,
 			})
 			.returning();
 
 		// Generate notification
 		if (changes.assigneeId && changes.assigneeId !== previousTask.assigneeId) {
 			await this.createNotification({
-				userId: changes.assigneeId,
-				taskId,
-				workspaceId: previousTask.workspaceId,
 				description: `You have been assigned to task "${previousTask.title}"`,
+				taskId,
 				type: "ASSIGNED",
+				userId: changes.assigneeId,
+				workspaceId: previousTask.workspaceId,
 			});
 		}
 
 		if (changes.status) {
 			const statusChangeMessage = `Task "${previousTask.title}" status changed to ${changes.status}`;
 			await this.createNotification({
-				userId: previousTask.authorId,
-				taskId,
-				workspaceId: previousTask.workspaceId,
 				description: statusChangeMessage,
+				taskId,
 				type: "PARTICIPATING",
+				userId: previousTask.authorId,
+				workspaceId: previousTask.workspaceId,
 			});
 
 			if (
@@ -169,11 +169,11 @@ export class EventService implements EventRpc {
 				previousTask.assigneeId !== previousTask.authorId
 			) {
 				await this.createNotification({
-					userId: previousTask.assigneeId,
-					taskId,
-					workspaceId: previousTask.workspaceId,
 					description: statusChangeMessage,
+					taskId,
 					type: "PARTICIPATING",
+					userId: previousTask.assigneeId,
+					workspaceId: previousTask.workspaceId,
 				});
 			}
 		}
@@ -196,14 +196,14 @@ export class EventService implements EventRpc {
 		this.logger.info(
 			`Creating notification for userId: ${userId}, taskId: ${taskId}, type: ${type}`,
 		);
-		return this.db
+		return await this.db
 			.insert(notificationsTable)
 			.values({
-				userId,
-				taskId,
 				description,
-				workspaceId,
+				taskId,
 				type,
+				userId,
+				workspaceId,
 			})
 			.returning()
 			.then((res) => res[0]);
@@ -221,7 +221,7 @@ export class EventService implements EventRpc {
 			// Update the notifications
 			await tx
 				.update(notificationsTable)
-				.set({ read, dismissed })
+				.set({ dismissed, read })
 				.where(inArray(notificationsTable.id, notificationIds));
 
 			// Fetch and return the updated notifications
@@ -241,11 +241,12 @@ export class EventService implements EventRpc {
 
 			return notifications.map((noti) => {
 				const { notification, task, workspace } = noti;
-				if (!(task && workspace)) throw new Error("Task or Workspace not found");
+				if (!(task && workspace))
+					throw new Error("Task or Workspace not found");
 				return {
 					...notification,
-					Task: task,
-					Workspace: workspace,
+					task,
+					workspace,
 				};
 			});
 		});
@@ -347,9 +348,9 @@ export class EventService implements EventRpc {
 			(typeof value === "string" || value instanceof Date)
 		) {
 			const formattedDate = new Date(value).toLocaleDateString("en-us", {
-				year: "numeric",
-				month: "short",
 				day: "numeric",
+				month: "short",
+				year: "numeric",
 			});
 			return formattedDate;
 		}
@@ -411,8 +412,8 @@ export class EventService implements EventRpc {
 			const [key, values] = pair.split(": ");
 			const [oldValue, newValue] = values.split(" -> ");
 			changes[key] = {
-				oldValue: this.parseValue(oldValue),
 				newValue: this.parseValue(newValue),
+				oldValue: this.parseValue(oldValue),
 			};
 		}
 

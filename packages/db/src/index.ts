@@ -1,11 +1,99 @@
-import { Pool, neonConfig } from "@neondatabase/serverless";
+import { neonConfig, Pool } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import { type NeonQueryResultHKT, drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle, type NeonQueryResultHKT } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import ws from "ws";
+// biome-ignore lint/performance/noNamespaceImport: This is needed to type the DBClient
 import * as schema from "./schema";
+
+// biome-ignore lint/performance/noReExportAll: For now, we want to export all from drizzle-orm
 export * from "drizzle-orm";
-export * from "./schema";
+export type {
+	Activity,
+	BlockedTasks,
+	Comment,
+	Effort,
+	FilterCondition,
+	FilterValue,
+	GithubCommit,
+	GithubOrg,
+	GithubPullRequest,
+	GithubRepo,
+	Label,
+	Notification,
+	NotificationType,
+	Priority,
+	Project,
+	PullRequest,
+	PullRequestState,
+	RetrospectiveItem,
+	RetrospectiveItemType,
+	SavedFilter,
+	SavedFilterType,
+	Sprint,
+	SprintStatus,
+	Status,
+	Task,
+	TaskEvent,
+	Team,
+	User,
+	UserTeam,
+	UserWorkspace,
+	Workspace,
+	WorkspaceInviteLink,
+	WorkspaceRepositories,
+} from "./schema";
+export {
+	activityType,
+	blockedTasksRelations,
+	blockedTasksTable,
+	commentRelations,
+	commentsTable,
+	effortType,
+	githubCommitRelations,
+	githubCommitsTable,
+	githubOrgTable,
+	githubPullRequestRelations,
+	githubPullRequestsTable,
+	githubPullRequestTaskRelations,
+	githubPullRequestTaskTable,
+	githubRepoRelations,
+	githubRepoTable,
+	githubWorkspaceRepositoriesRelations,
+	notificationRelations,
+	notificationsTable,
+	notificationType,
+	priorityType,
+	projectRelations,
+	projectsTable,
+	pullRequestState,
+	retrospectiveItemRelations,
+	retrospectiveItemsTable,
+	retrospectiveItemType,
+	savedFilterRelations,
+	savedFiltersTable,
+	savedFilterType,
+	sprintRelations,
+	sprintStatusType,
+	sprintsTable,
+	statusType,
+	taskEventRelations,
+	taskEventsTable,
+	taskRelations,
+	tasksTable,
+	teamRelations,
+	teamsTable,
+	userRelations,
+	usersTable,
+	userTeamRelations,
+	userTeamsTable,
+	userWorkspaceRelations,
+	userWorkspacesTable,
+	workspaceRelations,
+	workspaceRepositoriesTable,
+	workspacesTable,
+} from "./schema";
+
 export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
 export type TransactionClient = PgTransaction<
 	NeonQueryResultHKT,

@@ -1,6 +1,6 @@
-import * as fs from "node:fs";
+import fs from "node:fs";
 import { Decimal } from "decimal.js";
-import { type TestAPI, describe, expect, it, test } from "vitest";
+import { describe, expect, it, type TestAPI, test } from "vitest";
 import SuperJSON from "./index";
 import {
 	isArray,
@@ -27,93 +27,51 @@ describe("stringify & parse", () => {
 			only?: boolean;
 		}
 	> = {
-		"works for objects": {
-			input: {
-				a: { 1: 5, 2: { 3: "c" } },
-				b: null,
+		"issue #58": {
+			input: () => {
+				const cool = Symbol("cool");
+				SuperJSON.registerSymbol(cool);
+				return {
+					q: [
+						9,
+						{
+							foo1: new Date(2020, 1, 1),
+							henlo: undefined,
+							yee: new Date(2020, 1, 1),
+							yee2: new Date(2020, 1, 1),
+							z: cool,
+						},
+					],
+				};
 			},
 			output: {
-				a: { 1: 5, 2: { 3: "c" } },
-				b: null,
-			},
-		},
-
-		"special case: objects with array-like keys": {
-			input: {
-				a: { 0: 3, 1: 5, 2: { 3: "c" } },
-				b: null,
-			},
-			output: {
-				a: { 0: 3, 1: 5, 2: { 3: "c" } },
-				b: null,
-			},
-		},
-
-		"works for arrays": {
-			input: {
-				a: [1, undefined, 2],
-			},
-			output: {
-				a: [1, null, 2],
-			},
-			outputAnnotations: {
-				values: {
-					"a.1": ["undefined"],
-				},
-			},
-		},
-
-		"works for Sets": {
-			input: {
-				a: new Set([1, undefined, 2]),
-			},
-			output: {
-				a: [1, null, 2],
-			},
-			outputAnnotations: {
-				values: {
-					a: ["set", { 1: ["undefined"] }],
-				},
-			},
-		},
-
-		"works for top-level Sets": {
-			input: new Set([1, undefined, 2]),
-			output: [1, null, 2],
-			outputAnnotations: {
-				values: ["set", { 1: ["undefined"] }],
-			},
-		},
-
-		"works for Maps": {
-			input: {
-				a: new Map([
-					[1, "a"],
-					[Number.NaN, "b"],
-				]),
-				b: new Map([["2", "b"]]),
-				d: new Map([[true, "true key"]]),
-			},
-
-			output: {
-				a: [
-					[1, "a"],
-					["NaN", "b"],
+				q: [
+					9,
+					{
+						foo1: new Date(2020, 1, 1).toISOString(),
+						henlo: null,
+						yee: new Date(2020, 1, 1).toISOString(),
+						yee2: new Date(2020, 1, 1).toISOString(),
+						z: "cool",
+					},
 				],
-				b: [["2", "b"]],
-				d: [[true, "true key"]],
 			},
-
 			outputAnnotations: {
 				values: {
-					a: ["map", { "1.0": ["number"] }],
-					b: ["map"],
-					d: ["map"],
+					"q.1.foo1": ["Date"],
+					"q.1.henlo": ["undefined"],
+					"q.1.yee": ["Date"],
+					"q.1.yee2": ["Date"],
+					"q.1.z": [["symbol", "cool"]],
 				},
 			},
+			skipOnNode10: true,
 		},
 
 		"preserves object identity": {
+			customExpectations: (output) => {
+				expect(output.selected).toBe(output.options[0]);
+			},
 			input: () => {
 				const a = { id: "a" };
 				const b = { id: "b" };
@@ -131,485 +89,12 @@ describe("stringify & parse", () => {
 					selected: ["options.0"],
 				},
 			},
-			customExpectations: (output) => {
-				expect(output.selected).toBe(output.options[0]);
-			},
-		},
-
-		"works for paths containing dots": {
-			input: {
-				"a.1": {
-					b: new Set([1, 2]),
-				},
-			},
-			output: {
-				"a.1": {
-					b: [1, 2],
-				},
-			},
-			outputAnnotations: {
-				values: {
-					"a\\.1.b": ["set"],
-				},
-			},
-		},
-
-		"works for paths containing backslashes": {
-			input: {
-				"a\\.1": {
-					b: new Set([1, 2]),
-				},
-			},
-			output: {
-				"a\\.1": {
-					b: [1, 2],
-				},
-			},
-			outputAnnotations: {
-				values: {
-					"a\\\\.1.b": ["set"],
-				},
-			},
-		},
-
-		"works for dates": {
-			input: {
-				meeting: {
-					date: new Date(2020, 1, 1),
-				},
-			},
-			output: {
-				meeting: {
-					date: new Date(2020, 1, 1).toISOString(),
-				},
-			},
-			outputAnnotations: {
-				values: {
-					"meeting.date": ["Date"],
-				},
-			},
-		},
-
-		"works for Errors": {
-			input: {
-				e: new Error("epic fail"),
-			},
-			output: ({ e }: any) => {
-				expect(e.name).toBe("Error");
-				expect(e.message).toBe("epic fail");
-			},
-			outputAnnotations: {
-				values: {
-					e: ["Error"],
-				},
-			},
-			customExpectations: (untransformed: any) => {
-				expect(untransformed.e).toBeInstanceOf(Error);
-				expect(untransformed.e.message).toBe("epic fail");
-				expect(untransformed.e.name).toBe("Error");
-			},
-			dontExpectEquality: true,
-		},
-
-		"works for regex": {
-			input: {
-				a: /hello/g,
-			},
-			output: {
-				a: "/hello/g",
-			},
-			outputAnnotations: {
-				values: {
-					a: ["regexp"],
-				},
-			},
-		},
-
-		"works for Infinity": {
-			input: {
-				a: Number.POSITIVE_INFINITY,
-			},
-			output: {
-				a: "Infinity",
-			},
-			outputAnnotations: {
-				values: {
-					a: ["number"],
-				},
-			},
-		},
-
-		"works for -Infinity": {
-			input: {
-				a: Number.NEGATIVE_INFINITY,
-			},
-			output: {
-				a: "-Infinity",
-			},
-			outputAnnotations: {
-				values: {
-					a: ["number"],
-				},
-			},
-		},
-
-		"works for NaN": {
-			input: {
-				a: Number.NaN,
-			},
-			output: {
-				a: "NaN",
-			},
-			outputAnnotations: {
-				values: {
-					a: ["number"],
-				},
-			},
-		},
-
-		"works for bigint": {
-			input: {
-				a: BigInt("1021312312412312312313"),
-			},
-			output: {
-				a: "1021312312412312312313",
-			},
-			outputAnnotations: {
-				values: {
-					a: ["bigint"],
-				},
-			},
-		},
-
-		"works for unknown": {
-			input: () => {
-				type Freak = {
-					name: string;
-					age: unknown;
-				};
-
-				const person: Freak = {
-					name: "@ftonato",
-					age: 1,
-				};
-
-				return person;
-			},
-			output: {
-				name: "@ftonato",
-				age: 1,
-			},
-			outputAnnotations: undefined,
-		},
-
-		"works for self-referencing objects": {
-			input: () => {
-				const a = { role: "parent", children: [] as any[] };
-				const b = { role: "child", parents: [a] };
-				a.children.push(b);
-				return a;
-			},
-			output: {
-				role: "parent",
-				children: [
-					{
-						role: "child",
-						parents: [null],
-					},
-				],
-			},
-			outputAnnotations: {
-				referentialEqualities: [["children.0.parents.0"]],
-			},
-		},
-
-		"works for Maps with two keys that serialize to the same string but have a different reference":
-			{
-				input: new Map([
-					[/a/g, "foo"],
-					[/a/g, "bar"],
-				]),
-				output: [
-					["/a/g", "foo"],
-					["/a/g", "bar"],
-				],
-				outputAnnotations: {
-					values: [
-						"map",
-						{
-							"0.0": ["regexp"],
-							"1.0": ["regexp"],
-						},
-					],
-				},
-			},
-
-		"works for Maps with a key that's referentially equal to another field": {
-			input: () => {
-				const robbyBubble = { id: 5 };
-				const highscores = new Map([[robbyBubble, 5000]]);
-				return {
-					highscores,
-					topScorer: robbyBubble,
-				} as any;
-			},
-			output: {
-				highscores: [[{ id: 5 }, 5000]],
-				topScorer: { id: 5 },
-			},
-			outputAnnotations: {
-				values: {
-					highscores: ["map"],
-				},
-				referentialEqualities: {
-					topScorer: ["highscores.0.0"],
-				},
-			},
-		},
-
-		"works for referentially equal maps": {
-			input: () => {
-				const map = new Map([[1, 1]]);
-				return {
-					a: map,
-					b: map,
-				};
-			},
-			output: {
-				a: [[1, 1]],
-				b: [[1, 1]],
-			},
-			outputAnnotations: {
-				values: {
-					a: ["map"],
-					b: ["map"],
-				},
-				referentialEqualities: {
-					a: ["b"],
-				},
-			},
-			customExpectations: (value) => {
-				expect(value.a).toBe(value.b);
-			},
-		},
-
-		"works for maps with non-uniform keys": {
-			input: {
-				map: new Map<string | number, number>([
-					[1, 1],
-					["1", 1],
-				]),
-			},
-			output: {
-				map: [
-					[1, 1],
-					["1", 1],
-				],
-			},
-			outputAnnotations: {
-				values: {
-					map: ["map"],
-				},
-			},
-		},
-
-		"works for referentially equal values inside a set": {
-			input: () => {
-				const user = { id: 2 };
-				return {
-					users: new Set([user]),
-					userOfTheMonth: user,
-				};
-			},
-			output: {
-				users: [{ id: 2 }],
-				userOfTheMonth: { id: 2 },
-			},
-			outputAnnotations: {
-				values: {
-					users: ["set"],
-				},
-				referentialEqualities: {
-					userOfTheMonth: ["users.0"],
-				},
-			},
-			customExpectations: (value) => {
-				expect(value.users.values().next().value).toBe(value.userOfTheMonth);
-			},
-		},
-
-		"works for referentially equal values in different maps and sets": {
-			input: () => {
-				const user = { id: 2 };
-
-				return {
-					workspaces: new Map([
-						[1, { users: new Set([user]) }],
-						[2, { users: new Set([user]) }],
-					]),
-				};
-			},
-			output: {
-				workspaces: [
-					[1, { users: [{ id: 2 }] }],
-					[2, { users: [{ id: 2 }] }],
-				],
-			},
-			outputAnnotations: {
-				values: {
-					workspaces: [
-						"map",
-						{
-							"0.1.users": ["set"],
-							"1.1.users": ["set"],
-						},
-					],
-				},
-				referentialEqualities: {
-					"workspaces.0.1.users.0": ["workspaces.1.1.users.0"],
-				},
-			},
-		},
-
-		"works for symbols": {
-			skipOnNode10: true,
-			input: () => {
-				const parent = Symbol("Parent");
-				const child = Symbol("Child");
-				SuperJSON.registerSymbol(parent, "1");
-				SuperJSON.registerSymbol(child, "2");
-
-				const a = { role: parent };
-				const b = { role: child };
-
-				return { a, b };
-			},
-			output: {
-				a: { role: "Parent" },
-				b: { role: "Child" },
-			},
-			outputAnnotations: {
-				values: {
-					"a.role": [["symbol", "1"]],
-					"b.role": [["symbol", "2"]],
-				},
-			},
-		},
-
-		"works for Decimal.js": {
-			input: () => {
-				SuperJSON.registerCustom<Decimal, string>(
-					{
-						isApplicable: (v): v is Decimal => Decimal.isDecimal(v),
-						serialize: (v) => v.toJSON(),
-						deserialize: (v) => new Decimal(v),
-					},
-					"decimal.js",
-				);
-
-				return {
-					a: new Decimal("100.1"),
-				};
-			},
-			output: {
-				a: "100.1",
-			},
-			outputAnnotations: {
-				values: {
-					a: [["custom", "decimal.js"]],
-				},
-			},
-		},
-
-		"issue #58": {
-			skipOnNode10: true,
-			input: () => {
-				const cool = Symbol("cool");
-				SuperJSON.registerSymbol(cool);
-				return {
-					q: [
-						9,
-						{
-							henlo: undefined,
-							yee: new Date(2020, 1, 1),
-							yee2: new Date(2020, 1, 1),
-							foo1: new Date(2020, 1, 1),
-							z: cool,
-						},
-					],
-				};
-			},
-			output: {
-				q: [
-					9,
-					{
-						henlo: null,
-						yee: new Date(2020, 1, 1).toISOString(),
-						yee2: new Date(2020, 1, 1).toISOString(),
-						foo1: new Date(2020, 1, 1).toISOString(),
-						z: "cool",
-					},
-				],
-			},
-			outputAnnotations: {
-				values: {
-					"q.1.henlo": ["undefined"],
-					"q.1.yee": ["Date"],
-					"q.1.yee2": ["Date"],
-					"q.1.foo1": ["Date"],
-					"q.1.z": [["symbol", "cool"]],
-				},
-			},
-		},
-
-		"works with custom allowedProps": {
-			input: () => {
-				class User {
-					constructor(
-						public username: string,
-						public password: string,
-					) {}
-				}
-				SuperJSON.registerClass(User, { allowProps: ["username"] });
-				return new User("bongocat", "supersecurepassword");
-			},
-			output: {
-				username: "bongocat",
-			},
-			outputAnnotations: {
-				values: [["class", "User"]],
-			},
-			customExpectations(value) {
-				expect(value.password).toBeUndefined();
-				expect(value.username).toBe("bongocat");
-			},
-			dontExpectEquality: true,
-		},
-
-		"works with typed arrays": {
-			input: {
-				a: new Int8Array([1, 2]),
-				b: new Uint8ClampedArray(3),
-			},
-			output: {
-				a: [1, 2],
-				b: [0, 0, 0],
-			},
-			outputAnnotations: {
-				values: {
-					a: [["typed-array", "Int8Array"]],
-					b: [["typed-array", "Uint8ClampedArray"]],
-				},
-			},
-		},
-
-		"works for undefined, issue #48": {
-			input: undefined,
-			output: null,
-			outputAnnotations: { values: ["undefined"] },
 		},
 
 		"regression #109: nested classes": {
+			customExpectations(value) {
+				expect(value.pet.woof()).toEqual("Rover");
+			},
 			input: () => {
 				class Pet {
 					constructor(private name: string) {}
@@ -644,8 +129,522 @@ describe("stringify & parse", () => {
 					},
 				],
 			},
+		},
+
+		"special case: objects with array-like keys": {
+			input: {
+				a: { 0: 3, 1: 5, 2: { 3: "c" } },
+				b: null,
+			},
+			output: {
+				a: { 0: 3, 1: 5, 2: { 3: "c" } },
+				b: null,
+			},
+		},
+
+		"works for -Infinity": {
+			input: {
+				a: Number.NEGATIVE_INFINITY,
+			},
+			output: {
+				a: "-Infinity",
+			},
+			outputAnnotations: {
+				values: {
+					a: ["number"],
+				},
+			},
+		},
+
+		"works for arrays": {
+			input: {
+				a: [1, undefined, 2],
+			},
+			output: {
+				a: [1, null, 2],
+			},
+			outputAnnotations: {
+				values: {
+					"a.1": ["undefined"],
+				},
+			},
+		},
+
+		"works for bigint": {
+			input: {
+				a: BigInt("1021312312412312312313"),
+			},
+			output: {
+				a: "1021312312412312312313",
+			},
+			outputAnnotations: {
+				values: {
+					a: ["bigint"],
+				},
+			},
+		},
+
+		"works for Decimal.js": {
+			input: () => {
+				SuperJSON.registerCustom<Decimal, string>(
+					{
+						deserialize: (v) => new Decimal(v),
+						isApplicable: (v): v is Decimal => Decimal.isDecimal(v),
+						serialize: (v) => v.toJSON(),
+					},
+					"decimal.js",
+				);
+
+				return {
+					a: new Decimal("100.1"),
+				};
+			},
+			output: {
+				a: "100.1",
+			},
+			outputAnnotations: {
+				values: {
+					a: [["custom", "decimal.js"]],
+				},
+			},
+		},
+
+		"works for dates": {
+			input: {
+				meeting: {
+					date: new Date(2020, 1, 1),
+				},
+			},
+			output: {
+				meeting: {
+					date: new Date(2020, 1, 1).toISOString(),
+				},
+			},
+			outputAnnotations: {
+				values: {
+					"meeting.date": ["Date"],
+				},
+			},
+		},
+
+		"works for Errors": {
+			customExpectations: (untransformed: any) => {
+				expect(untransformed.e).toBeInstanceOf(Error);
+				expect(untransformed.e.message).toBe("epic fail");
+				expect(untransformed.e.name).toBe("Error");
+			},
+			dontExpectEquality: true,
+			input: {
+				e: new Error("epic fail"),
+			},
+			output: ({ e }: any) => {
+				expect(e.name).toBe("Error");
+				expect(e.message).toBe("epic fail");
+			},
+			outputAnnotations: {
+				values: {
+					e: ["Error"],
+				},
+			},
+		},
+
+		"works for Infinity": {
+			input: {
+				a: Number.POSITIVE_INFINITY,
+			},
+			output: {
+				a: "Infinity",
+			},
+			outputAnnotations: {
+				values: {
+					a: ["number"],
+				},
+			},
+		},
+
+		"works for Maps": {
+			input: {
+				a: new Map([
+					[1, "a"],
+					[Number.NaN, "b"],
+				]),
+				b: new Map([["2", "b"]]),
+				d: new Map([[true, "true key"]]),
+			},
+
+			output: {
+				a: [
+					[1, "a"],
+					["NaN", "b"],
+				],
+				b: [["2", "b"]],
+				d: [[true, "true key"]],
+			},
+
+			outputAnnotations: {
+				values: {
+					a: ["map", { "1.0": ["number"] }],
+					b: ["map"],
+					d: ["map"],
+				},
+			},
+		},
+
+		"works for Maps with a key that's referentially equal to another field": {
+			input: () => {
+				const robbyBubble = { id: 5 };
+				const highscores = new Map([[robbyBubble, 5000]]);
+				return {
+					highscores,
+					topScorer: robbyBubble,
+				} as any;
+			},
+			output: {
+				highscores: [[{ id: 5 }, 5000]],
+				topScorer: { id: 5 },
+			},
+			outputAnnotations: {
+				referentialEqualities: {
+					topScorer: ["highscores.0.0"],
+				},
+				values: {
+					highscores: ["map"],
+				},
+			},
+		},
+
+		"works for Maps with two keys that serialize to the same string but have a different reference":
+			{
+				input: new Map([
+					[/a/g, "foo"],
+					[/a/g, "bar"],
+				]),
+				output: [
+					["/a/g", "foo"],
+					["/a/g", "bar"],
+				],
+				outputAnnotations: {
+					values: [
+						"map",
+						{
+							"0.0": ["regexp"],
+							"1.0": ["regexp"],
+						},
+					],
+				},
+			},
+
+		"works for maps with non-uniform keys": {
+			input: {
+				map: new Map<string | number, number>([
+					[1, 1],
+					["1", 1],
+				]),
+			},
+			output: {
+				map: [
+					[1, 1],
+					["1", 1],
+				],
+			},
+			outputAnnotations: {
+				values: {
+					map: ["map"],
+				},
+			},
+		},
+
+		"works for NaN": {
+			input: {
+				a: Number.NaN,
+			},
+			output: {
+				a: "NaN",
+			},
+			outputAnnotations: {
+				values: {
+					a: ["number"],
+				},
+			},
+		},
+		"works for objects": {
+			input: {
+				a: { 1: 5, 2: { 3: "c" } },
+				b: null,
+			},
+			output: {
+				a: { 1: 5, 2: { 3: "c" } },
+				b: null,
+			},
+		},
+
+		"works for paths containing backslashes": {
+			input: {
+				"a\\.1": {
+					b: new Set([1, 2]),
+				},
+			},
+			output: {
+				"a\\.1": {
+					b: [1, 2],
+				},
+			},
+			outputAnnotations: {
+				values: {
+					"a\\\\.1.b": ["set"],
+				},
+			},
+		},
+
+		"works for paths containing dots": {
+			input: {
+				"a.1": {
+					b: new Set([1, 2]),
+				},
+			},
+			output: {
+				"a.1": {
+					b: [1, 2],
+				},
+			},
+			outputAnnotations: {
+				values: {
+					"a\\.1.b": ["set"],
+				},
+			},
+		},
+
+		"works for referentially equal maps": {
+			customExpectations: (value) => {
+				expect(value.a).toBe(value.b);
+			},
+			input: () => {
+				const map = new Map([[1, 1]]);
+				return {
+					a: map,
+					b: map,
+				};
+			},
+			output: {
+				a: [[1, 1]],
+				b: [[1, 1]],
+			},
+			outputAnnotations: {
+				referentialEqualities: {
+					a: ["b"],
+				},
+				values: {
+					a: ["map"],
+					b: ["map"],
+				},
+			},
+		},
+
+		"works for referentially equal values in different maps and sets": {
+			input: () => {
+				const user = { id: 2 };
+
+				return {
+					workspaces: new Map([
+						[1, { users: new Set([user]) }],
+						[2, { users: new Set([user]) }],
+					]),
+				};
+			},
+			output: {
+				workspaces: [
+					[1, { users: [{ id: 2 }] }],
+					[2, { users: [{ id: 2 }] }],
+				],
+			},
+			outputAnnotations: {
+				referentialEqualities: {
+					"workspaces.0.1.users.0": ["workspaces.1.1.users.0"],
+				},
+				values: {
+					workspaces: [
+						"map",
+						{
+							"0.1.users": ["set"],
+							"1.1.users": ["set"],
+						},
+					],
+				},
+			},
+		},
+
+		"works for referentially equal values inside a set": {
+			customExpectations: (value) => {
+				expect(value.users.values().next().value).toBe(value.userOfTheMonth);
+			},
+			input: () => {
+				const user = { id: 2 };
+				return {
+					userOfTheMonth: user,
+					users: new Set([user]),
+				};
+			},
+			output: {
+				userOfTheMonth: { id: 2 },
+				users: [{ id: 2 }],
+			},
+			outputAnnotations: {
+				referentialEqualities: {
+					userOfTheMonth: ["users.0"],
+				},
+				values: {
+					users: ["set"],
+				},
+			},
+		},
+
+		"works for regex": {
+			input: {
+				a: /hello/g,
+			},
+			output: {
+				a: "/hello/g",
+			},
+			outputAnnotations: {
+				values: {
+					a: ["regexp"],
+				},
+			},
+		},
+
+		"works for Sets": {
+			input: {
+				a: new Set([1, undefined, 2]),
+			},
+			output: {
+				a: [1, null, 2],
+			},
+			outputAnnotations: {
+				values: {
+					a: ["set", { 1: ["undefined"] }],
+				},
+			},
+		},
+
+		"works for self-referencing objects": {
+			input: () => {
+				const a = { children: [] as any[], role: "parent" };
+				const b = { parents: [a], role: "child" };
+				a.children.push(b);
+				return a;
+			},
+			output: {
+				children: [
+					{
+						parents: [null],
+						role: "child",
+					},
+				],
+				role: "parent",
+			},
+			outputAnnotations: {
+				referentialEqualities: [["children.0.parents.0"]],
+			},
+		},
+
+		"works for symbols": {
+			input: () => {
+				const parent = Symbol("Parent");
+				const child = Symbol("Child");
+				SuperJSON.registerSymbol(parent, "1");
+				SuperJSON.registerSymbol(child, "2");
+
+				const a = { role: parent };
+				const b = { role: child };
+
+				return { a, b };
+			},
+			output: {
+				a: { role: "Parent" },
+				b: { role: "Child" },
+			},
+			outputAnnotations: {
+				values: {
+					"a.role": [["symbol", "1"]],
+					"b.role": [["symbol", "2"]],
+				},
+			},
+			skipOnNode10: true,
+		},
+
+		"works for top-level Sets": {
+			input: new Set([1, undefined, 2]),
+			output: [1, null, 2],
+			outputAnnotations: {
+				values: ["set", { 1: ["undefined"] }],
+			},
+		},
+
+		"works for undefined, issue #48": {
+			input: undefined,
+			output: null,
+			outputAnnotations: { values: ["undefined"] },
+		},
+
+		"works for unknown": {
+			input: () => {
+				type Freak = {
+					name: string;
+					age: unknown;
+				};
+
+				const person: Freak = {
+					age: 1,
+					name: "@ftonato",
+				};
+
+				return person;
+			},
+			output: {
+				age: 1,
+				name: "@ftonato",
+			},
+			outputAnnotations: undefined,
+		},
+
+		"works with custom allowedProps": {
 			customExpectations(value) {
-				expect(value.pet.woof()).toEqual("Rover");
+				expect(value.password).toBeUndefined();
+				expect(value.username).toBe("bongocat");
+			},
+			dontExpectEquality: true,
+			input: () => {
+				class User {
+					constructor(
+						public username: string,
+						public password: string,
+					) {}
+				}
+				SuperJSON.registerClass(User, { allowProps: ["username"] });
+				return new User("bongocat", "supersecurepassword");
+			},
+			output: {
+				username: "bongocat",
+			},
+			outputAnnotations: {
+				values: [["class", "User"]],
+			},
+		},
+
+		"works with typed arrays": {
+			input: {
+				a: new Int8Array([1, 2]),
+				b: new Uint8ClampedArray(3),
+			},
+			output: {
+				a: [1, 2],
+				b: [0, 0, 0],
+			},
+			outputAnnotations: {
+				values: {
+					a: [["typed-array", "Int8Array"]],
+					b: [["typed-array", "Uint8ClampedArray"]],
+				},
 			},
 		},
 		"works with URL": {
@@ -776,9 +775,9 @@ describe("stringify & parse", () => {
 
 			expect(json).toEqual({
 				s7: {
-					topSpeed: 100,
-					color: "yellow",
 					brand: "Bombardier",
+					color: "yellow",
+					topSpeed: 100,
 				},
 			});
 
@@ -800,7 +799,6 @@ describe("stringify & parse", () => {
 				class Currency {
 					constructor(private valueInUsd: number) {}
 
-					// @ts-expect-error
 					get inUSD() {
 						return this.valueInUsd;
 					}
@@ -969,26 +967,26 @@ test("performance regression", () => {
 		for (let j = 0; j < 10; j++) {
 			nested1[j] = {
 				createdAt: new Date(),
-				updatedAt: new Date(),
 				innerNested: {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
+				updatedAt: new Date(),
 			};
 			nested2[j] = {
 				createdAt: new Date(),
-				updatedAt: new Date(),
 				innerNested: {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
+				updatedAt: new Date(),
 			};
 		}
 		const object = {
 			createdAt: new Date(),
-			updatedAt: new Date(),
 			nested1,
 			nested2,
+			updatedAt: new Date(),
 		};
 		data.push(object);
 	}
@@ -1037,6 +1035,7 @@ test("regression: `Object.create(null)` / object without prototype", () => {
 	expect(parsed.date).toBeInstanceOf(Date);
 });
 
+const prototypePollutionRisk = /This is a prototype pollution risk/;
 test.each(["__proto__", "prototype", "constructor"])(
 	"serialize prototype pollution: %s",
 	(forbidden) => {
@@ -1044,7 +1043,7 @@ test.each(["__proto__", "prototype", "constructor"])(
 			SuperJSON.serialize({
 				[forbidden]: 1,
 			});
-		}).toThrowError(/This is a prototype pollution risk/);
+		}).toThrowError(prototypePollutionRisk);
 	},
 );
 

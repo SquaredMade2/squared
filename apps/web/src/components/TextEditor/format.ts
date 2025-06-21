@@ -1,4 +1,5 @@
 import type { PublicUserData } from "@clerk/types";
+import { mdxLinkRegex, mdxMentionRegex } from "@/lib/regex";
 import type { CustomElement, CustomText } from "./interfaces";
 
 function findSlateCodeBlock(slateArr: CustomElement[], startIndex: number) {
@@ -88,7 +89,7 @@ function trackFormatting(parts: string[]): CustomText[] {
 
 		// Check for mention hover components
 		if (part.startsWith("<MentionHover") && part.endsWith("/>")) {
-			const mentionData = part.match(/mentionedUser=\{\{(.+?)\}\}/);
+			const mentionData = part.match(mdxMentionRegex);
 			if (!mentionData) continue;
 			const cleaned = mentionData[1]
 				.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":') // Convert keys to "keys"
@@ -97,8 +98,8 @@ function trackFormatting(parts: string[]): CustomText[] {
 			try {
 				const mentionUser = JSON.parse(`{${cleaned}}`) as PublicUserData;
 				result.push({
-					text: `@${mentionUser.firstName}` || "Error loading name",
 					mentionConfirm: mentionUser,
+					text: `@${mentionUser.firstName}` || "Error loading name",
 				});
 				continue;
 			} catch (e) {
@@ -107,7 +108,7 @@ function trackFormatting(parts: string[]): CustomText[] {
 		}
 		// Check for links in the format [text](url)
 		if (part.startsWith("[") && part.includes("](")) {
-			const linkMatch = part.match(/\[([^\]]+)\]\(([^)\s]+(?:\)[^)\s]+)*)\)/);
+			const linkMatch = part.match(mdxLinkRegex);
 			if (!linkMatch) continue;
 
 			try {
@@ -148,26 +149,26 @@ export const convertMDXToSlate = (mdxString: string) => {
 	for (const line of lines) {
 		if (line.trim() === "") {
 			slateArr.push({
-				type: "paragraph",
 				children: [{ text: "" }],
+				type: "paragraph",
 			});
 		} else if (line.startsWith("```")) {
 			const codeBlock = line.replace(/```/g, "").trim();
 			slateArr.push({
+				children: [{ code: true, text: codeBlock }],
 				type: "code",
-				children: [{ text: codeBlock, code: true }],
 			});
 		} else if (line.startsWith("### ")) {
 			const headerText = line.replace("### ", "").trim();
 			slateArr.push({
-				type: "header",
 				children: trackFormatting(splitMdxText(headerText)),
+				type: "header",
 			});
 		} else {
 			const text = line.trim();
 			slateArr.push({
-				type: "paragraph",
 				children: trackFormatting(splitMdxText(text)),
+				type: "paragraph",
 			});
 		}
 	}

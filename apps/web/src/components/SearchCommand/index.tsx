@@ -1,11 +1,10 @@
 "use client";
 
 import { useOrganization } from "@clerk/nextjs";
-import { useId } from "@radix-ui/react-id";
 import { DialogTitle } from "@squaredmade/ui/dialog";
 import { toast } from "@squaredmade/ui/toast";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -47,16 +46,16 @@ export default function SearchCommand() {
 	};
 
 	const commandItems = new CommandSchema({
+		clearFilter,
+		organization,
+		pathname,
+		router,
+		setShowNavbar,
 		setShowNewTask,
 		setShowSwitchWorkspace,
-		setShowNavbar,
 		setShowTaskSelector,
-		clearFilter,
-		showToast,
-		router,
-		pathname,
-		organization,
 		showNavbar,
+		showToast,
 		team,
 	});
 
@@ -79,7 +78,7 @@ export default function SearchCommand() {
 			}
 
 			return (
-				<CommandGroup key={key} heading={key.includes("Ungrouped") ? "" : key}>
+				<CommandGroup heading={key.includes("Ungrouped") ? "" : key} key={key}>
 					{Object.entries(value).map(([subKey, subValue]) => (
 						<SearchCommandItem
 							item={subValue}
@@ -93,9 +92,12 @@ export default function SearchCommand() {
 	};
 
 	return (
-		<CommandDialog open={showCommand} onOpenChange={setShowCommand}>
+		<CommandDialog onOpenChange={setShowCommand} open={showCommand}>
 			<DialogTitle className="sr-only">Search</DialogTitle>
-			<CommandInput placeholder="Type a command or search..." autoFocus={true} />
+			<CommandInput
+				autoFocus={true}
+				placeholder="Type a command or search..."
+			/>
 			<CommandList>
 				<ScrollArea className="h-[300px]">
 					<CommandEmpty>No results found.</CommandEmpty>
@@ -126,7 +128,7 @@ const SearchCommandItem = ({
 			{item.shortcut.length > 0 && (
 				<CommandShortcut>
 					{item.shortcut.map((shortcut) => (
-						<kbd key={`${shortcut}-${id}`} className="mr-1">
+						<kbd className="mr-1" key={`${shortcut}-${id}`}>
 							{shortcut}
 						</kbd>
 					))}

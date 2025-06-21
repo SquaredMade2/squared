@@ -1,7 +1,7 @@
 import {
 	type DBClient,
-	type SavedFilter as SavedFilterType,
 	eq,
+	type SavedFilter as SavedFilterType,
 	savedFiltersTable,
 } from "@squaredmade/db";
 import type { Logger } from "@squaredmade/logger";
@@ -27,13 +27,13 @@ export class FilterService implements FilterRpc {
 		return await this.db
 			.insert(savedFiltersTable)
 			.values({
-				name: params.name,
-				description: params.description,
-				type: "TEAM",
-				filter: params.filter,
-				teamId: params.teamId,
 				authorId: params.authorId,
+				description: params.description,
+				filter: params.filter,
+				name: params.name,
 				sprintId: params.sprintId,
+				teamId: params.teamId,
+				type: "TEAM",
 			})
 			.returning()
 			.then((filter) => filter[0])
@@ -45,7 +45,7 @@ export class FilterService implements FilterRpc {
 
 	async getFilters({ teamId }: { teamId: string }): Promise<SavedFilter[]> {
 		this.logger.info("Getting filters for team with id", teamId);
-		return this.db
+		return await this.db
 			.select()
 			.from(savedFiltersTable)
 			.where(eq(savedFiltersTable.teamId, teamId))
@@ -73,9 +73,9 @@ export class FilterService implements FilterRpc {
 		const [updatedFilter] = await this.db
 			.update(savedFiltersTable)
 			.set({
-				name: filters.name,
 				description: filters.description,
 				filter: filters.filter,
+				name: filters.name,
 			})
 			.where(eq(savedFiltersTable.id, filterId))
 			.returning();

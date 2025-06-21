@@ -51,6 +51,7 @@ yarn-error.log*
 .pnpm-debug.log*
 combined.log*
 error.log*
+lint.log*
 
 # local env files
 .env.*

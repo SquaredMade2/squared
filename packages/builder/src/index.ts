@@ -1,8 +1,9 @@
+/** biome-ignore-all lint/suspicious/noConsole: This is a build script */
 import "tslib";
 import { join, sep } from "node:path";
 import type { BuildOptions, SameShape } from "esbuild";
-import * as esbuild from "esbuild";
-import * as tsup from "tsup";
+import { build as esbuild } from "esbuild";
+import { build as tsup } from "tsup";
 
 export async function build(path: string, external?: string[]) {
 	const normalizedPath = path.split(sep).join("/");
@@ -10,43 +11,43 @@ export async function build(path: string, external?: string[]) {
 	const dist = join("dist", normalizedPath.split("/").slice(1, -1).join("/"));
 
 	const esbuildConfig: SameShape<BuildOptions, BuildOptions> = {
-		entryPoints: [file],
-		packages: "external",
-		external,
+		// Make sure assets are copied to the output directory
+		assetNames: "assets/[name]-[hash]",
 		bundle: true,
-		sourcemap: true,
+		entryPoints: [file],
+		external,
 		format: "cjs",
-		target: "es2022",
-		outdir: dist,
 		loader: {
+			".eot": "file",
+			".otf": "file",
+			".ttf": "file",
 			// Add loaders for font files
 			".woff": "file",
 			".woff2": "file",
-			".eot": "file",
-			".ttf": "file",
-			".otf": "file",
 		},
-		// Make sure assets are copied to the output directory
-		assetNames: "assets/[name]-[hash]",
+		outdir: dist,
+		packages: "external",
+		sourcemap: true,
+		target: "es2022",
 	};
 
-	await esbuild.build(esbuildConfig);
+	await esbuild(esbuildConfig);
 	console.info(`Built ${path}/dist/index.js`);
 
-	await esbuild.build({
+	await esbuild({
 		...esbuildConfig,
 		format: "esm",
 		outExtension: { ".js": ".mjs" },
 	});
 	console.info(`Built ${path}/dist/index.mjs`);
 
-	await tsup.build({
-		entry: [file],
-		format: ["cjs", "esm"],
+	await tsup({
 		dts: { only: true },
+		entry: [file],
+		external,
+		format: ["cjs", "esm"],
 		outDir: dist,
 		silent: true,
-		external,
 	});
 	console.info(`Built ${path}/dist/index.d.ts`);
 }

@@ -1,4 +1,10 @@
-import * as context from "@squaredmade/context";
+import {
+	background,
+	requestIdKey,
+	withAbort,
+	withDeadline,
+	withValues,
+} from "@squaredmade/context";
 import superjson from "@squaredmade/superjson";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RPCContextClient, RpcResponseError } from "../src/index";
@@ -41,8 +47,8 @@ describe("@squaredmade/rpc-client", () => {
 		it("should make a request with correct parameters", async () => {
 			// Mock successful response
 			mockFetch.mockResolvedValueOnce({
-				ok: true,
 				json: () => Promise.resolve(superjson.stringify({ result: "success" })),
+				ok: true,
 			});
 
 			const baseURL = "http://api.example.com";
@@ -50,7 +56,7 @@ describe("@squaredmade/rpc-client", () => {
 			const client = new RPCContextClient(baseURL, serviceName);
 
 			// Create a context
-			const ctx = context.background;
+			const ctx = background;
 
 			// Make the request
 			const result = await client.request(ctx, "getUser", {
@@ -62,11 +68,11 @@ describe("@squaredmade/rpc-client", () => {
 			expect(mockFetch).toHaveBeenCalledWith(
 				"http://api.example.com/rpc/userService/getUser",
 				expect.objectContaining({
-					method: "POST",
+					body: expect.any(String),
 					headers: expect.objectContaining({
 						"Content-Type": "application/json",
 					}),
-					body: expect.any(String),
+					method: "POST",
 					signal: expect.any(AbortSignal),
 				}),
 			);
@@ -78,14 +84,14 @@ describe("@squaredmade/rpc-client", () => {
 		it("should handle error responses", async () => {
 			// Mock error response
 			mockFetch.mockResolvedValueOnce({
-				ok: false,
-				status: 400,
 				json: () =>
 					Promise.resolve({
-						message: "Validation failed",
 						code: "validation_error",
+						message: "Validation failed",
 						type: "https://errors.squared.global/@squaredmade/rpc/validation",
 					}),
+				ok: false,
+				status: 400,
 			});
 
 			const baseURL = "http://api.example.com";
@@ -93,7 +99,7 @@ describe("@squaredmade/rpc-client", () => {
 			const client = new RPCContextClient(baseURL, serviceName);
 
 			// Create a context
-			const ctx = context.background;
+			const ctx = background;
 
 			// Expect the request to throw an RpcResponseError
 			await expect(
@@ -107,8 +113,8 @@ describe("@squaredmade/rpc-client", () => {
 		it("should include request ID in headers if present in context", async () => {
 			// Mock successful response
 			mockFetch.mockResolvedValueOnce({
-				ok: true,
 				json: () => Promise.resolve(superjson.stringify({ result: "success" })),
+				ok: true,
 			});
 
 			const baseURL = "http://api.example.com";
@@ -116,8 +122,8 @@ describe("@squaredmade/rpc-client", () => {
 			const client = new RPCContextClient(baseURL, serviceName);
 
 			// Create a context with request ID
-			const ctx = context.withValues(context.background, {
-				[context.requestIdKey]: "test-request-id",
+			const ctx = withValues(background, {
+				[requestIdKey]: "test-request-id",
 			});
 
 			// Make the request
@@ -137,8 +143,8 @@ describe("@squaredmade/rpc-client", () => {
 		it("should include deadline in headers if present in context", async () => {
 			// Mock successful response
 			mockFetch.mockResolvedValueOnce({
-				ok: true,
 				json: () => Promise.resolve(superjson.stringify({ result: "success" })),
+				ok: true,
 			});
 
 			const baseURL = "http://api.example.com";
@@ -147,7 +153,7 @@ describe("@squaredmade/rpc-client", () => {
 
 			// Create a context with deadline
 			const deadline = Date.now() + 5000; // 5 seconds from now
-			const { ctx } = context.withDeadline(context.background, deadline);
+			const { ctx } = withDeadline(background, deadline);
 
 			// Make the request
 			await client.request(ctx, "getUser", { id: "123" });
@@ -166,8 +172,8 @@ describe("@squaredmade/rpc-client", () => {
 		it("should use abort signal from context", async () => {
 			// Mock successful response
 			mockFetch.mockResolvedValueOnce({
-				ok: true,
 				json: () => Promise.resolve(superjson.stringify({ result: "success" })),
+				ok: true,
 			});
 
 			const baseURL = "http://api.example.com";
@@ -175,7 +181,7 @@ describe("@squaredmade/rpc-client", () => {
 			const client = new RPCContextClient(baseURL, serviceName);
 
 			// Create a context with abort controller
-			const { ctx } = context.withAbort(context.background);
+			const { ctx } = withAbort(background);
 
 			// Make the request
 			const requestPromise = client.request(ctx, "getUser", { id: "123" });
@@ -197,8 +203,8 @@ describe("@squaredmade/rpc-client", () => {
 		it("should create an error with the correct properties", () => {
 			const source = "userService/getUser";
 			const responseBody = {
-				message: "Validation failed",
 				code: "validation_error",
+				message: "Validation failed",
 				type: "https://errors.squared.global/@squaredmade/rpc/validation",
 			};
 			const status = 400;
@@ -218,8 +224,8 @@ describe("@squaredmade/rpc-client", () => {
 		it("should append source to existing sources in the response body", () => {
 			const source = "userService/getUser";
 			const responseBody = {
-				message: "Internal error",
 				code: "internal_error",
+				message: "Internal error",
 				source: ["internal/service"],
 			};
 			const status = 500;

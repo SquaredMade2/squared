@@ -1,5 +1,5 @@
-import { CompletedTaskPeriod } from "@/store/views";
 import { Priority, Status } from "@squaredmade/db";
+import { CompletedTaskPeriod } from "@/store/views";
 
 export const statusOptions: Status[] = [
 	Status.backlog,

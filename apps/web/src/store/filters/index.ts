@@ -9,44 +9,30 @@ import type {
 	FilterStore,
 	SavedFilter,
 } from "./interfaces";
-export * from "./interfaces";
-export * from "./store";
+
+export type {
+	FilterCondition,
+	FilterResponse,
+	FilterState,
+	FilterStore,
+	FilterValue,
+	SavedFilter,
+} from "./interfaces";
+export { FilterStoreProvider, useFilterStore } from "./store";
 
 export const createFilterStore = (
 	initState: FilterState = {
 		currentFilters: [],
 		currentFilterTypes: [],
 		savedFilters: [],
-		showSaveForm: false,
 		searchFilterValue: "",
+		showSaveForm: false,
 	},
 ) => {
 	return createStore<FilterStore>()(
 		persist(
 			(set, get) => ({
 				...initState,
-				setCurrentFilter: (filter): void => {
-					set({ currentFilters: filter });
-				},
-				setSearchFilter: (input: string): void => {
-					set({ searchFilterValue: input });
-				},
-				filterSearchTasks: (tasks: Task[]): Task[] => {
-					const filterValue = get().searchFilterValue;
-					if (!filterValue) {
-						return tasks;
-					}
-
-					return tasks.filter((task) =>
-						task.title.toLowerCase().includes(filterValue.toLowerCase()),
-					);
-				},
-				setShowSaveForm: (input): void => {
-					set({ showSaveForm: input });
-				},
-				clearFilter: (): void => {
-					set({ currentFilters: [], currentFilterTypes: [] });
-				},
 				addFilter: (filter: FilterCondition): void => {
 					const state = get();
 					const currentFilters = state.currentFilters || [];
@@ -63,8 +49,8 @@ export const createFilterStore = (
 							index === existingConditionIndex
 								? {
 										...condition,
-										value: filter.value,
 										operator: filter.operator,
+										value: filter.value,
 									}
 								: condition,
 						);
@@ -78,15 +64,37 @@ export const createFilterStore = (
 						currentFilterTypes: [...state.currentFilterTypes, filter.field],
 					});
 				},
-				removeFilter: (field: string) => {
-					const state = get();
-					const updatedConditions =
-						state.currentFilters.filter(
-							(condition) => condition.field !== field,
-						) || [];
-					set({
-						currentFilters: updatedConditions,
+				clearFilter: (): void => {
+					set({ currentFilters: [], currentFilterTypes: [] });
+				},
+				customFilter: (tasks, filters): Task[] => {
+					if (!filters || filters.length === 0) {
+						return tasks;
+					}
+
+					return tasks.filter((task) => {
+						const matchesAll = filters.every((condition) => {
+							const result = checkCondition(task, condition);
+
+							return result;
+						});
+
+						return matchesAll;
 					});
+				},
+				deleteSavedFilter: (filterId) =>
+					set((state) => ({
+						savedFilters: state.savedFilters.filter((t) => t.id !== filterId),
+					})),
+				filterSearchTasks: (tasks: Task[]): Task[] => {
+					const filterValue = get().searchFilterValue;
+					if (!filterValue) {
+						return tasks;
+					}
+
+					return tasks.filter((task) =>
+						task.title.toLowerCase().includes(filterValue.toLowerCase()),
+					);
 				},
 				filterTasks: (tasks): Task[] => {
 					const state = get();
@@ -98,21 +106,6 @@ export const createFilterStore = (
 
 					return tasks.filter((task) => {
 						const matchesAll = currentFilters.every((condition) => {
-							const result = checkCondition(task, condition);
-
-							return result;
-						});
-
-						return matchesAll;
-					});
-				},
-				customFilter: (tasks, filters): Task[] => {
-					if (!filters || filters.length === 0) {
-						return tasks;
-					}
-
-					return tasks.filter((task) => {
-						const matchesAll = filters.every((condition) => {
 							const result = checkCondition(task, condition);
 
 							return result;
@@ -142,11 +135,30 @@ export const createFilterStore = (
 					//Convert the map back into an array of FilterCondition
 					return Array.from(filterMap.values());
 				},
+				removeFilter: (field: string) => {
+					const state = get();
+					const updatedConditions =
+						state.currentFilters.filter(
+							(condition) => condition.field !== field,
+						) || [];
+					set({
+						currentFilters: updatedConditions,
+					});
+				},
 				saveFilter: (filter: SavedFilter): void =>
 					set((state) => ({
 						savedFilters: [...state.savedFilters, filter],
 					})),
+				setCurrentFilter: (filter): void => {
+					set({ currentFilters: filter });
+				},
 				setSavedFilters: (savedFilters): void => set({ savedFilters }),
+				setSearchFilter: (input: string): void => {
+					set({ searchFilterValue: input });
+				},
+				setShowSaveForm: (input): void => {
+					set({ showSaveForm: input });
+				},
 				updateSavedFilter: (filter: SavedFilter): void => {
 					set((state) => ({
 						savedFilters: state.savedFilters.map((t) =>
@@ -154,10 +166,6 @@ export const createFilterStore = (
 						),
 					}));
 				},
-				deleteSavedFilter: (filterId) =>
-					set((state) => ({
-						savedFilters: state.savedFilters.filter((t) => t.id !== filterId),
-					})),
 			}),
 			{
 				name: "filter-store",
@@ -166,11 +174,11 @@ export const createFilterStore = (
 						const storedValue = sessionStorage.getItem(name);
 						return storedValue ? JSON.parse(storedValue) : null;
 					},
-					setItem: (name, value) => {
-						sessionStorage.setItem(name, JSON.stringify(value));
-					},
 					removeItem: (name) => {
 						sessionStorage.removeItem(name);
+					},
+					setItem: (name, value) => {
+						sessionStorage.setItem(name, JSON.stringify(value));
 					},
 				},
 			},

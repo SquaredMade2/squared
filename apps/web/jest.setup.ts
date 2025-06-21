@@ -3,13 +3,15 @@ import { expect, jest } from "@jest/globals";
 
 Object.defineProperty(window, "sessionStorage", {
 	value: {
-		getItem: jest.fn<(key: string) => string | null>(),
-		setItem: jest.fn<(key: string, value: string) => void>(),
-		removeItem: jest.fn<(key: string) => void>(),
 		clear: jest.fn<() => void>(),
+		getItem: jest.fn<(key: string) => string | null>(),
+		removeItem: jest.fn<(key: string) => void>(),
+		setItem: jest.fn<(key: string, value: string) => void>(),
 	},
 	writable: true,
 });
+
+const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
 
 expect.extend({
 	toEqualWithDatePrecision(
@@ -21,14 +23,12 @@ expect.extend({
 	) {
 		const pass = this.equals(
 			JSON.parse(JSON.stringify(received), (_, value) =>
-				typeof value === "string" &&
-				/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)
+				typeof value === "string" && dateRegex.test(value)
 					? value.slice(0, 19 + precision)
 					: value,
 			),
 			JSON.parse(JSON.stringify(expected), (_, value) =>
-				typeof value === "string" &&
-				/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)
+				typeof value === "string" && dateRegex.test(value)
 					? value.slice(0, 19 + precision)
 					: value,
 			),

@@ -5,9 +5,9 @@ import type { CronJobConfig, JobHandler } from "../src/types";
 
 // Create a proper mock for CronJob
 const mockCronJobInstance = {
+	running: false,
 	start: vi.fn(),
 	stop: vi.fn(),
-	running: false,
 };
 
 vi.mock("cron", () => ({
@@ -16,15 +16,20 @@ vi.mock("cron", () => ({
 
 // Mock the logger with more detailed tracking
 const mockLogger = {
+	debug: vi.fn(),
+	error: vi.fn(),
 	info: vi.fn(),
 	warn: vi.fn(),
-	error: vi.fn(),
-	debug: vi.fn(),
 };
 
 vi.mock("@squaredmade/logger", () => ({
 	default: vi.fn(() => mockLogger),
 }));
+
+const manualJobCompletedRegex = /Manual job completed: \w+ \(\d+ms\)/;
+const manualJobFailedRegex = /Manual job failed: \w+ \(\d+ms\)/;
+const jobFailedRegex = /Job failed: \w+ \(\d+ms\)/;
+const jobCompletedRegex = /Job completed: \w+ \(\d+ms\)/;
 
 describe("JobManager", () => {
 	let jobManager: JobManager;
@@ -48,8 +53,8 @@ describe("JobManager", () => {
 			};
 
 			const handler: JobHandler = async () => ({
-				success: true,
 				data: "test-data",
+				success: true,
 			});
 
 			const jobName = jobManager.register(config, handler);
@@ -70,9 +75,9 @@ describe("JobManager", () => {
 		it("should register a job with custom timezone and runOnInit", () => {
 			const config: CronJobConfig = {
 				name: "timezone-job",
+				runOnInit: true,
 				schedule: "0 0 * * *",
 				timezone: "America/New_York",
-				runOnInit: true,
 			};
 
 			const handler: JobHandler = async () => ({
@@ -277,8 +282,8 @@ describe("JobManager", () => {
 				expect(context.jobName).toBe("immediate-job");
 				expect(context.startTime).toBeInstanceOf(Date);
 				return {
-					success: true,
 					data: testData,
+					success: true,
 				};
 			};
 
@@ -298,7 +303,7 @@ describe("JobManager", () => {
 				"Manually running job: immediate-job",
 			);
 			expect(mockLogger.info).toHaveBeenCalledWith(
-				expect.stringMatching(/Manual job completed: immediate-job \(\d+ms\)/),
+				expect.stringMatching(manualJobCompletedRegex),
 			);
 		});
 
@@ -325,7 +330,7 @@ describe("JobManager", () => {
 			expect(result.duration).toBeLessThan(endTime - startTime + 5);
 
 			expect(mockLogger.error).toHaveBeenCalledWith(
-				expect.stringMatching(/Manual job failed: error-job \(\d+ms\)/),
+				expect.stringMatching(manualJobFailedRegex),
 				expect.any(Error),
 			);
 		});
@@ -345,8 +350,8 @@ describe("JobManager", () => {
 			const handler: JobHandler = async () => {
 				await new Promise((resolve) => setTimeout(resolve, 5));
 				return {
-					success: true,
 					data: "result-data",
+					success: true,
 				};
 			};
 
@@ -395,7 +400,7 @@ describe("JobManager", () => {
 			expect(job?.lastResult?.success).toBe(false);
 			expect(job?.lastResult?.error).toBe("Job timed out after 1000ms");
 			expect(mockLogger.error).toHaveBeenCalledWith(
-				expect.stringMatching(/Job failed: timeout-job \(\d+ms\)/),
+				expect.stringMatching(jobFailedRegex),
 				expect.any(Error),
 			);
 
@@ -420,8 +425,8 @@ describe("JobManager", () => {
 				executionTimes.push(context.startTime);
 
 				return {
-					success: true,
 					data: { execution: executionCount },
+					success: true,
 				};
 			};
 
@@ -463,7 +468,7 @@ describe("JobManager", () => {
 				"Starting job: scheduled-job",
 			);
 			expect(mockLogger.info).toHaveBeenCalledWith(
-				expect.stringMatching(/Job completed: scheduled-job \(\d+ms\)/),
+				expect.stringMatching(jobCompletedRegex),
 			);
 
 			// Check that the logger was called for each execution
@@ -500,8 +505,8 @@ describe("JobManager", () => {
 				}
 
 				return {
-					success: true,
 					data: `Execution ${executionCount} succeeded`,
+					success: true,
 				};
 			};
 
@@ -533,7 +538,7 @@ describe("JobManager", () => {
 
 			// Verify error logging for the failed execution
 			expect(mockLogger.error).toHaveBeenCalledWith(
-				expect.stringMatching(/Job failed: error-scheduled-job \(\d+ms\)/),
+				expect.stringMatching(jobFailedRegex),
 				expect.any(Error),
 			);
 
@@ -546,8 +551,8 @@ describe("JobManager", () => {
 		it("should respect runOnInit option", async () => {
 			const config: CronJobConfig = {
 				name: "run-on-init-job",
-				schedule: "0 0 * * *", // Daily at midnight
-				runOnInit: true,
+				runOnInit: true, // Daily at midnight
+				schedule: "0 0 * * *",
 			};
 
 			const handler: JobHandler = async () => {
@@ -676,7 +681,7 @@ describe("JobManager", () => {
 
 			expect(mockLogger.info).toHaveBeenCalledWith("Starting job: context-job");
 			expect(mockLogger.info).toHaveBeenCalledWith(
-				expect.stringMatching(/Job completed: context-job \(\d+ms\)/),
+				expect.stringMatching(jobCompletedRegex),
 			);
 		});
 
@@ -707,7 +712,7 @@ describe("JobManager", () => {
 			expect(job?.lastResult?.duration).toBeGreaterThanOrEqual(0);
 
 			expect(mockLogger.error).toHaveBeenCalledWith(
-				expect.stringMatching(/Job failed: throw-string-job \(\d+ms\)/),
+				expect.stringMatching(jobFailedRegex),
 				"String error",
 			);
 		});
@@ -716,7 +721,7 @@ describe("JobManager", () => {
 
 // Test the singleton export
 describe("jobManager singleton", () => {
-	it("should export a singleton instance", async () => {
+	it("should export a singleton instance", () => {
 		// You would uncomment this to test the actual export
 		// const { jobManager: singletonInstance } = await import('../src/index');
 		// expect(singletonInstance).toBeInstanceOf(JobManager);
@@ -748,8 +753,8 @@ describe("Integration Tests", () => {
 			expect(context.startTime).toBeInstanceOf(Date);
 
 			return {
-				success: true,
 				data: { count: executionCount },
+				success: true,
 			};
 		};
 
@@ -799,7 +804,7 @@ describe("Integration Tests", () => {
 			"Manually running job: lifecycle-job",
 		);
 		expect(mockLogger.info).toHaveBeenCalledWith(
-			expect.stringMatching(/Manual job completed: lifecycle-job \(\d+ms\)/),
+			expect.stringMatching(manualJobCompletedRegex),
 		);
 	});
 });

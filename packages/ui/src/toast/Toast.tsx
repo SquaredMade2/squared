@@ -662,9 +662,9 @@ const Toast = ({
 					"transform-[translateY(calc(var(--lift)*var(--offset)))] h-[var(--initial-height)]",
 
 				// Non-expanded and non-front toast (stacked toasts)
-				!(expanded ||isFront ) &&
+				!(expanded || isFront) &&
 					"transform-[translateY(calc(var(--lift-amount)*var(--toasts-before)))] z-[var(--z-index)] h-[var(--front-toast-height)] scale-[calc(1-var(--toasts-before)*0.05)]",
-				!(expanded || isFront ) && "[&>*]:opacity-0",
+				!(expanded || isFront) && "[&>*]:opacity-0",
 
 				// Removed and front toast without swipe-out
 				removed &&

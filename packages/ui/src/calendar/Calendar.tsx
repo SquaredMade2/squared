@@ -512,7 +512,7 @@ function isDateDisabled(
 	fromDate?: Date,
 	toDate?: Date,
 ): boolean {
-	if (!((disabled || fromDate ) || toDate)) return false;
+	if (!(disabled || fromDate || toDate)) return false;
 
 	if (fromDate && date < fromDate) return true;
 	if (toDate && date > toDate) return true;

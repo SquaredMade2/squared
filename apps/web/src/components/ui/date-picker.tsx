@@ -1,6 +1,5 @@
 "use client";
 
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { Calendar as CalendarIcon } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Calendar } from "@squaredmade/ui/calendar";
@@ -11,7 +10,8 @@ import {
 	PopoverTrigger,
 } from "@squaredmade/ui/popover";
 import { format } from "date-fns";
-import * as React from "react";
+import React from "react";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
 
 interface DatePickerProps {
 	date: Date | undefined;
@@ -42,33 +42,33 @@ export function DatePicker({
 	};
 
 	return (
-		<Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
+		<Popover onOpenChange={setDropdownOpen} open={dropdownOpen}>
 			<PopoverTrigger asChild={true}>
 				<Button
-					variant="outline"
-					size="sm"
 					className={cn(
 						"inline-flex h-10 w-full items-center justify-start px-4 py-2 text-left font-normal",
 						!date && "text-muted-foreground",
 						date && checkOverdueDate(date) && "text-destructive",
 						className,
 					)}
+					size="sm"
+					variant="outline"
 				>
 					<CalendarIcon className="mr-2 h-4 w-4" />
 					{date ? format(date, "MMM dd, yyyy") : <span>Pick a date</span>}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-auto p-0" align="start">
-				<Calendar mode="single" selected={date} onSelect={handleSelectDate} />
+			<PopoverContent align="start" className="w-auto p-0">
+				<Calendar mode="single" onSelect={handleSelectDate} selected={date} />
 				<div className="flex justify-end gap-2 border-border border-t p-3">
 					<Button
+						onClick={() => setDropdownOpen(false)}
 						size="sm"
 						variant="outline"
-						onClick={() => setDropdownOpen(false)}
 					>
 						Cancel
 					</Button>
-					<Button size="sm" onClick={handleSave}>
+					<Button onClick={handleSave} size="sm">
 						Save
 					</Button>
 				</div>

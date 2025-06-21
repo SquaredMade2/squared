@@ -1,7 +1,5 @@
 "use client";
 
-import ImageUpload from "@/components/ImageUpload";
-import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@squaredmade/ui/button";
@@ -20,7 +18,9 @@ import { toast } from "@squaredmade/ui/toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod/v4";
+import ImageUpload from "@/components/ImageUpload";
+import { getInitials } from "@/utils/formatting";
 
 const formSchema = z.object({
 	firstName: z.string().min(1, "First name is required"),
@@ -34,12 +34,12 @@ export default function Profile() {
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
 			firstName: "",
 			lastName: "",
 			username: "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 
 	useEffect(() => {
@@ -102,8 +102,8 @@ export default function Profile() {
 					<div className="md:col-span-2">
 						<Form {...form}>
 							<form
-								onSubmit={form.handleSubmit(onSubmit)}
 								className="space-y-6"
+								onSubmit={form.handleSubmit(onSubmit)}
 							>
 								<div className="space-y-4">
 									<h2 className="font-semibold text-xl">
@@ -154,7 +154,7 @@ export default function Profile() {
 										)}
 									/>
 								</div>
-								<Button type="submit" disabled={isUpdating}>
+								<Button disabled={isUpdating} type="submit">
 									{isUpdating ? "Updating..." : "Update Profile"}
 								</Button>
 							</form>

@@ -1,4 +1,4 @@
-import * as context from "@squaredmade/context";
+import { type Context, getRequestId, withValues } from "@squaredmade/context";
 import superjson from "@squaredmade/superjson";
 
 export interface RequestOptions {
@@ -15,7 +15,7 @@ class BaseClient {
 	}
 
 	protected async doRequest(
-		ctx: context.Context,
+		ctx: Context,
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
 		params?: Record<string, any>,
@@ -27,7 +27,7 @@ class BaseClient {
 			"Content-Type": "application/json",
 		};
 
-		const reqId = context.getRequestId(ctx);
+		const reqId = getRequestId(ctx);
 		if (reqId) {
 			headers["X-Request-ID"] = reqId;
 		}
@@ -41,16 +41,16 @@ class BaseClient {
 
 		if (!ctx.signal) {
 			abortController = new AbortController();
-			contextWithSignal = context.withValues(ctx, {
+			contextWithSignal = withValues(ctx, {
 				signal: abortController.signal,
 			});
 		}
 
 		try {
 			const response = await fetch(url, {
-				method: "POST",
-				headers,
 				body: superjson.stringify(params),
+				headers,
+				method: "POST",
 				signal: contextWithSignal.signal,
 			});
 
@@ -131,7 +131,7 @@ export class RpcResponseError extends Error {
 
 export class RPCContextClient extends BaseClient {
 	async request(
-		ctx: context.Context,
+		ctx: Context,
 		methodName: string,
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
 		params?: Record<string, any>,

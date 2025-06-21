@@ -1,10 +1,5 @@
 "use client";
 
-import ImageUpload from "@/components/ImageUpload";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -43,7 +38,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod/v4";
+import ImageUpload from "@/components/ImageUpload";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -74,11 +74,11 @@ export default function WorkspaceSettings() {
 			: workspace?.defaultView;
 
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: organization?.name,
 			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
+		resolver: zodResolver(formSchema),
 	});
 
 	const hasDomainManagePermission = membership?.permissions.includes(
@@ -139,7 +139,6 @@ export default function WorkspaceSettings() {
 
 	const { mutate: updateWorkspace, isPending: updatingWorkspace } = useMutation(
 		{
-			mutationKey: ["workspace", "updateWorkspace", organization?.id],
 			mutationFn: async (values: z.infer<typeof formSchema>) => {
 				let defaultView: string | null = null;
 				if (!organization) throw new Error("Workspace not found");
@@ -149,33 +148,39 @@ export default function WorkspaceSettings() {
 				const [updatedWorkspace] = await Promise.all([
 					client.workspace.updateWorkspace
 						.$post({
+							workspace: { defaultView, name: values.name, url: values.url },
 							workspaceId: organization.id,
-							workspace: { name: values.name, url: values.url, defaultView },
 						})
 						.then((res) => res.json()),
 					organization.update({ name: values.name, slug: values.url }),
 				]);
 				return updatedWorkspace;
 			},
-			onSuccess: (updatedWorkspace) => {
-				updateWorkspace(updatedWorkspace);
-				toast.success("Workspace updated successfully");
-				setIsFormChanged(false);
-			},
+			mutationKey: ["workspace", "updateWorkspace", organization?.id],
 			onError: (error) => {
 				toast.error("Error updating workspace", {
 					description: parseError(error),
 				});
 			},
+			onSuccess: (updatedWorkspace) => {
+				updateWorkspace(updatedWorkspace);
+				toast.success("Workspace updated successfully");
+				setIsFormChanged(false);
+			},
 		},
 	);
 
 	const { mutate: deleteWorkspace, isPaused: isDeleting } = useMutation({
-		mutationKey: ["workspace", "deleteWorkspace", organization?.id],
 		mutationFn: async () => {
 			if (!organization) throw new Error("Workspace not found");
 			await client.workspace.deleteWorkspace.$post({
 				workspaceId: organization.id,
+			});
+		},
+		mutationKey: ["workspace", "deleteWorkspace", organization?.id],
+		onError: (error) => {
+			toast.error("Error deleting workspace", {
+				description: parseError(error),
 			});
 		},
 		onSuccess: () => {
@@ -185,11 +190,6 @@ export default function WorkspaceSettings() {
 			} else {
 				router.replace("/create");
 			}
-		},
-		onError: (error) => {
-			toast.error("Error deleting workspace", {
-				description: parseError(error),
-			});
 		},
 	});
 
@@ -233,7 +233,7 @@ export default function WorkspaceSettings() {
 			<Separator className="my-6" />
 
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
@@ -309,11 +309,11 @@ export default function WorkspaceSettings() {
 													<FormLabel>Set Workspace View</FormLabel>
 													<FormControl>
 														<Select
+															defaultValue={defaultSelect ? defaultSelect : ""}
 															onValueChange={(value) => {
 																field.onChange(value);
 															}}
 															value={field.value}
-															defaultValue={defaultSelect ? defaultSelect : ""}
 														>
 															<SelectTrigger className="w-[180px]">
 																<SelectValue placeholder="Select a page" />
@@ -323,9 +323,10 @@ export default function WorkspaceSettings() {
 																	{defaultPages.map((page: string) => {
 																		return (
 																			<SelectItem
+																				className="capitalize"
 																				key={page}
 																				value={page}
-																			>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+																			>{`${page} Tasks`}</SelectItem>
 																		);
 																	})}
 																</SelectGroup>
@@ -337,12 +338,7 @@ export default function WorkspaceSettings() {
 												<>
 													<p className="m-0">Workspace View</p>
 													<div className="w-[180px] rounded-md border border-input px-3 py-2">
-														<p>
-															{defaultSelect?.replace(/^./, (char) =>
-																char.toUpperCase(),
-															)}{" "}
-															Tasks
-														</p>
+														<p className="capitalize">{defaultSelect} Tasks</p>
 													</div>
 												</>
 											)}
@@ -362,7 +358,7 @@ export default function WorkspaceSettings() {
 						</div>
 					</div>
 					<Protect permission="org:sys_domains:manage">
-						<Button type="submit" disabled={!isFormChanged}>
+						<Button disabled={!isFormChanged} type="submit">
 							Update
 						</Button>
 					</Protect>

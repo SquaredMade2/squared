@@ -64,7 +64,7 @@ export const RowGroupingWrapper = ({
 			...prev,
 			[columnGroup]: {
 				...(prev[columnGroup] || {}),
-				[rowGroup]: !(prev[columnGroup]?.[rowGroup]),
+				[rowGroup]: !prev[columnGroup]?.[rowGroup],
 			},
 		}));
 	};

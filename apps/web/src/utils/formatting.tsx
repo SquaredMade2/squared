@@ -1,6 +1,7 @@
 import type { PublicUserData } from "@clerk/types";
 import { type Label, Priority, Status } from "@squaredmade/db";
 import { format } from "date-fns";
+import { whitespaceRegex, whitespaceSlashRegex } from "@/lib/regex";
 import type { FilterCondition } from "@/store/filters";
 import { getFilterAssignees } from "@/store/filters/helpers";
 
@@ -33,7 +34,7 @@ export const sanitizeBranchName = (str: string): string => {
 	const sanitized = str
 		.toLowerCase()
 		.replace(/[^a-z0-9\s/]/g, "")
-		.split(/[\s/]+/)
+		.split(whitespaceSlashRegex)
 		.filter((word) => word && !excludedWords.has(word))
 		.slice(0, 8)
 		.join("-");
@@ -55,7 +56,7 @@ export const formatName = (user: PublicUserData | undefined): string => {
 export const getInitials = (name?: string | null): string => {
 	if (!name || typeof name !== "string") return "";
 
-	const words = name.trim().split(/\s+/);
+	const words = name.trim().split(whitespaceRegex);
 
 	const initials = words
 		.map((word) => word.charAt(0).toUpperCase())

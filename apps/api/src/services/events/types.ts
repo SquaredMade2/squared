@@ -10,8 +10,8 @@ import type {
 export type TaskValue = string | number | boolean | Date | string[] | null;
 
 export type FullNotification = Notification & {
-	Workspace: Workspace;
-	Task: Task;
+	task: Task;
+	workspace: Workspace;
 };
 
 export type TaskEventsReturn = Promise<(TaskEvent | GithubCommit)[]>;

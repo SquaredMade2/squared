@@ -53,9 +53,7 @@ export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
 	const { team, loading: teamLoading } = useTeams();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
-	const [sprintEnabled, setSprintEnabled] = useState(
-		team?.sprintsEnabled,
-	);
+	const [sprintEnabled, setSprintEnabled] = useState(team?.sprintsEnabled);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		team?.sprintStartDate || null,
 	);

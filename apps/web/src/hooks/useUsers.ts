@@ -14,5 +14,5 @@ export function useUsers() {
 			?.map((membership) => membership.publicUserData)
 			.filter((user): user is PublicUserData => Boolean(user)) ?? [];
 
-	return { user, users, loading: !(userLoaded && orgLoaded ) };
+	return { user, users, loading: !(userLoaded && orgLoaded) };
 }

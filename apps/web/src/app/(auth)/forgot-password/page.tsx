@@ -115,115 +115,120 @@ const ForgotPasswordPage = () => {
 						{successfulCreation
 							? secondFactor
 								? "Two-Factor Authentication"
-								: "Reset Your Password" : "Forgot Password"}
+								: "Reset Your Password"
+							: "Forgot Password"}
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{successfulCreation ? secondFactor ? (
-						<form onSubmit={completeReset} className="space-y-4">
-							<div className="space-y-2">
-								<Label htmlFor={getFormId("secondFactorCode")}>
-									Two-Factor Code
-								</Label>
-								<Input
-									id={getFormId("secondFactorCode")}
-									type="text"
-									placeholder="Enter your 2FA code"
-									value={secondFactorCode}
-									onChange={(e) => setSecondFactorCode(e.target.value)}
-									required={true}
-								/>
-							</div>
-							<Button type="submit" className="w-full">
-								Verify 2FA Code
-							</Button>
-						</form>
-					) : (
-						<form onSubmit={reset} className="space-y-4">
-							<div className="space-y-2">
-								<div className="mt-2 flex w-full justify-between">
-									<Label htmlFor={getFormId("code")}>Reset Code</Label>
-									<Button
-										variant="link"
-										className="m-0 h-fit p-0"
-										type="button"
-										onClick={() => setSuccessfulCreation(false)}
-									>
-										Resend code
-									</Button>
-								</div>
-								<div className="relative">
+					{successfulCreation ? (
+						secondFactor ? (
+							<form onSubmit={completeReset} className="space-y-4">
+								<div className="space-y-2">
+									<Label htmlFor={getFormId("secondFactorCode")}>
+										Two-Factor Code
+									</Label>
 									<Input
-										id={getFormId("code")}
+										id={getFormId("secondFactorCode")}
 										type="text"
-										placeholder="Enter the reset code"
-										value={code}
-										onChange={(e) => setCode(e.target.value)}
+										placeholder="Enter your 2FA code"
+										value={secondFactorCode}
+										onChange={(e) => setSecondFactorCode(e.target.value)}
 										required={true}
 									/>
 								</div>
-							</div>
+								<Button type="submit" className="w-full">
+									Verify 2FA Code
+								</Button>
+							</form>
+						) : (
+							<form onSubmit={reset} className="space-y-4">
+								<div className="space-y-2">
+									<div className="mt-2 flex w-full justify-between">
+										<Label htmlFor={getFormId("code")}>Reset Code</Label>
+										<Button
+											variant="link"
+											className="m-0 h-fit p-0"
+											type="button"
+											onClick={() => setSuccessfulCreation(false)}
+										>
+											Resend code
+										</Button>
+									</div>
+									<div className="relative">
+										<Input
+											id={getFormId("code")}
+											type="text"
+											placeholder="Enter the reset code"
+											value={code}
+											onChange={(e) => setCode(e.target.value)}
+											required={true}
+										/>
+									</div>
+								</div>
 
-							<div className="space-y-2">
-								<Label htmlFor={getFormId("password")}>New Password</Label>
-								<div className="relative">
-									<Input
-										id={getFormId("password")}
-										type={hidePassword ? "password" : "text"}
-										placeholder="Enter your new password"
-										value={password}
-										onChange={(e) => setPassword(e.target.value)}
-										required={true}
-									/>
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon"
-										aria-label="Toggle Password"
-										className="absolute top-0 right-0 text-muted-foreground"
-										onClick={() => setHidePassword(!hidePassword)}
-									>
-										{hidePassword ? (
-											<Eye className="h-6 w-6" />
-										) : (
-											<EyeOff className="h-6 w-6" />
-										)}
-									</Button>
+								<div className="space-y-2">
+									<Label htmlFor={getFormId("password")}>New Password</Label>
+									<div className="relative">
+										<Input
+											id={getFormId("password")}
+											type={hidePassword ? "password" : "text"}
+											placeholder="Enter your new password"
+											value={password}
+											onChange={(e) => setPassword(e.target.value)}
+											required={true}
+										/>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											aria-label="Toggle Password"
+											className="absolute top-0 right-0 text-muted-foreground"
+											onClick={() => setHidePassword(!hidePassword)}
+										>
+											{hidePassword ? (
+												<Eye className="h-6 w-6" />
+											) : (
+												<EyeOff className="h-6 w-6" />
+											)}
+										</Button>
+									</div>
 								</div>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor={getFormId("confirm-password")}>
-									Confirm Password
-								</Label>
-								<div className="relative">
-									<Input
-										id={getFormId("confirm-password")}
-										type={hideConfirmPassword ? "password" : "text"}
-										placeholder="Password confirmation"
-										value={confirmPassword}
-										onChange={(e) => setConfirmPassword(e.target.value)}
-										required={true}
-									/>
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon"
-										aria-label="Toggle Password"
-										className="absolute top-0 right-0 text-muted-foreground"
-										onClick={() => setHideConfirmPassword(!hideConfirmPassword)}
-									>
-										{hideConfirmPassword ? (
-											<Eye className="h-6 w-6" />
-										) : (
-											<EyeOff className="h-6 w-6" />
-										)}
-									</Button>
+								<div className="space-y-2">
+									<Label htmlFor={getFormId("confirm-password")}>
+										Confirm Password
+									</Label>
+									<div className="relative">
+										<Input
+											id={getFormId("confirm-password")}
+											type={hideConfirmPassword ? "password" : "text"}
+											placeholder="Password confirmation"
+											value={confirmPassword}
+											onChange={(e) => setConfirmPassword(e.target.value)}
+											required={true}
+										/>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											aria-label="Toggle Password"
+											className="absolute top-0 right-0 text-muted-foreground"
+											onClick={() =>
+												setHideConfirmPassword(!hideConfirmPassword)
+											}
+										>
+											{hideConfirmPassword ? (
+												<Eye className="h-6 w-6" />
+											) : (
+												<EyeOff className="h-6 w-6" />
+											)}
+										</Button>
+									</div>
 								</div>
-							</div>
-							<Button type="submit" className="w-full">
-								Reset Password
-							</Button>
-						</form>
+								<Button type="submit" className="w-full">
+									Reset Password
+								</Button>
+							</form>
+						)
 					) : (
 						<form onSubmit={create} className="space-y-4">
 							<div className="space-y-2">

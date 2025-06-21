@@ -14,8 +14,8 @@ import {
 	uuid,
 } from "drizzle-orm/pg-core";
 import {
-	type FilterCondition,
 	effortType,
+	type FilterCondition,
 	notificationType,
 	priorityType,
 	pullRequestState,
@@ -27,55 +27,55 @@ import {
 
 const DEFAULT_LABELS = [
 	{
-		name: "Feature",
-		description: "New functionality or enhancement to the application",
 		color: "#FF5733",
+		description: "New functionality or enhancement to the application",
+		name: "Feature",
 	},
 	{
-		name: "Bug",
-		description: "Issue that causes unexpected behavior or application failure",
 		color: "#C70039",
+		description: "Issue that causes unexpected behavior or application failure",
+		name: "Bug",
 	},
 	{
-		name: "Chore",
-		description: "Routine maintenance task not affecting production code",
 		color: "#900C3F",
+		description: "Routine maintenance task not affecting production code",
+		name: "Chore",
 	},
 	{
-		name: "Refactor",
-		description: "Code improvement that doesn't change external behavior",
 		color: "#581845",
+		description: "Code improvement that doesn't change external behavior",
+		name: "Refactor",
 	},
 	{
-		name: "Docs",
-		description: "Improvements or additions to documentation",
 		color: "#FFC300",
+		description: "Improvements or additions to documentation",
+		name: "Docs",
 	},
 	{
-		name: "Test",
-		description: "Adding or modifying test cases and testing infrastructure",
 		color: "#DAF7A6",
+		description: "Adding or modifying test cases and testing infrastructure",
+		name: "Test",
 	},
 	{
-		name: "Design",
-		description: "UI/UX improvements or visual design elements",
 		color: "#33FFBD",
+		description: "UI/UX improvements or visual design elements",
+		name: "Design",
 	},
 ];
 
 export const teamsTable = pgTable(
 	"Team",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text(),
-		identifier: text().notNull(),
-		workspaceId: text().notNull(),
-		sprintsEnabled: boolean().default(false).notNull(),
-		sprintDuration: integer().default(2).notNull(),
 		cooldownDuration: integer().default(1).notNull(),
-		sprintStartDate: timestamp({ precision: 3 }).defaultNow().notNull(),
-		tasksPerSprint: integer().default(10).notNull(),
 		effort: effortType().default("LINEAR").notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		identifier: text().notNull(),
+		name: text(),
+		sprintDuration: integer().default(2).notNull(),
+		sprintStartDate: timestamp({ precision: 3 }).defaultNow().notNull(),
+		sprintsEnabled: boolean().default(false).notNull(),
+		tasksPerSprint: integer().default(10).notNull(),
+		workspaceId: text().notNull(),
 	},
 	(table) => [
 		uniqueIndex("Team_workspaceId_identifier_key").using(
@@ -96,14 +96,14 @@ export const teamsTable = pgTable(
 export const githubCommitsTable = pgTable(
 	"GithubCommit",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().notNull().unique(),
-		message: text(),
-		url: text().notNull(),
 		author: text(),
-		repoId: text().notNull(),
+		externalId: text().notNull().unique(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		message: text(),
 		pullId: text().notNull(),
+		repoId: text().notNull(),
 		timestamp: timestamp({ precision: 3 }).notNull(),
+		url: text().notNull(),
 	},
 	(table) => [
 		foreignKey({
@@ -126,17 +126,17 @@ export const githubCommitsTable = pgTable(
 export const githubPullRequestsTable = pgTable(
 	"GithubPullRequest",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
+		author: text().notNull(),
+		body: text(),
+		branch: text().notNull(),
 		externalId: text().notNull().unique(),
+		githubRepoInfoId: text().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
 		number: integer().notNull(),
 		state: pullRequestState().notNull(),
+		timestamp: timestamp({ precision: 3 }).notNull(),
 		title: text().notNull(),
 		url: text().notNull(),
-		branch: text().notNull(),
-		timestamp: timestamp({ precision: 3 }).notNull(),
-		body: text(),
-		author: text().notNull(),
-		githubRepoInfoId: text().notNull(),
 	},
 	(table) => [
 		foreignKey({
@@ -152,13 +152,13 @@ export const githubPullRequestsTable = pgTable(
 export const githubRepoTable = pgTable(
 	"GithubRepo",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().notNull().unique(),
-		private: boolean().default(false).notNull(),
 		description: text(),
-		url: text().notNull(),
+		externalId: text().notNull().unique(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
 		name: text().default("").notNull(),
 		orgId: text().notNull(),
+		private: boolean().default(false).notNull(),
+		url: text().notNull(),
 	},
 	(table) => [
 		uniqueIndex("GithubRepoInfo_name_key").using(
@@ -178,12 +178,12 @@ export const githubRepoTable = pgTable(
 export const githubOrgTable = pgTable(
 	"GithubOrg",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().notNull().unique(),
-		name: text().notNull(),
-		description: text(),
-		workspaceId: text().notNull().unique(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		description: text(),
+		externalId: text().notNull().unique(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		name: text().notNull(),
+		workspaceId: text().notNull().unique(),
 	},
 	(table) => [
 		uniqueIndex("GithubOrg_name_key").using(
@@ -207,18 +207,18 @@ export const githubOrgTable = pgTable(
 export const sprintsTable = pgTable(
 	"Sprint",
 	{
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		description: text(),
+		endDate: timestamp({ precision: 3 }).notNull(),
 		id: uuid().defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		startDate: timestamp({ precision: 3 }).notNull(),
-		endDate: timestamp({ precision: 3 }).notNull(),
 		status: sprintStatusType().notNull(),
 		teamId: uuid().notNull(),
-		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		updatedAt: timestamp({ precision: 3 })
 			.defaultNow()
 			.$onUpdateFn(() => new Date())
 			.notNull(),
-		description: text(),
 	},
 	(table) => [
 		foreignKey({
@@ -234,20 +234,20 @@ export const sprintsTable = pgTable(
 export const notificationsTable = pgTable(
 	"Notification",
 	{
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		description: text(),
+		dismissed: boolean().default(false).notNull(),
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		taskId: uuid().notNull(),
 		read: boolean().default(false).notNull(),
 		saved: boolean().default(false).notNull(),
-		description: text(),
-		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		taskId: uuid().notNull(),
+		type: notificationType().notNull(),
 		updatedAt: timestamp({ precision: 3 })
 			.defaultNow()
 			.$onUpdateFn(() => new Date())
 			.notNull(),
-		workspaceId: text().notNull(),
-		dismissed: boolean().default(false).notNull(),
-		type: notificationType().notNull(),
 		userId: text().notNull(),
+		workspaceId: text().notNull(),
 	},
 	(table) => [
 		foreignKey({
@@ -277,19 +277,19 @@ export const notificationsTable = pgTable(
 export const workspacesTable = pgTable(
 	"Workspace",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		externalId: text().notNull().unique(),
-		name: text().notNull(),
-		url: text().notNull(),
-		companySize: integer(),
-		tasksCreated: integer().default(0).notNull(),
-		avatarUrl: text(),
 		admins: text().array().default([]).notNull(),
-		defaultView: text(),
+		avatarUrl: text(),
+		companySize: integer(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		labels: jsonb().$type<Label[]>().default(DEFAULT_LABELS).notNull(),
-		inviteLinks: jsonb().$type<WorkspaceInviteLink[]>().default([]).notNull(),
 		daysUntilArchive: integer().default(14).notNull(),
+		defaultView: text(),
+		externalId: text().notNull().unique(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		inviteLinks: jsonb().$type<WorkspaceInviteLink[]>().default([]).notNull(),
+		labels: jsonb().$type<Label[]>().default(DEFAULT_LABELS).notNull(),
+		name: text().notNull(),
+		tasksCreated: integer().default(0).notNull(),
+		url: text().notNull(),
 	},
 	(table) => [
 		uniqueIndex("Workspace_url_key").using(
@@ -306,19 +306,19 @@ export const workspacesTable = pgTable(
 export const usersTable = pgTable(
 	"User",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		username: text(),
-		email: text().notNull(),
-		onBoarding: boolean().default(true).notNull(),
-		defaultWorkspaceId: text(),
 		avatarUrl: text(),
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		defaultWorkspaceId: text(),
+		email: text().notNull(),
+		externalId: text().unique().notNull(),
+		githubUsername: text(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		lastViewedTaskId: uuid(),
+		name: text().notNull(),
+		onBoarding: boolean().default(true).notNull(),
 		savedNotificationIds: uuid().array().default([]).notNull(),
 		subscribedTasks: text().array().default([]).notNull(),
-		githubUsername: text(),
-		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		lastViewedTaskId: uuid(),
-		externalId: text().unique().notNull(),
+		username: text(),
 	},
 	(table) => [
 		uniqueIndex("User_email_key").using(
@@ -338,11 +338,11 @@ export const usersTable = pgTable(
 export const commentsTable = pgTable(
 	"Comment",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
+		authorId: text().notNull(),
 		comment: text().notNull(),
 		date: timestamp({ precision: 3 }).defaultNow().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
 		taskId: uuid().notNull(),
-		authorId: text().notNull(),
 	},
 	(table) => [
 		foreignKey({
@@ -365,28 +365,28 @@ export const commentsTable = pgTable(
 export const tasksTable = pgTable(
 	"Task",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		title: text().notNull(),
+		assigneeId: text(),
+		authorId: text().notNull(),
+		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
+		deleted: boolean().default(false).notNull(),
 		description: text(),
-		identifier: text().notNull(),
 		dueDate: timestamp({ precision: 3 }),
 		effortEstimate: integer(),
-		teamId: uuid().notNull(),
-		dateCreated: timestamp({ precision: 3 }).defaultNow().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		identifier: text().notNull(),
 		labels: jsonb().$type<Label[]>().default([]).notNull(),
-		workspaceId: text().notNull(),
+		order: integer().default(0).notNull(),
+		parentId: uuid(),
+		priority: priorityType().default("noPriority").notNull(),
+		sprintId: uuid(),
+		status: statusType().default("backlog").notNull(),
+		teamId: uuid().notNull(),
+		title: text().notNull(),
 		updatedAt: timestamp({ precision: 3 })
 			.defaultNow()
 			.$onUpdateFn(() => new Date())
 			.notNull(),
-		deleted: boolean().default(false).notNull(),
-		parentId: uuid(),
-		sprintId: uuid(),
-		status: statusType().default("backlog").notNull(),
-		priority: priorityType().default("noPriority").notNull(),
-		order: integer().default(0).notNull(),
-		authorId: text().notNull(),
-		assigneeId: text(),
+		workspaceId: text().notNull(),
 	},
 	(table) => [
 		uniqueIndex("Task_teamId_identifier_key").using(
@@ -448,8 +448,8 @@ export const workspaceRepositoriesTable = pgTable(
 	"WorkspaceRepositories",
 	{
 		id: uuid().defaultRandom().primaryKey().notNull(),
-		workspaceId: text().notNull(),
 		repoId: uuid().notNull(),
+		workspaceId: text().notNull(),
 	},
 	(table) => [
 		uniqueIndex("WorkspaceRepositories_workspaceId_repoId_key").using(
@@ -503,11 +503,11 @@ export const projectsTable = pgTable(
 export const taskEventsTable = pgTable(
 	"TaskEvent",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		taskId: uuid().notNull(),
-		message: text().notNull(),
 		authorId: text().notNull(),
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		message: text().notNull(),
+		taskId: uuid().notNull(),
 	},
 	(table) => [
 		foreignKey({
@@ -530,15 +530,15 @@ export const taskEventsTable = pgTable(
 export const savedFiltersTable = pgTable(
 	"SavedFilter",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
+		authorId: text().notNull(),
 		description: text().default(""),
 		filter: jsonb().$type<FilterCondition[]>().notNull(),
-		workspaceId: text(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		name: text().notNull(),
+		sprintId: uuid(),
 		teamId: uuid(),
 		type: savedFilterType().notNull(),
-		sprintId: uuid(),
-		authorId: text().notNull(),
+		workspaceId: text(),
 	},
 	(table) => [
 		index("teamIdx").using(
@@ -576,17 +576,17 @@ export const savedFiltersTable = pgTable(
 export const retrospectiveItemsTable = pgTable(
 	"RetrospectiveItem",
 	{
-		id: uuid().defaultRandom().primaryKey().notNull(),
+		authorId: text().notNull(),
 		content: text().notNull(),
-		sprintId: uuid(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+		id: uuid().defaultRandom().primaryKey().notNull(),
+		likes: text().array().default([]).notNull(),
+		sprintId: uuid(),
+		type: retrospectiveItemType().default("toImprove").notNull(),
 		updatedAt: timestamp({ precision: 3 })
 			.defaultNow()
 			.$onUpdateFn(() => new Date())
 			.notNull(),
-		type: retrospectiveItemType().default("toImprove").notNull(),
-		likes: text().array().default([]).notNull(),
-		authorId: text().notNull(),
 	},
 	(table) => [
 		foreignKey({
@@ -635,8 +635,8 @@ export const blockedTasksTable = pgTable(
 export const userWorkspacesTable = pgTable(
 	"UserWorkspace",
 	{
-		workspaceId: text().notNull(),
 		userId: text().notNull(),
+		workspaceId: text().notNull(),
 	},
 	(table) => [
 		foreignKey({

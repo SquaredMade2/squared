@@ -25,12 +25,12 @@ export const InfiniteMovingCards = ({
 		if (containerRef.current && scrollerRef.current) {
 			const scrollerContent = Array.from(scrollerRef.current.children);
 
-			scrollerContent.forEach((item) => {
+			for (const item of scrollerContent) {
 				const duplicatedItem = item.cloneNode(true);
 				if (scrollerRef.current) {
 					scrollerRef.current.appendChild(duplicatedItem);
 				}
-			});
+			}
 
 			getDirection();
 			getSpeed();
@@ -67,18 +67,18 @@ export const InfiniteMovingCards = ({
 	};
 	return (
 		<div
-			ref={containerRef}
 			className={cn(
 				"scroller group relative z-20 max-w-7xl overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
 			)}
+			ref={containerRef}
 		>
 			<div
-				ref={scrollerRef}
 				className={cn(
 					" flex w-max min-w-full shrink-0 flex-nowrap gap-4 py-4",
 					start && "animate-scroll [animation-play-state:running]",
 					pauseOnHover && "group-hover:[animation-play-state:paused]",
 				)}
+				ref={scrollerRef}
 			>
 				{children}
 			</div>

@@ -51,54 +51,56 @@ export function TaskPageLayout({
 			<div className="w-full px-2 sm:px-5">
 				<TopNavBar pageTitle={pageTitle} />
 			</div>
-			{authorized ? user && tasks.length === 0 ? (
-				<div className="flex h-full w-full flex-col items-center justify-center gap-4">
-					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
-						<Clipboard className="h-8 w-8 text-muted-foreground" />
-					</div>
-					<h1 className="font-bold text-2xl">No tasks yet</h1>
-					<p className="text-accent-foreground">
-						You haven't created any tasks. Start by adding a new task to your
-						dashboard.
-					</p>
-					<NoTasksNewTaskButton />
-				</div>
-			) : currentWorkspace ? (
-				<div className="grow overflow-hidden">
-					{/* When row grouping is active, don't use ScrollArea */}
-					{isRowGroupingActive ? (
-						<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">
-							<DragDropContext onDragEnd={handleDragEnd}>
-								{children}
-							</DragDropContext>
+			{authorized ? (
+				user && tasks.length === 0 ? (
+					<div className="flex h-full w-full flex-col items-center justify-center gap-4">
+						<div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+							<Clipboard className="h-8 w-8 text-muted-foreground" />
 						</div>
-					) : (
-						<ScrollArea
-							className={cn(
-								"px-2",
-								view === "list"
-									? "h-[calc(100vh-145px)] overflow-y-auto"
-									: "h-[calc(100vh-55px)] overflow-x-auto",
-							)}
-						>
-							<div
-								className={cn("mx-2", view === "grid" && "flex flex-nowrap")}
-							>
+						<h1 className="font-bold text-2xl">No tasks yet</h1>
+						<p className="text-accent-foreground">
+							You haven't created any tasks. Start by adding a new task to your
+							dashboard.
+						</p>
+						<NoTasksNewTaskButton />
+					</div>
+				) : currentWorkspace ? (
+					<div className="grow overflow-hidden">
+						{/* When row grouping is active, don't use ScrollArea */}
+						{isRowGroupingActive ? (
+							<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">
 								<DragDropContext onDragEnd={handleDragEnd}>
 									{children}
 								</DragDropContext>
 							</div>
-							{view === "grid" && <ScrollBar orientation="horizontal" />}
-						</ScrollArea>
-					)}
-				</div>
-			) : (
-				<div className="flex h-full w-screen flex-col items-center bg-background">
-					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
-						<h1 className="text-2xl">Team not found</h1>
-						<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
+						) : (
+							<ScrollArea
+								className={cn(
+									"px-2",
+									view === "list"
+										? "h-[calc(100vh-145px)] overflow-y-auto"
+										: "h-[calc(100vh-55px)] overflow-x-auto",
+								)}
+							>
+								<div
+									className={cn("mx-2", view === "grid" && "flex flex-nowrap")}
+								>
+									<DragDropContext onDragEnd={handleDragEnd}>
+										{children}
+									</DragDropContext>
+								</div>
+								{view === "grid" && <ScrollBar orientation="horizontal" />}
+							</ScrollArea>
+						)}
 					</div>
-				</div>
+				) : (
+					<div className="flex h-full w-screen flex-col items-center bg-background">
+						<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
+							<h1 className="text-2xl">Team not found</h1>
+							<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
+						</div>
+					</div>
+				)
 			) : (
 				<div className="flex h-full w-screen flex-col items-center bg-background">
 					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
