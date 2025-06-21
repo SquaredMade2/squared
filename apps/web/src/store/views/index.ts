@@ -11,7 +11,6 @@ import {
 } from "./interfaces";
 
 export type {
-	CompletedTaskPeriod,
 	DisplayOptions,
 	DisplayProperty,
 	LastVisitedPathOption,
@@ -23,17 +22,21 @@ export type {
 	ViewState,
 	ViewStore,
 } from "./interfaces";
-export { TaskOrderOptions, taskGroupOptions } from "./interfaces";
+export {
+	CompletedTaskPeriod,
+	TaskOrderOptions,
+	taskGroupOptions,
+} from "./interfaces";
 export { useViewStore, ViewStoreProvider } from "./store";
 
 export const createViewStore = (
 	initState: ViewState = {
 		displayOptions: {
 			groupRowsBy: "None",
-			groupTasksBy: "Status",
+			groupTasksBy: "status",
 			showCompletedTasks: { period: CompletedTaskPeriod.All, show: true },
 			showSubTasks: false,
-			taskOrder: { orderAscending: false, orderBy: "Priority" },
+			taskOrder: { orderAscending: false, orderBy: "priority" },
 			viewOptions: {
 				gridOptions: {
 					displayProperties: {

@@ -59,11 +59,11 @@ export const complexityScale = [
 ];
 
 export const CompletedTaskPeriodOptions: CompletedTaskPeriod[] = [
-	CompletedTaskPeriod.all,
-	CompletedTaskPeriod.pastDay,
-	CompletedTaskPeriod.pastWeek,
-	CompletedTaskPeriod.pastMonth,
-	CompletedTaskPeriod.none,
+	CompletedTaskPeriod.All,
+	CompletedTaskPeriod.PastDay,
+	CompletedTaskPeriod.PastWeek,
+	CompletedTaskPeriod.PastMonth,
+	CompletedTaskPeriod.None,
 ];
 
 export const LINK_EXPIRATION_TIMES = [

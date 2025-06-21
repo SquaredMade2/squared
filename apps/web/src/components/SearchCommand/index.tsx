@@ -2,7 +2,6 @@
 
 import { useOrganization } from "@clerk/nextjs";
 import { DialogTitle } from "@squaredmade/ui/dialog";
-import { toast } from "@squaredmade/ui/toast";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId } from "react";
 import {
@@ -41,10 +40,6 @@ export default function SearchCommand() {
 	const showNavbar = useViewStore((state) => state.showNavbar);
 	const team = useTeamStore((state) => state.team);
 
-	const showToast = (title: string) => {
-		toast.success(title);
-	};
-
 	const commandItems = new CommandSchema({
 		clearFilter,
 		organization,
@@ -55,7 +50,6 @@ export default function SearchCommand() {
 		setShowSwitchWorkspace,
 		setShowTaskSelector,
 		showNavbar,
-		showToast,
 		team,
 	});
 

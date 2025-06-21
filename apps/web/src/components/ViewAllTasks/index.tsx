@@ -1,12 +1,12 @@
-import { useFilterStore, useViewStore } from "@/store";
 import { Status } from "@squaredmade/db";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useFilterStore, useViewStore } from "@/store";
 import { RenameModal } from "../Modals";
 import GroupColumn from "./GroupColumn";
+import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 import { RowGroupingWrapper } from "./RowGroupingWrapper";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	const { view, displayOptions } = useViewStore((state) => state);
@@ -51,7 +51,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 
 	let groupedColumns = getGroupedColumns();
 
-	if (groupTasksBy === "Status") {
+	if (groupTasksBy === "status") {
 		if (pathname.includes("/active")) {
 			groupedColumns = groupedColumns.filter((column) =>
 				activeStatusGroups.includes(column.group as Status),
@@ -88,16 +88,16 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 
 				return {
 					...column,
-					tasks: filteredTasks,
 					rowGroups: filteredRowGroups,
 					showTasks: getColumnVisibility(column.group),
+					tasks: filteredTasks,
 				};
 			}
 
 			return {
 				...column,
-				tasks: filteredTasks,
 				showTasks: getColumnVisibility(column.group),
+				tasks: filteredTasks,
 			};
 		})
 		.filter((column) => {
@@ -119,23 +119,23 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 				) : (
 					<div className={isListView ? "flex flex-col" : "flex gap-2"}>
 						{groupedColumns.map((column: GroupedColumn) => (
-							<div key={column.group} className={isListView ? "contents" : ""}>
+							<div className={isListView ? "contents" : ""} key={column.group}>
 								<TaskColumnTitle
-									title={column.group}
-									showTasks={getColumnVisibility(column.group)}
+									isListView={isListView}
+									numberOfTasks={column.tasks.length}
 									setShowTasks={(visible) =>
 										toggleColumnVisibility(column.group, visible)
 									}
-									numberOfTasks={column.tasks.length}
-									isListView={isListView}
+									showTasks={getColumnVisibility(column.group)}
+									title={column.group}
 								/>
 								<GroupColumn
-									key={column.group}
-									group={column.group}
-									tasks={column.tasks}
-									rowGroups={column.rowGroups}
 									currentView={view}
+									group={column.group}
+									key={column.group}
+									rowGroups={column.rowGroups}
 									showTasks={getColumnVisibility(column.group)}
+									tasks={column.tasks}
 								/>
 							</div>
 						))}
