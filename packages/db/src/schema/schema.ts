@@ -228,6 +228,9 @@ export const sprintsTable = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
+		uniqueIndex("Sprint_teamId_active_unique")
+            .on(table.teamId)
+            .where(sql`${table.status} = 'ACTIVE'`),
 	],
 );
 

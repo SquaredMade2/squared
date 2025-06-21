@@ -1,104 +1,111 @@
 {
-	"version": "7",
-	"dialect": "postgresql",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "7",
-			"when": 1737722568712,
-			"tag": "0000_init_db",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1738196966871,
-			"tag": "0001_merge_labels",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1739073122450,
-			"tag": "0002_remove_last_login",
-			"breakpoints": true
-		},
-		{
-			"idx": 3,
-			"version": "7",
-			"when": 1739150372875,
-			"tag": "0003_clerk_prep",
-			"breakpoints": true
-		},
-		{
-			"idx": 4,
-			"version": "7",
-			"when": 1739304372753,
-			"tag": "0004_clerk_organizations",
-			"breakpoints": true
-		},
-		{
-			"idx": 5,
-			"version": "7",
-			"when": 1739851077634,
-			"tag": "0005_add_duplicated",
-			"breakpoints": true
-		},
-		{
-			"idx": 6,
-			"version": "7",
-			"when": 1740044420327,
-			"tag": "0006_remove_roles",
-			"breakpoints": true
-		},
-		{
-			"idx": 7,
-			"version": "7",
-			"when": 1740077006060,
-			"tag": "0007_streamline_retrospective_items",
-			"breakpoints": true
-		},
-		{
-			"idx": 8,
-			"version": "7",
-			"when": 1740079488948,
-			"tag": "0008_github_integration",
-			"breakpoints": true
-		},
-		{
-			"idx": 9,
-			"version": "7",
-			"when": 1742592840511,
-			"tag": "0009_workspace-inviteLink",
-			"breakpoints": true
-		},
-		{
-			"idx": 10,
-			"version": "7",
-			"when": 1745223007992,
-			"tag": "0010_add_task_archive",
-			"breakpoints": true
-		},
-		{
-			"idx": 11,
-			"version": "7",
-			"when": 1745368733579,
-			"tag": "0011_update_label_defaults",
-			"breakpoints": true
-		},
-		{
-			"idx": 12,
-			"version": "7",
-			"when": 1747285204660,
-			"tag": "0012_update_archive_logic",
-			"breakpoints": true
-		},
-		{
-			"idx": 13,
-			"version": "7",
-			"when": 1748806104644,
-			"tag": "0013_update_pull_request_state",
-			"breakpoints": true
-		}
-	]
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1737722568712,
+      "tag": "0000_init_db",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1738196966871,
+      "tag": "0001_merge_labels",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739073122450,
+      "tag": "0002_remove_last_login",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1739150372875,
+      "tag": "0003_clerk_prep",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1739304372753,
+      "tag": "0004_clerk_organizations",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1739851077634,
+      "tag": "0005_add_duplicated",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1740044420327,
+      "tag": "0006_remove_roles",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1740077006060,
+      "tag": "0007_streamline_retrospective_items",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1740079488948,
+      "tag": "0008_github_integration",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1742592840511,
+      "tag": "0009_workspace-inviteLink",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1745223007992,
+      "tag": "0010_add_task_archive",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1745368733579,
+      "tag": "0011_update_label_defaults",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1747285204660,
+      "tag": "0012_update_archive_logic",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1748806104644,
+      "tag": "0013_update_pull_request_state",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1750537149241,
+      "tag": "0014_worthless_hydra",
+      "breakpoints": true
+    }
+  ]
 }
