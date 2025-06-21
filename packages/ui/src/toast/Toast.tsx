@@ -498,7 +498,7 @@ const Toast = ({
 			const height = toastNode.getBoundingClientRect().height;
 			// Add toast height to heights array after the toast is mounted
 			setInitialHeight(height);
-			setHeights((h) => [{ toastId: toast.id, height }, ...h]);
+			setHeights((h) => [{ height, toastId: toast.id }, ...h]);
 			return () =>
 				setHeights((h) => h.filter((height) => height.toastId !== toast.id));
 		}
@@ -522,8 +522,8 @@ const Toast = ({
 			if (!alreadyExists) {
 				return [
 					{
-						toastId: toast.id,
 						height: newHeight,
+						toastId: toast.id,
 					},
 					...heights,
 				];
@@ -560,7 +560,7 @@ const Toast = ({
 				// Get the elapsed time since the timer started
 				const elapsedTime = Date.now() - closeTimerStartTime;
 
-				remainingTime.current = remainingTime.current - elapsedTime;
+				remainingTime.current -= elapsedTime;
 			}
 
 			setCloseTimerStartTime(Date.now());
@@ -626,9 +626,6 @@ const Toast = ({
 
 	return (
 		<li
-			// biome-ignore lint/a11y/noNoninteractiveTabindex: This element is interactive
-			tabIndex={0}
-			ref={toastRef}
 			className={cn(
 				// Base toast styles
 				"break-anywhere absolute right-0 bottom-0 z-[999999] box-border flex w-[var(--width)] translate-y-full transform touch-none items-center gap-1.5 rounded-md border border-border bg-card p-4 text-foreground text-sm opacity-0 shadow-[0px_4px_12px_rgba(0,0,0,0.1)] outline-none transition-[transform_400ms,opacity_400ms,height_400ms,box-shadow_200ms]",
@@ -706,17 +703,6 @@ const Toast = ({
 				toastType === "error" &&
 					"bg-destructive/90 text-destructive-foreground",
 			)}
-			style={
-				{
-					"--toasts-before": index,
-					"--z-index": toasts.length - index,
-					"--offset": `${removed ? offsetBeforeRemove : offset.current}px`,
-					"--initial-height": expandByDefault ? "auto" : `${initialHeight}px`,
-					"--lift": -1,
-					"--lift-amount": "calc(var(--lift) * var(--gap))",
-					"--y": getY(),
-				} as React.CSSProperties
-			}
 			onDragEnd={() => {
 				setSwiping(false);
 				setSwipeDirection(null);
@@ -731,53 +717,6 @@ const Toast = ({
 				if ((event.target as HTMLElement).tagName === "BUTTON") return;
 				setSwiping(true);
 				pointerStartRef.current = { x: event.clientX, y: event.clientY };
-			}}
-			onPointerUp={() => {
-				if (swipeOut || !dismissible) return;
-
-				pointerStartRef.current = null;
-				const swipeAmountX = Number(
-					toastRef.current?.style
-						.getPropertyValue("--swipe-amount-x")
-						.replace("px", "") || 0,
-				);
-				const swipeAmountY = Number(
-					toastRef.current?.style
-						.getPropertyValue("--swipe-amount-y")
-						.replace("px", "") || 0,
-				);
-				const timeTaken =
-					Date.now() -
-					(dragStartTime.current ? dragStartTime.current.getTime() : 0);
-
-				const swipeAmount =
-					swipeDirection === "x" ? swipeAmountX : swipeAmountY;
-				const velocity = Math.abs(swipeAmount) / timeTaken;
-
-				if (Math.abs(swipeAmount) >= SWIPE_THRESHOLD || velocity > 0.11) {
-					setOffsetBeforeRemove(offset.current);
-
-					if (swipeDirection === "x") {
-						toastRef.current?.style.setProperty("--swipe-amount-x", "400px");
-						setSwipeOutDirection("right");
-					} else {
-						toastRef.current?.style.setProperty("--swipe-amount-y", "300px");
-						setSwipeOutDirection("down");
-					}
-
-					toast.onDismiss?.(toast);
-
-					deleteToast();
-					setSwipeOut(true);
-
-					return;
-				}
-				toastRef.current?.style.setProperty("--swipe-amount-x", "0px");
-				toastRef.current?.style.setProperty("--swipe-amount-y", "0px");
-
-				setIsSwiped(false);
-				setSwiping(false);
-				setSwipeDirection(null);
 			}}
 			onPointerMove={(event) => {
 				if (!(pointerStartRef.current && dismissible)) return;
@@ -830,26 +769,25 @@ const Toast = ({
 									: yDelta;
 						}
 					}
-				} else if (swipeDirection === "x") {
+				} else if (
+					swipeDirection === "x" &&
+					(swipeDirections.includes("left") ||
+						swipeDirections.includes("right"))
+				) {
 					// Handle horizontal swipes
 					if (
-						swipeDirections.includes("left") ||
-						swipeDirections.includes("right")
+						(swipeDirections.includes("left") && xDelta < 0) ||
+						(swipeDirections.includes("right") && xDelta > 0)
 					) {
-						if (
-							(swipeDirections.includes("left") && xDelta < 0) ||
-							(swipeDirections.includes("right") && xDelta > 0)
-						) {
-							swipeAmount.x = xDelta;
-						} else {
-							// Smoothly transition to dampened movement
-							const dampenedDelta = xDelta * getDampening(xDelta);
-							// Ensure we don't jump when transitioning to dampened movement
-							swipeAmount.x =
-								Math.abs(dampenedDelta) < Math.abs(xDelta)
-									? dampenedDelta
-									: xDelta;
-						}
+						swipeAmount.x = xDelta;
+					} else {
+						// Smoothly transition to dampened movement
+						const dampenedDelta = xDelta * getDampening(xDelta);
+						// Ensure we don't jump when transitioning to dampened movement
+						swipeAmount.x =
+							Math.abs(dampenedDelta) < Math.abs(xDelta)
+								? dampenedDelta
+								: xDelta;
 					}
 				}
 
@@ -867,6 +805,67 @@ const Toast = ({
 					`${swipeAmount.y}px`,
 				);
 			}}
+			onPointerUp={() => {
+				if (swipeOut || !dismissible) return;
+
+				pointerStartRef.current = null;
+				const swipeAmountX = Number(
+					toastRef.current?.style
+						.getPropertyValue("--swipe-amount-x")
+						.replace("px", "") || 0,
+				);
+				const swipeAmountY = Number(
+					toastRef.current?.style
+						.getPropertyValue("--swipe-amount-y")
+						.replace("px", "") || 0,
+				);
+				const timeTaken =
+					Date.now() -
+					(dragStartTime.current ? dragStartTime.current.getTime() : 0);
+
+				const swipeAmount =
+					swipeDirection === "x" ? swipeAmountX : swipeAmountY;
+				const velocity = Math.abs(swipeAmount) / timeTaken;
+
+				if (Math.abs(swipeAmount) >= SWIPE_THRESHOLD || velocity > 0.11) {
+					setOffsetBeforeRemove(offset.current);
+
+					if (swipeDirection === "x") {
+						toastRef.current?.style.setProperty("--swipe-amount-x", "400px");
+						setSwipeOutDirection("right");
+					} else {
+						toastRef.current?.style.setProperty("--swipe-amount-y", "300px");
+						setSwipeOutDirection("down");
+					}
+
+					toast.onDismiss?.(toast);
+
+					deleteToast();
+					setSwipeOut(true);
+
+					return;
+				}
+				toastRef.current?.style.setProperty("--swipe-amount-x", "0px");
+				toastRef.current?.style.setProperty("--swipe-amount-y", "0px");
+
+				setIsSwiped(false);
+				setSwiping(false);
+				setSwipeDirection(null);
+			}}
+			ref={toastRef}
+			style={
+				{
+					"--initial-height": expandByDefault ? "auto" : `${initialHeight}px`,
+					"--lift": -1,
+					"--lift-amount": "calc(var(--lift) * var(--gap))",
+					"--offset": `${removed ? offsetBeforeRemove : offset.current}px`,
+					"--toasts-before": index,
+					"--y": getY(),
+					"--z-index": toasts.length - index,
+				} as React.CSSProperties
+			}
+			// biome-ignore lint/a11y/noNoninteractiveTabindex: This element is interactive
+			tabIndex={0}
 		>
 			{/* Close Button */}
 			{closeButton && toastType !== "loading" && (
@@ -886,9 +885,9 @@ const Toast = ({
 					{icons?.close ?? (
 						<CloseIcon
 							color="muted"
-							strokeWidth={1}
 							fill="currentColor"
 							size={16}
+							strokeWidth={1}
 						/>
 					)}
 				</button>
@@ -931,12 +930,12 @@ const Toast = ({
 					</div>
 				) : null}
 			</div>
-			{React.isValidElement(toast.cancel) ? (
-				toast.cancel
-			) : toast.cancel && isAction(toast.cancel) ? (
+			{React.isValidElement(toast.cancel) && toast.cancel}
+			{!React.isValidElement(toast.cancel) &&
+			toast.cancel &&
+			isAction(toast.cancel) ? (
 				<Button
-					size="sm"
-					variant="outline"
+					className="h-6 px-2 text-xs"
 					onClick={(event) => {
 						// We need to check twice because typescript
 						if (!isAction(toast.cancel)) return;
@@ -944,15 +943,18 @@ const Toast = ({
 						toast.cancel.onClick?.(event);
 						deleteToast();
 					}}
-					className="h-6 px-2 text-xs"
+					size="sm"
+					variant="outline"
 				>
 					{toast.cancel.label}
 				</Button>
 			) : null}
-			{React.isValidElement(toast.action) ? (
-				toast.action
-			) : toast.action && isAction(toast.action) ? (
+			{React.isValidElement(toast.action) && toast.action}
+			{!React.isValidElement(toast.action) &&
+			toast.action &&
+			isAction(toast.action) ? (
 				<Button
+					className="h-6 px-2 text-xs"
 					onClick={(event) => {
 						// We need to check twice because typescript
 						if (!isAction(toast.action)) return;
@@ -960,7 +962,6 @@ const Toast = ({
 						if (event.defaultPrevented) return;
 						deleteToast();
 					}}
-					className="h-6 px-2 text-xs"
 				>
 					{toast.action.label}
 				</Button>
@@ -1131,17 +1132,15 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
 	return (
 		// Remove item from normal navigation flow, only available via hotkey
 		<section
-			ref={composedRefs}
+			aria-atomic="false"
 			aria-label={`${containerAriaLabel} ${hotkeyLabel}`}
-			tabIndex={-1}
 			aria-live="polite"
 			aria-relevant="additions text"
-			aria-atomic="false"
+			ref={composedRefs}
 			suppressHydrationWarning={true}
+			tabIndex={-1}
 		>
 			<ol
-				tabIndex={-1}
-				ref={listRef}
 				className={cn(
 					// Base toaster styles
 					"fixed right-[var(--offset-right)] bottom-[var(--offset-bottom)] z-[999999999] m-0 box-border w-[var(--width)] list-none p-0 outline-none transition-transform duration-400 ease-in",
@@ -1153,23 +1152,6 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
 					"max-sm:right-[var(--mobile-offset-right)] max-sm:left-[var(--mobile-offset-left)] max-sm:w-full",
 					lifted && "-translate-y-2 md:transform-none",
 				)}
-				style={
-					{
-						"--front-toast-height": `${heights[0]?.height || 0}px`,
-						"--width": `${TOAST_WIDTH}px`,
-						"--gap": `${gap}px`,
-						"--toast-icon-margin-start": "-3px",
-						"--toast-icon-margin-end": "4px",
-						"--toast-svg-margin-start": "-1px",
-						"--toast-svg-margin-end": "0px",
-						"--toast-button-margin-start": "auto",
-						"--toast-button-margin-end": "0",
-						"--toast-close-button-start": "0",
-						"--toast-close-button-end": "unset",
-						"--toast-close-button-transform": "translate(-35%, -35%)",
-						...assignOffset(offset, mobileOffset),
-					} as React.CSSProperties
-				}
 				onBlur={(event) => {
 					if (
 						isFocusWithinRef.current &&
@@ -1184,6 +1166,7 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
 						}
 					}
 				}}
+				onDragEnd={() => setExpanded(false)}
 				onFocus={(event) => {
 					const isNotDismissible =
 						event.target instanceof HTMLElement &&
@@ -1197,14 +1180,13 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
 					}
 				}}
 				onMouseEnter={() => setExpanded(true)}
-				onMouseMove={() => setExpanded(true)}
 				onMouseLeave={() => {
 					// Avoid setting expanded to false when interacting with a toast, e.g. swiping
 					if (!interacting) {
 						setExpanded(false);
 					}
 				}}
-				onDragEnd={() => setExpanded(false)}
+				onMouseMove={() => setExpanded(true)}
 				onPointerDown={(event) => {
 					const isNotDismissible =
 						event.target instanceof HTMLElement &&
@@ -1214,25 +1196,44 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
 					setInteracting(true);
 				}}
 				onPointerUp={() => setInteracting(false)}
+				ref={listRef}
+				style={
+					{
+						"--front-toast-height": `${heights[0]?.height || 0}px`,
+						"--gap": `${gap}px`,
+						"--toast-button-margin-end": "0",
+						"--toast-button-margin-start": "auto",
+						"--toast-close-button-end": "unset",
+						"--toast-close-button-start": "0",
+						"--toast-close-button-transform": "translate(-35%, -35%)",
+						"--toast-icon-margin-end": "4px",
+						"--toast-icon-margin-start": "-3px",
+						"--toast-svg-margin-end": "0px",
+						"--toast-svg-margin-start": "-1px",
+						"--width": `${TOAST_WIDTH}px`,
+						...assignOffset(offset, mobileOffset),
+					} as React.CSSProperties
+				}
+				tabIndex={-1}
 			>
 				{toasts.map((toast, index) => (
 					<Toast
-						key={toast.id}
+						closeButton={Boolean(toastOptions?.closeButton ?? closeButton)}
+						closeButtonAriaLabel={toastOptions?.closeButtonAriaLabel}
+						duration={toastOptions?.duration ?? duration}
+						expandByDefault={Boolean(expand)}
+						expanded={expanded}
+						gap={gap}
+						heights={heights}
 						icons={icons}
 						index={index}
-						toast={toast}
-						duration={toastOptions?.duration ?? duration}
-						visibleToasts={visibleToasts}
-						closeButton={Boolean(toastOptions?.closeButton ?? closeButton)}
 						interacting={interacting}
-						closeButtonAriaLabel={toastOptions?.closeButtonAriaLabel}
+						key={toast.id}
 						removeToast={removeToast}
-						toasts={toasts}
-						heights={heights}
 						setHeights={setHeights}
-						expandByDefault={Boolean(expand)}
-						gap={gap}
-						expanded={expanded}
+						toast={toast}
+						toasts={toasts}
+						visibleToasts={visibleToasts}
 					/>
 				))}
 			</ol>

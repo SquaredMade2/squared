@@ -1,12 +1,12 @@
 {
-	"extends": "@squaredmade/typescript-config/base.json",
 	"compilerOptions": {
-		"rootDir": ".",
-		"types": ["node"],
+		"esModuleInterop": true,
 		"module": "commonjs",
-		"target": "es2018",
-		"esModuleInterop": true
+		"rootDir": ".",
+		"target": "es2022",
+		"types": ["node"]
 	},
-	"include": ["src/**/*.ts", "build.mjs"],
-	"exclude": ["node_modules", "dist"]
+	"exclude": ["node_modules", "dist"],
+	"extends": "@squaredmade/typescript-config/base.json",
+	"include": ["src/**/*.ts", "build.mjs"]
 }

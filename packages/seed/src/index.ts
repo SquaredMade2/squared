@@ -11,7 +11,9 @@ dotenv.config();
 const execPromise = util.promisify(exec);
 const logger = createCustomLogger("seed");
 
+// biome-ignore lint/style/noProcessEnv: We need these to seed the database
 const remoteDbUrl = process.env.REMOTE_DATABASE_URL;
+// biome-ignore lint/style/noProcessEnv: We need these to seed the database
 const localDbUrl = process.env.DATABASE_URL;
 
 // Check if Docker is installed
@@ -64,12 +66,11 @@ async function waitForPostgresReady(maxAttempts = 30) {
 	logger.info("Waiting for PostgreSQL to be ready...");
 
 	const connectionString =
+		// biome-ignore lint/style/noProcessEnv: we need to connect to the local database
 		process.env.DOCKER_POSTGRES_URL ||
 		"postgres://postgres:postgres@localhost:5432/squared-test";
 
-	let attempts = 0;
-
-	while (attempts < maxAttempts) {
+	const attemptConnection = async (attempt: number): Promise<boolean> => {
 		try {
 			const client = new Client({
 				connectionString,
@@ -82,8 +83,7 @@ async function waitForPostgresReady(maxAttempts = 30) {
 			logger.info("PostgreSQL is ready");
 			return true;
 		} catch {
-			attempts++;
-			if (attempts >= maxAttempts) {
+			if (attempt >= maxAttempts) {
 				logger.error(
 					"PostgreSQL failed to become ready within the timeout period",
 				);
@@ -91,12 +91,16 @@ async function waitForPostgresReady(maxAttempts = 30) {
 			}
 
 			logger.debug(
-				`Waiting for PostgreSQL... (attempt ${attempts}/${maxAttempts})`,
+				`Waiting for PostgreSQL... (attempt ${attempt}/${maxAttempts})`,
 			);
+
 			// Wait for 1 second before the next attempt
 			await new Promise((resolve) => setTimeout(resolve, 1000));
+			return attemptConnection(attempt + 1);
 		}
-	}
+	};
+
+	return await attemptConnection(1);
 }
 
 async function dumpAndRestore() {

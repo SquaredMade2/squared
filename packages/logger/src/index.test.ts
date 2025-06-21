@@ -8,29 +8,29 @@ const mockPrintfFn = { current: null as any };
 // Mock winston
 vi.mock("winston", () => {
 	const formatModule = {
-		combine: vi.fn(() => "combine_result"),
-		timestamp: vi.fn(() => "timestamp_result"),
-		simple: vi.fn(() => "simple_result"),
 		colorize: vi.fn(() => "colorize_result"),
-		splat: vi.fn(() => "splat_result"),
+		combine: vi.fn(() => "combine_result"),
 		printf: vi.fn((fn) => {
 			// Store the printf formatting function for testing
 			mockPrintfFn.current = fn;
 			return "printf_result";
 		}),
+		simple: vi.fn(() => "simple_result"),
+		splat: vi.fn(() => "splat_result"),
+		timestamp: vi.fn(() => "timestamp_result"),
 	};
 
 	const transportModule = {
-		File: vi.fn(),
 		Console: vi.fn(),
+		File: vi.fn(),
 	};
 
 	const mockLogger = {
-		info: vi.fn(),
-		error: vi.fn(),
-		warn: vi.fn(),
-		debug: vi.fn(),
 		add: vi.fn(),
+		debug: vi.fn(),
+		error: vi.fn(),
+		info: vi.fn(),
+		warn: vi.fn(),
 	};
 
 	return {
@@ -148,10 +148,10 @@ describe("@squaredmade/logger", () => {
 
 			// Test the formatting function with a sample info log
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "info",
 				message: "Sample log message",
 				splat: undefined,
+				timestamp: "May 17 10:30:45",
 			});
 
 			expect(result).toContain("May 17 10:30:45");
@@ -166,10 +166,10 @@ describe("@squaredmade/logger", () => {
 			const printfFn = mockPrintfFn.current;
 
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "info",
 				message: "Sample log message",
 				splat: undefined,
+				timestamp: "May 17 10:30:45",
 			});
 
 			expect(result).toContain("May 17 10:30:45");
@@ -189,11 +189,11 @@ describe("@squaredmade/logger", () => {
 
 			// Use the colorized version of 'error' as it appears in the formatError function
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "\x1B[31merror\x1B[39m",
 				message: "An error occurred",
 				splat: undefined,
 				stack,
+				timestamp: "May 17 10:30:45",
 			});
 
 			expect(result).toContain("May 17 10:30:45");
@@ -213,10 +213,10 @@ describe("@squaredmade/logger", () => {
 			meta[splatSymbol] = ["additional", "info"];
 
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "info",
 				message: "Test message with",
 				splat: undefined,
+				timestamp: "May 17 10:30:45",
 				...meta,
 			});
 
@@ -241,12 +241,12 @@ describe("@squaredmade/logger", () => {
 			];
 
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "\x1B[31merror\x1B[39m",
 				message: "Error occurred",
 				splat: undefined,
 				stack:
 					"Error: Something failed\n    at Function.Module._load (internal/modules/cjs/loader.js:789:25)",
+				timestamp: "May 17 10:30:45",
 				...meta,
 			});
 
@@ -263,20 +263,20 @@ describe("@squaredmade/logger", () => {
 
 			// Create a metadata object to be included in the log
 			const metadata = {
-				userId: 12_345,
 				action: "user.login",
-				requestId: "req-abc-123",
 				duration: 42,
+				requestId: "req-abc-123",
 				success: true,
+				userId: 12_345,
 			};
 
 			// Mock how Winston would actually format this
 			// Using the metadata object we created
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "info",
 				message: "User login",
 				splat: undefined,
+				timestamp: "May 17 10:30:45",
 				...metadata, // Spread the metadata object here
 			});
 
@@ -314,9 +314,9 @@ describe("@squaredmade/logger", () => {
 
 				// We can use the mock logger directly
 				logger.info("User activity", {
-					userId: 12_345,
 					action: "login",
 					timestamp: new Date().toISOString(),
+					userId: 12_345,
 				});
 
 				// Verify the logger.info was called with the right parameters
@@ -349,23 +349,23 @@ describe("@squaredmade/logger", () => {
 
 			// Create a complex nested object
 			const complexObject = {
-				user: {
-					id: 123,
-					profile: {
-						name: "Test User",
-						email: "test@example.com",
-						preferences: {
-							theme: "dark",
-							notifications: true,
-						},
-					},
-				},
 				request: {
-					path: "/api/data",
-					method: "POST",
 					headers: {
 						"content-type": "application/json",
 						"x-request-id": "abcd1234",
+					},
+					method: "POST",
+					path: "/api/data",
+				},
+				user: {
+					id: 123,
+					profile: {
+						email: "test@example.com",
+						name: "Test User",
+						preferences: {
+							notifications: true,
+							theme: "dark",
+						},
 					},
 				},
 			};
@@ -377,10 +377,10 @@ describe("@squaredmade/logger", () => {
 
 			// Test the formatting function with the complex object
 			const result = printfFn({
-				timestamp: "May 17 10:30:45",
 				level: "debug",
 				message: "Processing request: ",
 				splat: undefined,
+				timestamp: "May 17 10:30:45",
 				...meta,
 			});
 

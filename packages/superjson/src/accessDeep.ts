@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: There's no way of knowing the types, but this isn't exposed */
 import { isArray, isMap, isPlainObject, isSet } from "./is.js";
 import { includes } from "./util.js";
 
@@ -27,13 +28,12 @@ export const getDeep = (object: object, path: (string | number)[]): object => {
 	validatePath(path);
 	let newObject = object;
 
-	for (let i = 0; i < path.length; i++) {
-		const key = path[i];
+	for (const [i, key] of path.entries()) {
 		if (isSet(newObject)) {
 			newObject = getNthKey(newObject, +key);
 		} else if (isMap(newObject)) {
 			const row = +key;
-			const type = +path[++i] === 0 ? "key" : "value";
+			const type = +path[i + 1] === 0 ? "key" : "value";
 
 			const keyOfRow = getNthKey(newObject, row);
 			switch (type) {
@@ -44,6 +44,9 @@ export const getDeep = (object: object, path: (string | number)[]): object => {
 					newObject = newObject.get(keyOfRow);
 					break;
 			}
+
+			// Skip the next iteration since we consumed path[i + 1]
+			path.splice(i + 1, 1);
 		} else {
 			newObject = (newObject as any)[key];
 		}
@@ -97,7 +100,10 @@ export const setDeep = (
 		}
 	}
 
-	const lastKey = path[path.length - 1];
+	const lastKey = path.at(-1);
+	if (!lastKey) {
+		throw new Error("Invalid path");
+	}
 
 	if (isArray(parent)) {
 		parent[+lastKey] = mapper(parent[+lastKey]);
@@ -114,8 +120,10 @@ export const setDeep = (
 		}
 	}
 
-	if (isMap(parent)) {
-		const row = +path[path.length - 2];
+	const lastKeyIndex = path.at(-2);
+
+	if (isMap(parent) && lastKeyIndex) {
+		const row = +lastKeyIndex;
 		const keyToRow = getNthKey(parent, row);
 
 		const type = +lastKey === 0 ? "key" : "value";

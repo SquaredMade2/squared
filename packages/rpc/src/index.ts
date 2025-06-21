@@ -45,15 +45,22 @@ export {
 } from "./rpc-types";
 
 export class RpcError extends Error {
+	serviceName: string;
+	methodName: string;
+	inner: Error & { type?: string; code?: string | number };
+
 	constructor(
-		public serviceName: string,
-		public methodName: string,
-		public inner: Error & { type?: string; code?: string | number },
+		serviceName: string,
+		methodName: string,
+		inner: Error & { type?: string; code?: string | number },
 	) {
 		super(
 			`An error occurred while executing method ${serviceName}/${methodName}`,
 		);
 		this.name = "RpcError";
+		this.serviceName = serviceName;
+		this.methodName = methodName;
+		this.inner = inner;
 	}
 }
 

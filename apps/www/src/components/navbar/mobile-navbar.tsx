@@ -1,11 +1,13 @@
 "use client";
+
 import { Menu, X } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { useState } from "react";
-import { Logo } from "../Logo";
+import { config } from "@/config";
 import { Button } from "../button";
+import { Logo } from "../Logo";
 import { ModeToggle } from "../mode-toggle";
 
 export const MobileNavbar = ({
@@ -36,7 +38,7 @@ export const MobileNavbar = ({
 			)}
 		>
 			<Logo />
-			<button type="button" onClick={() => setOpen(!open)}>
+			<button onClick={() => setOpen(!open)} type="button">
 				<Menu className="h-6 w-6 text-foreground" />
 			</button>
 			{open && (
@@ -45,7 +47,7 @@ export const MobileNavbar = ({
 						<Logo />
 						<div className="flex items-center space-x-2">
 							<ModeToggle />
-							<button type="button" onClick={() => setOpen(!open)}>
+							<button onClick={() => setOpen(!open)} type="button">
 								<X className="h-8 w-8 text-foreground" />
 							</button>
 						</div>
@@ -54,10 +56,10 @@ export const MobileNavbar = ({
 						{navItems.map((navItem) => (
 							<>
 								<Link
-									key={`link=${navItem.link}`}
-									href={navItem.link}
-									onClick={() => setOpen(false)}
 									className="relative"
+									href={navItem.link}
+									key={`link=${navItem.link}`}
+									onClick={() => setOpen(false)}
 								>
 									<span className="block text-[26px] text-foreground">
 										{navItem.title}
@@ -67,16 +69,13 @@ export const MobileNavbar = ({
 						))}
 					</div>
 					<div className="flex w-full flex-row items-start gap-2.5 px-8 py-4 ">
-						<Button
-							as={Link}
-							href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}
-						>
+						<Button as={Link} href={`${config.NEXT_PUBLIC_APP_URL}/sign-up`}>
 							Sign Up
 						</Button>
 						<Button
-							variant="simple"
 							as={Link}
-							href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-in`}
+							href={`${config.NEXT_PUBLIC_APP_URL}/sign-in`}
+							variant="simple"
 						>
 							Login
 						</Button>

@@ -111,10 +111,11 @@
 				"noUselessElse": "error",
 				"noYodaExpression": "error",
 				"useAsConstAssertion": "error",
-				"useAtIndex": "error",
+				"useAtIndex": { "fix": "safe", "level": "error" },
 				"useCollapsedElseIf": "error",
 				"useCollapsedIf": "error",
 				"useConsistentArrayType": {
+					"fix": "safe",
 					"level": "error",
 					"options": { "syntax": "shorthand" }
 				},
@@ -137,7 +138,7 @@
 				"useNodeAssertStrict": "error",
 				"useNumberNamespace": "error",
 				"useSelfClosingElements": "error",
-				"useShorthandAssign": "error",
+				"useShorthandAssign": { "fix": "safe", "level": "error" },
 				"useSingleVarDeclarator": "error",
 				"useThrowNewError": "error",
 				"useThrowOnlyError": "error",
@@ -167,8 +168,14 @@
 			],
 			"linter": {
 				"rules": {
+					"style": {
+						"noProcessEnv": "off",
+						"useNamingConvention": "off",
+						"useThrowOnlyError": "off"
+					},
 					"suspicious": {
-						"noConsole": "off"
+						"noConsole": "off",
+						"noExplicitAny": "off"
 					}
 				}
 			}
@@ -181,6 +188,17 @@
 						"noCommonJs": "off"
 					}
 				}
+			}
+		},
+		{
+			"includes": [
+				"**/*.config.ts",
+				"**/*.config.js",
+				"**/*.config.cjs",
+				"**/*.config.mjs"
+			],
+			"linter": {
+				"enabled": false
 			}
 		},
 		{

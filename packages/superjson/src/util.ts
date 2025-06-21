@@ -26,8 +26,7 @@ export function find<T>(
 
 	const valuesNotNever = values as T[];
 
-	for (let i = 0; i < valuesNotNever.length; i++) {
-		const value = valuesNotNever[i];
+	for (const value of valuesNotNever) {
 		if (predicate(value)) {
 			return value;
 		}
@@ -53,8 +52,7 @@ export function findArr<T>(
 	record: T[],
 	predicate: (v: T) => boolean,
 ): T | undefined {
-	for (let i = 0; i < record.length; i++) {
-		const value = record[i];
+	for (const value of record) {
 		if (predicate(value)) {
 			return value;
 		}

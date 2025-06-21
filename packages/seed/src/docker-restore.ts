@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noProcessEnv: We need to use process.env */
 import { exec } from "node:child_process";
 import util from "node:util";
 import createCustomLogger from "@squaredmade/logger";

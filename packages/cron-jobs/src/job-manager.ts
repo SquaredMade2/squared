@@ -252,7 +252,7 @@ export class JobManager {
 	 * Get all registered jobs
 	 * @returns Array of registered jobs
 	 */
-	getAllJobs(): Array<RegisteredJob<unknown>> {
+	getAllJobs(): RegisteredJob<unknown>[] {
 		return Array.from(this.jobs.values());
 	}
 

@@ -11,6 +11,7 @@ const mockCronJobInstance = {
 };
 
 vi.mock("cron", () => ({
+	// biome-ignore lint/style/useNamingConvention: This is from cron
 	CronJob: vi.fn(() => mockCronJobInstance),
 }));
 
@@ -385,7 +386,7 @@ describe("JobManager", () => {
 
 			// Get the wrapped handler that was passed to CronJob
 			const cronJobCalls = vi.mocked(CronJob as any).mock.calls;
-			const latestCall = cronJobCalls[cronJobCalls.length - 1];
+			const latestCall = cronJobCalls.at(-1);
 			const wrappedHandler = latestCall[1];
 
 			// Execute the wrapped handler
@@ -436,7 +437,7 @@ describe("JobManager", () => {
 
 			// Get the wrapped handler that was passed to CronJob
 			const cronJobCalls = vi.mocked(CronJob as any).mock.calls;
-			const latestCall = cronJobCalls[cronJobCalls.length - 1];
+			const latestCall = cronJobCalls.at(-1);
 			const wrappedHandler = latestCall[1];
 
 			expect(mockCronJobInstance.start).toHaveBeenCalled();
@@ -514,7 +515,7 @@ describe("JobManager", () => {
 			jobManager.start("error-scheduled-job");
 
 			const cronJobCalls = vi.mocked(CronJob as any).mock.calls;
-			const latestCall = cronJobCalls[cronJobCalls.length - 1];
+			const latestCall = cronJobCalls.at(-1);
 			const wrappedHandler = latestCall[1];
 
 			// First execution (should succeed)
@@ -669,7 +670,7 @@ describe("JobManager", () => {
 
 			// Get the wrapped handler from CronJob mock
 			const cronJobCalls = vi.mocked(CronJob as any).mock.calls;
-			const latestCall = cronJobCalls[cronJobCalls.length - 1];
+			const latestCall = cronJobCalls.at(-1);
 			const wrappedHandler = latestCall[1];
 
 			// Execute the wrapped handler
@@ -700,7 +701,7 @@ describe("JobManager", () => {
 
 			// Get the wrapped handler from CronJob mock
 			const cronJobCalls = vi.mocked(CronJob as any).mock.calls;
-			const latestCall = cronJobCalls[cronJobCalls.length - 1];
+			const latestCall = cronJobCalls.at(-1);
 			const wrappedHandler = latestCall[1];
 
 			// Execute the wrapped handler

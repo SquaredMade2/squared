@@ -28,11 +28,11 @@ interface Testimonial {
 
 const testimonials = [
 	{
+		designation: "Tech Innovator & Entrepreneur",
 		name: "Manu Arora",
 		quote:
 			"What a fantastic product Squared is, I just love it. It has completely transformed the way I approach problems and develop solutions.",
 		src: "https://i.pravatar.cc/150?img=1",
-		designation: "Tech Innovator & Entrepreneur",
 	},
 	// {
 	// 	name: "Tyler Durden",
@@ -42,74 +42,74 @@ const testimonials = [
 	// 	designation: "Creative Director & Business Owner",
 	// },
 	{
+		designation: "Senior Software Engineer",
 		name: "Alice Johnson",
 		quote:
 			"Squared has transformed the way I work! It's like having a brilliant assistant who knows exactly what I need before I even ask.",
 		src: "https://i.pravatar.cc/150?img=3",
-		designation: "Senior Software Engineer",
 	},
 	{
+		designation: "Industry Analyst",
 		name: "Bob Smith",
 		quote:
 			"Absolutely revolutionary, a game-changer for our industry. It has streamlined our processes and enhanced our productivity dramatically.",
 		src: "https://i.pravatar.cc/150?img=4",
-		designation: "Industry Analyst",
 	},
 	{
+		designation: "Product Manager",
 		name: "Cathy Lee",
 		quote:
 			"I can't imagine going back to how things were before this. It has not only improved my work efficiency but also my daily life.",
 		src: "https://i.pravatar.cc/150?img=5",
-		designation: "Product Manager",
 	},
 	{
+		designation: "Research Scientist",
 		name: "David Wright",
 		quote:
 			"It's like having a superpower! Squared has given us the ability to do things we never thought were possible in our field.",
 		src: "https://i.pravatar.cc/150?img=6",
-		designation: "Research Scientist",
 	},
 	{
+		designation: "Operations Director",
 		name: "Eva Green",
 		quote:
 			"The efficiency it brings is unmatched. It's a vital tool that has helped us cut costs and improve our end product significantly.",
 		src: "https://i.pravatar.cc/150?img=7",
-		designation: "Operations Director",
 	},
 	{
+		designation: "Project Manager",
 		name: "Frank Moore",
 		quote:
 			"A robust solution that fits perfectly into our workflow. It has enhanced our team's capabilities and allowed us to tackle more complex projects.",
 		src: "https://i.pravatar.cc/150?img=8",
-		designation: "Project Manager",
 	},
 	{
+		designation: "Marketing Specialist",
 		name: "Grace Hall",
 		quote:
 			"It's incredibly intuitive and easy to use. Even those without technical expertise can leverage its power to improve their workflows.",
 		src: "https://i.pravatar.cc/150?img=9",
-		designation: "Marketing Specialist",
 	},
 	{
+		designation: "Operations Analyst",
 		name: "Henry Jacobs",
 		quote:
 			"It has saved us countless hours. Highly recommended for anyone looking to enhance their efficiency and productivity.",
 		src: "https://i.pravatar.cc/150?img=10",
-		designation: "Operations Analyst",
 	},
 	{
+		designation: "Business Consultant",
 		name: "Ivy Wilson",
 		quote:
 			"A must-have tool for any professional. It's revolutionized the way we approach problem-solving and decision-making.",
 		src: "https://i.pravatar.cc/150?img=11",
-		designation: "Business Consultant",
 	},
 	{
+		designation: "Performance Manager",
 		name: "Jack Brown",
 		quote:
 			"The results are always impressive. Squared has helped us to not only meet but exceed our performance targets.",
 		src: "https://i.pravatar.cc/150?img=12",
-		designation: "Performance Manager",
 	},
 	// {
 	// 	name: "Kathy Adams",
@@ -119,60 +119,60 @@ const testimonials = [
 	// 	designation: "Innovation Lead",
 	// },
 	{
+		designation: "Technology Strategist",
 		name: "Leo Carter",
 		quote:
 			"Transformative technology with real impact. It has streamlined our operations and brought unprecedented efficiency to our processes.",
 		src: "https://i.pravatar.cc/150?img=14",
-		designation: "Technology Strategist",
 	},
 	{
+		designation: "Systems Integrator",
 		name: "Mia Turner",
 		quote:
 			"It's simply revolutionary! The way it integrates with our existing systems and enhances them is nothing short of miraculous.",
 		src: "https://i.pravatar.cc/150?img=15",
-		designation: "Systems Integrator",
 	},
 	{
+		designation: "Investment Analyst",
 		name: "Melany Hill",
 		quote:
 			"The best investment we've made in years. It's not just a tool; it's a game-changer that has propelled our business forward.",
 		src: "https://i.pravatar.cc/150?img=16",
-		designation: "Investment Analyst",
 	},
 	{
+		designation: "Quality Assurance Manager",
 		name: "Omar Kudus",
 		quote:
 			"It consistently exceeds our expectations. Its adaptability and precision make it indispensable for our daily operations.",
 		src: "https://i.pravatar.cc/150?img=17",
-		designation: "Quality Assurance Manager",
 	},
 	{
+		designation: "Strategic Planner",
 		name: "Peter White",
 		quote:
 			"A seamless integration into our daily tasks. It has enhanced our productivity and allowed us to focus on more strategic initiatives.",
 		src: "https://i.pravatar.cc/150?img=18",
-		designation: "Strategic Planner",
 	},
 	{
+		designation: "Growth Manager",
 		name: "Quinn Taylor",
 		quote:
 			"It's a game-changer for our business. The insights it provides are invaluable and have driven substantial growth for us.",
 		src: "https://i.pravatar.cc/150?img=19",
-		designation: "Growth Manager",
 	},
 	{
+		designation: "Client Support Coordinator",
 		name: "Rachel Black",
 		quote:
 			"The support team is as impressive as the technology itself. They ensure we maximize the utility of Squared in our operations.",
 		src: "https://i.pravatar.cc/150?img=20",
-		designation: "Client Support Coordinator",
 	},
 	{
+		designation: "Futurist",
 		name: "Samuel Lee",
 		quote:
 			"It's the future, now. Adopting Squared has put us years ahead of the competition in terms of operational efficiency and innovation.",
 		src: "https://i.pravatar.cc/150?img=21",
-		designation: "Futurist",
 	},
 	// {
 	// 	name: "Tina Brooks",
@@ -222,11 +222,11 @@ function Testimonial({
 			<div className="flex flex-col items-start">
 				<div className="flex gap-2">
 					<Image
+						alt={name}
+						className="h-10 w-10 rounded-full"
+						height={150}
 						src={src}
 						width={150}
-						height={150}
-						className="h-10 w-10 rounded-full"
-						alt={name}
 					/>
 					<div>
 						<h3 className="font-medium text-neutral-inverted-accent text-sm">
@@ -260,23 +260,23 @@ function TestimonialColumn({
 				.concat(testimonials)
 				.map((testimonial, testimonialIndex) => (
 					<Testimonial
-						name={testimonial.name}
-						quote={testimonial.quote}
-						src={testimonial.src}
-						designation={testimonial.designation}
-						key={testimonial.src}
 						className={containerClassName?.(
 							testimonialIndex % testimonials.length,
 						)}
+						designation={testimonial.designation}
+						key={testimonial.src}
+						name={testimonial.name}
+						quote={testimonial.quote}
+						src={testimonial.src}
 					/>
 				))}
 		</TestimonialColumnContainer>
 	);
 }
 
-function splitArray<T>(array: Array<T>, numParts: number) {
+function splitArray<T>(array: T[], numParts: number) {
 	// biome-ignore lint/style/useConst: came with template
-	let result: Array<Array<T>> = [];
+	let result: T[][] = [];
 	for (let i = 0; i < array.length; i++) {
 		// biome-ignore lint/style/useConst: came with template
 		let index = i % numParts;
@@ -300,7 +300,6 @@ function TestimonialGrid() {
 	return (
 		<InViewDiv className="-mx-4 relative mt-16 grid h-[49rem] max-h-[150vh] grid-cols-1 items-start gap-8 overflow-hidden px-4 sm:mt-20 md:grid-cols-2 lg:grid-cols-3">
 			<TestimonialColumn
-				testimonials={[...column1, ...column3.flat(), ...column2]}
 				containerClassName={(tIndex) =>
 					cn(
 						tIndex >= column1.length + column3[0].length && "md:hidden",
@@ -308,19 +307,20 @@ function TestimonialGrid() {
 					)
 				}
 				shift={10}
+				testimonials={[...column1, ...column3.flat(), ...column2]}
 			/>
 			<TestimonialColumn
-				testimonials={[...column2, ...column3[1]]}
 				className="hidden md:block"
 				containerClassName={(tIndex) =>
 					tIndex >= column2.length ? "lg:hidden" : ""
 				}
 				shift={15}
+				testimonials={[...column2, ...column3[1]]}
 			/>
 			<TestimonialColumn
-				testimonials={column3.flat()}
 				className="hidden lg:block"
 				shift={10}
+				testimonials={column3.flat()}
 			/>
 			<div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-linear-to-b from-background" />
 			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-background" />

@@ -1,14 +1,15 @@
+/** biome-ignore-all lint/style/noProcessEnv: We need to access the environment */
 import util from "node:util";
-import { type Logger, createLogger, format, transports } from "winston";
+import { createLogger, format, type Logger, transports } from "winston";
 
 // Define the log levels we want to support
 const logLevels = {
-	error: 0,
-	warn: 1,
-	info: 2,
-	http: 3,
-	verbose: 4,
 	debug: 5,
+	error: 0,
+	http: 3,
+	info: 2,
+	verbose: 4,
+	warn: 1,
 };
 
 const splatSymbol = Symbol.for("splat");
@@ -31,8 +32,8 @@ const formatError = (level: string, meta: LogMeta) => {
 			const errorObject = splatInfo[0] as ErrorEvent;
 			if (errorObject?.error) {
 				additionalInfo = util.inspect(errorObject.error, {
-					depth: null,
 					colors: true,
+					depth: null,
 					maxArrayLength: null,
 				});
 			}
@@ -52,7 +53,7 @@ const formatMessage = (message: unknown, meta: LogMeta) => {
 		additionalInfo = splatInfo
 			.map((item) => {
 				if (typeof item === "object" && item !== null) {
-					return util.inspect(item, { depth: 4, colors: false });
+					return util.inspect(item, { colors: false, depth: 4 });
 				}
 				return String(item);
 			})
@@ -65,8 +66,6 @@ const formatMessage = (message: unknown, meta: LogMeta) => {
 // Create the logger factory function
 function createCustomLogger(prefix: string): Logger {
 	const logger = createLogger({
-		levels: logLevels,
-		level: process.env.NODE_ENV === "production" ? "info" : "debug",
 		format: format.combine(
 			format.timestamp({ format: "MMM DD HH:mm:ss" }),
 			format.simple(),
@@ -78,6 +77,8 @@ function createCustomLogger(prefix: string): Logger {
 				return `${timestamp} ${level}: ${prefixString}${formatMessage(message, meta)}${stackTrace}`;
 			}),
 		),
+		level: process.env.NODE_ENV === "production" ? "info" : "debug",
+		levels: logLevels,
 		transports: [
 			new transports.File({ filename: "error.log", level: "error" }),
 			new transports.File({ filename: "combined.log" }),
@@ -87,7 +88,6 @@ function createCustomLogger(prefix: string): Logger {
 	if (process.env.NODE_ENV !== "production") {
 		logger.add(
 			new transports.Console({
-				silent: process.env.RUNNING_TESTS === "true",
 				format: format.combine(
 					format.colorize(),
 					format.simple(),
@@ -99,6 +99,7 @@ function createCustomLogger(prefix: string): Logger {
 						return `${timestamp} ${level}: ${prefixString}${formatMessage(message, meta)}${stackTrace}`;
 					}),
 				),
+				silent: process.env.RUNNING_TESTS === "true",
 			}),
 		);
 	}

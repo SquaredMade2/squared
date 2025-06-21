@@ -97,7 +97,10 @@ describe("stringify & parse", () => {
 			},
 			input: () => {
 				class Pet {
-					constructor(private name: string) {}
+					private name: string;
+					constructor(name: string) {
+						this.name = name;
+					}
 
 					woof() {
 						return this.name;
@@ -105,7 +108,10 @@ describe("stringify & parse", () => {
 				}
 
 				class User {
-					constructor(public pet: Pet) {}
+					pet: Pet;
+					constructor(p: Pet) {
+						this.pet = p;
+					}
 				}
 
 				SuperJSON.registerClass(Pet);
@@ -615,10 +621,12 @@ describe("stringify & parse", () => {
 			dontExpectEquality: true,
 			input: () => {
 				class User {
-					constructor(
-						public username: string,
-						public password: string,
-					) {}
+					username: string;
+					password: string;
+					constructor(username: string, password: string) {
+						this.username = username;
+						this.password = password;
+					}
 				}
 				SuperJSON.registerClass(User, { allowProps: ["username"] });
 				return new User("bongocat", "supersecurepassword");
@@ -756,13 +764,20 @@ describe("stringify & parse", () => {
 	describe("when serializing custom class instances", () => {
 		it("revives them to their original class", () => {
 			class Train {
+				topSpeed: number;
+				color: "red" | "blue" | "yellow";
+				brand: string;
 				constructor(
-					private topSpeed: number,
-					private color: "red" | "blue" | "yellow",
-					private brand: string,
-				) {}
+					topSpeed: number,
+					color: "red" | "blue" | "yellow",
+					brand: string,
+				) {
+					this.topSpeed = topSpeed;
+					this.color = color;
+					this.brand = brand;
+				}
 
-				public brag() {
+				brag() {
 					return `I'm a ${this.brand} in freakin' ${this.color} and I go ${this.topSpeed} km/h, isn't that bonkers?`;
 				}
 			}
@@ -797,7 +812,10 @@ describe("stringify & parse", () => {
 		describe("with accessor attributes", () => {
 			it("works", () => {
 				class Currency {
-					constructor(private valueInUsd: number) {}
+					private valueInUsd: number;
+					constructor(valueInUsd: number) {
+						this.valueInUsd = valueInUsd;
+					}
 
 					get inUSD() {
 						return this.valueInUsd;
@@ -862,8 +880,10 @@ describe("stringify & parse", () => {
 
 	test("regression #80: Custom error serialisation isnt overriden", () => {
 		class CustomError extends Error {
-			constructor(public readonly customProperty: number) {
+			readonly customProperty: number;
+			constructor(customProperty: number) {
 				super("I'm a custom error");
+				this.customProperty = customProperty;
 
 				Object.setPrototypeOf(this, CustomError.prototype);
 			}
