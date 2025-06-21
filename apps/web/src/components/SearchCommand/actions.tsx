@@ -18,7 +18,7 @@ import {
 	Settings,
 	Trash2,
 } from "@squaredmade/icons";
-import { ToastOptions, toast } from "@squaredmade/ui/toast";
+import { toast } from "@squaredmade/ui/toast";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { useRouter } from "next/navigation";
 import { config } from "@/config";

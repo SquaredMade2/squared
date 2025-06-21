@@ -28,7 +28,7 @@
 		"format": "biome format --write .",
 		"knip": "knip",
 		"lint:check": "biome lint .",
-		"lint": "biome lint --write --max-diagnostics=none --diagnostic-level=error . > lint.log 2>&1",
+		"lint": "biome lint --write .",
 		"prepare": "husky",
 		"release": "bun build:packages && changeset publish",
 		"reset": "bun clean && bun install",

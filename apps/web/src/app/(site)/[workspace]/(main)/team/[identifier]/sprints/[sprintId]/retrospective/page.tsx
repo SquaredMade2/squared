@@ -192,7 +192,9 @@ export default function SprintRetrospectivePage() {
 
 				toast.success("Item moved successfully");
 			} catch (error) {
-				toast.error("Failed to move item");
+				toast.error("Failed to move item", {
+					description: parseError(error, "An unknown error occurred"),
+				});
 			}
 		},
 		[sprintId, socket],

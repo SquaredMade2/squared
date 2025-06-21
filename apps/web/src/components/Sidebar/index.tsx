@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/sidebar";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
@@ -74,7 +75,9 @@ function SidebarContent() {
 			router.replace("/sign-in");
 			toast.success("Logged out successfully.");
 		} catch (error) {
-			toast.error("Failed to log out");
+			toast.error("Error logging out", {
+				description: parseError(error),
+			});
 		}
 	};
 
