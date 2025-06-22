@@ -1,3 +1,12 @@
+import type {
+	DroppableProvided,
+	DroppableStateSnapshot,
+} from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
+import type { Priority, Status } from "@squaredmade/db";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { cn } from "@squaredmade/ui/cn";
+import { UserSearch } from "lucide-react";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useUsers } from "@/hooks/useUsers";
 import { useViewStore, useWorkspaceStore } from "@/store";
@@ -8,15 +17,6 @@ import {
 	formatStatus,
 	getInitials,
 } from "@/utils/formatting";
-import type {
-	DroppableProvided,
-	DroppableStateSnapshot,
-} from "@hello-pangea/dnd";
-import { Droppable } from "@hello-pangea/dnd";
-import type { Priority, Status } from "@squaredmade/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { cn } from "@squaredmade/ui/cn";
-import { UserSearch } from "lucide-react";
 import { GridColumnNewTaskButton } from "../../Modals";
 import type { GroupColumnProps } from "../interfaces";
 import Group from "./Group";
@@ -42,13 +42,18 @@ const GroupColumn = ({
 	return (
 		<div className={isListView ? "mb-2 w-full" : "w-72 shrink-0 pr-2 pb-2"}>
 			{/* When row grouping is active, the Droppable is already created in RowGroupingWrapper */}
-			{!isRowGroupingActive ? (
+			{isRowGroupingActive ? (
+				/* With row grouping active, GroupColumn just renders the tasks */
+				<div className="flex w-full flex-col items-start">
+					{showTasks && <Group isListView={isListView} tasks={tasks} />}
+				</div>
+			) : (
 				<Droppable
-					droppableId={group}
-					type="TASK"
 					direction="vertical"
-					isCombineEnabled={true}
-					ignoreContainerClipping={true}
+					droppableId={group}
+					ignoreContainerClipping
+					isCombineEnabled
+					type="TASK"
 				>
 					{(
 						dropProvided: DroppableProvided,
@@ -89,25 +94,25 @@ const GroupColumn = ({
 												// Render grouped rows
 												rowGroups.map((rowGroup) => (
 													<div
-														key={`${group}-${rowGroup.group}`}
 														className="mb-4 w-full"
+														key={`${group}-${rowGroup.group}`}
 													>
 														<div className="mb-2 rounded bg-secondary/40 p-2">
 															<RowGroupHeader
+																count={rowGroup.tasks.length}
 																group={rowGroup.group}
 																groupType={groupRowsBy}
-																count={rowGroup.tasks.length}
 															/>
 														</div>
 														<Group
-															tasks={rowGroup.tasks}
 															isListView={isListView}
+															tasks={rowGroup.tasks}
 														/>
 													</div>
 												))
 											) : (
 												// Original group rendering
-												<Group tasks={tasks} isListView={isListView} />
+												<Group isListView={isListView} tasks={tasks} />
 											))}
 										{dropProvided.placeholder}
 									</div>
@@ -116,11 +121,6 @@ const GroupColumn = ({
 						</div>
 					)}
 				</Droppable>
-			) : (
-				/* With row grouping active, GroupColumn just renders the tasks */
-				<div className="flex w-full flex-col items-start">
-					{showTasks && <Group tasks={tasks} isListView={isListView} />}
-				</div>
 			)}
 			{!isListView && <GridColumnNewTaskButton group={columnStatus} />}
 		</div>
@@ -141,7 +141,7 @@ const RowGroupHeader = ({
 	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	switch (groupType) {
-		case "Status":
+		case "status":
 			return (
 				<div className="flex items-center justify-between">
 					<div className="flex items-center">
@@ -153,7 +153,7 @@ const RowGroupHeader = ({
 					<span className="text-muted-foreground text-xs">{count}</span>
 				</div>
 			);
-		case "Priority":
+		case "priority":
 			return (
 				<div className="flex items-center justify-between">
 					<div className="flex items-center">
@@ -165,7 +165,7 @@ const RowGroupHeader = ({
 					<span className="text-muted-foreground text-xs">{count}</span>
 				</div>
 			);
-		case "Assignee": {
+		case "assignee": {
 			const user = users?.find((u) => u.userId === group);
 			return (
 				<div className="flex items-center justify-between">
@@ -193,7 +193,7 @@ const RowGroupHeader = ({
 				</div>
 			);
 		}
-		case "Label": {
+		case "label": {
 			const label = workspace?.labels.find((l) => l.name === group);
 			return (
 				<div className="flex items-center justify-between">

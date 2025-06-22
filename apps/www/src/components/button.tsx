@@ -15,14 +15,17 @@ export const Button: React.FC<{
 	as: Tag = "button",
 	...props
 }) => {
-	const variantClass =
-		variant === "simple"
-			? "bg-transparent hover:bg-neutral-secondary border border-transparent text-foreground transition duration-200 dark:hover:bg-background-nav-bar-hover dark:hover:shadow-xl"
-			: variant === "outline"
-				? "bg-white hover:bg-black/90 hover:shadow-xl text-black border border-black hover:text-white transition duration-200"
-				: variant === "primary"
-					? "bg-background-dark-secondary hover:bg-neutral-inverted-accent dark:hover:bg-background-nav-bar-hover/90  border border-transparent text-white transition duration-200 shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset]"
-					: "";
+	let variantClass = "";
+	if (variant === "simple") {
+		variantClass =
+			"bg-transparent hover:bg-neutral-secondary border border-transparent text-foreground transition duration-200 dark:hover:bg-background-nav-bar-hover dark:hover:shadow-xl";
+	} else if (variant === "outline") {
+		variantClass =
+			"bg-white hover:bg-black/90 hover:shadow-xl text-black border border-black hover:text-white transition duration-200";
+	} else if (variant === "primary") {
+		variantClass =
+			"bg-background-dark-secondary hover:bg-neutral-inverted-accent dark:hover:bg-background-nav-bar-hover/90  border border-transparent text-white transition duration-200 shadow-[0px_-1px_0px_0px_#FFFFFF40_inset,_0px_1px_0px_0px_#FFFFFF40_inset]";
+	}
 	return (
 		<Tag
 			className={cn(

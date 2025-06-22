@@ -1,4 +1,3 @@
-import { Progress } from "@/components/ui/progress";
 import type { Sprint, Task } from "@squaredmade/db";
 import { ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -11,6 +10,7 @@ import {
 } from "@squaredmade/ui/card";
 import { format } from "date-fns";
 import Link from "next/link";
+import { Progress } from "@/components/ui/progress";
 
 interface SprintCardProps {
 	sprint: Sprint;
@@ -36,20 +36,20 @@ export const SprintCard = ({
 		: [];
 	const plannedTasks = sprintTasks.length;
 
-	const calculateProgress = (sprint: Sprint) => {
-		const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
-		const completedTasks = sprintTasks.filter((task) => task.status === "done");
+	const calculateProgress = (s: Sprint) => {
+		const st = tasks.filter((task) => task.sprintId === s.id);
+		const ct = st.filter((task) => task.status === "done");
 
-		if (sprintTasks.length === 0) return 0; // Avoid division by zero
+		if (st.length === 0) return 0; // Avoid division by zero
 
-		const progress = (completedTasks.length / sprintTasks.length) * 100;
+		const progress = (ct.length / st.length) * 100;
 		return Math.min(Math.max(progress, 0), 100); // Ensure progress is between 0 and 100
 	};
 
 	return (
 		<Card
-			key={sprint.id}
 			className={`mb-4 w-full ${isActive ? "border-primary shadow-md" : ""}`}
+			key={sprint.id}
 		>
 			<CardHeader className={isActive ? "bg-primary/5" : ""}>
 				<CardTitle className={isActive ? "text-primary" : ""}>
@@ -68,8 +68,8 @@ export const SprintCard = ({
 			<CardContent>
 				<div className="mb-4">
 					<Progress
-						value={calculateProgress(sprint)}
 						className={`w-full ${isActive ? "bg-primary/20" : ""}`}
+						value={calculateProgress(sprint)}
 					/>
 					<p className="mt-2 text-muted-foreground text-sm">
 						{Math.round(calculateProgress(sprint))}% Complete
@@ -99,7 +99,7 @@ export const SprintCard = ({
 				</div>
 				<div className="mt-4 flex justify-end">
 					<Link href={`sprints/${sprint.id}`}>
-						<Button variant={isActive ? "default" : "outline"} size="sm">
+						<Button size="sm" variant={isActive ? "default" : "outline"}>
 							View Details <ChevronRight className="ml-2 h-4 w-4" />
 						</Button>
 					</Link>

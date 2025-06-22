@@ -1,25 +1,25 @@
-import "dotenv/config";
 import { createDb } from "@squaredmade/db";
+import config from "@/config";
 import { createAuthRpcHandler } from "./auth";
 import { AuthService } from "./auth/auth-service";
 import { createCommentRpcHandler } from "./comments";
 import { CommentService } from "./comments/comment-service";
-import { EventService, createEventRpcHandler } from "./events";
-import { FilterService, createFilterRpcHandler } from "./filters";
+import { createEventRpcHandler, EventService } from "./events";
+import { createFilterRpcHandler, FilterService } from "./filters";
 import { createGithubRpcHandler } from "./github";
 import { GithubService } from "./github/github-service";
-import { SprintService, createSprintRpcHandler } from "./sprints";
-import { TaskService, createTaskRpcHandler } from "./tasks";
-import { TeamService, createTeamRpcHandler } from "./teams";
+import { createSprintRpcHandler, SprintService } from "./sprints";
+import { createTaskRpcHandler, TaskService } from "./tasks";
+import { createTeamRpcHandler, TeamService } from "./teams";
 import { createUserRpcHandler } from "./users";
 import { UserService } from "./users/user-service";
-import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
+import { createWorkspaceRpcHandler, WorkspaceService } from "./workspaces";
 
 const db = createDb({
-	databaseUrl: process.env.DATABASE_URL,
+	databaseUrl: config.databaseUrl,
 });
 
-const clerkSecret = process.env.CLERK_SECRET;
+const clerkSecret = config.clerkSecret;
 
 const auth = new AuthService(db);
 const comment = new CommentService(db);
@@ -39,8 +39,8 @@ export const services = {
 	filter,
 	github,
 	sprint,
-	team,
 	task,
+	team,
 	user,
 	workspace,
 };

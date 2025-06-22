@@ -1,16 +1,16 @@
-import { useModalStore } from "@/store";
-import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
+	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "@squaredmade/ui/dialog";
-import { DialogHeader } from "@squaredmade/ui/dialog";
 import { toast } from "@squaredmade/ui/toast";
 import { useState } from "react";
+import { useModalStore } from "@/store";
+import { verifyUrlFormat } from "@/utils/formatting";
 import type { LinkModalProps } from "../interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
@@ -44,13 +44,13 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 		setShowLinkForm(linkFormState);
 	};
 	return (
-		<Dialog open={showLinkForm} onOpenChange={handleOpenChange}>
+		<Dialog onOpenChange={handleOpenChange} open={showLinkForm}>
 			<DialogTrigger asChild>
 				<Button
-					variant="ghost"
-					size="icon"
 					className={`size-8 ${showLinkForm ? "" : "text-muted-foreground"}`}
 					onMouseDown={(e) => e.preventDefault()}
+					size="icon"
+					variant="ghost"
 				>
 					<Link className="size-4" />
 					<span className="sr-only">Link</span>
@@ -64,23 +64,23 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 				</DialogHeader>
 				<div className="mt-5 h-auto w-full">
 					<input
-						type="text"
 						className="mb-4 h-10 w-full rounded-lg border border-muted bg-popover py-2 pl-5 text-md"
-						placeholder="Link text"
-						value={linkName}
 						onChange={(e) => setLinkName(e.target.value)}
+						placeholder="Link text"
+						type="text"
+						value={linkName}
 					/>
 					<input
-						type="text"
 						className="mb-8 h-10 w-full rounded-lg border border-secomutedndary bg-popover py-2 pl-5 text-md"
-						placeholder="URL"
-						value={linkUrl}
 						onChange={(e) => setLinkUrl(e.target.value)}
+						placeholder="URL"
+						type="text"
+						value={linkUrl}
 					/>
 					<Button
 						className="mb-3 h-10 w-full"
-						onClick={handleInjectLinkContent}
 						disabled={!(linkName.length > 0 && linkUrl.length > 0)}
+						onClick={handleInjectLinkContent}
 					>
 						Insert
 					</Button>

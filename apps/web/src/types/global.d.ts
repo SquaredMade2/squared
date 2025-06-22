@@ -2,19 +2,10 @@ import type {
 	Autocomplete,
 	OrganizationSystemPermissionKey,
 } from "@clerk/types";
-// biome-ignore lint/correctness/noUnusedImports: We are definitely using it
 import type { jest } from "@jest/globals";
 import "@tanstack/react-table";
 
 declare global {
-	// biome-ignore lint/suspicious/noRedeclare: We are extending the global namespace
-	namespace jest {
-		interface Matchers<R> {
-			// biome-ignore lint/suspicious/noExplicitAny: Expected could be anything
-			toEqualWithDatePrecision(expected: any, precision?: number): R;
-		}
-	}
-
 	interface Window {
 		sessionStorage: {
 			getItem: jest.MockedFunction<(key: string) => string | null>;

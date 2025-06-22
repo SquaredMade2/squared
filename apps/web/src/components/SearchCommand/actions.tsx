@@ -18,8 +18,10 @@ import {
 	Settings,
 	Trash2,
 } from "@squaredmade/icons";
+import { toast } from "@squaredmade/ui/toast";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import type { useRouter } from "next/navigation";
+import { config } from "@/config";
 import type { SearchbarStructure } from "./interfaces";
 
 export class CommandSchema {
@@ -33,10 +35,6 @@ export class CommandSchema {
 	showNavbar: boolean;
 	setShowTaskSelector: (input: boolean) => void;
 	clearFilter: () => void;
-	showToast: (
-		title: string,
-		variant?: "destructive" | "default" | null,
-	) => void;
 
 	constructor({
 		setShowNewTask,
@@ -44,7 +42,6 @@ export class CommandSchema {
 		setShowNavbar,
 		setShowTaskSelector,
 		clearFilter,
-		showToast,
 		router,
 		pathname,
 		organization,
@@ -56,10 +53,6 @@ export class CommandSchema {
 		setShowNavbar: (input: boolean) => void;
 		setShowTaskSelector: (input: boolean) => void;
 		clearFilter: () => void;
-		showToast: (
-			title: string,
-			variant?: "destructive" | "default" | null,
-		) => void;
 		router: AppRouterInstance;
 		pathname: string;
 		organization?: OrganizationResource | null;
@@ -76,178 +69,275 @@ export class CommandSchema {
 		this.setShowNavbar = setShowNavbar;
 		this.setShowTaskSelector = setShowTaskSelector;
 		this.clearFilter = clearFilter;
-		this.showToast = showToast;
 	}
 
 	getSchema(): SearchbarStructure {
 		return {
-			Task: {
-				createNewTask: {
-					icon: <Plus className="mr-2 h-4 w-4" />,
-					text: "Create new task...",
+			account: {
+				createOrJoinWorkspace: {
 					function: () => {
-						this.setShowNewTask(true);
+						this.router.push("/create");
 					},
-					shortcut: ["C"],
-				},
-				createNewTaskFromTemplate: {
-					icon: <Plus className="mr-2 h-4 w-4" />,
-					text: "Create new task from template...",
-					function: () => {
-						/* this is for the future functionality */
-					},
-					shortcut: ["Alt", "C"],
-				},
-			},
-			Project: {
-				createNewProject: {
-					icon: <Box className="mr-2 size-4" />,
-					text: "Create new project...",
-					function: () => {
-						/* This is for the future functionality */
-					},
-					shortcut: ["P", "then", "C"],
-				},
-				createNewProjectFromTemplate: {
-					icon: <Box className="mr-2 size-4" />,
-					text: "Create new project from template...",
-					function: () => {
-						/* This is for the future functionality */
-					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					shortcut: [],
+					text: "Create or join a workspace",
 				},
-			},
-			View: {
-				createNewView: {
-					icon: <Layers3 className="mr-2 size-4" />,
-					text: "Create new view",
-					function: () => {
-						this.clearFilter();
-						if (this.organization && this.team) {
-							this.router.push(
-								`/${this.organization?.slug}/team/${this.team.identifier}/views/new`,
-							);
-						} else {
-							console.error("Current workspace or team is null");
+				logOut: {
+					function: async () => {
+						const { signOut } = useClerk();
+						try {
+							await signOut();
+							toast.success("Logged out successfully");
+						} catch {
+							toast.error("Failed to log out");
 						}
 					},
-					shortcut: [],
+					icon: <LogOut className="mr-2 h-4 w-4" />,
+					shortcut: ["Alt", "Shift", "Q"],
+					text: "Log out",
+				},
+				switchWorkspace: {
+					function: () => {
+						this.setShowSwitchWorkspace(true);
+					},
+					icon: <ArrowLeftRight className="mr-2 h-4 w-4" />,
+					shortcut: ["O", "then", "W"],
+					text: "Switch workspace...",
 				},
 			},
-			Templates: {
-				createNewTaskTemplate: {
-					icon: <Copy className="mr-2 size-4" />,
-					text: "Create new task template...",
+			miscellaneous: {
+				openNavSidebar: {
 					function: () => {
-						/* This is for the future functionality */
+						this.setShowNavbar(!this.showNavbar);
 					},
-					shortcut: [],
-				},
-				createNewDocumentTemplate: {
-					icon: <Copy className="mr-2 size-4" />,
-					text: "Create new document template...",
-					function: () => {
-						/* This is for the future functionality */
-					},
-					shortcut: [],
-				},
-				createNewProjectTemplate: {
-					icon: <Copy className="mr-2 size-4" />,
-					text: "Create new project template...",
-					function: () => {
-						/* This is for the future functionality */
-					},
-					shortcut: [],
+					icon: <PanelLeft className="mr-2 h-4 w-4" />,
+					shortcut: ["Ctrl", "/"],
+					text: this.showNavbar
+						? "Collapse navigation sidebar"
+						: "Open navigation sidebar",
 				},
 			},
-			Navigation: {
+			navigation: {
+				openLastViewedTask: {
+					function: () => {
+						/* This is for the future functionality */
+					},
+					icon: <ChevronRight className="mr-2 size-4" />,
+					shortcut: [],
+					text: "Open last viewed task",
+				},
 				openTask: {
-					icon: <Circle className="mr-2 size-4" />,
-					text: "Open task...",
 					function: () => {
 						this.setShowTaskSelector(true);
 					},
+					icon: <Circle className="mr-2 size-4" />,
 					shortcut: ["O", "then", "I"],
+					text: "Open task...",
 				},
-				openLastViewedTask: {
-					icon: <ChevronRight className="mr-2 size-4" />,
-					text: "Open last viewed task",
+			},
+			project: {
+				createNewProject: {
 					function: () => {
 						/* This is for the future functionality */
 					},
+					icon: <Box className="mr-2 size-4" />,
+					shortcut: ["P", "then", "C"],
+					text: "Create new project...",
+				},
+				createNewProjectFromTemplate: {
+					function: () => {
+						/* This is for the future functionality */
+					},
+					icon: <Box className="mr-2 size-4" />,
 					shortcut: [],
+					text: "Create new project from template...",
+				},
+			},
+			search: {
+				searchWorkspace: {
+					function: () => {
+						/* this is for the future functionality */
+					},
+					icon: <Search className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Search workspace...",
 				},
 			},
 			separator1: "separator",
-			Ungrouped1: {
-				"Go to inbox": {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to inbox",
+			separator2: "separator",
+			separator3: "separator",
+			separator4: "separator",
+			settings: {
+				accountSettings: {
 					function: () => {
-						this.router.push("/inbox");
+						this.router.push(`${this.organization?.slug}/settings/profile`);
 					},
-					shortcut: ["G", "then", "I"],
+					icon: <Settings className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Account Settings",
 				},
-				"Go to my tasks": {
+				integrationSettings: {
+					function: () => {
+						this.router.push(
+							`${this.organization?.slug}/settings/integrations`,
+						);
+					},
+					icon: <Settings className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Integration Settings",
+				},
+				teamSettings: {
+					function: () => {
+						if (this.organization && this.team) {
+							this.router.push(
+								`${this.organization?.slug}/settings/teams/${this.team.identifier}`,
+							);
+						} else {
+							toast.error("Current workspace or team is null");
+						}
+					},
+					icon: <Settings className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Team Settings",
+				},
+				workspaceSettings: {
+					function: () => {
+						this.router.push(`${this.organization?.slug}/settings`);
+					},
+					icon: <Settings className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Workspace Settings",
+				},
+			},
+			task: {
+				createNewTask: {
+					function: () => {
+						this.setShowNewTask(true);
+					},
+					icon: <Plus className="mr-2 h-4 w-4" />,
+					shortcut: ["C"],
+					text: "Create new task...",
+				},
+				createNewTaskFromTemplate: {
+					function: () => {
+						/* this is for the future functionality */
+					},
+					icon: <Plus className="mr-2 h-4 w-4" />,
+					shortcut: ["Alt", "C"],
+					text: "Create new task from template...",
+				},
+			},
+			teams: {
+				createNewTeam: {
+					function: () => {
+						this.router.push(`${this.organization?.slug}/settings/new-team`);
+					},
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to my tasks",
-					function: () => {},
-					shortcut: ["G", "then", "M"],
-					/* This is for the future functionality */
+					shortcut: [],
+					text: "Create new team...",
 				},
+			},
+			templates: {
+				createNewDocumentTemplate: {
+					function: () => {
+						/* This is for the future functionality */
+					},
+					icon: <Copy className="mr-2 size-4" />,
+					shortcut: [],
+					text: "Create new document template...",
+				},
+				createNewProjectTemplate: {
+					function: () => {
+						/* This is for the future functionality */
+					},
+					icon: <Copy className="mr-2 size-4" />,
+					shortcut: [],
+					text: "Create new project template...",
+				},
+				createNewTaskTemplate: {
+					function: () => {
+						/* This is for the future functionality */
+					},
+					icon: <Copy className="mr-2 size-4" />,
+					shortcut: [],
+					text: "Create new task template...",
+				},
+			},
+			ungrouped1: {
 				"Go to active tasks": {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to active tasks",
 					function: () => {
 						if (this.organization && this.team) {
 							this.router.push(
 								`/${this.organization?.slug}/team/${this.team.identifier}/active`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
-					shortcut: ["G", "then", "A"],
-				},
-				"Go to backlog": {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to backlog",
-					function: () => {
-						if (this.organization && this.team) {
-							this.router.push(
-								`/${this.organization?.slug}/team/${this.team.identifier}/backlog`,
-							);
-						} else {
-							console.error("Current workspace or team is null");
-						}
-					},
-					shortcut: ["G", "then", "B"],
+					shortcut: ["G", "then", "A"],
+					text: "Go to active tasks",
 				},
 				"Go to all tasks": {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to all tasks",
 					function: () => {
 						if (this.organization && this.team) {
 							this.router.push(
 								`/${this.organization?.slug}/team/${this.team.identifier}/all`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					shortcut: ["G", "then", "E"],
+					text: "Go to all tasks",
+				},
+				"Go to backlog": {
+					function: () => {
+						if (this.organization && this.team) {
+							this.router.push(
+								`/${this.organization?.slug}/team/${this.team.identifier}/backlog`,
+							);
+						} else {
+							toast.error("Current workspace or team is null");
+						}
+					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
+					shortcut: ["G", "then", "B"],
+					text: "Go to backlog",
+				},
+				"Go to inbox": {
+					function: () => {
+						this.router.push("/inbox");
+					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
+					shortcut: ["G", "then", "I"],
+					text: "Go to inbox",
+				},
+				"Go to my tasks": {
+					function: () => {
+						if (this.organization && this.team) {
+							this.router.push(
+								`/${this.organization?.slug}/team/${this.team.identifier}/my-tasks`,
+							);
+						} else {
+							toast.error("Current workspace or team is null");
+						}
+					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
+					shortcut: ["G", "then", "M"],
+					text: "Go to my tasks",
+					/* This is for the future functionality */
 				},
 				"Go to projects": {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to projects",
 					function: () => {
 						/* This is for the future functionality */
 					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					shortcut: ["G", "then", "P"],
+					text: "Go to projects",
 				},
 				"Go to views": {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to views",
 					function: () => {
 						this.clearFilter();
 						if (this.organization && this.team) {
@@ -255,191 +345,101 @@ export class CommandSchema {
 								`/${this.organization?.slug}/team/${this.team.identifier}/views`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					shortcut: ["G", "then", "U"],
+					text: "Go to views",
 				},
 			},
-			separator2: "separator",
-			Ungrouped2: {
+			ungrouped2: {
 				"Go to archive": {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Go to archive",
 					function: () => {
 						if (this.organization && this.team) {
 							this.router.push(`/${this.organization?.slug}/archive/tasks`);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
+					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					shortcut: ["G", "then", "X"],
+					text: "Go to archive",
+				},
+				"Go to recently deleted documents": {
+					function: () => {
+						/* this is for the future functionality */
+					},
+					icon: <Trash2 className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Go to recently deleted documents",
+				},
+				"Go to recently deleted projects": {
+					function: () => {
+						/* this is for the future functionality */
+					},
+					icon: <Trash2 className="mr-2 h-4 w-4" />,
+					shortcut: [],
+					text: "Go to recently deleted projects",
 				},
 				"Go to recently deleted tasks": {
-					icon: <Trash2 className="mr-2 h-4 w-4" />,
-					text: "Go to recently deleted tasks",
 					function: () => {
 						if (this.organization && this.team) {
 							this.router.push(
 								`/${this.organization?.slug}/archive/recently-deleted-tasks`,
 							);
 						} else {
-							console.error("Current workspace or team is null");
+							toast.error("Current workspace or team is null");
 						}
 					},
-					shortcut: [],
-				},
-				"Go to recently deleted projects": {
 					icon: <Trash2 className="mr-2 h-4 w-4" />,
-					text: "Go to recently deleted projects",
-					function: () => {
-						/* this is for the future functionality */
-					},
 					shortcut: [],
-				},
-				"Go to recently deleted documents": {
-					icon: <Trash2 className="mr-2 h-4 w-4" />,
-					text: "Go to recently deleted documents",
-					function: () => {
-						/* this is for the future functionality */
-					},
-					shortcut: [],
+					text: "Go to recently deleted tasks",
 				},
 				"Open recently deleted teams": {
-					icon: <Trash2 className="mr-2 h-4 w-4" />,
-					text: "Open recently deleted teams",
 					function: () => {
 						/* this is for the future functionality */
 					},
+					icon: <Trash2 className="mr-2 h-4 w-4" />,
 					shortcut: [],
+					text: "Open recently deleted teams",
 				},
 			},
-			separator3: "separator",
-			Ungrouped3: {
+			ungrouped3: {
 				"Copy current page URL": {
-					icon: <ClipboardCopy className="mr-2 h-4 w-4" />,
-					text: "Copy current page URL",
 					function: async () => {
-						const url = `${process.env.NEXT_PUBLIC_URL}${this.pathname}`;
+						const url = `${config.NEXT_PUBLIC_URL}${this.pathname}`;
 						await window.navigator.clipboard.writeText(url);
-						this.showToast("URL copied to clipboard");
+						toast.success("URL copied to clipboard");
 					},
+					icon: <ClipboardCopy className="mr-2 h-4 w-4" />,
 					shortcut: ["Ctrl", "Shift", "C"],
+					text: "Copy current page URL",
 				},
 				"Go to advanced search": {
-					icon: <MoveDiagonal className="mr-2 h-4 w-4" />,
-					text: "Go to advanced search",
 					function: () => {
 						/* this is for the future functionality */
 					},
+					icon: <MoveDiagonal className="mr-2 h-4 w-4" />,
 					shortcut: ["/"],
+					text: "Go to advanced search",
 				},
 			},
-			separator4: "separator",
-			Teams: {
-				createNewTeam: {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Create new team...",
+			view: {
+				createNewView: {
 					function: () => {
-						this.router.push(`${this.organization?.slug}/settings/new-team`);
-					},
-					shortcut: [],
-				},
-			},
-			Settings: {
-				workspaceSettings: {
-					icon: <Settings className="mr-2 h-4 w-4" />,
-					text: "Workspace Settings",
-					function: () => {
-						this.router.push(`${this.organization?.slug}/settings`);
-					},
-					shortcut: [],
-				},
-				accountSettings: {
-					icon: <Settings className="mr-2 h-4 w-4" />,
-					text: "Account Settings",
-					function: () => {
-						this.router.push(`${this.organization?.slug}/settings/profile`);
-					},
-					shortcut: [],
-				},
-				teamSettings: {
-					icon: <Settings className="mr-2 h-4 w-4" />,
-					text: "Team Settings",
-					function: () => {
+						this.clearFilter();
 						if (this.organization && this.team) {
 							this.router.push(
-								`${this.organization?.slug}/settings/teams/${this.team.identifier}`,
+								`/${this.organization?.slug}/team/${this.team.identifier}/views/new`,
 							);
 						} else {
-							console.error("Current workspace or team is null null");
+							toast.error("Current workspace or team is null");
 						}
 					},
+					icon: <Layers3 className="mr-2 size-4" />,
 					shortcut: [],
-				},
-				integrationSettings: {
-					icon: <Settings className="mr-2 h-4 w-4" />,
-					text: "Integration Settings",
-					function: () => {
-						this.router.push(
-							`${this.organization?.slug}/settings/integrations`,
-						);
-					},
-					shortcut: [],
-				},
-			},
-			Account: {
-				logOut: {
-					icon: <LogOut className="mr-2 h-4 w-4" />,
-					text: "Log out",
-					function: async () => {
-						const { signOut } = useClerk();
-						try {
-							await signOut();
-							this.showToast("Logged out successfully", "default");
-						} catch {
-							this.showToast("Failed to log out", "destructive");
-						}
-					},
-					shortcut: ["Alt", "Shift", "Q"],
-				},
-				switchWorkspace: {
-					icon: <ArrowLeftRight className="mr-2 h-4 w-4" />,
-					text: "Switch workspace...",
-					function: () => {
-						this.setShowSwitchWorkspace(true);
-					},
-					shortcut: ["O", "then", "W"],
-				},
-				createOrJoinWorkspace: {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Create or join a workspace",
-					function: () => {
-						this.router.push("/create");
-					},
-					shortcut: [],
-				},
-			},
-			Miscellaneous: {
-				openNavSidebar: {
-					icon: <PanelLeft className="mr-2 h-4 w-4" />,
-					text: this.showNavbar
-						? "Collapse navigation sidebar"
-						: "Open navigation sidebar",
-					function: () => {
-						this.setShowNavbar(!this.showNavbar);
-					},
-					shortcut: ["Ctrl", "/"],
-				},
-			},
-			Search: {
-				searchWorkspace: {
-					icon: <Search className="mr-2 h-4 w-4" />,
-					text: "Search workspace...",
-					function: () => {
-						/* this is for the future functionality */
-					},
-					shortcut: [],
+					text: "Create new view",
 				},
 			},
 		};

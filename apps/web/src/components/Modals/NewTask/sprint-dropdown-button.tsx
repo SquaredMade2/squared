@@ -1,5 +1,16 @@
 "use client";
 
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import type { Sprint } from "@squaredmade/db";
+import { Activity, Check } from "@squaredmade/icons";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@squaredmade/ui/dropdown-menu";
+import { useMemo } from "react";
 import {
 	Command,
 	CommandEmpty,
@@ -9,18 +20,6 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { useModalStore } from "@/store";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import type { Sprint } from "@squaredmade/db";
-import { Activity } from "@squaredmade/icons";
-import { Check } from "@squaredmade/icons";
-import { Button } from "@squaredmade/ui/button";
-import { cn } from "@squaredmade/ui/cn";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import { useMemo } from "react";
 
 export const SprintDropdownButton = ({
 	activeSprint,
@@ -47,14 +46,14 @@ export const SprintDropdownButton = ({
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant={"outline"} className={cn("w-full max-w-full")}>
+				<Button className={cn("w-full max-w-full")} variant="outline">
 					<span className="cursor-pointer">
 						<Activity className="mr-2 size-4 text-muted-foreground" />
 					</span>
 					{selectedSprint?.name || <span>Select Sprint</span>}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-full p-0" side="left" align="start">
+			<DropdownMenuContent align="start" className="w-full p-0" side="left">
 				<Command>
 					<CommandInput placeholder="Search..." />
 					<CommandList>
@@ -67,8 +66,8 @@ export const SprintDropdownButton = ({
 									</p>
 
 									<CommandItem
-										value={activeSprint.name}
 										onSelect={() => handleSelectSprint(activeSprint)}
+										value={activeSprint.name}
 									>
 										{activeSprint.name}
 										<Check
@@ -90,8 +89,8 @@ export const SprintDropdownButton = ({
 								{upcomingSprints.map((item: Sprint) => (
 									<CommandItem
 										key={item.id}
-										value={item.name}
 										onSelect={() => handleSelectSprint(item)}
+										value={item.name}
 									>
 										{item.name}
 										<Check

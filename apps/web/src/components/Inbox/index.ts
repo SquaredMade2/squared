@@ -1,3 +1,3 @@
-export * from "./InboxDataTable";
-export * from "./InboxSidebar";
+export { InboxDataTable } from "./InboxDataTable";
+export { InboxSidebar } from "./InboxSidebar";
 export { MobileInboxSwitcher } from "./MobileInboxSwitcher";

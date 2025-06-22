@@ -1,11 +1,11 @@
-import { client } from "@/lib/client";
-import { useCommentStore, useEventStore, useTaskStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
 import { useOrganization } from "@clerk/nextjs";
 import type { TaskEvent } from "@squaredmade/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { client } from "@/lib/client";
+import { useCommentStore, useEventStore, useTaskStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
 import { useTasks } from "./useTasks";
 import { useTeams } from "./useTeams";
 
@@ -30,7 +30,7 @@ export function useTaskPage() {
 	const { setEvents } = useEventStore((state) => state);
 
 	const taskQuery = useQuery({
-		queryKey: ["task", organization?.id, taskIdentifier],
+		enabled: !!organization && isLoaded && !!taskIdentifier,
 		queryFn: async () => {
 			if (!organization) throw new Error("Workspace not found");
 			const identifier = parseParams(taskIdentifier);
@@ -44,25 +44,25 @@ export function useTaskPage() {
 			}
 			return pageTask;
 		},
-		enabled: !!organization && isLoaded && !!taskIdentifier,
+		queryKey: ["task", organization?.id, taskIdentifier],
 	});
 
 	const subtasksQuery = useQuery({
-		queryKey: ["task", "subtasks", taskQuery.data?.id],
+		enabled: !!taskQuery.data,
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.task.getSubtasks.$get({
 				parentId: taskQuery.data.id,
 			});
-			const subtasks = await res.json();
-			setSubtasks(subtasks);
-			return subtasks;
+			const subtasksData = await res.json();
+			setSubtasks(subtasksData);
+			return subtasksData;
 		},
-		enabled: !!taskQuery.data,
+		queryKey: ["task", "subtasks", taskQuery.data?.id],
 	});
 
 	const blockedByQuery = useQuery({
-		queryKey: ["task", "blockedBy", taskQuery.data?.id],
+		enabled: !!taskQuery.data,
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.task.getTaskBlockedByAndBlocking.$get({
@@ -73,11 +73,11 @@ export function useTaskPage() {
 			setCurrentTaskBlockingIds(blockedByTasks.blockingIds);
 			return blockedByTasks;
 		},
-		enabled: !!taskQuery.data,
+		queryKey: ["task", "blockedBy", taskQuery.data?.id],
 	});
 
 	const commentsQuery = useQuery({
-		queryKey: ["comment", taskQuery.data?.id],
+		enabled: !!taskQuery.data,
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.comment.getComments.$get({
@@ -87,11 +87,11 @@ export function useTaskPage() {
 			setComments(comments);
 			return comments;
 		},
-		enabled: !!taskQuery.data,
+		queryKey: ["comment", taskQuery.data?.id],
 	});
 
 	const eventsQuery = useQuery({
-		queryKey: ["event", "getEvents", taskQuery.data?.id],
+		enabled: !!taskQuery.data,
 		queryFn: async () => {
 			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.event.getEvents.$get({
@@ -101,7 +101,7 @@ export function useTaskPage() {
 			setEvents(events as TaskEvent[]);
 			return events;
 		},
-		enabled: !!taskQuery.data,
+		queryKey: ["event", "getEvents", taskQuery.data?.id],
 	});
 
 	const isLoading =
@@ -124,15 +124,15 @@ export function useTaskPage() {
 		eventsQuery.error;
 
 	return {
+		allBlockedTaskIds,
+		currentTaskBlockedBy,
+		currentTaskBlockingIds,
+		error: error ? parseError(error, "Failed to fetch task") : null,
+		isLoading,
+		subtasks,
 		task:
 			taskQuery.data ||
 			tasks.find((t) => t.identifier === taskIdentifier) ||
 			null,
-		isLoading,
-		error: error ? parseError(error, "Failed to fetch task") : null,
-		subtasks,
-		currentTaskBlockedBy,
-		currentTaskBlockingIds,
-		allBlockedTaskIds,
 	};
 }

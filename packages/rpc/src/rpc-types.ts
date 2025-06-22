@@ -42,14 +42,21 @@ export interface ServiceSet<S extends Service> {
 export const voidSchema = z.void();
 
 export class ValidationError extends Error {
+	code: string;
+	type: string;
+	params: { instancePath?: string; schemaPath?: string };
+
 	constructor(
-		public code: string,
-		public type: string,
+		code: string,
+		type: string,
 		message: string,
-		public params: { instancePath?: string; schemaPath?: string },
+		params: { instancePath?: string; schemaPath?: string },
 	) {
 		super(message);
 		this.name = "ValidationError";
+		this.code = code;
+		this.type = type;
+		this.params = params;
 		Object.setPrototypeOf(this, ValidationError.prototype);
 	}
 }
@@ -117,20 +124,21 @@ export function serviceWithSchema<S extends Service>(
 	} = {} as { [K in keyof S]: S[K] };
 
 	const serviceDetails: ServiceDetails = {
-		service: serviceMeta.name,
 		expose: [],
+		service: serviceMeta.name,
 	};
 
 	const {
 		logger,
+		// biome-ignore lint/style/noProcessEnv: We need to check the environment
 		strictResponseValidation = process.env.NODE_ENV !== "production",
 	} = serviceMeta;
 
 	for (const [methodName, methodMeta] of Object.entries(serviceMeta.methods)) {
 		serviceDetails.expose.push({
+			help: methodMeta.help,
 			methodName,
 			methodTimeout: methodMeta.methodTimeout,
-			help: methodMeta.help,
 			paramNames: methodMeta.paramNames,
 			requestSchema: methodMeta.requestSchema,
 			responseSchema: methodMeta.responseSchema,

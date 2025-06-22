@@ -8,8 +8,8 @@ import {
 } from "../src/index";
 import {
 	ResponseValidationError,
-	ValidationError,
 	serviceWithSchema,
+	ValidationError,
 } from "../src/rpc-types";
 
 const testLogger = createCustomLogger("rpc-test");
@@ -25,20 +25,20 @@ describe("@squaredmade/rpc schema utilities", () => {
 
 			const userSchema = createSchema<User>()(
 				z.object({
+					age: z.number(),
 					id: z.string(),
 					name: z.string(),
-					age: z.number(),
 				}),
 			);
 
 			expect(userSchema).toBeInstanceOf(z.ZodObject);
 
 			// Test validation works
-			const validUser = { id: "123", name: "John", age: 30 };
+			const validUser = { age: 30, id: "123", name: "John" };
 			expect(userSchema.parse(validUser)).toEqual(validUser);
 
 			// Test validation fails
-			const invalidUser = { id: "123", name: "John", age: "30" };
+			const invalidUser = { age: "30", id: "123", name: "John" };
 			expect(() => userSchema.parse(invalidUser)).toThrow();
 		});
 	});
@@ -78,13 +78,13 @@ describe("@squaredmade/rpc schema utilities", () => {
 
 			// Create schema for the service
 			const userServiceSchema = createServiceSchema<UserService>()({
+				createUser: {
+					input: z.object({ age: z.number(), name: z.string() }),
+					output: z.object({ id: z.string() }),
+				},
 				getUser: {
 					input: z.object({ id: z.string() }),
-					output: z.object({ name: z.string(), age: z.number() }),
-				},
-				createUser: {
-					input: z.object({ name: z.string(), age: z.number() }),
-					output: z.object({ id: z.string() }),
+					output: z.object({ age: z.number(), name: z.string() }),
 				},
 			});
 
@@ -135,14 +135,14 @@ describe("@squaredmade/rpc schema utilities", () => {
 		it("should create a service set with validation", () => {
 			// Mock service implementation
 			const service = {
-				hello: async (input: { name: string }) => {
-					return { greeting: `Hello, ${input.name}!` };
+				hello: async (i: { name: string }) => {
+					return { greeting: `Hello, ${i.name}!` };
 				},
 			};
 
 			// Define service schema
 			const serviceMeta = {
-				name: "greetingService",
+				logger: testLogger,
 				methods: {
 					hello: {
 						methodName: "hello",
@@ -150,7 +150,7 @@ describe("@squaredmade/rpc schema utilities", () => {
 						responseSchema: z.object({ greeting: z.string() }),
 					},
 				},
-				logger: testLogger,
+				name: "greetingService",
 			};
 
 			// Create service with schema
@@ -179,7 +179,7 @@ describe("@squaredmade/rpc schema utilities", () => {
 
 			// Define service schema
 			const serviceMeta = {
-				name: "validationService",
+				logger: testLogger,
 				methods: {
 					checkAge: {
 						methodName: "checkAge",
@@ -187,7 +187,7 @@ describe("@squaredmade/rpc schema utilities", () => {
 						responseSchema: z.object({ allowed: z.boolean() }),
 					},
 				},
-				logger: testLogger,
+				name: "validationService",
 			};
 
 			// Create service with schema

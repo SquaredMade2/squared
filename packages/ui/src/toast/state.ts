@@ -11,7 +11,7 @@ let toastsCounter = 1;
  * Type definition for toast titles
  * Allows for both static React nodes and functions that return React nodes
  */
-type titleT = (() => React.ReactNode) | React.ReactNode;
+type TitleT = (() => React.ReactNode) | React.ReactNode;
 
 /**
  * Extended promise result type for complex toast results
@@ -97,7 +97,7 @@ class Observer {
 	/**
 	 * List of functions that will be called when a toast is added or dismissed
 	 */
-	subscribers: Array<(toast: ExternalToast | ToastToDismiss) => void>;
+	subscribers: Array<(t: ExternalToast | ToastToDismiss) => void>;
 
 	/**
 	 * Collection of all toasts, including those that have been dismissed
@@ -143,9 +143,6 @@ class Observer {
 	 */
 	checkToasterMounted = () => {
 		if (!this.isToasterMounted) {
-			console.error(
-				"No Toaster component is mounted. Please mount a Toaster component before using toast functions.",
-			);
 			return false;
 		}
 		return true;
@@ -154,7 +151,7 @@ class Observer {
 	/**
 	 * Registers a subscriber function to be called when toasts are added or dismissed
 	 */
-	subscribe = (subscriber: (toast: ExternalToast | ToastToDismiss) => void) => {
+	subscribe = (subscriber: (t: ExternalToast | ToastToDismiss) => void) => {
 		this.subscribers.push(subscriber);
 
 		return () => {
@@ -185,7 +182,7 @@ class Observer {
 	 */
 	create = (
 		data: ExternalToast & {
-			message?: titleT;
+			message?: TitleT;
 			type?: ToastTypes;
 			promise?: PromiseT;
 			jsx?: React.ReactElement;
@@ -196,8 +193,8 @@ class Observer {
 			typeof data?.id === "number" || (data.id && data.id.length > 0)
 				? data.id
 				: toastsCounter++;
-		const alreadyExists = this.toasts.find((toast) => {
-			return toast.id === id;
+		const alreadyExists = this.toasts.find((t) => {
+			return t.id === id;
 		});
 		const dismissible =
 			data.dismissible === undefined ? true : data.dismissible;
@@ -207,19 +204,19 @@ class Observer {
 		}
 
 		if (alreadyExists) {
-			this.toasts = this.toasts.map((toast) => {
-				if (toast.id === id) {
-					this.publish({ ...toast, ...data, id, title: message });
+			this.toasts = this.toasts.map((t) => {
+				if (t.id === id) {
+					this.publish({ ...t, ...data, id, title: message });
 					return {
-						...toast,
+						...t,
 						...data,
-						id,
 						dismissible,
+						id,
 						title: message,
 					};
 				}
 
-				return toast;
+				return t;
 			});
 		} else {
 			this.addToast({ title: message, ...rest, dismissible, id });
@@ -236,13 +233,13 @@ class Observer {
 			this.dismissedToasts.add(id);
 			requestAnimationFrame(() => {
 				for (const subscriber of this.subscribers) {
-					subscriber({ id, dismiss: true });
+					subscriber({ dismiss: true, id });
 				}
 			});
 		} else {
 			for (const toast of this.toasts) {
 				for (const subscriber of this.subscribers) {
-					subscriber({ id: toast.id, dismiss: true });
+					subscriber({ dismiss: true, id: toast.id });
 				}
 			}
 		}
@@ -250,28 +247,28 @@ class Observer {
 		return id;
 	};
 
-	message = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	message = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, message });
 	};
 
-	error = (message: titleT | React.ReactNode, data?: ExternalToast) => {
+	error = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
 		return this.create({ ...data, message, type: "error" });
 	};
 
-	success = (message: titleT | React.ReactNode, data?: ExternalToast) => {
-		return this.create({ ...data, type: "success", message });
+	success = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
+		return this.create({ ...data, message, type: "success" });
 	};
 
-	info = (message: titleT | React.ReactNode, data?: ExternalToast) => {
-		return this.create({ ...data, type: "info", message });
+	info = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
+		return this.create({ ...data, message, type: "info" });
 	};
 
-	warning = (message: titleT | React.ReactNode, data?: ExternalToast) => {
-		return this.create({ ...data, type: "warning", message });
+	warning = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
+		return this.create({ ...data, message, type: "warning" });
 	};
 
-	loading = (message: titleT | React.ReactNode, data?: ExternalToast) => {
-		return this.create({ ...data, type: "loading", message });
+	loading = (message: TitleT | React.ReactNode, data?: ExternalToast) => {
+		return this.create({ ...data, message, type: "loading" });
 	};
 
 	/**
@@ -290,11 +287,11 @@ class Observer {
 		if (data.loading !== undefined) {
 			id = this.create({
 				...data,
-				promise,
-				type: "loading",
-				message: data.loading,
 				description:
 					typeof data.description !== "function" ? data.description : undefined,
+				message: data.loading,
+				promise,
+				type: "loading",
 			});
 		}
 
@@ -311,7 +308,7 @@ class Observer {
 				const isReactElementResponse = React.isValidElement(response);
 				if (isReactElementResponse) {
 					shouldDismiss = false;
-					this.create({ id, type: "default", message: response });
+					this.create({ id, message: response, type: "default" });
 				} else if (isHttpResponse(response) && !response.ok) {
 					shouldDismiss = false;
 
@@ -337,7 +334,7 @@ class Observer {
 						? (promiseData as PromiseIExtendedResult)
 						: { message: promiseData };
 
-					this.create({ id, type: "error", description, ...toastSettings });
+					this.create({ description, id, type: "error", ...toastSettings });
 				} else if (response instanceof Error) {
 					shouldDismiss = false;
 
@@ -359,7 +356,7 @@ class Observer {
 						? (promiseData as PromiseIExtendedResult)
 						: { message: promiseData };
 
-					this.create({ id, type: "error", description, ...toastSettings });
+					this.create({ description, id, type: "error", ...toastSettings });
 				} else if (data.success !== undefined) {
 					shouldDismiss = false;
 					const promiseData =
@@ -380,7 +377,7 @@ class Observer {
 						? (promiseData as PromiseIExtendedResult)
 						: { message: promiseData };
 
-					this.create({ id, type: "success", description, ...toastSettings });
+					this.create({ description, id, type: "success", ...toastSettings });
 				}
 			})
 			.catch(async (error) => {
@@ -405,7 +402,7 @@ class Observer {
 						? (promiseData as PromiseIExtendedResult)
 						: { message: promiseData };
 
-					this.create({ id, type: "error", description, ...toastSettings });
+					this.create({ description, id, type: "error", ...toastSettings });
 				}
 			})
 			.finally(() => {
@@ -439,7 +436,7 @@ class Observer {
 		data?: ExternalToast,
 	) => {
 		const id = data?.id || toastsCounter++;
-		this.create({ jsx: jsx(id), id, ...data });
+		this.create({ id, jsx: jsx(id), ...data });
 		return id;
 	};
 
@@ -447,7 +444,7 @@ class Observer {
 	 * Gets all toasts that haven't been dismissed
 	 */
 	getActiveToasts = () => {
-		return this.toasts.filter((toast) => !this.dismissedToasts.has(toast.id));
+		return this.toasts.filter((t) => !this.dismissedToasts.has(t.id));
 	};
 }
 
@@ -459,7 +456,7 @@ export const ToastState = new Observer();
 /**
  * Basic toast function that creates a default toast
  */
-const toastFunction = (message: titleT, data?: ExternalToast) => {
+const toastFunction = (message: TitleT, data?: ExternalToast) => {
 	// Check if Toaster is mounted before creating a toast
 	if (!ToastState.checkToasterMounted()) return;
 	const id = data?.id || toastsCounter++;
@@ -509,15 +506,15 @@ const getToasts = () => ToastState.getActiveToasts();
 export const toast = Object.assign(
 	basicToast,
 	{
-		success: ToastState.success,
-		info: ToastState.info,
-		warning: ToastState.warning,
-		error: ToastState.error,
 		custom: ToastState.custom,
+		dismiss: ToastState.dismiss,
+		error: ToastState.error,
+		info: ToastState.info,
+		loading: ToastState.loading,
 		message: ToastState.message,
 		promise: ToastState.promise,
-		dismiss: ToastState.dismiss,
-		loading: ToastState.loading,
+		success: ToastState.success,
+		warning: ToastState.warning,
 	},
 	{ getHistory, getToasts },
 );

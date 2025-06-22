@@ -28,7 +28,7 @@ const DesignationsDatePicker = () => {
 		mutationFn: async (date: Date | null) => {
 			if (!taskId) throw new Error("Invalid Task is required");
 			const res = await client.task.updateDueDate.$post({
-				taskId: taskId,
+				taskId,
 				dueDate: date,
 			});
 			return res.json();

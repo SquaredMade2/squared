@@ -1,7 +1,6 @@
+import { expect, test } from "vitest";
 import { Registry } from "./registry.js";
 import type { Class } from "./types.js";
-
-import { expect, test } from "vitest";
 
 test("class registry", () => {
 	const registry = new Registry<Class>((c) => c.name);

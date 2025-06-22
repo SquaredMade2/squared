@@ -1,8 +1,5 @@
 "use client";
 
-import { client } from "@/lib/client";
-import { useModalStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { LoaderCircle } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
@@ -19,6 +16,9 @@ import { Textarea } from "@squaredmade/ui/textarea";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { client } from "@/lib/client";
+import { useModalStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 
 export const WorkspaceInviteModal = () => {
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(
@@ -28,7 +28,6 @@ export const WorkspaceInviteModal = () => {
 	const { organization } = useOrganization();
 
 	const { mutate: handleInvite, isPending } = useMutation({
-		mutationKey: ["workspace", "workspaceInvite", organization?.id],
 		mutationFn: async () => {
 			if (!organization?.slug) return;
 			const emailAddresses = inviteEmails
@@ -41,20 +40,21 @@ export const WorkspaceInviteModal = () => {
 				workspaceSlug: organization.slug,
 			});
 		},
-		onSuccess: () => {
-			setInviteEmails("");
-			setShowWorkspaceInvite(false);
-			toast.success("Invites sent!");
-		},
+		mutationKey: ["workspace", "workspaceInvite", organization?.id],
 		onError: (error) => {
 			toast.error("Error sending invites", {
 				description: parseError(error),
 			});
 		},
+		onSuccess: () => {
+			setInviteEmails("");
+			setShowWorkspaceInvite(false);
+			toast.success("Invites sent!");
+		},
 	});
 
 	return (
-		<Dialog open={showWorkspaceInvite} onOpenChange={setShowWorkspaceInvite}>
+		<Dialog onOpenChange={setShowWorkspaceInvite} open={showWorkspaceInvite}>
 			<DialogContent>
 				<DialogHeader>
 					<div className="flex items-center gap-2 text-lg">
@@ -75,16 +75,16 @@ export const WorkspaceInviteModal = () => {
 				<div className="flex flex-col gap-3 pl-2">
 					<Label htmlFor="email">Email</Label>
 					<Textarea
+						onChange={(e) => setInviteEmails(e.target.value)}
 						placeholder="email@example.com, email2@example.com..."
 						value={inviteEmails}
-						onChange={(e) => setInviteEmails(e.target.value)}
 					/>{" "}
 				</div>
 				<DialogFooter>
 					<Button
-						onClick={() => handleInvite()}
-						disabled={isPending}
 						className="w-32"
+						disabled={isPending}
+						onClick={() => handleInvite()}
 					>
 						{isPending ? (
 							<LoaderCircle className="size-4 animate-spin" />

@@ -1,15 +1,14 @@
 "use client";
 
-import TopNavBarDisplay from "@/components/DisplaySettings";
-import FilterDropDown from "@/components/FilterDropdowns";
-import { SaveFilterForm } from "@/components/FilterDropdowns/SaveFilterForm";
-import { useFilterStore } from "@/store";
-import { useDebounce } from "@/utils/useDebounce";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
-
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import TopNavBarDisplay from "@/components/DisplaySettings";
+import FilterDropDown from "@/components/FilterDropdowns";
+import { SaveFilterForm } from "@/components/FilterDropdowns/save-filter-form";
+import { useFilterStore } from "@/store";
+import { useDebounce } from "@/utils/useDebounce";
 
 const TopNavBar = ({
 	pageTitle,
@@ -48,8 +47,8 @@ const TopNavBar = ({
 				<div className="mb-4 flex gap-3">
 					<FilterDropDown />
 					<Input
-						placeholder="Search Tasks"
 						onChange={(e) => setSearch(e.target.value)}
+						placeholder="Search Tasks"
 					/>
 				</div>
 				<div className="flex gap-2">
@@ -59,12 +58,12 @@ const TopNavBar = ({
 							{pathname.includes("/views") ? (
 								<>
 									<Button
-										variant="outline"
 										onClick={() => {
 											setShowSaveForm(true);
 											setCreateNewFilter(false);
 										}}
 										size="sm"
+										variant="outline"
 									>
 										Edit
 									</Button>
@@ -80,7 +79,7 @@ const TopNavBar = ({
 								</>
 							) : (
 								<>
-									<Button variant="outline" onClick={clearFilter} size="sm">
+									<Button onClick={clearFilter} size="sm" variant="outline">
 										Cancel
 									</Button>
 									<Button

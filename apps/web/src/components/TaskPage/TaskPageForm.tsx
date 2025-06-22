@@ -1,3 +1,10 @@
+import { useOrganization } from "@clerk/nextjs";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
+import { toast } from "@squaredmade/ui/toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import {
 	convertMDXToSlate,
 	convertSlateToMDX,
@@ -7,13 +14,6 @@ import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import { useOrganization } from "@clerk/nextjs";
-import { Button } from "@squaredmade/ui/button";
-import { Input } from "@squaredmade/ui/input";
-import { toast } from "@squaredmade/ui/toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
-import { type ChangeEvent, type FormEvent, useState } from "react";
 import { StatusIcon } from "../Icons";
 import TextEditor, {
 	type CustomDescendant,
@@ -53,6 +53,12 @@ export const TaskPageForm = () => {
 			});
 			return res.json();
 		},
+		onError: (error) => {
+			toast.error("Error updating task", {
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+			});
+		},
 		onSuccess: async (updatedTask) => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
@@ -65,12 +71,6 @@ export const TaskPageForm = () => {
 			queryClient.invalidateQueries({ queryKey: ["event", task?.id] });
 			toast.success("Task updated successfully");
 		},
-		onError: (error) => {
-			toast.error("Error updating task", {
-				description:
-					error instanceof Error ? error.message : "An unknown error occurred",
-			});
-		},
 	});
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +81,7 @@ export const TaskPageForm = () => {
 		setUpdatedDescription(event);
 	};
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 		setIsEditingTitle(false);
 		setIsDescriptionFocused(false);
@@ -99,8 +99,8 @@ export const TaskPageForm = () => {
 			updatedDescriptionString !== task?.description;
 		if (changeMade && task?.id) {
 			updateTaskMutation.mutate({
-				title: transformedTitleInput,
 				description: transformedDescriptionInput,
+				title: transformedTitleInput,
 			});
 		}
 	};
@@ -110,20 +110,20 @@ export const TaskPageForm = () => {
 			<div className="space-y-2">
 				<Input
 					className="mt-2 truncate rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-hidden"
-					value={updatedTitle}
-					onChange={handleTitleChange}
+					maxLength={50}
+					name="title"
 					onBlur={handleSubmit}
+					onChange={handleTitleChange}
 					onFocus={() => setIsEditingTitle(true)}
 					placeholder="Title"
-					name="title"
-					maxLength={50}
 					style={{
 						border: "none",
 						boxShadow: "none",
-						padding: "0",
 						lineHeight: "1.2",
 						minHeight: "1.2em",
+						padding: "0",
 					}}
+					value={updatedTitle}
 				/>
 
 				<p
@@ -135,11 +135,11 @@ export const TaskPageForm = () => {
 				{parentTask && (
 					<div className="flex items-center gap-1 text-muted-foreground text-sm">
 						Subtask of
-						<Button variant="ghost" className="gap-1 px-1 py-0">
+						<Button className="gap-1 px-1 py-0" variant="ghost">
 							<StatusIcon status={parentTask.status} />
 							<Link
-								href={`/${organization?.slug}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
+								href={`/${organization?.slug}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 							>
 								{parentTask.identifier} -
 								<span className="ml-1 cursor-pointer text-foreground">
@@ -152,15 +152,15 @@ export const TaskPageForm = () => {
 			</div>
 
 			<TextEditor
+				hasToolbar={false}
+				onBlur={handleSubmit}
+				onChange={handleDescriptionChange}
+				onFocus={() => setIsDescriptionFocused(true)}
+				placeholder="Add description..."
+				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
 				value={updatedDescription.filter(
 					(item) => isElement(item) && item.children.length > 0,
 				)}
-				onChange={handleDescriptionChange}
-				placeholder="Add description..."
-				onBlur={handleSubmit}
-				onFocus={() => setIsDescriptionFocused(true)}
-				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
-				hasToolbar={false}
 			/>
 		</form>
 	);

@@ -99,7 +99,7 @@ Access the web application at <http://localhost:3000> and the API at <http://loc
 - `pnpm build`: Build all packages and applications
 - `pnpm test`: Run tests across all packages
 - `pnpm lint`: Run linting across all packages
-- `pnpm format:write`: Format code using Biome
+- `pnpm format`: Format code using Biome
 - `pnpm check-types`: Run TypeScript type checking
 
 For application-specific commands:

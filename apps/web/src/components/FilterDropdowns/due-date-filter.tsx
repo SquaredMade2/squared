@@ -1,8 +1,5 @@
 "use client";
 
-import { useFilterStore } from "@/store";
-import type { FilterCondition } from "@/store/filters";
-import { formatDateForComparison } from "@/store/filters/helpers";
 import { Button } from "@squaredmade/ui/button";
 import { Calendar } from "@squaredmade/ui/calendar";
 import {
@@ -11,6 +8,9 @@ import {
 	DropdownMenuSubTrigger,
 } from "@squaredmade/ui/dropdown-menu";
 import { useEffect, useState } from "react";
+import { useFilterStore } from "@/store";
+import type { FilterCondition } from "@/store/filters";
+import { formatDateForComparison } from "@/store/filters/helpers";
 import type { FilterOption } from "./interfaces";
 
 const DueDateFilterDropDown = ({
@@ -54,8 +54,8 @@ const DueDateFilterDropDown = ({
 		if (selectedToggle && selectedDate) {
 			const filterCondition: FilterCondition = {
 				field: "dueDate",
-				value: selectedDate.toISOString(),
 				operator: selectedToggle === "before" ? "lessThan" : "greaterThan",
+				value: selectedDate.toISOString(),
 			};
 			addFilter(filterCondition);
 			setOpen(false);
@@ -86,7 +86,7 @@ const DueDateFilterDropDown = ({
 	}, [currentFilterTypes]);
 
 	return (
-		<DropdownMenuSub open={open} onOpenChange={setOpen}>
+		<DropdownMenuSub onOpenChange={setOpen} open={open}>
 			<DropdownMenuSubTrigger>
 				<div className="flex items-center space-x-2">
 					{filterOption.svg}
@@ -96,34 +96,34 @@ const DueDateFilterDropDown = ({
 			<DropdownMenuSubContent className="w-70">
 				<div className="my-2 flex w-full justify-center gap-2">
 					<Button
-						variant={selectedToggle === "before" ? "secondary" : "ghost"}
 						className={selectedToggle === "before" ? "hover:bg-accent" : ""}
 						onClick={() => handleToggleClick("before")}
+						variant={selectedToggle === "before" ? "secondary" : "ghost"}
 					>
 						Before Date
 					</Button>
 					<Button
-						variant={selectedToggle === "after" ? "secondary" : "ghost"}
 						className={selectedToggle === "after" ? "hover:bg-accent" : ""}
 						onClick={() => handleToggleClick("after")}
+						variant={selectedToggle === "after" ? "secondary" : "ghost"}
 					>
 						After Date
 					</Button>
 				</div>
 				<Calendar
-					mode="single"
-					selected={selectedDate}
-					onSelect={handleSelectDate}
 					initialFocus
+					mode="single"
+					onSelect={handleSelectDate}
+					selected={selectedDate}
 				/>
 				<div className="my-2 mr-2 flex justify-end gap-2">
-					<Button variant="outline" onClick={() => setOpen(false)}>
+					<Button onClick={() => setOpen(false)} variant="outline">
 						Cancel
 					</Button>
 					{isSameDate ? (
 						<Button onClick={resetFilter}>Clear</Button>
 					) : (
-						<Button onClick={handleFilter} disabled={!selectedDate}>
+						<Button disabled={!selectedDate} onClick={handleFilter}>
 							Filter
 						</Button>
 					)}

@@ -82,7 +82,7 @@ export default function FilterViewPage() {
 				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
-					getHiddenColumns().length >= 1 && (
+					getHiddenColumns().length > 0 && (
 						<div className="ml-auto">
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}

@@ -41,12 +41,11 @@ const LabelCombobox = () => {
 	);
 
 	const { mutate: updateLabels } = useMutation({
-		mutationKey: ["task", "updateLabels", taskId],
 		mutationFn: async (newLabels: Label[]) => {
 			if (!taskId) throw new Error("Task not found");
 			const res = await client.task.updateLabels.$post({
-				taskId,
 				labels: newLabels,
+				taskId,
 			});
 			const updatedTask = await res.json();
 			setCurrentTask({ ...currentTask, labels: newLabels });
@@ -59,6 +58,7 @@ const LabelCombobox = () => {
 
 			return updatedTask;
 		},
+		mutationKey: ["task", "updateLabels", taskId],
 	});
 
 	const handleSelectLabels = (selectedLabel: Label) => {
@@ -91,8 +91,8 @@ const LabelCombobox = () => {
 			<div className="flex items-center">
 				{taskLabels.map((label, index) => (
 					<div
-						key={label.name}
 						className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}
+						key={label.name}
 					>
 						<LabelColor label={label} />
 					</div>
@@ -103,11 +103,11 @@ const LabelCombobox = () => {
 	};
 	return (
 		<div className={`${taskLabels.length === 0 && "h-10"} md:w-full`}>
-			<Popover open={open} onOpenChange={setOpen}>
+			<Popover onOpenChange={setOpen} open={open}>
 				<PopoverTrigger asChild>
 					<Button
-						variant="outline"
 						className="h-8 w-fit justify-start md:h-10 md:w-full"
+						variant="outline"
 					>
 						<div className="item hidden items-center md:flex">
 							<Plus className="mr-2 size-4" />
@@ -119,9 +119,9 @@ const LabelCombobox = () => {
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent
+					align="start"
 					className="w-[200px] p-0"
 					side="right"
-					align="start"
 					sideOffset={5}
 				>
 					<Command>
@@ -131,10 +131,10 @@ const LabelCombobox = () => {
 							<CommandGroup>
 								{allLabels.map((label) => (
 									<CommandItem
-										key={label.name}
-										value={label.name}
-										onSelect={() => handleSelectLabels(label)}
 										className="flex items-center justify-between px-2 py-1.5"
+										key={label.name}
+										onSelect={() => handleSelectLabels(label)}
+										value={label.name}
 									>
 										<div className="flex items-center">
 											<LabelColor label={label} />
@@ -153,7 +153,7 @@ const LabelCombobox = () => {
 			<div className="mt-1 hidden w-full md:block">
 				<div className="mb-1 flex flex-wrap items-center space-x-1 space-y-2">
 					{taskLabels.map((label: Label, index: number) => (
-						<span key={label.name} className={index === 0 ? "mt-2" : ""}>
+						<span className={index === 0 ? "mt-2" : ""} key={label.name}>
 							<LabelBadge label={label} />
 						</span>
 					))}

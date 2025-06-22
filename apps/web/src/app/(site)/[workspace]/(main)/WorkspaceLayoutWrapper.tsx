@@ -1,10 +1,12 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { SidebarNav } from "@/components/Sidebar";
 import { useViewStore } from "@/store";
 import type { ViewPath } from "@/store/views";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+
+const viewPathRegex = /\/views\/.+$/;
 
 export default function WorkspaceLayoutWrapper({
 	children,
@@ -15,8 +17,7 @@ export default function WorkspaceLayoutWrapper({
 	const { setLastVisitedPage } = useViewStore((state) => state);
 
 	const isValidViewPath = (value: string) => {
-		const regex = /\/views\/.+$/;
-		return regex.test(value);
+		return viewPathRegex.test(value);
 	};
 
 	const getViewPath = (value: string): ViewPath => {
@@ -26,8 +27,8 @@ export default function WorkspaceLayoutWrapper({
 
 	useEffect(() => {
 		const pathMap = {
-			"/all": "all",
 			"/active": "active",
+			"/all": "all",
 			"/backlog": "backlog",
 			"/sprints/current": "sprints/current",
 		} as const;

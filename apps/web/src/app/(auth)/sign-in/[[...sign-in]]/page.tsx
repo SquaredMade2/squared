@@ -47,15 +47,15 @@ const LoginPage = () => {
 						appearance={{
 							elements: authStyles,
 						}}
-						signUpForceRedirectUrl={"/welcome"}
+						signUpForceRedirectUrl="/welcome"
 					/>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-2">
 					<p className="text-muted-foreground text-sm">
 						<Button
-							variant="link"
 							className="p-0"
 							onClick={() => router.push("/forgot-password")}
+							variant="link"
 						>
 							Forgot password?
 						</Button>
@@ -63,12 +63,12 @@ const LoginPage = () => {
 					<p className="text-muted-foreground text-sm">
 						Not a member?{" "}
 						<Button
-							variant="link"
 							className="ml-2 p-0"
 							onClick={() => {
 								if (!redirectUrl) return router.push("/sign-up");
 								router.push(`/sign-up?${searchParams.toString()}`);
 							}}
+							variant="link"
 						>
 							Sign up for free
 						</Button>

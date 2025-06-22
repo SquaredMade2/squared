@@ -21,14 +21,14 @@ const BlockedByCombobox = () => {
 
 	const { mutate: mutateUpdateBlockedByTasks } = useMutation({
 		mutationFn: async (blockingId: string) => {
-			if (!currentTask || !taskId) throw new Error("Task not found");
+			if (!(currentTask && taskId)) throw new Error("Task not found");
 			if (currentTaskBlockingIds.includes(blockingId)) {
 				toast.error("You can't have two tasks blocking each other");
 				return currentTaskBlockedBy;
 			}
 			const res = await client.task.updateBlockedOrBlockingTasks.$post({
-				taskId,
 				key: "blockedBy",
+				taskId,
 				updatingIds: currentTaskBlockedBy.find((t) => t.id === blockingId)
 					? [
 							...currentTaskBlockedBy
@@ -45,21 +45,21 @@ const BlockedByCombobox = () => {
 		},
 	});
 
-	const handleUpdateBlockedByTasks = (taskId: string) => {
-		mutateUpdateBlockedByTasks(taskId);
+	const handleUpdateBlockedByTasks = (t: string) => {
+		mutateUpdateBlockedByTasks(t);
 	};
 
 	return (
 		<DesignationComboboxMany
-			open={open}
-			setOpen={setOpen}
-			triggerText={"Add / Remove"}
 			emptyText="No tasks found."
-			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
-			selectedItemIds={currentTaskBlockedBy.map((task) => task.id)}
-			itemLabel={(task: Task) => task.title}
 			itemId={(task: Task) => task.id}
+			itemLabel={(task: Task) => task.title}
+			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
 			onItemSelect={handleUpdateBlockedByTasks}
+			open={open}
+			selectedItemIds={currentTaskBlockedBy.map((task) => task.id)}
+			setOpen={setOpen}
+			triggerText="Add / Remove"
 		/>
 	);
 };

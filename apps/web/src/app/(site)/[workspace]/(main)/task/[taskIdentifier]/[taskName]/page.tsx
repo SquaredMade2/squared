@@ -1,5 +1,8 @@
 "use client";
 
+import { toast } from "@squaredmade/ui/toast";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { NewTaskCollapsible } from "@/components/Modals";
 import {
 	EventTabs,
@@ -15,9 +18,6 @@ import { useTaskPage } from "@/hooks/useTaskPage";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { toast } from "@squaredmade/ui/toast";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
 import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 
@@ -39,7 +39,6 @@ const TaskPage = () => {
 			});
 		},
 		onError: (error) => {
-			console.error(error);
 			toast.error("Error updating task", {
 				description: parseError(error),
 			});

@@ -9,45 +9,62 @@ import {
 	type ViewState,
 	type ViewStore,
 } from "./interfaces";
-export * from "./interfaces";
-export * from "./store";
+
+export type {
+	DisplayOptions,
+	DisplayProperty,
+	LastVisitedPathOption,
+	TaskGroup,
+	TaskOrder,
+	View,
+	ViewOptions,
+	ViewPath,
+	ViewState,
+	ViewStore,
+} from "./interfaces";
+export {
+	CompletedTaskPeriod,
+	TaskOrderOptions,
+	taskGroupOptions,
+} from "./interfaces";
+export { useViewStore, ViewStoreProvider } from "./store";
 
 export const createViewStore = (
 	initState: ViewState = {
-		showNavbar: true,
-		showMobileNavbar: false,
 		displayOptions: {
-			taskOrder: { orderBy: "Priority", orderAscending: false },
-			groupTasksBy: "Status",
 			groupRowsBy: "None",
-			showCompletedTasks: { show: true, period: CompletedTaskPeriod.all },
+			groupTasksBy: "status",
+			showCompletedTasks: { period: CompletedTaskPeriod.All, show: true },
 			showSubTasks: false,
+			taskOrder: { orderAscending: false, orderBy: "priority" },
 			viewOptions: {
 				gridOptions: {
-					showEmptyGroups: false,
 					displayProperties: {
-						identifier: true,
-						dueDate: true,
 						avatar: true,
+						dueDate: true,
+						identifier: true,
 						labels: true,
-						status: true,
 						priority: true,
+						status: true,
 					},
+					showEmptyGroups: false,
 				},
 				listOptions: {
-					showEmptyGroups: false,
 					displayProperties: {
-						identifier: true,
-						dueDate: true,
 						avatar: true,
+						dueDate: true,
+						identifier: true,
 						labels: true,
-						status: true,
 						priority: true,
+						status: true,
 					},
+					showEmptyGroups: false,
 				},
 			},
 		},
 		lastVisitedPage: "all",
+		showMobileNavbar: false,
+		showNavbar: true,
 		view: "grid",
 	},
 ) => {
@@ -55,13 +72,27 @@ export const createViewStore = (
 		persist(
 			(set, get) => ({
 				...initState,
-				setView: (view: View) => set({ view }),
-				getListOptions: () => get().displayOptions.viewOptions.listOptions,
 				getGridOptions: () => get().displayOptions.viewOptions.gridOptions,
-				setShowNavbar: (input: boolean) => set({ showNavbar: input }),
+				getListOptions: () => get().displayOptions.viewOptions.listOptions,
+				setDisplayOptions: (input: Partial<DisplayOptions>) => {
+					set(({ displayOptions }) => ({
+						displayOptions: {
+							...displayOptions,
+							...input,
+						},
+					}));
+				},
+				setGroupRowsBy: (input: ViewState["displayOptions"]["groupRowsBy"]) =>
+					set({
+						displayOptions: { ...get().displayOptions, groupRowsBy: input },
+					}),
+				setLastVisitedPage: (input: LastVisitedPathOption) =>
+					set({ lastVisitedPage: input }),
 				setShowMobileNavbar: (input: boolean) =>
 					set({ showMobileNavbar: input }),
-				setViewOptions: (input: ViewOptions.Common) => {
+				setShowNavbar: (input: boolean) => set({ showNavbar: input }),
+				setView: (view: View) => set({ view }),
+				setViewOptions: (input: ViewOptions) => {
 					set(({ displayOptions, view }) => ({
 						displayOptions: {
 							...displayOptions,
@@ -75,20 +106,6 @@ export const createViewStore = (
 						},
 					}));
 				},
-				setDisplayOptions: (input: Partial<DisplayOptions>) => {
-					set(({ displayOptions }) => ({
-						displayOptions: {
-							...displayOptions,
-							...input,
-						},
-					}));
-				},
-				setLastVisitedPage: (input: LastVisitedPathOption) =>
-					set({ lastVisitedPage: input }),
-				setGroupRowsBy: (input: ViewState["displayOptions"]["groupRowsBy"]) =>
-					set({
-						displayOptions: { ...get().displayOptions, groupRowsBy: input },
-					}),
 			}),
 			{
 				name: "view-store",
@@ -97,11 +114,11 @@ export const createViewStore = (
 						const storedValue = localStorage.getItem(name);
 						return storedValue ? JSON.parse(storedValue) : null;
 					},
-					setItem: (name, value) => {
-						localStorage.setItem(name, JSON.stringify(value));
-					},
 					removeItem: (name) => {
 						localStorage.removeItem(name);
+					},
+					setItem: (name, value) => {
+						localStorage.setItem(name, JSON.stringify(value));
 					},
 				},
 			},

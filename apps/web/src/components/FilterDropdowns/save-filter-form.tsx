@@ -1,16 +1,5 @@
 "use client";
 
-import { useUsers } from "@/hooks/useUsers";
-import { client } from "@/lib/client";
-import {
-	useFilterStore,
-	useSprintStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
-import type { SavedFilter } from "@/store/filters";
-import { formatFilterName } from "@/utils/formatting";
-import { parseParams } from "@/utils/parseParams";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Badge } from "@squaredmade/ui/badge";
 import { Button } from "@squaredmade/ui/button";
@@ -30,11 +19,22 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod/v4";
+import { useUsers } from "@/hooks/useUsers";
+import { client } from "@/lib/client";
+import {
+	useFilterStore,
+	useSprintStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { formatFilterName } from "@/utils/formatting";
+import { parseParams } from "@/utils/parseParams";
 
 const formSchema = z.object({
-	title: z.string().min(1, "Title is required"),
 	description: z.string().optional(),
+	title: z.string().min(1, "Title is required"),
 });
 
 export function SaveFilterForm({
@@ -67,11 +67,11 @@ export function SaveFilterForm({
 	const sprint = useSprintStore((state) => state.sprint);
 
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
-			title: "",
 			description: "",
+			title: "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 	const { control, reset } = form;
 
@@ -89,9 +89,9 @@ export function SaveFilterForm({
 	useEffect(() => {
 		if (currentSavedFilter) {
 			reset({
-				title: type === "new" ? "" : currentSavedFilter.name,
 				description:
 					type === "new" ? "" : (currentSavedFilter.description ?? ""),
+				title: type === "new" ? "" : currentSavedFilter.name,
 			});
 		}
 	}, [currentSavedFilter, type, reset]);
@@ -125,7 +125,6 @@ export function SaveFilterForm({
 	};
 
 	const { mutate: upsertFilter, isPending } = useMutation({
-		mutationKey: ["filter", "create"],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!team) throw new Error("No team found");
 			if (currentSavedFilter) {
@@ -136,9 +135,9 @@ export function SaveFilterForm({
 						.$post({
 							filterId: currentSavedFilter.id,
 							filters: {
-								name: values.title,
 								description: values.description ?? null,
 								filter: newFilters,
+								name: values.title,
 							},
 						})
 						.then((res) => res.json());
@@ -153,30 +152,27 @@ export function SaveFilterForm({
 				}
 				return await client.filter.createFilter
 					.$post({
-						name: values.title,
 						description: values.description ?? null,
 						filter: newFilters,
-						teamId: team.id,
+						name: values.title,
 						sprintId: null,
+						teamId: team.id,
 					})
 					.then((res) => res.json());
 			}
 			return await client.filter.createFilter
 				.$post({
-					name: values.title,
 					description: values.description ?? null,
 					filter: currentFilters,
-					teamId: team.id,
+					name: values.title,
 					sprintId: pathname.split("/").includes("sprints")
 						? (sprint?.id as string)
 						: null,
+					teamId: team.id,
 				})
 				.then((res) => res.json());
 		},
-		onSuccess: (data) => {
-			saveFilter(data);
-			handleUrl(data);
-		},
+		mutationKey: ["filter", "create"],
 		onError: (error) => {
 			toast.error(`Error ${type === "new" ? "Creating" : "Updating"} Filter`, {
 				description: error.message,
@@ -186,6 +182,10 @@ export function SaveFilterForm({
 			clearFilter();
 			onCancel();
 		},
+		onSuccess: (data) => {
+			saveFilter(data);
+			handleUrl(data);
+		},
 	});
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -194,7 +194,7 @@ export function SaveFilterForm({
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="mb-8 space-y-4">
+			<form className="mb-8 space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
 				<FormField
 					control={control}
 					name="title"
@@ -232,10 +232,10 @@ export function SaveFilterForm({
 					))}
 				</div>
 				<div className="flex justify-end space-x-2">
-					<Button type="button" variant="outline" onClick={onCancel}>
+					<Button onClick={onCancel} type="button" variant="outline">
 						Cancel
 					</Button>
-					<Button type="submit" disabled={isPending}>
+					<Button disabled={isPending} type="submit">
 						{type === "new" ? "Save New Filter" : "Save"}
 					</Button>
 				</div>

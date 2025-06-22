@@ -1,12 +1,3 @@
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
-import { ScrollArea } from "@/components/ui/scroll-area";
 // import type { Sprint, Task } from "@squaredmade/db";
 import { Check, ChevronsUpDown } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -17,6 +8,15 @@ import {
 	PopoverTrigger,
 } from "@squaredmade/ui/popover";
 import type { Dispatch, SetStateAction } from "react";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DesignationComboboxProps<T> {
 	open: boolean;
@@ -44,9 +44,9 @@ export function DesignationCombobox<T>({
 	onItemSelect,
 }: DesignationComboboxProps<T>) {
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover onOpenChange={setOpen} open={open}>
 			<PopoverTrigger asChild>
-				<Button variant="outline" className="w-full justify-between">
+				<Button className="w-full justify-between" variant="outline">
 					{triggerText}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
@@ -65,9 +65,9 @@ export function DesignationCombobox<T>({
 								)}
 								{listItems.map((item) => (
 									<CommandItem
+										className="w-full"
 										key={itemId(item)}
 										onSelect={() => onItemSelect(itemId(item))}
-										className="w-full"
 									>
 										{itemLabel(item)}
 										<Check

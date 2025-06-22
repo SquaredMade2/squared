@@ -1,0 +1,14 @@
+{
+	"extends": "//",
+	"linter": {
+		"includes": ["!**/prismicio-types.d.ts"]
+	},
+	"overrides": [
+		{
+			"includes": ["**/prismicio-types.d.ts", "**/src/prismic/slices/**"],
+			"linter": {
+				"enabled": false
+			}
+		}
+	]
+}

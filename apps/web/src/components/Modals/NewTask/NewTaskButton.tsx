@@ -1,10 +1,10 @@
-import { useSidebar } from "@/components/ui/sidebar";
-import { useModalStore, useSprintStore, useViewStore } from "@/store";
 import type { Status } from "@squaredmade/db";
 import { CirclePlus, SquarePen } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
 import { usePathname } from "next/navigation";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useModalStore, useSprintStore, useViewStore } from "@/store";
 
 export const NewTaskButton = () => {
 	const { showNewTask, setShowNewTask, newTaskData, setNewTaskData } =
@@ -24,12 +24,12 @@ export const NewTaskButton = () => {
 
 	return (
 		<Button
-			variant="outline"
-			size={isCollapsed ? "icon" : "default"}
 			className={`border-blue-500 shadow-lg hover:shadow-glow ${
 				isCollapsed ? "mx-1 px-0" : ""
 			}`}
 			onClick={handleOpen}
+			size={isCollapsed ? "icon" : "default"}
+			variant="outline"
 		>
 			<SquarePen className={isCollapsed ? "size-4" : "size-5"} />
 			{!isCollapsed && (
@@ -63,13 +63,13 @@ export const GridColumnNewTaskButton = ({
 	const handleClick = () => {
 		const key = (() => {
 			switch (groupTasksBy) {
-				case "Status":
+				case "status":
 					return "status";
-				case "Assignee":
+				case "assignee":
 					return "assigneeId";
-				case "Priority":
+				case "priority":
 					return "priority";
-				case "Label":
+				case "label":
 					return "labels";
 				// case "Parent Task":
 				//  return "parentId";
@@ -88,9 +88,9 @@ export const GridColumnNewTaskButton = ({
 	return (
 		<div className={cn("w-72 shrink-0", isRowGrouped ? "mt-2" : "")}>
 			<Button
+				className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border-dashed"
 				onClick={handleClick}
 				variant="outline"
-				className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border-dashed"
 			>
 				<CirclePlus className="size-4 text-muted-foreground" />
 				<span className="text-muted-foreground text-sm">New task</span>

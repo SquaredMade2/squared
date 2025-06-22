@@ -37,22 +37,25 @@ import TextEditorToolBar from "./TextEditorToolBar";
 
 declare module "slate" {
 	interface CustomTypes {
+		// biome-ignore lint/style/useNamingConvention: This is a type
 		Editor: BaseEditor & ReactEditor;
+		// biome-ignore lint/style/useNamingConvention: This is a type
 		Element: CustomElement;
+		// biome-ignore lint/style/useNamingConvention: This is a type
 		Text: CustomText;
 	}
 }
 
 export const initialEditorValue: CustomDescendant[] = [
 	{
-		type: "paragraph",
 		children: [{ text: "" }],
+		type: "paragraph",
 	},
 ];
 
 const defaultSelectionRange = {
-	anchor: { path: [0, 0], offset: 0 },
-	focus: { path: [0, 0], offset: 0 },
+	anchor: { offset: 0, path: [0, 0] },
+	focus: { offset: 0, path: [0, 0] },
 };
 
 const TextEditor = ({
@@ -116,8 +119,8 @@ const TextEditor = ({
 			const range = selection.getRangeAt(0).cloneRange();
 			const rect = range.getBoundingClientRect();
 			setPosition({
-				y: rect.top,
 				x: rect.left - left,
+				y: rect.top,
 			});
 		}
 	};
@@ -137,8 +140,8 @@ const TextEditor = ({
 
 	// Helper Functions
 
-	const checkIfSlateEmpty = (editor: BaseEditor & ReactEditor) => {
-		const editorContent = editor.children.reduce(
+	const checkIfSlateEmpty = (e: BaseEditor & ReactEditor) => {
+		const editorContent = e.children.reduce(
 			(accRow: string, nextRow: Descendant) => {
 				if ("children" in nextRow) {
 					const flattenedRow = nextRow.children.reduce(
@@ -208,13 +211,13 @@ const TextEditor = ({
 
 	const getEditorMarks = () => ({
 		isBoldActive: () => isMarkActive("bold"),
-		isItalicActive: () => isMarkActive("italic"),
-		isUnderlineActive: () => isMarkActive("underline"),
 		isCodeActive: () => isMarkActive("code"),
+		isItalicActive: () => isMarkActive("italic"),
 		isLinkActive: () => isMarkActive("url"),
 		isMentionActive: () => isMarkActive("mention"),
-		isTaskActive: () => isMarkActive("taskConfirm"),
 		isMentionConfirmActive: () => isMarkActive("mentionConfirm"),
+		isTaskActive: () => isMarkActive("taskConfirm"),
+		isUnderlineActive: () => isMarkActive("underline"),
 	});
 
 	const createLeaf = (
@@ -341,8 +344,8 @@ const TextEditor = ({
 
 	useEffect(() => {
 		editor.selection = {
-			anchor: { path: [0, 0], offset: 0 },
-			focus: { path: [0, 0], offset: 0 },
+			anchor: { offset: 0, path: [0, 0] },
+			focus: { offset: 0, path: [0, 0] },
 		};
 	}, []);
 
@@ -362,7 +365,7 @@ const TextEditor = ({
 			debounceRef.current = false;
 			return;
 		}
-		if ("@" === key) {
+		if (key === "@") {
 			allowEntireMention();
 		} else {
 			deleteEntireMention();
@@ -371,7 +374,7 @@ const TextEditor = ({
 			setMentionsFilter(getMentionFromLeaf(editor));
 		}
 
-		setToggleTask("#" === key);
+		setToggleTask(key === "#");
 	}
 
 	return (
@@ -385,35 +388,31 @@ const TextEditor = ({
 		>
 			{/** biome-ignore lint/a11y/noStaticElementInteractions: This is our wrapper for the textarea */}
 			<div className="markdown-content" onKeyUp={handleCharKeyUp}>
-				<div
-					className={
-						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-					}
-				>
+				<div className="min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
 					{hasToolbar && (
 						<TextEditorToolBar
 							// Leafs
 
+							createHeaderBlock={createHeaderBlock}
 							createLeaf={createLeaf}
-							markActiveChecks={getEditorMarks()}
 							injectLinkContent={injectLinkContent}
 							// Blocks
-							createHeaderBlock={createHeaderBlock}
 							isHeaderBlock={isHeaderBlock()}
+							markActiveChecks={getEditorMarks()}
 							// Others
 							selection={editor.selection}
 						/>
 					)}
 					<div ref={editorRef}>
 						<Editable
-							placeholder={placeholder || ""}
+							className="min-h-[160px] w-full px-3 py-4"
 							onBlur={onBlur}
 							onFocus={onFocus}
 							onKeyDown={handleSetEditorContent}
-							renderLeaf={renderLeaf}
+							placeholder={placeholder || ""}
 							renderElement={renderElement}
+							renderLeaf={renderLeaf}
 							style={style}
-							className="min-h-[160px] w-full px-3 py-4"
 						/>
 					</div>
 				</div>
@@ -422,21 +421,21 @@ const TextEditor = ({
 			{toggleMentions && (
 				<TextEditorMentions
 					cursorPosition={position}
-					mentionsFilter={mentionsFilter}
+					debounceRef={debounceRef}
 					editor={editor}
+					mentionsFilter={mentionsFilter}
 					setCurrentEnterUser={setCurrentEnterUser}
 					setToggleMentions={setToggleMentions}
-					debounceRef={debounceRef}
 				/>
 			)}
 
 			{toggleTask && (
 				<TextEditorTasks
 					cursorPosition={position}
+					debounceRef={debounceRef}
 					editor={editor}
 					setCurrentEnterUser={setCurrentEnterUser}
 					setToggleTasks={setToggleTask}
-					debounceRef={debounceRef}
 				/>
 			)}
 		</Slate>
@@ -445,5 +444,18 @@ const TextEditor = ({
 
 export default TextEditor;
 
-export * from "./interfaces";
+export type {
+	CustomDescendant,
+	CustomElement,
+	CustomElementAttributes,
+	CustomText,
+	LinkModalProps,
+	MarkActives,
+	MarkTypes,
+	MentionHoverProps,
+	TextEditorMentionsProps,
+	TextEditorProps,
+	TextEditorTasksProps,
+	TextEditorToolBarProps,
+} from "./interfaces";
 export { CodeLeaf, HeaderElement, Leaf, TextEditorToolBar };

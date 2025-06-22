@@ -39,16 +39,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod/v4";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useTeams } from "@/hooks/useTeams";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 
 const formSchema = z.object({
-	name: z.string().min(2, {
-		message: "Team name must be at least 2 characters.",
-	}),
 	identifier: z
 		.string()
 		.min(1, {
@@ -60,29 +57,30 @@ const formSchema = z.object({
 		.regex(/^[A-Z0-9]*$/, {
 			message: "Identifier can only contain uppercase letters and numbers.",
 		}),
+	name: z.string().min(2, {
+		message: "Team name must be at least 2 characters.",
+	}),
 });
 
 const effortType = [
 	{
-		id: 0,
-		dropdownTitle: "Linear",
 		dbValue: "LINEAR",
+		dropdownTitle: "Linear",
+		id: 0,
 		listOption: "Linear - [1, 2, 3, 4, 5]",
 		options: [1, 2, 3, 4, 5],
 	},
 	{
-		id: 1,
-		dropdownTitle: "Exponential",
-
 		dbValue: "EXPONENTIAL",
+		dropdownTitle: "Exponential",
+		id: 1,
 		listOption: "Exponential - [1, 2, 4, 8, 16]",
 		options: [1, 2, 4, 8, 16],
 	},
 	{
-		id: 2,
-		dropdownTitle: "Fibonacci",
-
 		dbValue: "FIBONACCI",
+		dropdownTitle: "Fibonacci",
+		id: 2,
 		listOption: "Fibonacci - [1, 2, 3, 5, 8]",
 		options: [1, 2, 3, 5, 8],
 	},
@@ -115,11 +113,11 @@ export default function TeamsSetting() {
 	const [isFormChanged, setIsFormChanged] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: team?.name ?? "",
 			identifier: team?.identifier ?? "",
+			name: team?.name ?? "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 
 	useEffect(() => {
@@ -134,18 +132,23 @@ export default function TeamsSetting() {
 	}, [form, team]);
 
 	const { mutate: handleSubmit } = useMutation({
-		mutationKey: ["team", "update", team?.id],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			if (!team || !organization)
+			if (!(team && organization))
 				throw new Error("Team or workspace not found");
 			return await client.team.updateTeam
 				.$post({
-					teamId: team.id,
-					name: values.name,
-					identifier: values.identifier,
 					effort: selectedEffort?.dbValue as Effort,
+					identifier: values.identifier,
+					name: values.name,
+					teamId: team.id,
 				})
 				.then((res: Response) => res.json());
+		},
+		mutationKey: ["team", "update", team?.id],
+		onError: (error) => {
+			toast.error("Failed to update team", {
+				description: error.message,
+			});
 		},
 		onSuccess: async (updatedTeam) => {
 			updateTeam(updatedTeam);
@@ -161,15 +164,9 @@ export default function TeamsSetting() {
 				toast.success("Team updated successfully");
 			}
 		},
-		onError: (error) => {
-			toast.error("Failed to update team", {
-				description: error.message,
-			});
-		},
 	});
 
 	const { mutate: handleDelete, isPending: isDeleting } = useMutation({
-		mutationKey: ["team", "delete", team?.id],
 		mutationFn: async () => {
 			if (!team) throw new Error("Team not found");
 			return await client.team.deleteTeam
@@ -178,15 +175,16 @@ export default function TeamsSetting() {
 				})
 				.then((res: Response) => res.json());
 		},
-		onSuccess: () => {
-			deleteTeam(team?.id ?? "");
-			router.push(`/${organization?.slug}`);
-			toast.success("Team deleted");
-		},
+		mutationKey: ["team", "delete", team?.id],
 		onError: (error) => {
 			toast.error("Failed to delete team", {
 				description: error.message,
 			});
+		},
+		onSuccess: () => {
+			deleteTeam(team?.id ?? "");
+			router.push(`/${organization?.slug}`);
+			toast.success("Team deleted");
 		},
 	});
 
@@ -227,7 +225,7 @@ export default function TeamsSetting() {
 			<Separator className="my-6" />
 
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<FormField
 							control={form.control}
@@ -261,17 +259,17 @@ export default function TeamsSetting() {
 						/>
 						<div className="flex flex-col">
 							<DropdownMenu
-								open={showEffortDropdown}
 								onOpenChange={setShowEffortDropdown}
+								open={showEffortDropdown}
 							>
 								<DropdownMenuTrigger className="mb-2 w-fit cursor-auto text-start">
 									Effort Type
 								</DropdownMenuTrigger>
 								<DropdownMenuTrigger>
 									<menu
-										className="flex h-10 w-full items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
-										aria-label="Effort style dropdown menu"
 										aria-hidden="true"
+										aria-label="Effort style dropdown menu"
+										className="flex h-10 w-full items-center justify-between rounded-md border px-3 text-left hover:cursor-pointer"
 									>
 										{selectedEffort?.dropdownTitle}
 										<ChevronDown
@@ -281,15 +279,15 @@ export default function TeamsSetting() {
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="z-10 mt-3 mr-48 w-full rounded-md p-0">
 									<DropdownMenuRadioGroup
-										value={selectedEffort?.listOption as string}
-										onValueChange={handleEffortSelection}
 										className="z-50 rounded-md bg-secondary hover:cursor-pointer"
+										onValueChange={handleEffortSelection}
+										value={selectedEffort?.listOption as string}
 									>
 										{effortType.map((item, index) => (
 											<DropdownMenuRadioItem
+												className="hover:cursor-pointer"
 												key={item.id}
 												value={item.dropdownTitle}
-												className="hover:cursor-pointer"
 											>
 												<div
 													className={`${index === 1 ? "border-y-2" : ""} z-10 flex w-full items-center space-x-2 p-3`}
@@ -305,7 +303,7 @@ export default function TeamsSetting() {
 							</DropdownMenu>
 						</div>
 					</div>
-					<Button type="submit" disabled={!isFormChanged}>
+					<Button disabled={!isFormChanged} type="submit">
 						Save Changes
 					</Button>
 				</form>

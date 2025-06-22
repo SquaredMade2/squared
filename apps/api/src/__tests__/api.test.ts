@@ -1,14 +1,14 @@
 import { randomUUID } from "node:crypto";
-import { app, db } from "@/api/app";
-import type { CreateFilterParams } from "@/services/filters/types";
 import {
-	type SavedFilter,
 	eq,
 	inArray,
+	type SavedFilter,
 	savedFiltersTable,
 	teamsTable,
 	userTeamsTable,
 } from "@squaredmade/db";
+import { app, db } from "@/api/app";
+import type { CreateFilterParams } from "@/services/filters/types";
 import request from "./request";
 
 describe("API Tests", () => {
@@ -54,14 +54,14 @@ describe("API Tests", () => {
 		}): CreateFilterParams {
 			return {
 				authorId: ids.authorId,
-				teamId: ids.teamId,
-				name: "test filter",
 				description: "test description",
-				sprintId: null,
 				filter: [
-					{ field: "effortEstimate", value: 5, operator: "lessThan" },
-					{ field: "priority", value: "high", operator: "equals" },
+					{ field: "effortEstimate", operator: "lessThan", value: 5 },
+					{ field: "priority", operator: "equals", value: "high" },
 				],
+				name: "test filter",
+				sprintId: null,
+				teamId: ids.teamId,
 			};
 		}
 
@@ -80,7 +80,7 @@ describe("API Tests", () => {
 				throw new Error("no users detected");
 			}
 
-			return { teamId: team.Team.id, authorId: team.UserTeam.userId };
+			return { authorId: team.UserTeam.userId, teamId: team.Team.id };
 		}
 
 		it("inserts a valid filter", async () => {
@@ -123,34 +123,34 @@ describe("API Tests", () => {
 			const sampleFilters: SavedFilter[] = [
 				{
 					authorId,
-					teamId,
-					type: "TEAM",
-					name: "test filter",
 					description: "test description",
-					sprintId: null,
 					filter: [
-						{ field: "effortEstimate", value: 5, operator: "lessThan" },
-						{ field: "priority", value: "high", operator: "equals" },
+						{ field: "effortEstimate", operator: "lessThan", value: 5 },
+						{ field: "priority", operator: "equals", value: "high" },
 					],
 					id: "69807de5-5c97-4cd4-b4b3-b62b21cffd3a",
+					name: "test filter",
+					sprintId: null,
+					teamId,
+					type: "TEAM",
 					workspaceId: null,
 				},
 				{
 					authorId,
-					teamId,
-					type: "TEAM",
-					name: "test filter two",
 					description: "test description two",
-					sprintId: null,
 					filter: [
-						{ field: "authorId", value: authorId, operator: "equals" },
+						{ field: "authorId", operator: "equals", value: authorId },
 						{
 							field: "dateCreated",
-							value: new Date().toISOString(),
 							operator: "lessThan",
+							value: new Date().toISOString(),
 						},
 					],
 					id: "764871ba-cd9f-4c61-8941-0797609125fb",
+					name: "test filter two",
+					sprintId: null,
+					teamId,
+					type: "TEAM",
 					workspaceId: null,
 				},
 			];
@@ -189,12 +189,12 @@ describe("API Tests", () => {
 			insertedIds.push(insertedFilter.id);
 
 			const updateFilterParams: Partial<CreateFilterParams> = {
-				name: "updated test filter",
 				description: "updated test filter description",
 				filter: [
-					{ field: "effortEstimate", value: 1, operator: "greaterThan" },
-					{ field: "priority", value: "low", operator: "equals" },
+					{ field: "effortEstimate", operator: "greaterThan", value: 1 },
+					{ field: "priority", operator: "equals", value: "low" },
 				],
+				name: "updated test filter",
 			};
 
 			const response = await request(app).post(updateFilterEndpoint).send({

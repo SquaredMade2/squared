@@ -64,14 +64,14 @@ export const RowGroupingWrapper = ({
 			...prev,
 			[columnGroup]: {
 				...(prev[columnGroup] || {}),
-				[rowGroup]: !(prev[columnGroup]?.[rowGroup] || false),
+				[rowGroup]: !prev[columnGroup]?.[rowGroup],
 			},
 		}));
 	};
 
 	// Check if a column is collapsed
 	const isColumnCollapsed = (columnGroup: string): boolean => {
-		return collapsedColumns[columnGroup] || false;
+		return collapsedColumns[columnGroup];
 	};
 
 	// Check if a row group is collapsed
@@ -79,7 +79,7 @@ export const RowGroupingWrapper = ({
 		columnGroup: string,
 		rowGroup: string,
 	): boolean => {
-		return collapsedRowGroups[columnGroup]?.[rowGroup] || false;
+		return collapsedRowGroups[columnGroup]?.[rowGroup];
 	};
 
 	return (

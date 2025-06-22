@@ -1,9 +1,4 @@
 "use client";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useTeams } from "@/hooks/useTeams";
-import { client } from "@/lib/client";
-import { useTeamStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@squaredmade/ui/button";
@@ -30,12 +25,15 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod/v4";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
+import { alphaNumericRegex } from "@/lib/regex";
+import { useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 
 const formSchema = z.object({
-	teamName: z.string().min(1, {
-		message: "Team name is required",
-	}),
 	teamIdentifier: z
 		.string()
 		.min(1, {
@@ -47,6 +45,9 @@ const formSchema = z.object({
 		.regex(/^[A-Za-z0-9]*$/, {
 			message: "Team identifier must only contain letters and numbers",
 		}),
+	teamName: z.string().min(1, {
+		message: "Team name is required",
+	}),
 });
 
 export default function CreateTeam() {
@@ -56,28 +57,33 @@ export default function CreateTeam() {
 	const { createTeam: addTeam } = useTeamStore((state) => state);
 
 	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
-			teamName: "",
 			teamIdentifier: "",
+			teamName: "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 
 	const { mutate: handleSubmit } = useMutation({
-		mutationKey: ["team", "createTeam", organization?.id],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!organization) {
 				throw new Error("Workspace not found");
 			}
 			const res = await client.team.createTeam
 				.$post({
-					name: values.teamName.trim(),
 					identifier: values.teamIdentifier.toUpperCase(),
+					name: values.teamName.trim(),
 				})
-				.then((res) => res.json());
+				.then((r) => r.json());
 
 			if (!res) throw new Error("Failed to create team");
 			return res;
+		},
+		mutationKey: ["team", "createTeam", organization?.id],
+		onError: (error) => {
+			toast.error("Failed to create team", {
+				description: parseError(error),
+			});
 		},
 		onSuccess: (data) => {
 			if (!data) return;
@@ -87,15 +93,10 @@ export default function CreateTeam() {
 			);
 			toast.success("Team created");
 		},
-		onError: (error) => {
-			toast.error("Failed to create team", {
-				description: parseError(error),
-			});
-		},
 	});
 
 	useEffect(() => {
-		if (!authorized && !teamLoading && organization) {
+		if (!(authorized || teamLoading) && organization) {
 			router.push(`/${organization.slug}`);
 		} else if (!organization && isLoaded) {
 			router.push("/");
@@ -131,8 +132,8 @@ export default function CreateTeam() {
 						<Separator />
 						<Form {...form}>
 							<form
-								onSubmit={form.handleSubmit(onSubmit)}
 								className="mt-4 space-y-6"
+								onSubmit={form.handleSubmit(onSubmit)}
 							>
 								<FormField
 									control={form.control}
@@ -156,13 +157,13 @@ export default function CreateTeam() {
 											<FormControl>
 												<div className="flex items-center space-x-2">
 													<Input
-														placeholder="e.g. ENG"
-														maxLength={5}
 														className="w-20"
+														maxLength={5}
+														placeholder="e.g. ENG"
 														{...field}
 														onChange={(e) => {
 															const value = e.target.value.toUpperCase();
-															if (/^[A-Z0-9]*$/.test(value)) {
+															if (alphaNumericRegex.test(value)) {
 																field.onChange(value);
 															}
 														}}
@@ -177,7 +178,7 @@ export default function CreateTeam() {
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" className="w-full">
+								<Button className="w-full" type="submit">
 									Create Team
 								</Button>
 							</form>

@@ -1,16 +1,5 @@
 "use client";
 
-import TextEditor, {
-	initialEditorValue,
-	type CustomDescendant,
-	type CustomElement,
-} from "@/components/TextEditor";
-import { convertSlateToMDX } from "@/components/TextEditor/format";
-import { useCreateTask } from "@/hooks/useCreateTask";
-import { useSprints } from "@/hooks/useSprints";
-import { client } from "@/lib/client";
-import { useModalStore, useTeamStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight } from "@squaredmade/icons";
@@ -39,24 +28,40 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { DateDropdownButton } from "./DateDropdownButton";
-import { EffortDropdownButton } from "./EffortDropdownButton";
-import { LabelDropdownButton } from "./LabelDropdownButton";
-import { PriorityDropdownButton } from "./PriorityDropdownButton";
-import { SprintDropdownButton } from "./SprintDropdownButton";
-import { StatusDropdownButton } from "./StatusDropdownButton";
-import TeamSelector from "./TeamSelector";
-export * from "./NewTaskButton";
-export * from "./NewTaskCollapsible";
+import TextEditor, {
+	type CustomDescendant,
+	type CustomElement,
+	initialEditorValue,
+} from "@/components/TextEditor";
+import { convertSlateToMDX } from "@/components/TextEditor/format";
+import { useCreateTask } from "@/hooks/useCreateTask";
+import { useSprints } from "@/hooks/useSprints";
+import { client } from "@/lib/client";
+import { useModalStore, useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { DateDropdownButton } from "./date-dropdown-button";
+import { EffortDropdownButton } from "./effort-dropdown-button";
+import { LabelDropdownButton } from "./label-dropdown-button";
+import { PriorityDropdownButton } from "./priority-dropdown-button";
+import { SprintDropdownButton } from "./sprint-dropdown-button";
+import { StatusDropdownButton } from "./status-dropdown-button";
+import TeamSelector from "./team-selector";
+
+export {
+	GridColumnNewTaskButton,
+	NewTaskButton,
+	NoTasksNewTaskButton,
+} from "./NewTaskButton";
+export { NewTaskCollapsible } from "./new-task-collapsible";
 
 const formSchema = z.object({
+	description: z.string().optional(),
 	title: z
 		.string()
 		.min(2, {
 			message: "Title must be at least 2 characters.",
 		})
 		.max(50, { message: "Title must be 50 characters or less." }),
-	description: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -84,11 +89,11 @@ export const NewTaskModal = () => {
 	} = newTaskData;
 
 	const form = useForm<FormValues>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
-			title: "",
 			description: "",
+			title: "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 
 	const titleValue = form.watch("title");
@@ -105,7 +110,7 @@ export const NewTaskModal = () => {
 	};
 
 	const handleCreateTask = (values: FormValues) => {
-		if (!team || !organization) {
+		if (!(team && organization)) {
 			toast.error("Error", {
 				description: "Team or workspace not found",
 			});
@@ -113,25 +118,30 @@ export const NewTaskModal = () => {
 		}
 
 		const createTaskParams = {
-			title: values.title,
 			description:
 				convertSlateToMDX(editorDescription as CustomElement[]) || "",
-			status: status || "backlog",
-			priority: priority || "noPriority",
-			labels: labels || [],
 			dueDate: dueDate || null,
 			effortEstimate: effortEstimate || null,
-			teamId: team.id,
-			workspaceId: organization.id,
+			labels: labels || [],
+			priority: priority || "noPriority",
 			sprintId,
+			status: status || "backlog",
+			teamId: team.id,
+			title: values.title,
+			workspaceId: organization.id,
 		};
 
 		createTask(createTaskParams, {
+			onError: (error) => {
+				toast.error("Error creating task", {
+					description: parseError(error),
+				});
+			},
 			onSuccess: ({ url }) => {
 				toast.success("Task Created Successfully", {
 					description: (
 						<Link href={url} passHref>
-							<Button variant="link" className="m-0 p-0">
+							<Button className="m-0 p-0" variant="link">
 								Go to task
 							</Button>
 						</Link>
@@ -142,16 +152,11 @@ export const NewTaskModal = () => {
 				setEditorDescription(initialEditorValue);
 				form.reset();
 			},
-			onError: (error) => {
-				toast.error("Error creating task", {
-					description: parseError(error),
-				});
-			},
 		});
 	};
 
 	useQuery({
-		queryKey: ["team", "getUserTeams", organization?.id],
+		enabled: !team,
 		queryFn: async () => {
 			if (!organization) return [];
 			const teams = await client.team.getUserTeams
@@ -161,12 +166,12 @@ export const NewTaskModal = () => {
 			setTeam(teams[0]);
 			return teams;
 		},
-		enabled: !team,
+		queryKey: ["team", "getUserTeams", organization?.id],
 	});
 
 	return (
-		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>
-			<DialogContent tabIndex={undefined} className="md:max-w-4xl">
+		<Dialog onOpenChange={setShowNewTask} open={showNewTask}>
+			<DialogContent className="md:max-w-4xl" tabIndex={undefined}>
 				<DialogHeader>
 					<div className="flex items-center">
 						<TeamSelector />
@@ -188,11 +193,11 @@ export const NewTaskModal = () => {
 												<Input
 													{...field}
 													autoFocus
-													placeholder="Title"
 													className="text-md"
-													onFocus={() => setIsEditingTitle(true)}
-													onBlur={() => setIsEditingTitle(false)}
 													maxLength={50}
+													onBlur={() => setIsEditingTitle(false)}
+													onFocus={() => setIsEditingTitle(true)}
+													placeholder="Title"
 												/>
 											</FormControl>
 											<FormDescription
@@ -212,9 +217,9 @@ export const NewTaskModal = () => {
 											<FormControl>
 												<TextEditor
 													hasToolbar={false}
+													onChange={setEditorDescription}
 													placeholder="Add Description"
 													value={editorDescription}
-													onChange={setEditorDescription}
 												/>
 											</FormControl>
 										</FormItem>
@@ -256,17 +261,17 @@ export const NewTaskModal = () => {
 						</div>
 						<DialogFooter className="mt-6">
 							<Button
-								onClick={handleDiscard}
 								className="bg-transparent text-foreground hover:cursor-pointer"
-								variant="destructive"
+								onClick={handleDiscard}
 								type="button"
+								variant="destructive"
 							>
 								Discard
 							</Button>
 							<Button
-								type="submit"
 								className="hover:cursor-pointer"
 								disabled={isLoading}
+								type="submit"
 							>
 								{isLoading ? "Creating..." : "Create Task"}
 							</Button>

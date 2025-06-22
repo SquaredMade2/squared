@@ -1,14 +1,14 @@
 "use client";
 
-import TopNavBar from "@/components/TopNavBar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useTaskStore, useViewStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squaredmade/db";
 import { Clipboard } from "@squaredmade/icons";
 import { cn } from "@squaredmade/ui/cn";
 import type { ReactNode } from "react";
+import TopNavBar from "@/components/TopNavBar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useTaskStore, useViewStore } from "@/store";
 import SquaredLoader from "../Loaders/SquaredLoader";
 import { NoTasksNewTaskButton } from "../Modals";
 
@@ -38,6 +38,7 @@ export function TaskPageLayout({
 
 	const isRowGroupingActive = groupRowsBy !== "None";
 
+	// Loading state
 	if (loading) {
 		return (
 			<div className="flex h-full w-full items-center justify-center">
@@ -46,12 +47,13 @@ export function TaskPageLayout({
 		);
 	}
 
-	return (
-		<div className="flex h-screen w-full flex-col overflow-hidden">
-			<div className="w-full px-2 sm:px-5">
-				<TopNavBar pageTitle={pageTitle} />
-			</div>
-			{!authorized ? (
+	// Not authorized
+	if (!authorized) {
+		return (
+			<div className="flex h-screen w-full flex-col overflow-hidden">
+				<div className="w-full px-2 sm:px-5">
+					<TopNavBar pageTitle={pageTitle} />
+				</div>
 				<div className="flex h-full w-screen flex-col items-center bg-background">
 					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
 						<h1 className="text-2xl">Not Authorized</h1>
@@ -61,7 +63,34 @@ export function TaskPageLayout({
 						</p>
 					</div>
 				</div>
-			) : user && tasks.length === 0 ? (
+			</div>
+		);
+	}
+
+	// No workspace found
+	if (!currentWorkspace) {
+		return (
+			<div className="flex h-screen w-full flex-col overflow-hidden">
+				<div className="w-full px-2 sm:px-5">
+					<TopNavBar pageTitle={pageTitle} />
+				</div>
+				<div className="flex h-full w-screen flex-col items-center bg-background">
+					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
+						<h1 className="text-2xl">Team not found</h1>
+						<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// No tasks yet
+	if (user && tasks.length === 0) {
+		return (
+			<div className="flex h-screen w-full flex-col overflow-hidden">
+				<div className="w-full px-2 sm:px-5">
+					<TopNavBar pageTitle={pageTitle} />
+				</div>
 				<div className="flex h-full w-full flex-col items-center justify-center gap-4">
 					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
 						<Clipboard className="h-8 w-8 text-muted-foreground" />
@@ -73,43 +102,47 @@ export function TaskPageLayout({
 					</p>
 					<NoTasksNewTaskButton />
 				</div>
-			) : currentWorkspace ? (
-				<div className="grow overflow-hidden">
-					{/* When row grouping is active, don't use ScrollArea */}
-					{isRowGroupingActive ? (
-						<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">
-							<DragDropContext onDragEnd={handleDragEnd}>
-								{children}
-							</DragDropContext>
-						</div>
-					) : (
-						<ScrollArea
-							className={cn(
-								"px-2",
-								view === "list"
-									? "h-[calc(100vh-145px)] overflow-y-auto"
-									: "h-[calc(100vh-55px)] overflow-x-auto",
-							)}
-						>
-							<div
-								className={cn("mx-2", view === "grid" && "flex flex-nowrap")}
-							>
-								<DragDropContext onDragEnd={handleDragEnd}>
-									{children}
-								</DragDropContext>
-							</div>
-							{view === "grid" && <ScrollBar orientation="horizontal" />}
-						</ScrollArea>
-					)}
+			</div>
+		);
+	}
+
+	// Main content - render tasks
+	const renderTaskContent = () => {
+		if (isRowGroupingActive) {
+			return (
+				<div className="h-[calc(100vh-55px)] w-full overflow-hidden px-2">
+					<DragDropContext onDragEnd={handleDragEnd}>
+						{children}
+					</DragDropContext>
 				</div>
-			) : (
-				<div className="flex h-full w-screen flex-col items-center bg-background">
-					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
-						<h1 className="text-2xl">Team not found</h1>
-						<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
-					</div>
+			);
+		}
+
+		return (
+			<ScrollArea
+				className={cn(
+					"px-2",
+					view === "list"
+						? "h-[calc(100vh-145px)] overflow-y-auto"
+						: "h-[calc(100vh-55px)] overflow-x-auto",
+				)}
+			>
+				<div className={cn("mx-2", view === "grid" && "flex flex-nowrap")}>
+					<DragDropContext onDragEnd={handleDragEnd}>
+						{children}
+					</DragDropContext>
 				</div>
-			)}
+				{view === "grid" && <ScrollBar orientation="horizontal" />}
+			</ScrollArea>
+		);
+	};
+
+	return (
+		<div className="flex h-screen w-full flex-col overflow-hidden">
+			<div className="w-full px-2 sm:px-5">
+				<TopNavBar pageTitle={pageTitle} />
+			</div>
+			<div className="grow overflow-hidden">{renderTaskContent()}</div>
 		</div>
 	);
 }

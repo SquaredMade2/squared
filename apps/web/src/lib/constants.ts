@@ -1,5 +1,5 @@
-import { CompletedTaskPeriod } from "@/store/views";
 import { Priority, Status } from "@squaredmade/db";
+import { CompletedTaskPeriod } from "@/store/views";
 
 export const statusOptions: Status[] = [
 	Status.backlog,
@@ -59,11 +59,11 @@ export const complexityScale = [
 ];
 
 export const CompletedTaskPeriodOptions: CompletedTaskPeriod[] = [
-	CompletedTaskPeriod.all,
-	CompletedTaskPeriod.pastDay,
-	CompletedTaskPeriod.pastWeek,
-	CompletedTaskPeriod.pastMonth,
-	CompletedTaskPeriod.none,
+	CompletedTaskPeriod.All,
+	CompletedTaskPeriod.PastDay,
+	CompletedTaskPeriod.PastWeek,
+	CompletedTaskPeriod.PastMonth,
+	CompletedTaskPeriod.None,
 ];
 
 export const LINK_EXPIRATION_TIMES = [

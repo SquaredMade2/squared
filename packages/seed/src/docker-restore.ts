@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noProcessEnv: We need to use process.env */
 import { exec } from "node:child_process";
 import util from "node:util";
 import createCustomLogger from "@squaredmade/logger";
@@ -17,9 +18,7 @@ const localDbUrl =
 async function waitForPostgresReady(maxAttempts = 30) {
 	logger.info("Waiting for PostgreSQL to be ready...");
 
-	let attempts = 0;
-
-	while (attempts < maxAttempts) {
+	const attemptConnection = async (attempt: number): Promise<boolean> => {
 		try {
 			const client = new Client({
 				connectionString: localDbUrl,
@@ -32,8 +31,7 @@ async function waitForPostgresReady(maxAttempts = 30) {
 			logger.info("PostgreSQL is ready");
 			return true;
 		} catch {
-			attempts++;
-			if (attempts >= maxAttempts) {
+			if (attempt >= maxAttempts) {
 				logger.error(
 					"PostgreSQL failed to become ready within the timeout period",
 				);
@@ -41,12 +39,16 @@ async function waitForPostgresReady(maxAttempts = 30) {
 			}
 
 			logger.debug(
-				`Waiting for PostgreSQL... (attempt ${attempts}/${maxAttempts})`,
+				`Waiting for PostgreSQL... (attempt ${attempt}/${maxAttempts})`,
 			);
+
 			// Wait for 1 second before the next attempt
 			await new Promise((resolve) => setTimeout(resolve, 1000));
+			return attemptConnection(attempt + 1);
 		}
-	}
+	};
+
+	return await attemptConnection(1);
 }
 
 async function dumpAndRestoreWithDocker() {

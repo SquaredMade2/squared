@@ -1,8 +1,5 @@
 "use client";
 
-import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
-import { GithubIcon } from "@/components/Svg";
-import { client } from "@/lib/client";
 import { Protect, useOrganization, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -22,20 +19,24 @@ import { Separator } from "@squaredmade/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, MoreVertical, Plus } from "lucide-react";
 import Link from "next/link";
+import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
+import { GithubIcon } from "@/components/Svg";
+import { config } from "@/config";
+import { client } from "@/lib/client";
 
 const GithubSettings: React.FC = () => {
 	const { user } = useUser();
 	const { membership, organization } = useOrganization();
 
 	const { data: githubOrganizations } = useQuery({
-		queryKey: ["user", user?.externalId],
+		enabled: !!organization,
 		queryFn: async () => {
 			if (!organization) return [];
 			return await client.github.getRepos
 				.$get({ workspaceId: organization.id })
 				.then((res) => res.json());
 		},
-		enabled: !!organization,
+		queryKey: ["user", user?.externalId],
 	});
 
 	const githubAccount = user?.externalAccounts.find(
@@ -43,7 +44,7 @@ const GithubSettings: React.FC = () => {
 	);
 
 	const callbackUrl = encodeURIComponent(
-		`${process.env.NEXT_PUBLIC_URL}/api/callback/github`,
+		`${config.NEXT_PUBLIC_URL}/api/callback/github`,
 	);
 
 	const clerkHasNoPermission = !membership?.permissions.includes(
@@ -80,8 +81,8 @@ const GithubSettings: React.FC = () => {
 						<CardContent>
 							{githubOrganizations?.map((org) => (
 								<div
-									key={org.name}
 									className="flex items-center justify-between py-2"
+									key={org.name}
 								>
 									<div>
 										<p className="font-medium">{org.name}</p>
@@ -92,22 +93,16 @@ const GithubSettings: React.FC = () => {
 									<DropdownMenu>
 										<Protect permission="org:sys_profile:manage">
 											<DropdownMenuTrigger asChild>
-												<Button variant="ghost" size="sm">
+												<Button size="sm" variant="ghost">
 													<MoreVertical className="h-4 w-4" />
 												</Button>
 											</DropdownMenuTrigger>
 										</Protect>
 										<DropdownMenuContent align="end">
-											<DropdownMenuItem
-												disabled={clerkHasNoPermission}
-												onSelect={() => console.log("Configure")}
-											>
+											<DropdownMenuItem disabled={clerkHasNoPermission}>
 												Configure
 											</DropdownMenuItem>
-											<DropdownMenuItem
-												disabled={clerkHasNoPermission}
-												onSelect={() => console.log("Disconnect")}
-											>
+											<DropdownMenuItem disabled={clerkHasNoPermission}>
 												Disconnect
 											</DropdownMenuItem>
 										</DropdownMenuContent>
@@ -119,7 +114,6 @@ const GithubSettings: React.FC = () => {
 								<div className="flex items-center justify-end">
 									<Button
 										className="mt-4"
-										variant="ghost"
 										disabled={clerkHasNoPermission}
 										onClick={() =>
 											window.open(
@@ -128,6 +122,7 @@ const GithubSettings: React.FC = () => {
 												"noopener,noreferrer",
 											)
 										}
+										variant="ghost"
 									>
 										<Plus className="mr-2 size-4" />
 										Add Organization
@@ -149,7 +144,7 @@ const GithubSettings: React.FC = () => {
 								<p>
 									{githubAccount ? "Github Account Connected" : "Not connected"}
 								</p>
-								<Button variant="outline" asChild>
+								<Button asChild variant="outline">
 									<Link href={`/${organization?.slug}/settings/connections`}>
 										Manage Connected Accounts
 										<ChevronRight className="ml-2 h-4 w-4" />

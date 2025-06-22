@@ -1,5 +1,6 @@
-import type { AppRouter } from "@/server";
 import { createClient } from "jstack";
+import { config } from "@/config";
+import type { AppRouter } from "@/server";
 
 const getBaseUrl = () => {
 	// browser should use relative path
@@ -7,13 +8,13 @@ const getBaseUrl = () => {
 		return "";
 	}
 
-	if (process.env.NODE_ENV === "development") {
+	if (config.NODE_ENV === "development") {
 		return "http://localhost:3000/";
 	}
 
 	// if deployed to vercel, use vercel url
-	if (process.env.VERCEL_URL) {
-		return `https://${process.env.VERCEL_URL}`;
+	if (config.VERCEL_URL) {
+		return `https://${config.VERCEL_URL}`;
 	}
 
 	// assume deployment to cloudflare workers otherwise, you'll get this URL after running

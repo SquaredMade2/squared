@@ -1,6 +1,5 @@
 "use client";
 
-import { useTeamStore } from "@/store";
 import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
@@ -9,6 +8,7 @@ import {
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
 import { LayoutGrid } from "lucide-react";
+import { useTeamStore } from "@/store";
 
 export default function TeamSelector() {
 	const { team, setTeam, teams } = useTeamStore((state) => state);
@@ -16,19 +16,19 @@ export default function TeamSelector() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="sm" className="gap-2">
+				<Button className="gap-2" size="sm" variant="outline">
 					<LayoutGrid className="h-4 w-4 text-[#9577FF]" />
 					<span className="truncate">{team?.identifier}</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{teams.map((team) => (
+				{teams.map((t) => (
 					<DropdownMenuItem
-						key={team.id}
-						onClick={() => setTeam(team)}
 						className="truncate"
+						key={t.id}
+						onClick={() => setTeam(t)}
 					>
-						{team.identifier}
+						{t.identifier}
 					</DropdownMenuItem>
 				))}
 			</DropdownMenuContent>

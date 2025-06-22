@@ -1,11 +1,17 @@
-import { Pool, neonConfig } from "@neondatabase/serverless";
+/** biome-ignore-all lint/performance/noReExportAll: This is needed */
+/** biome-ignore-all lint/style/noProcessEnv: This is an entrypoint */
+import { neonConfig, Pool } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import { type NeonQueryResultHKT, drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle, type NeonQueryResultHKT } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import ws from "ws";
+
+// biome-ignore lint/performance/noNamespaceImport: This is needed to type the DBClient
 import * as schema from "./schema";
+
 export * from "drizzle-orm";
 export * from "./schema";
+
 export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
 export type TransactionClient = PgTransaction<
 	NeonQueryResultHKT,

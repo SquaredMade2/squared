@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-	TODO,
 	background,
 	getRequestId,
 	requestIdKey,
+	TODO,
 	withAbort,
 	withDeadline,
 	withTimeout,
@@ -172,7 +172,7 @@ describe("@squaredmade/context", () => {
 			vi.restoreAllMocks();
 		});
 
-		it("should handle nested contexts with values, timeouts, and aborts", async () => {
+		it("should handle nested contexts with values, timeouts, and aborts", () => {
 			// Create a base context with request ID
 			const baseCtx = withValues(background, {
 				[requestIdKey]: "request-123",

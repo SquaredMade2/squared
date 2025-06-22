@@ -1,5 +1,12 @@
 import { randomBytes } from "node:crypto";
-import * as context from "@squaredmade/context";
+import type { Abortable } from "@squaredmade/context";
+import {
+	background,
+	requestIdKey,
+	withAbort,
+	withDeadline,
+	withValues,
+} from "@squaredmade/context";
 import type { Logger } from "@squaredmade/logger";
 import superjson from "@squaredmade/superjson";
 import type { ErrorRequestHandler, RequestHandler } from "express";
@@ -9,36 +16,61 @@ import {
 	type Method,
 	type MethodDetails,
 	ResponseValidationError,
+	requestContexts,
 	type Service,
 	type ServiceDetails,
 	type ServiceSet,
 	ValidationError,
-	requestContexts,
 } from "./rpc-types";
-export * from "./rpc-types";
+
+export type {
+	ContextMethod,
+	ContextMethods,
+	ContextService,
+	Method,
+	MethodDetails,
+	Methods,
+	Service,
+	ServiceDetails,
+	ServiceSet,
+} from "./rpc-types";
+export {
+	contextServiceWithSchema,
+	errorMessage,
+	ResponseValidationError,
+	requestContexts,
+	serviceWithSchema,
+	ValidationError,
+	voidSchema,
+} from "./rpc-types";
 
 export class RpcError extends Error {
+	serviceName: string;
+	methodName: string;
+	inner: Error & { type?: string; code?: string | number };
+
 	constructor(
-		public serviceName: string,
-		public methodName: string,
-		public inner: Error & { type?: string; code?: string | number },
+		serviceName: string,
+		methodName: string,
+		inner: Error & { type?: string; code?: string | number },
 	) {
 		super(
 			`An error occurred while executing method ${serviceName}/${methodName}`,
 		);
 		this.name = "RpcError";
+		this.serviceName = serviceName;
+		this.methodName = methodName;
+		this.inner = inner;
 	}
 }
 
 function getExposedMeta(serviceDetails: ServiceDetails) {
 	return {
-		serviceName: serviceDetails.service,
-		multiArg: false,
 		help: serviceDetails.help || `${serviceDetails.service} service`,
 		interfaces: serviceDetails.expose.map((method: MethodDetails) => {
 			const {
 				methodName,
-				methodTimeout = 60000,
+				methodTimeout = 60_000,
 				help,
 				paramNames = [],
 				requestSchema,
@@ -46,14 +78,16 @@ function getExposedMeta(serviceDetails: ServiceDetails) {
 			} = method;
 
 			return {
-				methodName,
-				paramNames,
-				methodTimeout,
 				help: help || `${methodName} method`,
+				methodName,
+				methodTimeout,
+				paramNames,
 				requestSchema,
 				responseSchema,
 			};
 		}),
+		multiArg: false,
+		serviceName: serviceDetails.service,
 	};
 }
 
@@ -98,21 +132,18 @@ export function createRequestHandler(
 			);
 
 			const postHandler: RequestHandler = async (req, res, next) => {
-				let abortable: context.Abortable | null = null;
+				let abortable: Abortable | null = null;
 				try {
 					const requestDeadline = first(req.headers["x-request-deadline"]);
 
 					if (requestDeadline) {
-						abortable = context.withDeadline(
-							context.background,
-							Date.parse(requestDeadline),
-						);
+						abortable = withDeadline(background, Date.parse(requestDeadline));
 					} else {
-						abortable = context.withAbort(context.background);
+						abortable = withAbort(background);
 					}
 
-					const ctx = context.withValues(abortable.ctx, {
-						[context.requestIdKey]:
+					const ctx = withValues(abortable.ctx, {
+						[requestIdKey]:
 							first(req.headers["x-request-id"]) ||
 							randomBytes(6).toString("base64url"),
 					});
@@ -152,7 +183,7 @@ export function createRequestHandler(
 			return next();
 		}
 
-		handler(req, res, next);
+		await handler(req, res, next);
 	};
 }
 
@@ -169,15 +200,15 @@ export function createErrorHandler(
 				err.inner instanceof ResponseValidationError
 			) {
 				res.status(400).json({
-					message: err.inner.message,
 					code: err.inner.code,
-					type: err.inner.type,
+					message: err.inner.message,
 					params: err.inner.params,
+					type: err.inner.type,
 				});
 			} else {
 				res.status(400).json({
-					message: err.inner.message,
 					code: err.inner.code || "unknown_error",
+					message: err.inner.message,
 					type:
 						err.inner.type ||
 						"https://errors.squared.global/@squaredmade/rpc/unknown-error",
@@ -255,11 +286,11 @@ export function createRpcHandler<
 	}
 
 	return {
-		meta: {
-			service: serviceName,
-			expose,
-		},
 		implementation: methods,
+		meta: {
+			expose,
+			service: serviceName,
+		},
 	};
 }
 
@@ -272,25 +303,25 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 			z.ZodType<any, z.ZodTypeDef, any>
 		>;
 		return {
-			type: "object",
 			properties: Object.fromEntries(
 				Object.entries(shape).map(([key, value]) => [
 					key,
 					serializeZodSchema(value),
 				]),
 			),
+			type: "object",
 		};
 	}
 	if (schema instanceof z.ZodOptional) {
 		return {
-			type: "optional",
 			inner: serializeZodSchema(schema.unwrap()),
+			type: "optional",
 		};
 	}
 	if (schema instanceof z.ZodArray) {
 		return {
-			type: "array",
 			items: serializeZodSchema(schema.element),
+			type: "array",
 		};
 	}
 	if (schema instanceof z.ZodString) {
@@ -310,8 +341,8 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 	}
 	if (schema instanceof z.ZodUnion) {
 		return {
-			type: "union",
 			options: schema.options.map(serializeZodSchema),
+			type: "union",
 		};
 	}
 	if (schema instanceof z.ZodLiteral) {
@@ -322,14 +353,14 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 	}
 	if (schema instanceof z.ZodNullable) {
 		return {
-			type: "nullable",
 			inner: serializeZodSchema(schema.unwrap()),
+			type: "nullable",
 		};
 	}
 	if (schema instanceof z.ZodOptional) {
 		return {
-			type: "optional",
 			inner: serializeZodSchema(schema.unwrap()),
+			type: "optional",
 		};
 	}
 	if (schema instanceof z.ZodDate) {

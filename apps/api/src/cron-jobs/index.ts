@@ -35,4 +35,8 @@ export function registerCronJobs(): void {
 }
 
 // Export all job modules
-export * from "./archiveTasks";
+export {
+	archiveTasksConfig,
+	archiveTasksHandler,
+	registerArchiveTasksJob,
+} from "./archiveTasks";

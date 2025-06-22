@@ -121,14 +121,14 @@ export function DataTable({
 						className="max-w-xs"
 					/>
 					<div className="flex items-center justify-center gap-2">
-						<Protect permission={"org:sys_memberships:manage"}>
+						<Protect permission="org:sys_memberships:manage">
 							<Button onClick={handleWorkspaceInvite}>Invite People</Button>
 						</Protect>
 					</div>
 				</div>
 				<Table>
 					<TableBody className="divide-y divide-border">
-						{table.getRowModel().rows?.length ? (
+						{table.getRowModel().rows?.length > 0 ? (
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
@@ -162,7 +162,7 @@ export function DataTable({
 						includes names, emails, roles, and much more!
 					</p>
 					<Protect permission="org:sys_memberships:manage">
-						<Button variant={"outline"} disabled={!membersCsv}>
+						<Button variant="outline" disabled={!membersCsv}>
 							{membersCsv && (
 								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
 							)}

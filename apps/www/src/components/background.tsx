@@ -11,11 +11,11 @@ export const Background = () => {
 				// biome-ignore lint/suspicious/noArrayIndexKey: <Came with template>
 				// biome-ignore lint/style/useTemplate: <Came with template>
 				<div className="flex" key={"grid-column" + index}>
-					{Array.from({ length: 10 }).map((_, index) => (
+					{Array.from({ length: 10 }).map((__, i) => (
 						// biome-ignore lint/suspicious/noArrayIndexKey: <Came with template>
 						// biome-ignore lint/style/noUnusedTemplateLiteral: <Came with template>
 						// biome-ignore lint/style/useTemplate: <Came with template>
-						<GridBlock key={`grid-row` + index} />
+						<GridBlock key={`grid-row` + i} />
 					))}
 				</div>
 			))}
@@ -51,12 +51,12 @@ const SVGVertical = ({ className }: { className?: string }) => {
 	const id = useId();
 	return (
 		<motion.svg
-			width={width}
+			className={cn("text-neutral-secondary", className)}
+			fill="none"
 			height={height}
 			viewBox={`0 0 ${width} ${height}`}
-			fill="none"
+			width={width}
 			xmlns="http://www.w3.org/2000/svg"
-			className={cn("text-neutral-secondary", className)}
 		>
 			<title>Vertical Line</title>
 			<path d="M0.5 0.5V479" stroke="currentColor" strokeWidth={2} />
@@ -68,15 +68,15 @@ const SVGVertical = ({ className }: { className?: string }) => {
 
 			<defs>
 				<motion.linearGradient
-					id={`gradient-${id}`}
-					initial={{ x1: 2, y1: -200, x2: 2, y2: -100 }}
-					animate={{ x1: 2, y1: 400, x2: 2, y2: 600 }}
-					transition={{
-						repeat: Number.POSITIVE_INFINITY,
-						duration: Math.random() * 2 + 5,
-						delay: Math.floor(Math.random() * 6) + 2,
-					}}
+					animate={{ x1: 2, x2: 2, y1: 400, y2: 600 }}
 					gradientUnits="userSpaceOnUse"
+					id={`gradient-${id}`}
+					initial={{ x1: 2, x2: 2, y1: -200, y2: -100 }}
+					transition={{
+						delay: Math.floor(Math.random() * 6) + 2,
+						duration: Math.random() * 2 + 5,
+						repeat: Number.POSITIVE_INFINITY,
+					}}
 				>
 					<motion.stop offset="0%" stopColor="transparent" />
 					<motion.stop offset="50%" stopColor="var(--color-neutral-accent)" />
@@ -94,12 +94,12 @@ const SVG = ({ className }: { className?: string }) => {
 	const id = useId();
 	return (
 		<motion.svg
-			width={width}
+			className={cn("text-neutral-secondary", className)}
+			fill="none"
 			height={height}
 			viewBox={`0 0 ${width} ${height}`}
-			fill="none"
+			width={width}
 			xmlns="http://www.w3.org/2000/svg"
-			className={cn("text-neutral-secondary", className)}
 		>
 			<title>SVG</title>
 			<path d="M0.5 0.5H479" stroke="currentColor" />
@@ -111,15 +111,15 @@ const SVG = ({ className }: { className?: string }) => {
 
 			<defs>
 				<motion.linearGradient
-					id={`gradient-${id}`}
-					initial={{ x1: -200, y1: 0, x2: -100, y2: 0 }}
-					animate={{ x1: 400, y1: 0, x2: 600, y2: 0 }}
-					transition={{
-						repeat: Number.POSITIVE_INFINITY,
-						duration: Math.random() * 2 + 10,
-						delay: Math.floor(Math.random() * 6) + 2,
-					}}
+					animate={{ x1: 400, x2: 600, y1: 0, y2: 0 }}
 					gradientUnits="userSpaceOnUse"
+					id={`gradient-${id}`}
+					initial={{ x1: -200, x2: -100, y1: 0, y2: 0 }}
+					transition={{
+						delay: Math.floor(Math.random() * 6) + 2,
+						duration: Math.random() * 2 + 10,
+						repeat: Number.POSITIVE_INFINITY,
+					}}
 				>
 					<motion.stop offset="0%" stopColor="transparent" />
 					<motion.stop offset="50%" stopColor="var(--color-neutral-accent)" />

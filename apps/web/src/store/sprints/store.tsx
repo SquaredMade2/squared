@@ -1,8 +1,9 @@
 "use client";
 
-import { type ReactNode, createContext, useContext, useRef } from "react";
+import { createContext, type ReactNode, useContext, useRef } from "react";
 import { useStore } from "zustand";
-import { type SprintStore, createSprintStore } from ".";
+import { createSprintStore } from ".";
+import type { SprintStore } from "./interfaces";
 
 type SprintStoreApi = ReturnType<typeof createSprintStore>;
 

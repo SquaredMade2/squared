@@ -13,19 +13,19 @@ const logger = createCustomLogger("swagger");
 async function scanForDocs(dir: string): Promise<Record<string, string>> {
 	let docs: Record<string, string> = {};
 	const files = await fs.readdir(dir);
-
-	for (const file of files) {
+	const filePromises = files.map(async (file) => {
 		const filePath = path.join(dir, file);
 		const stat = await fs.stat(filePath);
-
 		if (stat.isDirectory()) {
 			const subDocs = await scanForDocs(filePath);
 			docs = { ...docs, ...subDocs };
 		} else if (file === "index.docs.ts") {
+			// biome-ignore lint/style/noCommonJs: Required for swagger-jsdoc
 			const routeDocs = require(filePath).default;
 			docs = { ...docs, ...routeDocs };
 		}
-	}
+	});
+	await Promise.all(filePromises);
 
 	return docs;
 }
@@ -43,18 +43,18 @@ async function generateSwaggerOptions() {
 	const docs = await aggregateDocs();
 
 	return {
+		apis: [],
 		swaggerDefinition: {
-			openapi: "3.0.0",
+			components: {
+				schemas,
+			},
 			info: {
 				title: "API Documentation",
 				version: "1.0.0",
 			},
+			openapi: "3.0.0",
 			paths: docs,
-			components: {
-				schemas,
-			},
 		},
-		apis: [],
 	};
 }
 

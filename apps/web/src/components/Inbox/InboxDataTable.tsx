@@ -1,30 +1,13 @@
 "use client";
 
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
+import { Input } from "@squaredmade/ui/input";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@squaredmade/ui/popover";
-import {
-	type ColumnFiltersState,
-	type SortingState,
-	type VisibilityState,
-	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
-import { useEffect, useState } from "react";
-
-import type { NotificationFilter } from "@/app/(site)/inbox/page";
-import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { client } from "@/lib/client";
-import { useEventStore } from "@/store";
-import { Button } from "@squaredmade/ui/button";
-import { Checkbox } from "@squaredmade/ui/checkbox";
-import { Input } from "@squaredmade/ui/input";
 import {
 	Table,
 	TableBody,
@@ -35,6 +18,17 @@ import {
 } from "@squaredmade/ui/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+	type ColumnFiltersState,
+	flexRender,
+	getCoreRowModel,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	type SortingState,
+	useReactTable,
+	type VisibilityState,
+} from "@tanstack/react-table";
+import {
 	BellOff,
 	Check,
 	Circle,
@@ -42,6 +36,11 @@ import {
 	MoveRight,
 	Trash2,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { NotificationFilter } from "@/app/(site)/inbox/page";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { client } from "@/lib/client";
+import { useEventStore } from "@/store";
 import { columns } from "./columns";
 
 export function InboxDataTable({
@@ -54,36 +53,37 @@ export function InboxDataTable({
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-		taskTitle: false,
 		read: false,
+		taskTitle: false,
 	});
 	const [rowSelection, setRowSelection] = useState({});
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
 	const { notifications, setNotifications } = useEventStore((state) => state);
+
 	const table = useReactTable({
-		data,
 		columns,
-		onSortingChange: setSorting,
-		onColumnFiltersChange: setColumnFilters,
+		data,
+		filterFns: {
+			unread: (row) => !(showUnreadOnly && row.original.read),
+		},
 		getCoreRowModel: getCoreRowModel(),
+		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
+		meta: {
+			hoveredRowId,
+		},
+		onColumnFiltersChange: setColumnFilters,
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
+		onSortingChange: setSorting,
 		state: {
-			sorting,
 			columnFilters,
 			columnVisibility,
 			rowSelection,
-		},
-		filterFns: {
-			unread: (row) => !showUnreadOnly || !row.original.read,
-		},
-		meta: {
-			hoveredRowId,
+			sorting,
 		},
 	});
 
@@ -136,31 +136,30 @@ export function InboxDataTable({
 
 	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
 	const { mutate: handleMarkAsUnread } = useMutation({
-		mutationKey: ["notification", "markAsUnread", selectedNotificationIds],
 		mutationFn: async () => {
 			await client.notification.markAsUnread.$post({
 				notificationIds: selectedNotificationIds,
 			});
 		},
+		mutationKey: ["notification", "markAsUnread", selectedNotificationIds],
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleMarkAsRead } = useMutation({
-		mutationKey: ["notification", "markAsRead", selectedNotificationIds],
 		mutationFn: async () => {
 			await client.notification.markAsRead.$post({
 				notificationIds: selectedNotificationIds,
 			});
 		},
+		mutationKey: ["notification", "markAsRead", selectedNotificationIds],
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleMarkAsDismissed } = useMutation({
-		mutationKey: ["markAsDismissed", selectedNotificationIds],
 		mutationFn: async () => {
 			return await client.notification.dismiss
 				.$post({
@@ -168,6 +167,7 @@ export function InboxDataTable({
 				})
 				.then((res) => res.json());
 		},
+		mutationKey: ["markAsDismissed", selectedNotificationIds],
 		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
 			queryClient.invalidateQueries({ queryKey: ["notification"] });
@@ -175,7 +175,6 @@ export function InboxDataTable({
 		},
 	});
 	const { mutate: handleMarkAsRestored } = useMutation({
-		mutationKey: ["notification", "markAsRestored", selectedNotificationIds],
 		mutationFn: async () => {
 			return await client.notification.restore
 				.$post({
@@ -183,6 +182,7 @@ export function InboxDataTable({
 				})
 				.then((res) => res.json());
 		},
+		mutationKey: ["notification", "markAsRestored", selectedNotificationIds],
 		onSuccess: (updatedNotifications) => {
 			setNotifications(updatedNotifications);
 			queryClient.invalidateQueries({ queryKey: ["notification"] });
@@ -190,11 +190,6 @@ export function InboxDataTable({
 		},
 	});
 	const { mutate: handleDeleteMany } = useMutation({
-		mutationKey: [
-			"notification",
-			"deleteNotifications",
-			selectedNotificationIds,
-		],
 		mutationFn: async () => {
 			return await client.notification.delete
 				.$post({
@@ -202,18 +197,23 @@ export function InboxDataTable({
 				})
 				.then((res) => res.json());
 		},
+		mutationKey: [
+			"notification",
+			"deleteNotifications",
+			selectedNotificationIds,
+		],
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["notification"] });
 			updateRowSelection();
 		},
 	});
 	const { mutate: handleMoveAllToSaved } = useMutation({
-		mutationKey: ["notification", "saveNotifications", selectedNotificationIds],
 		mutationFn: async () => {
 			await client.notification.updateUserNotifications.$post({
 				notificationIds: selectedNotificationIds,
 			});
 		},
+		mutationKey: ["notification", "saveNotifications", selectedNotificationIds],
 		onSuccess: () => {
 			updateRowSelection();
 		},
@@ -223,27 +223,27 @@ export function InboxDataTable({
 		<div className="w-full md:container">
 			<div className="hidden items-center justify-start gap-4 py-4 md:flex">
 				<Input
+					className="bg-card"
+					onChange={(event) =>
+						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
+					}
 					placeholder="Filter notifications..."
 					value={
 						(table.getColumn("taskTitle")?.getFilterValue() as string) ?? ""
 					}
-					onChange={(event) =>
-						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
-					}
-					className="bg-card"
 				/>
 				<div className="flex w-36 rounded-md border border-border bg-card dark:bg-transparent">
 					<Button
-						variant={showUnreadOnly ? "secondary" : "outline"}
-						onClick={() => setShowUnreadOnly(false)}
 						className="w-full rounded-r-none"
+						onClick={() => setShowUnreadOnly(false)}
+						variant={showUnreadOnly ? "secondary" : "outline"}
 					>
 						All
 					</Button>
 					<Button
-						variant={showUnreadOnly ? "outline" : "secondary"}
-						onClick={() => setShowUnreadOnly(true)}
 						className="rounded-l-none"
+						onClick={() => setShowUnreadOnly(true)}
+						variant={showUnreadOnly ? "outline" : "secondary"}
 					>
 						Unread
 					</Button>
@@ -255,12 +255,12 @@ export function InboxDataTable({
 						<TableRow className="h-14 hover:bg-popover">
 							<TableHead className="w-12">
 								<Checkbox
+									aria-label="Select all"
 									checked={
 										table.getIsAllPageRowsSelected() ||
 										(table.getIsSomePageRowsSelected() && "indeterminate")
 									}
 									onCheckedChange={handleSelectAllOnPage}
-									aria-label="Select all"
 								/>
 							</TableHead>
 							<TableHead>
@@ -270,20 +270,20 @@ export function InboxDataTable({
 											{filterType !== "DONE" ? (
 												<>
 													<Button
-														onClick={() => handleMarkAsDismissed()}
-														variant="outline"
-														size="sm"
 														className="gap-2 bg-secondary"
+														onClick={() => handleMarkAsDismissed()}
+														size="sm"
+														variant="outline"
 													>
 														<Check className="size-4" />
 														<span className="hidden sm:inline">Dismiss</span>
 													</Button>
 													{!isAllSelected && (
 														<Button
-															onClick={() => handleMarkAsUnread()}
-															variant="outline"
-															size="sm"
 															className="gap-2 bg-secondary"
+															onClick={() => handleMarkAsUnread()}
+															size="sm"
+															variant="outline"
 														>
 															<BellOff className="size-4" />
 															<span className="hidden sm:inline">
@@ -295,22 +295,22 @@ export function InboxDataTable({
 														1 &&
 														filterType === "INBOX" && (
 															<Button
-																variant="outline"
 																className="gap-2 bg-secondary"
-																size="sm"
 																onClick={() => handleMoveAllToSaved()}
+																size="sm"
+																variant="outline"
 															>
 																<span>Move all to Saved</span>
 															</Button>
 														)}
 													{allRead || allUnread ? (
 														<Button
+															className="bg-secondary"
 															onClick={() =>
 																allUnread
 																	? handleMarkAsRead()
 																	: handleMarkAsUnread()
 															}
-															className="bg-secondary"
 															size="sm"
 															variant="outline"
 														>
@@ -320,9 +320,9 @@ export function InboxDataTable({
 														<Popover>
 															<PopoverTrigger asChild>
 																<Button
-																	variant="outline"
 																	className="bg-secondary"
 																	size="sm"
+																	variant="outline"
 																>
 																	<Ellipsis className="size-4" />
 																</Button>
@@ -330,17 +330,17 @@ export function InboxDataTable({
 															<PopoverContent className="w-[200px] p-0">
 																<div className="flex flex-col">
 																	<Button
-																		variant="ghost"
-																		onClick={() => handleMarkAsRead()}
 																		className="justify-start gap-3"
+																		onClick={() => handleMarkAsRead()}
+																		variant="ghost"
 																	>
 																		<Circle className="size-4" />
 																		Mark as Read
 																	</Button>
 																	<Button
-																		variant="ghost"
-																		onClick={() => handleMarkAsUnread()}
 																		className="justify-start gap-3"
+																		onClick={() => handleMarkAsUnread()}
+																		variant="ghost"
 																	>
 																		<Circle className="size-4 fill-foreground" />
 																		Mark as Unread
@@ -352,10 +352,10 @@ export function InboxDataTable({
 													{(table.getIsAllPageRowsSelected() ||
 														table.getIsSomePageRowsSelected()) && (
 														<Button
-															variant="link"
-															size="sm"
-															onClick={handleSelectAllInInbox}
 															className="text-xs"
+															onClick={handleSelectAllInInbox}
+															size="sm"
+															variant="link"
 														>
 															{isAllSelected
 																? "Clear selection"
@@ -366,10 +366,10 @@ export function InboxDataTable({
 											) : (
 												<>
 													<Button
-														onClick={() => handleMarkAsRestored()}
-														variant="outline"
-														size="sm"
 														className="gap-2 bg-secondary"
+														onClick={() => handleMarkAsRestored()}
+														size="sm"
+														variant="outline"
 													>
 														<MoveRight className="size-4" />
 														<span className="hidden sm:inline">
@@ -377,10 +377,10 @@ export function InboxDataTable({
 														</span>
 													</Button>
 													<Button
-														onClick={() => handleDeleteMany()}
-														variant="outline"
-														size="sm"
 														className="gap-2 bg-secondary"
+														onClick={() => handleDeleteMany()}
+														size="sm"
+														variant="outline"
 													>
 														<Trash2 className="size-4" />
 														<span className="hidden sm:inline">
@@ -397,18 +397,18 @@ export function InboxDataTable({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{table.getRowModel().rows?.length ? (
+						{table.getRowModel().rows?.length > 0 ? (
 							table.getRowModel().rows.map((row) => (
 								<TableRow
-									key={row.id}
-									data-state={row.getIsSelected() && "selected"}
 									className={`
 										${row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}transition-colors`}
+									data-state={row.getIsSelected() && "selected"}
+									key={row.id}
 									onMouseEnter={() => setHoveredRowId(row.id)}
 									onMouseLeave={() => setHoveredRowId(null)}
 								>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id} className="p-2 sm:p-4">
+										<TableCell className="p-2 sm:p-4" key={cell.id}>
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext(),
@@ -420,8 +420,8 @@ export function InboxDataTable({
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={columns.length}
 									className="h-24 text-center"
+									colSpan={columns.length}
 								>
 									No results.
 								</TableCell>
@@ -441,18 +441,18 @@ export function InboxDataTable({
 						{table.getPageCount() || 1}
 					</span>
 					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.previousPage()}
 						disabled={!table.getCanPreviousPage()}
+						onClick={() => table.previousPage()}
+						size="sm"
+						variant="outline"
 					>
 						Previous
 					</Button>
 					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.nextPage()}
 						disabled={!table.getCanNextPage()}
+						onClick={() => table.nextPage()}
+						size="sm"
+						variant="outline"
 					>
 						Next
 					</Button>

@@ -13,19 +13,19 @@ import StatusDropdown from "./StatusDropdown";
 export function TaskDesignationsContainer() {
 	const { team } = useTeamStore((state) => state);
 	const Designations = [
-		{ name: "Status", component: <StatusDropdown /> },
-		{ name: "Priority", component: <PriorityDropdown /> },
-		{ name: "Labels", component: <LabelCombobox /> },
-		{ name: "Due Date", component: <DatePicker /> },
+		{ component: <StatusDropdown />, name: "Status" },
+		{ component: <PriorityDropdown />, name: "Priority" },
+		{ component: <LabelCombobox />, name: "Labels" },
+		{ component: <DatePicker />, name: "Due Date" },
 		{
-			name: "Effort",
 			component: <EffortEstimateDropdown />,
 			extraComponent: <EffortModal />,
+			name: "Effort",
 		},
-		{ name: "Assignee", component: <AssigneeCombobox /> },
-		{ name: "Parent Task", component: <ParentTaskCombobox /> },
-		{ name: "Sprint", component: <SprintDropdown /> },
-		{ name: "Blocked By", component: <BlockedByCombobox /> },
+		{ component: <AssigneeCombobox />, name: "Assignee" },
+		{ component: <ParentTaskCombobox />, name: "Parent Task" },
+		{ component: <SprintDropdown />, name: "Sprint" },
+		{ component: <BlockedByCombobox />, name: "Blocked By" },
 	];
 
 	return (
@@ -33,7 +33,7 @@ export function TaskDesignationsContainer() {
 			{Designations.map((designation) => {
 				if (designation.name === "Sprint" && !team?.sprintsEnabled) return null;
 				return (
-					<div key={designation.name} className="flex w-full flex-row">
+					<div className="flex w-full flex-row" key={designation.name}>
 						<div className="my-1 flex w-[95px] shrink-0 items-center font-semibold text-muted-foreground text-sm">
 							<span>{designation.name}</span>
 							{designation.extraComponent && (

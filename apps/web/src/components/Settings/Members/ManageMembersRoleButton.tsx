@@ -1,17 +1,17 @@
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { UserCog } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
-import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
 
 const ManageMembersRoleButton = ({
 	userId,
@@ -30,6 +30,11 @@ const ManageMembersRoleButton = ({
 				role: newRole,
 			});
 		},
+		onError: (error) => {
+			toast.error("Member role could not be updated", {
+				description: parseError(error, "unknown error"),
+			});
+		},
 		onSuccess: (_, newRole) => {
 			queryClient.invalidateQueries({
 				queryKey: ["workspaceUsers", pageId],
@@ -38,11 +43,6 @@ const ManageMembersRoleButton = ({
 				queryKey: ["userRole", user?.id, pageId],
 			});
 			toast.success(`Member role updated to ${newRole}`);
-		},
-		onError: (error) => {
-			toast.error("Member role could not be updated", {
-				description: parseError(error, "unknown error"),
-			});
 		},
 	});
 
@@ -54,9 +54,9 @@ const ManageMembersRoleButton = ({
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
-					variant="ghost"
 					className="items-center"
 					disabled={userId === user?.id}
+					variant="ghost"
 				>
 					<UserCog />
 				</Button>

@@ -1,14 +1,3 @@
-import { CompletedTaskPeriodOptions } from "@/lib/constants";
-import { useViewStore } from "@/store";
-import {
-	type CompletedTaskPeriod,
-	type DisplayProperty,
-	type TaskGroup,
-	type TaskOrder,
-	TaskOrderOptions,
-	type View,
-	taskGroupOptions,
-} from "@/store/views";
 import {
 	ArrowDownWideNarrow,
 	ArrowUpWideNarrow,
@@ -46,6 +35,17 @@ import {
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
 import { useEffect } from "react";
+import { CompletedTaskPeriodOptions } from "@/lib/constants";
+import { useViewStore } from "@/store";
+import {
+	type CompletedTaskPeriod,
+	type DisplayProperty,
+	type TaskGroup,
+	type TaskOrder,
+	TaskOrderOptions,
+	taskGroupOptions,
+	type View,
+} from "@/store/views";
 
 const TopNavBarDisplay = () => {
 	const { view, setView, displayOptions, setViewOptions, setDisplayOptions } =
@@ -63,43 +63,47 @@ const TopNavBarDisplay = () => {
 
 	useEffect(() => {
 		if (groupTasksBy === taskOrder.orderBy) {
-			const orderMap: { [key in "Priority" | "Status" | "Assignee"]: string } =
+			const orderMap: { [Key in "assignee" | "priority" | "status"]: string } =
 				{
-					Priority: "Status",
-					Status: "Priority",
-					Assignee: "Status",
+					assignee: "Status",
+					priority: "Status",
+					status: "Priority",
 				};
 			setDisplayOptions({
 				taskOrder: {
 					...taskOrder,
-					orderBy: orderMap[
-						groupTasksBy as "Priority" | "Status" | "Assignee"
-					] as TaskOrder,
+					orderBy: orderMap[groupTasksBy] as TaskOrder,
 				},
 			});
 		}
 	}, [groupTasksBy, taskOrder.orderBy]);
 
 	const tooltipContent = (): string => {
-		return ["Title", "Status", "Assignee"].includes(taskOrder.orderBy)
-			? taskOrder.orderAscending
-				? "A-Z"
-				: "Z-A"
-			: ["Priority", "Effort"].includes(taskOrder.orderBy)
-				? taskOrder.orderAscending
-					? "Ascending"
-					: "Descending"
-				: ["Due Date", "Updated", "Created"].includes(taskOrder.orderBy)
-					? taskOrder.orderAscending
-						? "Oldest first"
-						: "Newest first"
-					: "";
+		const { orderBy, orderAscending } = taskOrder;
+
+		const tooltipMap = {
+			alphabetical: ["Title", "Status", "Assignee"],
+			chronological: ["Due Date", "Updated", "Created"],
+			numerical: ["Priority", "Effort"],
+		};
+
+		const tooltipText = {
+			alphabetical: orderAscending ? "A-Z" : "Z-A",
+			chronological: orderAscending ? "Oldest first" : "Newest first",
+			numerical: orderAscending ? "Ascending" : "Descending",
+		};
+
+		for (const [type, fields] of Object.entries(tooltipMap)) {
+			if (fields.includes(orderBy)) {
+				return tooltipText[type as keyof typeof tooltipText];
+			}
+		}
+
+		return "";
 	};
 
 	const formatCamelCaseString = (str: string): string => {
-		return str
-			.replace(/([A-Z])/g, " $1")
-			.replace(/^./, (char) => char.toUpperCase());
+		return str.replace(/([A-Z])/g, " $1");
 	};
 
 	const handleToggleChange = (value: keyof DisplayProperty) => {
@@ -115,19 +119,19 @@ const TopNavBarDisplay = () => {
 
 	const handleDropdownSelection = (value: CompletedTaskPeriod) => {
 		setDisplayOptions({
-			showCompletedTasks: { show: value !== "None", period: value },
+			showCompletedTasks: { period: value, show: value !== "None" },
 		});
 	};
 
 	const handleValueChange = (val: string) =>
-		!val ? setView(view) : setView(val as View);
+		val ? setView(val as View) : setView(view);
 
 	return (
 		<TooltipProvider delayDuration={0}>
 			<div className="relative flex h-10 flex-col items-end gap-2">
 				<Popover>
 					<PopoverTrigger asChild>
-						<Button variant="ghost" className="gap-2">
+						<Button className="gap-2" variant="ghost">
 							<SlidersVertical className="size-4" />
 							<div className="hidden items-center gap-2 md:flex">
 								Display
@@ -139,17 +143,17 @@ const TopNavBarDisplay = () => {
 						<div className="flex flex-col gap-4">
 							<div className="mb-3 flex w-full items-center justify-between gap-2">
 								<Button
+									className="h-14 flex-1 flex-col"
 									onClick={() => handleValueChange("list")}
 									variant={view === "list" ? "secondary" : "outline"}
-									className="h-14 flex-1 flex-col"
 								>
 									<Menu />
 									List
 								</Button>
 								<Button
+									className="h-14 flex-1 flex-col"
 									onClick={() => handleValueChange("grid")}
 									variant={view === "grid" ? "secondary" : "outline"}
-									className="h-14 flex-1 flex-col"
 								>
 									<LayoutGrid />
 									Grid
@@ -189,9 +193,9 @@ const TopNavBarDisplay = () => {
 										<SelectContent>
 											{taskGroupOptions.map((option) => (
 												<SelectItem
+													className="text-xs"
 													key={option}
 													value={option}
-													className="text-xs"
 												>
 													{option}
 												</SelectItem>
@@ -212,7 +216,7 @@ const TopNavBarDisplay = () => {
 												setDisplayOptions({
 													groupRowsBy: value,
 													groupTasksBy:
-														value === "Status" ? "Priority" : "Status",
+														value === "status" ? "priority" : "status",
 												});
 											} else {
 												setDisplayOptions({
@@ -233,9 +237,9 @@ const TopNavBarDisplay = () => {
 										<SelectContent>
 											{[...taskGroupOptions, "None"].map((option) => (
 												<SelectItem
+													className="text-xs"
 													key={option}
 													value={option}
-													className="text-xs"
 												>
 													{option}
 												</SelectItem>
@@ -270,9 +274,9 @@ const TopNavBarDisplay = () => {
 												.filter((option) => option !== groupTasksBy)
 												.map((option) => (
 													<SelectItem
+														className="text-xs"
 														key={option}
 														value={option}
-														className="text-xs"
 													>
 														{option}
 													</SelectItem>
@@ -285,8 +289,6 @@ const TopNavBarDisplay = () => {
 									<Tooltip>
 										<TooltipTrigger asChild>
 											<Button
-												variant="outline"
-												size="sm"
 												className="h-10 px-2.5"
 												onClick={() =>
 													setDisplayOptions({
@@ -296,6 +298,8 @@ const TopNavBarDisplay = () => {
 														},
 													})
 												}
+												size="sm"
+												variant="outline"
 											>
 												{taskOrder.orderAscending ? (
 													<ArrowUpWideNarrow className="size-4" />
@@ -315,9 +319,9 @@ const TopNavBarDisplay = () => {
 								<DropdownMenu>
 									<DropdownMenuTrigger asChild>
 										<Button
-											variant="outline"
-											size="sm"
 											className="w-[120px] justify-between"
+											size="sm"
+											variant="outline"
 										>
 											<span className="text-xs">
 												{showCompletedTasks.period}
@@ -328,8 +332,8 @@ const TopNavBarDisplay = () => {
 									<DropdownMenuContent className="w-[120px]">
 										{completedPeriodOptions.map((option) => (
 											<DropdownMenuItem
-												key={option}
 												className="text-xs"
+												key={option}
 												onSelect={() => handleDropdownSelection(option)}
 											>
 												{option}
@@ -376,11 +380,11 @@ const TopNavBarDisplay = () => {
 											const value = displayProperties[typedKey];
 											return (
 												<Button
-													variant={value ? "secondary" : "ghost"}
-													size="sm"
-													className="h-6 px-2 py-0 text-xs"
+													className="h-6 px-2 py-0 text-xs capitalize"
 													key={property}
 													onClick={() => handleToggleChange(typedKey)}
+													size="sm"
+													variant={value ? "secondary" : "ghost"}
 												>
 													{formatCamelCaseString(property)}
 												</Button>

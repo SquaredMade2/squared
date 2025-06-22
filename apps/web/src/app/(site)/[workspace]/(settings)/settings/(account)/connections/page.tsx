@@ -1,19 +1,19 @@
 "use client";
 
-import { GoogleIcon } from "@/components/Svg";
-import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { Github } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { Separator } from "@squaredmade/ui/separator";
 import { toast } from "@squaredmade/ui/toast";
 import { useRouter } from "next/navigation";
+import { GoogleIcon } from "@/components/Svg";
+import { parseError } from "@/utils/parseError";
 
 const Page = () => {
 	const { user, isLoaded } = useUser();
 	const router = useRouter();
 
-	if (!isLoaded || !user) return null;
+	if (!(isLoaded && user)) return null;
 
 	const handleConnectAccount = async (
 		strategy: "oauth_google" | "oauth_github",
@@ -21,8 +21,8 @@ const Page = () => {
 		if (!user) return;
 		try {
 			const externalAccount = await user.createExternalAccount({
-				strategy,
 				redirectUrl: window.location.href,
+				strategy,
 			});
 			const externalVerificationUrl =
 				externalAccount.verification?.externalVerificationRedirectURL;
@@ -77,9 +77,7 @@ const Page = () => {
 	};
 
 	const getAccountDetails = (provider: "google" | "github"): string => {
-		const account = user.externalAccounts.find(
-			(account) => account.provider === provider,
-		);
+		const account = user.externalAccounts.find((a) => a.provider === provider);
 		let returnValue: string | undefined = "";
 		if (account) {
 			returnValue =
@@ -126,15 +124,15 @@ const Page = () => {
 							</div>
 							{hasGoogle ? (
 								<Button
-									variant="outline"
 									onClick={() => handleDisconnectAccount("google")}
+									variant="outline"
 								>
 									Disconnect
 								</Button>
 							) : (
 								<Button
-									variant="outline"
 									onClick={() => handleConnectAccount("oauth_google")}
+									variant="outline"
 								>
 									Connect
 								</Button>
@@ -159,15 +157,15 @@ const Page = () => {
 							</div>
 							{hasGithub ? (
 								<Button
-									variant="outline"
 									onClick={() => handleDisconnectAccount("github")}
+									variant="outline"
 								>
 									Disconnect
 								</Button>
 							) : (
 								<Button
-									variant="outline"
 									onClick={() => handleConnectAccount("oauth_github")}
+									variant="outline"
 								>
 									Connect
 								</Button>

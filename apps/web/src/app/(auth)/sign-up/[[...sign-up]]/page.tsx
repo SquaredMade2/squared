@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { authStyles } from "../../authStyles";
+
 const RegisterPage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
@@ -35,17 +36,17 @@ const RegisterPage = () => {
 						appearance={{
 							elements: authStyles,
 						}}
-						signInForceRedirectUrl={"/"}
-						fallbackRedirectUrl={"/welcome"}
+						fallbackRedirectUrl="/welcome"
+						signInForceRedirectUrl="/"
 					/>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-2">
 					<p className="text-muted-foreground text-sm">
 						Already a member?{" "}
 						<Button
-							variant="link"
 							className="ml-2 p-0"
 							onClick={() => router.push("/sign-in")}
+							variant="link"
 						>
 							Log in
 						</Button>

@@ -18,10 +18,10 @@ export function MembersPage({
 	});
 	const users = memberships?.data
 		?.map(
-			(membership) =>
-				membership.publicUserData && {
-					...membership.publicUserData,
-					role: membership.role,
+			(m) =>
+				m.publicUserData && {
+					...m.publicUserData,
+					role: m.role,
 				},
 		)
 		.filter((user): user is MemberWithRole => Boolean(user));
@@ -35,8 +35,8 @@ export function MembersPage({
 				<DataTable
 					columns={columns}
 					data={users}
-					team={team ? team : null}
 					membershipManagementPermission={hasMembershipManagePermission}
+					team={team ? team : null}
 				/>
 			)}
 		</>

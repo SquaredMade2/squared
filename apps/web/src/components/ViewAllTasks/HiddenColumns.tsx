@@ -24,15 +24,15 @@ const HiddenColumns = ({
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
-			case "Status":
+			case "status":
 				return formatStatus(title as Status);
-			case "Assignee": {
-				const user = users.find((user) => user.externalId === title);
+			case "assignee": {
+				const user = users.find((u) => u.externalId === title);
 				return user ? user.name : "Unassigned";
 			}
-			case "Priority":
+			case "priority":
 				return formatPriority(title as Priority);
-			case "Label": {
+			case "label": {
 				const labelName = workspace?.labels.find(
 					(label) => label.name === title,
 				);
@@ -48,11 +48,11 @@ const HiddenColumns = ({
 	};
 
 	return (
-		<Accordion type="single" collapsible className="min-w-[300px]">
+		<Accordion className="min-w-[300px]" collapsible type="single">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
 				{getHiddenColumns().map((column) => (
-					<Droppable key={column} droppableId={column}>
+					<Droppable droppableId={column} key={column}>
 						{(provided, snapshot) => (
 							<AccordionContent
 								ref={provided.innerRef}
@@ -63,12 +63,11 @@ const HiddenColumns = ({
 									<div className="mb-2 flex h-10 flex-row justify-between px-2 font-medium text-sm transition-all">
 										<div className="flex items-center gap-4">
 											<div className="mr-1.5 w-4 lg:mr-2">
-												{groupTasksBy === "Status" ? (
+												{groupTasksBy === "status" && (
 													<StatusIcon status={column as Status} />
-												) : groupTasksBy === "Priority" ? (
+												)}{" "}
+												{groupTasksBy === "priority" && (
 													<PriorityIcon priority={column as Priority} />
-												) : (
-													""
 												)}
 											</div>
 											<span>{formatColumnTitle(column)}</span>
