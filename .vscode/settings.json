@@ -32,9 +32,6 @@
 	"[markdown]": {
 		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
 	},
-	"[prisma]": {
-		"editor.defaultFormatter": "Prisma.prisma"
-	},
 	"[properties]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
