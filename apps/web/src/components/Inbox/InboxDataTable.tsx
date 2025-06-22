@@ -318,7 +318,7 @@ export function InboxDataTable({
 														</Button>
 													) : (
 														<Popover>
-															<PopoverTrigger asChild={true}>
+															<PopoverTrigger asChild>
 																<Button
 																	className="bg-secondary"
 																	size="sm"

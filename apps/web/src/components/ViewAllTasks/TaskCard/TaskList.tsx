@@ -1,7 +1,3 @@
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import { useViewStore } from "@/store";
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
@@ -19,9 +15,13 @@ import {
 } from "@squaredmade/ui/tooltip";
 import { formatDate } from "date-fns";
 import Link from "next/link";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
+import { useViewStore } from "@/store";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
+import { formatName, formatUrl, getInitials } from "@/utils/formatting";
 import { AssigneeBox } from "./AssigneeBox";
-import TaskCardLabels from "./TaskCardLabels";
 import type { TaskListProps } from "./interfaces";
+import TaskCardLabels from "./TaskCardLabels";
 
 const TaskList = ({
 	highlightText,
@@ -59,7 +59,7 @@ const TaskList = ({
 								</span>
 							)}
 							{showStatus && (
-								<Button variant="ghost" size="sm" className="mx-1 shrink-0 p-0">
+								<Button className="mx-1 shrink-0 p-0" size="sm" variant="ghost">
 									<StatusIcon status={task.status} />
 								</Button>
 							)}
@@ -89,8 +89,8 @@ const TaskList = ({
 									<TooltipProvider>
 										<Tooltip>
 											<DropdownMenu>
-												<DropdownMenuTrigger asChild={true}>
-													<TooltipTrigger asChild={true}>
+												<DropdownMenuTrigger asChild>
+													<TooltipTrigger asChild>
 														<Avatar
 															className="size-6 shrink-0"
 															onClick={(e) => {
@@ -117,8 +117,8 @@ const TaskList = ({
 									<TooltipProvider>
 										<Tooltip>
 											<DropdownMenu>
-												<DropdownMenuTrigger asChild={true}>
-													<TooltipTrigger asChild={true}>
+												<DropdownMenuTrigger asChild>
+													<TooltipTrigger asChild>
 														<UserSearch
 															className="size-6 shrink-0 text-[#9597AD]"
 															onClick={(e) => {

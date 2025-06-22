@@ -136,8 +136,8 @@ export function AssignTasksDialog({
 	const getFormId = (el: string) => `${id}-${el}`;
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild={true}>
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger asChild>
 				<Button>Assign Tasks</Button>
 			</DialogTrigger>
 			<DialogContent className="flex h-[90vh] flex-col p-0">
@@ -151,14 +151,14 @@ export function AssignTasksDialog({
 					<div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
 						<div className="mt-2 flex w-full items-center gap-2">
 							<Label
-								htmlFor={getFormId("sprint")}
 								className="ml-auto hidden whitespace-nowrap sm:block"
+								htmlFor={getFormId("sprint")}
 							>
 								Sprint
 							</Label>
 							<Select
-								onValueChange={setTargetSprint}
 								defaultValue={selectedSprintId}
+								onValueChange={setTargetSprint}
 							>
 								<SelectTrigger
 									className="w-full sm:w-72"
@@ -181,16 +181,16 @@ export function AssignTasksDialog({
 					</div>
 					<div className="flex flex-col items-start gap-2 sm:gap-4">
 						<Input
+							className="grow"
+							onChange={(e) => setSearchQuery(e.target.value)}
 							placeholder="Search tasks..."
 							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="grow"
 						/>
 
 						<div className="flex w-full items-center gap-2">
 							<Select
-								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}
+								value={filterPriority}
 							>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Priority" />
@@ -205,8 +205,8 @@ export function AssignTasksDialog({
 								</SelectContent>
 							</Select>
 							<Select
-								value={filterStatus}
 								onValueChange={(value) => setFilterStatus(value as Status)}
+								value={filterStatus}
 							>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Status" />
@@ -220,8 +220,8 @@ export function AssignTasksDialog({
 								</SelectContent>
 							</Select>
 							<Select
-								value={filterLabel}
 								onValueChange={(value) => setFilterLabel(value)}
+								value={filterLabel}
 							>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Labels" />
@@ -238,26 +238,26 @@ export function AssignTasksDialog({
 						</div>
 					</div>
 					<Tabs
-						value={viewMode}
-						onValueChange={(value) => setViewMode(value as "list" | "grid")}
 						className="flex grow flex-col overflow-hidden"
+						onValueChange={(value) => setViewMode(value as "list" | "grid")}
+						value={viewMode}
 					>
 						<TabsList className="grid w-full grid-cols-2">
 							<TabsTrigger value="list">List View</TabsTrigger>
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
-						<TabsContent value="list" className="mt-0 min-h-0">
+						<TabsContent className="mt-0 min-h-0" value="list">
 							<ScrollArea className="scroll-area-no-table h-full w-full rounded-md border">
 								<div className="w-full p-4">
 									<div className="group flex w-full items-center rounded border-border border-b px-4 py-2 hover:bg-accent">
 										<Checkbox
-											id={getFormId("select-all")}
 											checked={selectedTasks.length === filteredTasks.length}
+											id={getFormId("select-all")}
 											onCheckedChange={handleSelectAll}
 										/>
 										<Label
-											htmlFor={getFormId("select-all")}
 											className="ml-3 font-semibold"
+											htmlFor={getFormId("select-all")}
 										>
 											Select All
 										</Label>
@@ -270,15 +270,15 @@ export function AssignTasksDialog({
 										);
 										return (
 											<div
-												key={task.id}
 												className="group flex w-full items-center justify-between rounded border-border border-b px-4 py-2 hover:bg-accent"
+												key={task.id}
 											>
 												<div className="flex min-w-0 shrink items-center gap-2">
 													<Checkbox
-														id={getFormId(task.id)}
 														checked={selectedTasks.includes(task)}
-														onCheckedChange={() => handleTaskSelection(task)}
 														className="mr-2 shrink-0"
+														id={getFormId(task.id)}
+														onCheckedChange={() => handleTaskSelection(task)}
 													/>
 													<PriorityIcon priority={task.priority} />
 													<StatusIcon status={task.status} />
@@ -289,7 +289,7 @@ export function AssignTasksDialog({
 												<div className="ml-2 hidden shrink-0 items-center justify-end gap-2 sm:flex">
 													<div className="flex flex-row">
 														{taskLabels?.map((label) => (
-															<div key={label.name} className="mx-0.5">
+															<div className="mx-0.5" key={label.name}>
 																<LabelBadge label={label} />
 															</div>
 														))}
@@ -299,8 +299,8 @@ export function AssignTasksDialog({
 															{new Date(task.dueDate).toLocaleDateString(
 																"en-US",
 																{
-																	month: "short",
 																	day: "numeric",
+																	month: "short",
 																},
 															)}
 														</span>
@@ -312,18 +312,18 @@ export function AssignTasksDialog({
 								</div>
 							</ScrollArea>
 						</TabsContent>
-						<TabsContent value="grid" className="mt-0 grow overflow-hidden">
+						<TabsContent className="mt-0 grow overflow-hidden" value="grid">
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="p-4">
 									<div className="mb-2 flex items-center">
 										<Checkbox
-											id={getFormId("select-all-grid")}
 											checked={selectedTasks.length === filteredTasks.length}
+											id={getFormId("select-all-grid")}
 											onCheckedChange={handleSelectAll}
 										/>
 										<Label
-											htmlFor={getFormId("select-all-grid")}
 											className="ml-2"
+											htmlFor={getFormId("select-all-grid")}
 										>
 											Select All
 										</Label>
@@ -335,13 +335,13 @@ export function AssignTasksDialog({
 											);
 											return (
 												<div
-													key={task.id}
 													className="group flex flex-col rounded-lg border p-4 hover:bg-accent"
+													key={task.id}
 												>
 													<div className="mb-2 flex items-center justify-between">
 														<Checkbox
-															id={getFormId(task.id)}
 															checked={selectedTasks.includes(task)}
+															id={getFormId(task.id)}
 															onCheckedChange={() => handleTaskSelection(task)}
 														/>
 														<div className="flex items-center gap-2">
@@ -354,7 +354,7 @@ export function AssignTasksDialog({
 													</span>
 													<div className="mb-1 flex flex-wrap">
 														{taskLabels?.map((label) => (
-															<span key={label.name} className="mb-1 shrink">
+															<span className="mb-1 shrink" key={label.name}>
 																<LabelBadge label={label} />
 															</span>
 														))}
@@ -365,8 +365,8 @@ export function AssignTasksDialog({
 															{new Date(task.dueDate).toLocaleDateString(
 																"en-US",
 																{
-																	month: "short",
 																	day: "numeric",
+																	month: "short",
 																},
 															)}
 														</span>
@@ -382,6 +382,7 @@ export function AssignTasksDialog({
 				</div>
 				<DialogFooter className="p-6 pt-2">
 					<Button
+						disabled={selectedTasks.length === 0}
 						onClick={() => {
 							handleBulkAssign();
 							setIsOpen(false);
@@ -391,7 +392,6 @@ export function AssignTasksDialog({
 								} to ${activeSprint?.name}.`,
 							);
 						}}
-						disabled={selectedTasks.length === 0}
 					>
 						Assign {selectedTasks.length} Selected Task
 						{selectedTasks.length !== 1 ? "s" : ""}

@@ -1,14 +1,3 @@
-import LabelBadge from "@/components/LabelBadges";
-import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
-import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squaredmade/db";
 import { Check, Tag } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -18,6 +7,17 @@ import {
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
 import { useMemo, useState } from "react";
+import LabelBadge from "@/components/LabelBadges";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
+import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
+import { useModalStore, useWorkspaceStore } from "@/store";
 
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
@@ -64,8 +64,8 @@ export const LabelDropdownButton = () => {
 			<>
 				{newTaskLabels.map((label, index) => (
 					<div
-						key={label.name}
 						className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}
+						key={label.name}
 					>
 						<LabelColor label={label} />
 					</div>
@@ -76,13 +76,13 @@ export const LabelDropdownButton = () => {
 	};
 
 	return (
-		<DropdownMenu open={open} onOpenChange={setOpen}>
-			<DropdownMenuTrigger asChild={true}>
-				<Button variant="outline" className="mr-2 w-full max-w-full">
+		<DropdownMenu onOpenChange={setOpen} open={open}>
+			<DropdownMenuTrigger asChild>
+				<Button className="mr-2 w-full max-w-full" variant="outline">
 					{renderLabelButton()}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[170px] p-0" side="left" align="start">
+			<DropdownMenuContent align="start" className="w-[170px] p-0" side="left">
 				<Command>
 					<CommandInput placeholder="Search labels..." />
 					<CommandList>
@@ -90,10 +90,10 @@ export const LabelDropdownButton = () => {
 						<CommandGroup>
 							{taskLabels.map((label) => (
 								<CommandItem
-									key={label.name}
-									value={label.name}
-									onSelect={() => handleSelectLabels(label)}
 									className="flex cursor-pointer items-center justify-between px-2 py-1.5"
+									key={label.name}
+									onSelect={() => handleSelectLabels(label)}
+									value={label.name}
 								>
 									<LabelBadge label={label} />
 									{newTaskLabels.includes(label) && (

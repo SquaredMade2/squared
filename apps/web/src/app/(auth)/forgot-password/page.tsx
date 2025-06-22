@@ -131,7 +131,7 @@ const ForgotPasswordPage = () => {
 										id={getFormId("secondFactorCode")}
 										onChange={(e) => setSecondFactorCode(e.target.value)}
 										placeholder="Enter your 2FA code"
-										required={true}
+										required
 										type="text"
 										value={secondFactorCode}
 									/>
@@ -159,7 +159,7 @@ const ForgotPasswordPage = () => {
 											id={getFormId("code")}
 											onChange={(e) => setCode(e.target.value)}
 											placeholder="Enter the reset code"
-											required={true}
+											required
 											type="text"
 											value={code}
 										/>
@@ -173,7 +173,7 @@ const ForgotPasswordPage = () => {
 											id={getFormId("password")}
 											onChange={(e) => setPassword(e.target.value)}
 											placeholder="Enter your new password"
-											required={true}
+											required
 											type={hidePassword ? "password" : "text"}
 											value={password}
 										/>
@@ -202,7 +202,7 @@ const ForgotPasswordPage = () => {
 											id={getFormId("confirm-password")}
 											onChange={(e) => setConfirmPassword(e.target.value)}
 											placeholder="Password confirmation"
-											required={true}
+											required
 											type={hideConfirmPassword ? "password" : "text"}
 											value={confirmPassword}
 										/>
@@ -237,7 +237,7 @@ const ForgotPasswordPage = () => {
 									id={getFormId("email")}
 									onChange={(e) => setEmail(e.target.value)}
 									placeholder="Enter your email"
-									required={true}
+									required
 									type="email"
 									value={email}
 								/>

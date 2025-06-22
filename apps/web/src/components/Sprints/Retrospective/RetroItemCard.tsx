@@ -1,5 +1,3 @@
-import { useUsers } from "@/hooks/useUsers";
-import { formatName } from "@/utils/formatting";
 import { Draggable } from "@hello-pangea/dnd";
 import type { RetrospectiveItem } from "@squaredmade/db";
 import { ThumbsUp } from "@squaredmade/icons";
@@ -11,6 +9,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
+import { useUsers } from "@/hooks/useUsers";
+import { formatName } from "@/utils/formatting";
 
 export type RetroItem = Pick<
 	RetrospectiveItem,
@@ -37,7 +37,7 @@ export const RetroItemCard = ({
 		.join(", ");
 
 	return (
-		<Draggable key={item.id} draggableId={item.id} index={index}>
+		<Draggable draggableId={item.id} index={index} key={item.id}>
 			{(provided) => (
 				<div
 					ref={provided.innerRef}
@@ -57,11 +57,11 @@ export const RetroItemCard = ({
 							{author && (
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger asChild={true}>
+										<TooltipTrigger asChild>
 											<Button
-												variant={liked ? "secondary" : "outline"}
 												className="gap-2"
 												onClick={() => onLikeItem(item.id)}
+												variant={liked ? "secondary" : "outline"}
 											>
 												<ThumbsUp className="h-4 w-4" />
 												{item.likes.length}

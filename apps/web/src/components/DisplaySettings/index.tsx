@@ -130,7 +130,7 @@ const TopNavBarDisplay = () => {
 		<TooltipProvider delayDuration={0}>
 			<div className="relative flex h-10 flex-col items-end gap-2">
 				<Popover>
-					<PopoverTrigger asChild={true}>
+					<PopoverTrigger asChild>
 						<Button className="gap-2" variant="ghost">
 							<SlidersVertical className="size-4" />
 							<div className="hidden items-center gap-2 md:flex">
@@ -287,7 +287,7 @@ const TopNavBarDisplay = () => {
 
 								<div className="col-span-1 text-right">
 									<Tooltip>
-										<TooltipTrigger asChild={true}>
+										<TooltipTrigger asChild>
 											<Button
 												className="h-10 px-2.5"
 												onClick={() =>
@@ -317,7 +317,7 @@ const TopNavBarDisplay = () => {
 							<div className="flex items-center justify-between">
 								<span className="text-foreground text-xs">Completed tasks</span>
 								<DropdownMenu>
-									<DropdownMenuTrigger asChild={true}>
+									<DropdownMenuTrigger asChild>
 										<Button
 											className="w-[120px] justify-between"
 											size="sm"

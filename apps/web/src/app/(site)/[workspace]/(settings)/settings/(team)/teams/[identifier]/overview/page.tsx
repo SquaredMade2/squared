@@ -320,7 +320,7 @@ export default function TeamsSetting() {
 					Squared.
 				</p>
 				<AlertDialog>
-					<AlertDialogTrigger asChild={true}>
+					<AlertDialogTrigger asChild>
 						<Button variant="destructive">Delete Team</Button>
 					</AlertDialogTrigger>
 					<AlertDialogContent>

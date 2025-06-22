@@ -92,7 +92,7 @@ const EffortEstimateDropdown = () => {
 
 	return (
 		<DropdownMenu onOpenChange={setOpen} open={open}>
-			<DropdownMenuTrigger asChild={true}>
+			<DropdownMenuTrigger asChild>
 				<Button
 					className="flex w-full items-center justify-between"
 					variant="outline"

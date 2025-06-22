@@ -137,7 +137,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	return (
 		<Accordion
 			className="w-full"
-			collapsible={true}
+			collapsible
 			onValueChange={setIsOpen}
 			type="single"
 			value={isOpen}

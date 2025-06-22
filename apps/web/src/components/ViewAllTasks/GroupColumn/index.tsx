@@ -51,8 +51,8 @@ const GroupColumn = ({
 				<Droppable
 					direction="vertical"
 					droppableId={group}
-					ignoreContainerClipping={true}
-					isCombineEnabled={true}
+					ignoreContainerClipping
+					isCombineEnabled
 					type="TASK"
 				>
 					{(

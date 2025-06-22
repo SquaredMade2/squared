@@ -1,9 +1,4 @@
 "use client";
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
-import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { useTaskStore, useUserStore } from "@/store";
-import { formatUrl, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import type { Task, User } from "@squaredmade/db";
 import { ChevronDown, ChevronRight, UserSearch } from "@squaredmade/icons";
@@ -16,6 +11,11 @@ import {
 } from "@squaredmade/ui/collapsible";
 import Link from "next/link";
 import { useState } from "react";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
+import { useTaskStore, useUserStore } from "@/store";
+import { formatUrl, getInitials } from "@/utils/formatting";
 
 const BlockedByTasks = () => {
 	const [isBlockedByExpanded, setIsBlockedByExpanded] = useState(true);
@@ -24,11 +24,11 @@ const BlockedByTasks = () => {
 
 	return (
 		<Collapsible
-			open={isBlockedByExpanded}
-			onOpenChange={setIsBlockedByExpanded}
 			className="mt-6 rounded-lg bg-background p-4 shadow-xs"
+			onOpenChange={setIsBlockedByExpanded}
+			open={isBlockedByExpanded}
 		>
-			<CollapsibleTrigger asChild={true}>
+			<CollapsibleTrigger asChild>
 				<div className="mb-2 flex cursor-pointer items-center">
 					{isBlockedByExpanded ? (
 						<ChevronDown className="mr-2 h-4 w-4 transition-transform duration-200" />
@@ -44,8 +44,8 @@ const BlockedByTasks = () => {
 				<ul className="my-4 space-y-2">
 					{currentTaskBlockedBy.map((task) => (
 						<li
-							key={task.id}
 							className="transition-all duration-200 ease-in-out"
+							key={task.id}
 						>
 							<ContextMenu>
 								<ContextMenuTrigger>
@@ -84,7 +84,7 @@ const SubtaskList = ({ task, user }: SubtaskListProps) => {
 							<span className="xs:hidden min-w-16 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 								{task.identifier}
 							</span>
-							<Button variant="ghost" size="sm" className="mx-1 shrink-0 p-0">
+							<Button className="mx-1 shrink-0 p-0" size="sm" variant="ghost">
 								<StatusIcon status={task.status} />
 							</Button>
 							<span className="min-w-0 truncate">{task.title}</span>

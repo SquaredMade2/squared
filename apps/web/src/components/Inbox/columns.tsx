@@ -184,7 +184,7 @@ export const columns: ColumnDef<
 						<div className="flex gap-1">
 							<TooltipProvider>
 								<Tooltip>
-									<TooltipTrigger asChild={true}>
+									<TooltipTrigger asChild>
 										<Button
 											aria-label={
 												row.original.dismissed
@@ -214,7 +214,7 @@ export const columns: ColumnDef<
 									</TooltipContent>
 								</Tooltip>
 								<Tooltip>
-									<TooltipTrigger asChild={true}>
+									<TooltipTrigger asChild>
 										<Button
 											aria-label="Unsubscribe"
 											className="size-8 border border-border bg-accent hover:bg-popover"
@@ -228,7 +228,7 @@ export const columns: ColumnDef<
 									<TooltipContent>Unsubscribe</TooltipContent>
 								</Tooltip>
 								<Tooltip>
-									<TooltipTrigger asChild={true}>
+									<TooltipTrigger asChild>
 										<Button
 											aria-label="Toggle Bookmark"
 											className="size-8 border border-border bg-accent hover:bg-popover"

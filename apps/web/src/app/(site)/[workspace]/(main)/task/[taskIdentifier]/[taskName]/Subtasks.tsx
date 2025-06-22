@@ -58,7 +58,7 @@ const Subtasks = () => {
 			onOpenChange={setIsSubtasksExpanded}
 			open={isSubtasksExpanded}
 		>
-			<CollapsibleTrigger asChild={true}>
+			<CollapsibleTrigger asChild>
 				<div className="mb-2 flex cursor-pointer items-center">
 					{isSubtasksExpanded ? (
 						<ChevronDown className="mr-2 h-4 w-4 transition-transform duration-200" />

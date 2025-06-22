@@ -15,7 +15,7 @@ export default function TeamSelector() {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild={true}>
+			<DropdownMenuTrigger asChild>
 				<Button className="gap-2" size="sm" variant="outline">
 					<LayoutGrid className="h-4 w-4 text-[#9577FF]" />
 					<span className="truncate">{team?.identifier}</span>

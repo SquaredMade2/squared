@@ -65,7 +65,7 @@ export function WorkspaceDropdown() {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild={true}>
+			<DropdownMenuTrigger asChild>
 				<Button
 					className={`w-full items-center gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" ? "justify-center border-none px-0" : "justify-start"}`}
 					variant="outline"
@@ -115,7 +115,7 @@ export function WorkspaceDropdown() {
 					<span className="ml-2">Create New</span>
 				</DropdownMenuItem>
 				<Protect permission="org:sys_memberships:manage">
-					<DropdownMenuItem asChild={true}>
+					<DropdownMenuItem asChild>
 						<Button
 							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
 							onClick={() => setShowInvite(true)}

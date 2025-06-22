@@ -307,7 +307,7 @@ export default function SprintDashboard() {
 									margin={{ bottom: 5, left: 20, right: 20, top: 15 }}
 								>
 									<XAxis axisLine={false} dataKey="day" tick={false} />
-									<YAxis hide={true} />
+									<YAxis hide />
 									<Tooltip
 										contentStyle={{
 											background: "var(--background)",

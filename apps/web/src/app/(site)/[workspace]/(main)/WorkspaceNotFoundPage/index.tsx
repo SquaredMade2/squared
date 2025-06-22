@@ -47,7 +47,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 											className="flex cursor-default items-center justify-between rounded px-3 py-1.5 font-medium text-sm hover:bg-popoverHover"
 											href={`workspace/${org.slug}`}
 											key={org.id}
-											legacyBehavior={true}
+											legacyBehavior
 										>
 											<div>
 												<div className="flex">
@@ -69,7 +69,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 							<Link
 								className="cursor-default rounded px-2 py-1.5 text-popover-foreground text-sm hover:bg-popoverHover"
 								href="/create"
-								passHref={true}
+								passHref
 							>
 								<li>Create or join a workspace</li>
 							</Link>

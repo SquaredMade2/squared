@@ -78,7 +78,7 @@ export const TaskSidebarTopRow = () => {
 			<div className="flex h-full items-center">
 				<TooltipProvider delayDuration={0}>
 					<Tooltip>
-						<TooltipTrigger asChild={true}>
+						<TooltipTrigger asChild>
 							<Button
 								aria-label="Copy Task URL"
 								onClick={copyUrl}
@@ -98,7 +98,7 @@ export const TaskSidebarTopRow = () => {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger asChild={true}>
+						<TooltipTrigger asChild>
 							<Button
 								aria-label="Copy Task ID"
 								onClick={copyTaskId}
@@ -117,7 +117,7 @@ export const TaskSidebarTopRow = () => {
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger asChild={true}>
+						<TooltipTrigger asChild>
 							<Button
 								aria-label="Copy Git Branch Name"
 								onClick={copyGitBranchName}

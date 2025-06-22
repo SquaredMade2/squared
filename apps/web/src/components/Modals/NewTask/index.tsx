@@ -140,7 +140,7 @@ export const NewTaskModal = () => {
 			onSuccess: ({ url }) => {
 				toast.success("Task Created Successfully", {
 					description: (
-						<Link href={url} passHref={true}>
+						<Link href={url} passHref>
 							<Button className="m-0 p-0" variant="link">
 								Go to task
 							</Button>
@@ -192,7 +192,7 @@ export const NewTaskModal = () => {
 											<FormControl>
 												<Input
 													{...field}
-													autoFocus={true}
+													autoFocus
 													className="text-md"
 													maxLength={50}
 													onBlur={() => setIsEditingTitle(false)}

@@ -1,5 +1,18 @@
 "use client";
 
+import type { TaskEvent } from "@squaredmade/db";
+import { Check, ChevronsUpDown, UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import { cn } from "@squaredmade/ui/cn";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
+import { toast } from "@squaredmade/ui/toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
 	Command,
 	CommandEmpty,
@@ -14,19 +27,6 @@ import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
-import type { TaskEvent } from "@squaredmade/db";
-import { Check, ChevronsUpDown, UserSearch } from "@squaredmade/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { Button } from "@squaredmade/ui/button";
-import { cn } from "@squaredmade/ui/cn";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@squaredmade/ui/popover";
-import { toast } from "@squaredmade/ui/toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
@@ -44,10 +44,16 @@ const AssigneeCombobox = () => {
 			if (!currentTask || assigneeId === undefined)
 				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
-				taskId: currentTask.id,
 				assigneeId,
+				taskId: currentTask.id,
 			});
 			return res.json();
+		},
+		onError: (error) => {
+			toast.error("Error updating assignee", {
+				description:
+					error instanceof Error ? error.message : "Failed to update assignee",
+			});
 		},
 		onSuccess: async (updatedTask) => {
 			updateTask(updatedTask);
@@ -62,12 +68,6 @@ const AssigneeCombobox = () => {
 			});
 			toast.success("Assignee updated successfully");
 		},
-		onError: (error) => {
-			toast.error("Error updating assignee", {
-				description:
-					error instanceof Error ? error.message : "Failed to update assignee",
-			});
-		},
 	});
 
 	if (!currentTask) return null;
@@ -78,12 +78,12 @@ const AssigneeCombobox = () => {
 	};
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild={true}>
+		<Popover onOpenChange={setOpen} open={open}>
+			<PopoverTrigger asChild>
 				<Button
-					variant="outline"
 					aria-expanded={open}
 					className="h-8 justify-between md:h-10 md:w-full"
+					variant="outline"
 				>
 					{assignee ? (
 						<div className="flex w-28 items-center">
@@ -127,9 +127,9 @@ const AssigneeCombobox = () => {
 									?.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
 										<CommandItem
+											className="w-full"
 											key={user.userId}
 											onSelect={() => handleSelectAssignee(user?.userId)}
-											className="w-full"
 										>
 											<Avatar className="size-6 text-xxs">
 												<AvatarImage src={user.imageUrl ?? ""} />

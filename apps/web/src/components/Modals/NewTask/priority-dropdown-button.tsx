@@ -1,7 +1,3 @@
-import { PriorityIcon } from "@/components/Icons";
-import { priorityOptions } from "@/lib/constants";
-import { useModalStore } from "@/store";
-import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squaredmade/db";
 import { Check } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -12,6 +8,10 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { PriorityIcon } from "@/components/Icons";
+import { priorityOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatPriority } from "@/utils/formatting";
 
 export const PriorityDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
@@ -23,8 +23,8 @@ export const PriorityDropdownButton = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild={true}>
-				<Button variant="outline" className="w-full max-w-full">
+			<DropdownMenuTrigger asChild>
+				<Button className="w-full max-w-full" variant="outline">
 					<span className="cursor-pointer">
 						<PriorityIcon priority={newTaskPriority || "noPriority"} />
 					</span>
@@ -34,22 +34,22 @@ export const PriorityDropdownButton = () => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
-				sideOffset={4}
-				side="left"
 				align="start"
 				className="w-[150px]"
+				side="left"
+				sideOffset={4}
 			>
 				<DropdownMenuRadioGroup
-					value={newTaskPriority}
 					onValueChange={(priority) =>
 						handleSelectPriority(priority as Priority)
 					}
+					value={newTaskPriority}
 				>
 					{priorityOptions.map((priority) => (
 						<DropdownMenuItem
+							className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 							key={priority}
 							onSelect={() => handleSelectPriority(priority as Priority)}
-							className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 						>
 							<div className="flex items-center ">
 								<PriorityIcon priority={priority} />

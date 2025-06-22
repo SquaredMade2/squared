@@ -11,7 +11,7 @@ import DeleteTaskModal from "../DeleteTaskModal";
 export default function DeleteTaskPopOver({ task }: { task: Task }) {
 	return (
 		<Popover>
-			<PopoverTrigger asChild={true}>
+			<PopoverTrigger asChild>
 				<Button variant="ghost">
 					<Ellipsis />
 				</Button>

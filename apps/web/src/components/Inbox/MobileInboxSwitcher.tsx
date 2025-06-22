@@ -61,13 +61,13 @@ export function MobileInboxSwitcher({
 	});
 
 	const filters = [
-		{ type: "INBOX" as const, label: "Inbox", icon: Inbox },
-		{ type: "SAVED" as const, label: "Saved", icon: Bookmark },
-		{ type: "DONE" as const, label: "Done", icon: Check },
-		{ type: "ASSIGNED" as const, label: "Assigned", icon: MapPin },
-		{ type: "PARTICIPATING" as const, label: "Participating", icon: Handshake },
-		{ type: "MENTIONED" as const, label: "Mentioned", icon: MessageCircleMore },
-		{ type: "CREATED" as const, label: "Created", icon: BadgePlus },
+		{ icon: Inbox, label: "Inbox", type: "INBOX" as const },
+		{ icon: Bookmark, label: "Saved", type: "SAVED" as const },
+		{ icon: Check, label: "Done", type: "DONE" as const },
+		{ icon: MapPin, label: "Assigned", type: "ASSIGNED" as const },
+		{ icon: Handshake, label: "Participating", type: "PARTICIPATING" as const },
+		{ icon: MessageCircleMore, label: "Mentioned", type: "MENTIONED" as const },
+		{ icon: BadgePlus, label: "Created", type: "CREATED" as const },
 	];
 
 	const handleSelect = (value: string) => {
@@ -94,16 +94,16 @@ export function MobileInboxSwitcher({
 	return (
 		<div className="flex w-full gap-2 lg:hidden">
 			<Button
-				variant="secondary"
 				className="w-full justify-between"
 				onClick={() => setOpen(true)}
+				variant="secondary"
 			>
 				Switch Inbox
 				<ChevronDown className="size-4" />
 			</Button>
 			<Popover>
-				<PopoverTrigger asChild={true}>
-					<Button variant="secondary" className="justify-between">
+				<PopoverTrigger asChild>
+					<Button className="justify-between" variant="secondary">
 						{filterRead ? "Unread" : "All"}
 						<ChevronDown className="ml-2 h-4 w-4" />
 					</Button>
@@ -111,17 +111,17 @@ export function MobileInboxSwitcher({
 				<PopoverContent className="w-[200px] p-0">
 					<div className="flex flex-col">
 						<Button
-							variant="ghost"
 							className="justify-between"
 							onClick={() => setFilterRead(false)}
+							variant="ghost"
 						>
 							All
 							{!filterRead && <Check className="h-4 w-4" />}
 						</Button>
 						<Button
-							variant="ghost"
 							className="justify-between"
 							onClick={() => setFilterRead(true)}
+							variant="ghost"
 						>
 							Unread
 							{filterRead && <Check className="h-4 w-4" />}
@@ -129,7 +129,7 @@ export function MobileInboxSwitcher({
 					</div>
 				</PopoverContent>
 			</Popover>
-			<CommandDialog open={open} onOpenChange={setOpen}>
+			<CommandDialog onOpenChange={setOpen} open={open}>
 				<DialogTitle className="sr-only">Switch Inbox</DialogTitle>
 				<div className="flex flex-col">
 					<div className="flex-1 border-b p-4">
@@ -142,60 +142,60 @@ export function MobileInboxSwitcher({
 						<CommandEmpty>No results found.</CommandEmpty>
 						<CommandGroup>
 							<FilterItem
-								type="INBOX"
-								label="Inbox"
 								filterType={filterType}
 								handleSelect={handleSelect}
 								icon={Inbox}
+								label="Inbox"
+								type="INBOX"
 								unreadCount={getUnreadCount("INBOX")}
 							/>
 							<FilterItem
-								type="SAVED"
-								label="Saved"
-								icon={Bookmark}
 								filterType={filterType}
 								handleSelect={handleSelect}
+								icon={Bookmark}
+								label="Saved"
+								type="SAVED"
 							/>
 							<FilterItem
-								type="DONE"
-								label="Done"
-								icon={Check}
 								filterType={filterType}
 								handleSelect={handleSelect}
+								icon={Check}
+								label="Done"
+								type="DONE"
 							/>
 						</CommandGroup>
 						<CommandSeparator />
 						<CommandGroup heading="Filters">
 							<FilterItem
-								type="ASSIGNED"
-								label="Assigned"
 								filterType={filterType}
 								handleSelect={handleSelect}
 								icon={MapPin}
+								label="Assigned"
+								type="ASSIGNED"
 								unreadCount={getUnreadCount("ASSIGNED")}
 							/>
 							<FilterItem
-								type="PARTICIPATING"
-								label="Participating"
 								filterType={filterType}
 								handleSelect={handleSelect}
 								icon={Handshake}
+								label="Participating"
+								type="PARTICIPATING"
 								unreadCount={getUnreadCount("PARTICIPATING")}
 							/>
 							<FilterItem
-								type="MENTIONED"
-								label="Mentioned"
 								filterType={filterType}
 								handleSelect={handleSelect}
 								icon={MessageCircleMore}
+								label="Mentioned"
+								type="MENTIONED"
 								unreadCount={getUnreadCount("MENTIONED")}
 							/>
 							<FilterItem
-								type="CREATED"
-								label="Created"
 								filterType={filterType}
 								handleSelect={handleSelect}
 								icon={BadgePlus}
+								label="Created"
+								type="CREATED"
 								unreadCount={getUnreadCount("CREATED")}
 							/>
 						</CommandGroup>
@@ -203,10 +203,10 @@ export function MobileInboxSwitcher({
 						<CommandGroup heading="Workspaces">
 							{userMemberships.data?.map(({ organization: w }) => (
 								<CommandItem
-									key={w.id}
-									value={w.id}
-									onSelect={handleSelect}
 									className="relative flex items-center justify-between"
+									key={w.id}
+									onSelect={handleSelect}
+									value={w.id}
 								>
 									<div>
 										{organization?.id === w.id &&
@@ -252,9 +252,9 @@ const FilterItem = ({
 	unreadCount?: number;
 }) => (
 	<CommandItem
-		value={type}
-		onSelect={handleSelect}
 		className="relative flex items-center justify-between"
+		onSelect={handleSelect}
+		value={type}
 	>
 		<div className="flex items-center gap-2">
 			{filterType === type && (

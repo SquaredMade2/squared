@@ -90,7 +90,6 @@
 			"recommended": true,
 			"style": {
 				"noCommonJs": "error",
-				"noImplicitBoolean": "error",
 				"noInferrableTypes": "error",
 				"noNamespace": "error",
 				"noNegationElse": "error",

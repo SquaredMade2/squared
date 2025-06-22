@@ -97,7 +97,7 @@ function SidebarContent() {
 					<WorkspaceDropdown />
 					{sidebarState === "expanded" && (
 						<Tooltip>
-							<TooltipTrigger asChild={true}>
+							<TooltipTrigger asChild>
 								<Button
 									aria-label="search"
 									onClick={() => setShowCommand(true)}
@@ -233,7 +233,7 @@ function IconButton({
 
 	return (
 		<Tooltip>
-			<TooltipTrigger asChild={true}>
+			<TooltipTrigger asChild>
 				<Button
 					aria-label={label}
 					className="relative mx-1 justify-start px-3"

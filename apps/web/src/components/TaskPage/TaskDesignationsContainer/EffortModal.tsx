@@ -25,7 +25,7 @@ const EffortModal = () => {
 	};
 	return (
 		<Dialog>
-			<DialogTrigger asChild={true}>
+			<DialogTrigger asChild>
 				<Button
 					aria-label="help"
 					className="rounded-full hover:bg-transparent"

@@ -1,17 +1,5 @@
 "use client";
 
-import AddTeamButton from "@/components/Buttons/AddTeamButton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarHeader,
-	SidebarTrigger,
-	useSidebar,
-} from "@/components/ui/sidebar";
-import { useTeams } from "@/hooks/useTeams";
-import { useTeamStore } from "@/store";
 import { useOrganization } from "@clerk/nextjs";
 import type { Team } from "@squaredmade/db";
 import {
@@ -31,8 +19,20 @@ import {
 import { Button } from "@squaredmade/ui/button";
 import { Separator } from "@squaredmade/ui/separator";
 import { TooltipProvider } from "@squaredmade/ui/tooltip";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import AddTeamButton from "@/components/Buttons/AddTeamButton";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarHeader,
+	SidebarTrigger,
+	useSidebar,
+} from "@/components/ui/sidebar";
+import { useTeams } from "@/hooks/useTeams";
+import { useTeamStore } from "@/store";
 
 function SettingsNavbarContent() {
 	const router = useRouter();
@@ -53,7 +53,7 @@ function SettingsNavbarContent() {
 		<>
 			<SidebarHeader className="border-b p-4">
 				<Button
-					variant="ghost"
+					className="gap-2 py-px text-muted-foreground text-sm"
 					onClick={() =>
 						teams[0] &&
 						router.push(
@@ -61,7 +61,7 @@ function SettingsNavbarContent() {
 						)
 					}
 					size="sm"
-					className="gap-2 py-px text-muted-foreground text-sm"
+					variant="ghost"
 				>
 					<ChevronLeft />
 					Back to Dashboard
@@ -78,30 +78,30 @@ function SettingsNavbarContent() {
 								</h2>
 								<div className="ml-6 space-y-1">
 									<Button
-										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("")}
+										variant="ghost"
 									>
 										General
 									</Button>
 									<Button
-										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("members")}
+										variant="ghost"
 									>
 										Members
 									</Button>
 									<Button
-										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("integrations")}
+										variant="ghost"
 									>
 										Integrations
 									</Button>
 									<Button
-										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("labels")}
+										variant="ghost"
 									>
 										Labels
 									</Button>
@@ -117,16 +117,16 @@ function SettingsNavbarContent() {
 								</h2>
 								<div className="ml-6 space-y-1">
 									<Button
-										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("profile")}
+										variant="ghost"
 									>
 										Profile
 									</Button>
 									<Button
-										variant="ghost"
 										className="w-full justify-start"
 										onClick={() => navigateTo("connections")}
+										variant="ghost"
 									>
 										Connections
 									</Button>
@@ -140,7 +140,7 @@ function SettingsNavbarContent() {
 									<Users className="mr-2 h-4 w-4" />
 									Teams
 								</h2>
-								<Accordion type="single" collapsible={true} className="ml-6">
+								<Accordion className="ml-6" collapsible type="single">
 									{teams?.map((team) => (
 										<AccordionItem key={team.id} value={team.id}>
 											<AccordionTrigger className="py-2">
@@ -148,23 +148,23 @@ function SettingsNavbarContent() {
 											</AccordionTrigger>
 											<AccordionContent>
 												<Button
-													variant="ghost"
 													className="w-full justify-start"
 													onClick={() => handleTeamClick(team)}
+													variant="ghost"
 												>
 													Overview
 												</Button>
 												<Button
-													variant="ghost"
 													className="w-full justify-start"
 													onClick={() => handleTeamClick(team, "members")}
+													variant="ghost"
 												>
 													Members
 												</Button>
 												<Button
-													variant="ghost"
 													className="w-full justify-start"
 													onClick={() => handleTeamClick(team, "sprints")}
+													variant="ghost"
 												>
 													Sprints
 												</Button>
@@ -183,18 +183,18 @@ function SettingsNavbarContent() {
 			<SidebarFooter className="border-t p-4">
 				<div className="flex justify-between">
 					<Button
-						variant="outline"
-						size="icon"
-						onClick={() => setTheme("light")}
 						className={theme === "light" ? "bg-accent" : ""}
+						onClick={() => setTheme("light")}
+						size="icon"
+						variant="outline"
 					>
 						<Sun className="h-4 w-4" />
 					</Button>
 					<Button
-						variant="outline"
-						size="icon"
-						onClick={() => setTheme("dark")}
 						className={theme === "dark" ? "bg-accent" : ""}
+						onClick={() => setTheme("dark")}
+						size="icon"
+						variant="outline"
 					>
 						<Moon className="h-4 w-4" />
 					</Button>
@@ -220,8 +220,8 @@ export default function SettingsNavBar() {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<Sidebar
-				collapsible="offcanvas"
 				className="group/sidebar w-64 transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+				collapsible="offcanvas"
 			>
 				<SettingsNavbarContent />
 			</Sidebar>

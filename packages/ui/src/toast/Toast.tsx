@@ -1134,7 +1134,7 @@ const Toaster = React.forwardRef<HTMLElement, ToasterProps>(
 				aria-live="polite"
 				aria-relevant="additions text"
 				ref={composedRefs}
-				suppressHydrationWarning={true}
+				suppressHydrationWarning
 				tabIndex={-1}
 			>
 				<ol

@@ -1,5 +1,9 @@
 "use client";
 
+import { Calendar as CalendarIcon } from "@squaredmade/icons";
+import { Calendar } from "@squaredmade/ui/calendar";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
@@ -7,10 +11,6 @@ import {
 } from "@/components/ui/context-menu";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
-import { Calendar as CalendarIcon } from "@squaredmade/icons";
-import { Calendar } from "@squaredmade/ui/calendar";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const DateSubContextMenu = ({ task }: ContextMenuProps) => {
@@ -18,16 +18,16 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updateDueDate } = useMutation({
-		mutationKey: ["task", "updateDueDate", task.id],
 		mutationFn: async (date?: Date) => {
 			const res = await client.task.updateDueDate.$post({
-				taskId: task.id,
 				dueDate: date ?? null,
+				taskId: task.id,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
 		},
+		mutationKey: ["task", "updateDueDate", task.id],
 	});
 
 	const handleUpdate = (date?: Date) => {
@@ -35,7 +35,7 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	};
 
 	return (
-		<ContextMenuSub open={dropdownOpen} onOpenChange={setDropdownOpen}>
+		<ContextMenuSub onOpenChange={setDropdownOpen} open={dropdownOpen}>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
 					<CalendarIcon className="size-4 cursor-pointer" />
@@ -44,10 +44,10 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
 				<Calendar
+					initialFocus
 					mode="single"
-					selected={task.dueDate ?? undefined}
 					onSelect={handleUpdate}
-					initialFocus={true}
+					selected={task.dueDate ?? undefined}
 				/>
 			</ContextMenuSubContent>
 		</ContextMenuSub>

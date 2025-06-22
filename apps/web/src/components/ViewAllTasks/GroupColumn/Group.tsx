@@ -93,7 +93,7 @@ const Group = ({
 										isDisabled={
 											!!allBlockedTaskIds.find((id) => id === subtask.id)
 										}
-										isSubtask={true}
+										isSubtask
 										key={subtask.id}
 										location="dashboard"
 										task={subtask}
@@ -124,7 +124,7 @@ const Group = ({
 					<TaskCard
 						index={index}
 						isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
-						isSubtask={true}
+						isSubtask
 						key={subtask.id}
 						location="dashboard"
 						task={subtask}

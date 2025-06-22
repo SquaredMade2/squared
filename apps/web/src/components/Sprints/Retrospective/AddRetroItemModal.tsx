@@ -30,9 +30,9 @@ const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 	}, [newItemContent, onAddItem, type]);
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
-			<DialogTrigger asChild={true}>
-				<Button variant="outline" className="w-full">
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger asChild>
+				<Button className="w-full" variant="outline">
 					<CirclePlus className="mr-2 h-4 w-4" />
 					Add Item
 				</Button>
@@ -44,10 +44,10 @@ const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
 						<Input
-							value={newItemContent}
+							className="col-span-4"
 							onChange={(e) => setNewItemContent(e.target.value)}
 							placeholder="Enter item content"
-							className="col-span-4"
+							value={newItemContent}
 						/>
 					</div>
 				</div>

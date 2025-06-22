@@ -328,7 +328,7 @@ export default function SprintDashboardPage() {
 								margin={{ bottom: 5, left: 20, right: 20, top: 15 }}
 							>
 								<XAxis axisLine={false} dataKey="day" tick={false} />
-								<YAxis hide={true} />
+								<YAxis hide />
 								<Tooltip
 									contentStyle={{
 										background: "var(--card)",
@@ -413,7 +413,7 @@ export default function SprintDashboardPage() {
 					<Link
 						className="flex-1"
 						href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
-						passHref={true}
+						passHref
 					>
 						<Button className="w-full">Start Sprint Retrospective</Button>
 					</Link>

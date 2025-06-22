@@ -1,7 +1,7 @@
 "use client";
 
-import { ThemeProvider } from "@/context/theme-provider";
 import { useEffect, useState } from "react";
+import { ThemeProvider } from "@/context/theme-provider";
 
 export const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
 	const [mounted, setMounted] = useState(false);
@@ -15,9 +15,9 @@ export const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<ThemeProvider
 			attribute="class"
-			enableSystem={true}
-			disableTransitionOnChange={true}
 			defaultTheme="system"
+			disableTransitionOnChange
+			enableSystem
 		>
 			{children}
 		</ThemeProvider>

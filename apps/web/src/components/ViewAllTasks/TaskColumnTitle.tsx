@@ -185,7 +185,7 @@ const TaskColumnTitle = ({
 					</Button>
 
 					<DropdownMenu>
-						<DropdownMenuTrigger asChild={true}>
+						<DropdownMenuTrigger asChild>
 							<Button
 								aria-label="Show task visibility modal"
 								size="icon"

@@ -23,8 +23,8 @@ export function DateDropdownButton() {
 	}, [date]);
 
 	return (
-		<Popover modal={true}>
-			<PopoverTrigger asChild={true}>
+		<Popover modal>
+			<PopoverTrigger asChild>
 				<Button
 					className={cn(
 						"w-full justify-center text-left font-normal",

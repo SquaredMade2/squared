@@ -205,7 +205,7 @@ export default function SprintSettings() {
 						</p>
 					)}
 					{isSprintInfoExpanded && (
-						<Link href="www.squaredmade.com/docs/sprints" passHref={true}>
+						<Link href="www.squaredmade.com/docs/sprints" passHref>
 							<Button className="mt-4 h-auto p-0" variant="link">
 								Read more <ChevronRight className="ml-2 h-4 w-4" />
 							</Button>
@@ -271,7 +271,7 @@ export default function SprintSettings() {
 									Sprints start on
 								</Label>
 								<Popover>
-									<PopoverTrigger asChild={true}>
+									<PopoverTrigger asChild>
 										<Button
 											className={cn(
 												"w-60 justify-start pr-3 text-left font-normal",
@@ -295,7 +295,7 @@ export default function SprintSettings() {
 									</PopoverTrigger>
 									<PopoverContent className="w-auto p-0">
 										<Calendar
-											initialFocus={true}
+											initialFocus
 											mode="single"
 											onSelect={(value) => {
 												setSprintStartDate(value ?? null);
@@ -325,7 +325,7 @@ export default function SprintSettings() {
 									</p>
 								</div>
 								<AlertDialog>
-									<AlertDialogTrigger asChild={true}>
+									<AlertDialogTrigger asChild>
 										<Button variant="outline">Add Active Tasks</Button>
 									</AlertDialogTrigger>
 									<AlertDialogContent>
