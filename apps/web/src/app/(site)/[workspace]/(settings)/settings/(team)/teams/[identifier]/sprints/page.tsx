@@ -1,10 +1,5 @@
 "use client";
 
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useTeams } from "@/hooks/useTeams";
-import { client } from "@/lib/client";
-import { useTeamStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import type { Team } from "@squaredmade/db";
 import {
 	Calendar as CalendarIcon,
@@ -47,7 +42,13 @@ import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import SettingsSprintCard from "@/components/Sprints/Settings/SettingsSprintCard";
+import { useTeams } from "@/hooks/useTeams";
+import { client } from "@/lib/client";
+import { useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
@@ -61,18 +62,25 @@ export default function SprintSettings() {
 	);
 
 	const {
-		data: { pending, active } = { pending: 0, active: null },
+		data: { pending, active, allSprints } = {
+			pending: 0,
+			active: null,
+			allSprints: null,
+		},
 		refetch: refetchSprints,
 	} = useQuery({
 		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
-			if (!team) return { pending: 0, active: null };
+			if (!team) return { pending: 0, active: null, allSprints: null };
 			const sprints = await client.sprint.getSprints
 				.$get({ teamId: team.id })
 				.then((res) => res.json());
 
 			return {
 				pending: sprints.filter((s) => s.status === "PLANNED").length,
+				allSprints: sprints.filter(
+					(s) => s.status === "ACTIVE" || s.status === "PLANNED",
+				),
 				active: sprints.find((s) => s.status === "ACTIVE"),
 			};
 		},
@@ -353,6 +361,30 @@ export default function SprintSettings() {
 							</div>
 						</CardContent>
 					</Card>
+
+					<Separator className="my-6" />
+
+					<div>
+						<h2 className="mb-2 font-semibold text-lg">Current Sprints</h2>
+						<p className="text-muted-foreground">
+							Manage your team's current sprints.
+						</p>
+					</div>
+					{allSprints?.length &&
+						allSprints.map((sprint) => (
+							<Fragment key={sprint.id}>
+								<SettingsSprintCard
+									key={sprint.id}
+									sprint={sprint}
+									isActive={sprint.status === "ACTIVE"}
+								/>
+								<SettingsSprintCard
+									key={"capi32390s"}
+									sprint={sprint}
+									isActive={false}
+								/>
+							</Fragment>
+						))}
 				</>
 			)}
 		</div>

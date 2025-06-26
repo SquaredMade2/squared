@@ -1,19 +1,5 @@
 "use client";
 
-import {
-	AssignTasksDialog,
-	SprintError,
-	SprintLoading,
-	SprintNotFound,
-} from "@/components/Sprints";
-import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
-import { Progress } from "@/components/ui/progress";
-import { useSprints } from "@/hooks/useSprints";
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
 import type { Sprint, Status, Task } from "@squaredmade/db";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -51,6 +37,20 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import {
+	AssignTasksDialog,
+	SprintError,
+	SprintLoading,
+	SprintNotFound,
+} from "@/components/Sprints";
+import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
+import { Progress } from "@/components/ui/progress";
+import { useSprints } from "@/hooks/useSprints";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
 
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();

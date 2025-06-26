@@ -1,12 +1,3 @@
-import {
-	convertMDXToSlate,
-	convertSlateToMDX,
-} from "@/components/TextEditor/format";
-import { client } from "@/lib/client";
-import { useEventStore, useTaskStore } from "@/store";
-import { formatUrl } from "@/utils/formatting";
-import { CustomMentionStyle } from "@/utils/mentionInputStyle";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
@@ -14,6 +5,16 @@ import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
+import {
+	convertMDXToSlate,
+	convertSlateToMDX,
+} from "@/components/TextEditor/format";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore } from "@/store";
+import { formatUrl } from "@/utils/formatting";
+import { isCustomElement } from "@/utils/isCustomElement";
+import { CustomMentionStyle } from "@/utils/mentionInputStyle";
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { StatusIcon } from "../Icons";
 import TextEditor, {
 	type CustomDescendant,
@@ -37,10 +38,6 @@ export const TaskPageForm = () => {
 		CustomDescendant[]
 	>(convertMDXToSlate(task?.description ?? ""));
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
-
-	const isElement = (node: CustomDescendant): node is CustomElement => {
-		return "children" in node;
-	};
 
 	const parentTask = tasks.find((t) => t.id === task?.parentId);
 
@@ -153,7 +150,7 @@ export const TaskPageForm = () => {
 
 			<TextEditor
 				value={updatedDescription.filter(
-					(item) => isElement(item) && item.children.length > 0,
+					(item) => isCustomElement(item) && item.children.length > 0,
 				)}
 				onChange={handleDescriptionChange}
 				placeholder="Add description..."
