@@ -154,4 +154,25 @@ export const sprintRouter = j.router({
 				await taskService.addActiveSprintTasks(TODO, { sprintId }),
 			);
 		}),
+	updateSprint: workspaceProcedure
+		.input(
+			z.object({
+				sprintId: z.string(),
+				sprintData: z.object({
+					name: z.string(),
+					startDate: z.date(),
+					endDate: z.date(),
+					description: z.string().nullable(),
+				}),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { sprintService } = ctx;
+			return c.superjson(
+				await sprintService.updateSprint(TODO, {
+					sprintId: input.sprintId,
+					sprintData: input.sprintData,
+				}),
+			);
+		}),
 });

@@ -42,7 +42,7 @@ import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import SettingsSprintCard from "@/components/Sprints/Settings/SettingsSprintCard";
 import { useTeams } from "@/hooks/useTeams";
@@ -372,18 +372,12 @@ export default function SprintSettings() {
 					</div>
 					{allSprints?.length &&
 						allSprints.map((sprint) => (
-							<Fragment key={sprint.id}>
-								<SettingsSprintCard
-									key={sprint.id}
-									sprint={sprint}
-									isActive={sprint.status === "ACTIVE"}
-								/>
-								<SettingsSprintCard
-									key={"capi32390s"}
-									sprint={sprint}
-									isActive={false}
-								/>
-							</Fragment>
+							<SettingsSprintCard
+								key={sprint.id}
+								team={team}
+								sprint={sprint}
+								isActive={sprint.status === "ACTIVE"}
+							/>
 						))}
 				</>
 			)}
