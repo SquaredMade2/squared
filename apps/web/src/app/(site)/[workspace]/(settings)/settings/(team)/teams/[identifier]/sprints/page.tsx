@@ -46,6 +46,8 @@ import { useState } from "react";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import SettingsSprintCard from "@/components/Sprints/Settings/SettingsSprintCard";
 import { useTeams } from "@/hooks/useTeams";
+import { useUsers } from "@/hooks/useUsers";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
@@ -53,6 +55,8 @@ import { parseError } from "@/utils/parseError";
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
 	const { team, loading: teamLoading } = useTeams();
+	const { workspace } = useWorkspaces();
+	const { user } = useUsers();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintEnabled, setSprintEnabled] = useState(
 		team?.sprintsEnabled || false,
@@ -362,23 +366,27 @@ export default function SprintSettings() {
 						</CardContent>
 					</Card>
 
-					<Separator className="my-6" />
+					{workspace?.admins.includes(user?.id || "") ? (
+						<>
+							<Separator className="my-6" />
 
-					<div>
-						<h2 className="mb-2 font-semibold text-lg">Current Sprints</h2>
-						<p className="text-muted-foreground">
-							Manage your team's current sprints.
-						</p>
-					</div>
-					{allSprints?.length &&
-						allSprints.map((sprint) => (
-							<SettingsSprintCard
-								key={sprint.id}
-								team={team}
-								sprint={sprint}
-								isActive={sprint.status === "ACTIVE"}
-							/>
-						))}
+							<div>
+								<h2 className="mb-2 font-semibold text-lg">Current Sprints</h2>
+								<p className="text-muted-foreground">
+									Manage your team's current sprints.
+								</p>
+							</div>
+							{allSprints?.length &&
+								allSprints.map((sprint) => (
+									<SettingsSprintCard
+										key={sprint.id}
+										team={team}
+										sprint={sprint}
+										isActive={sprint.status === "ACTIVE"}
+									/>
+								))}
+						</>
+					) : null}
 				</>
 			)}
 		</div>
