@@ -2,8 +2,11 @@ import { DoubleIndexedKV } from "./double-indexed-kv.js";
 
 export class Registry<T> {
 	private kv = new DoubleIndexedKV<string, T>();
+	private readonly generateIdentifier: (v: T) => string;
 
-	constructor(private readonly generateIdentifier: (v: T) => string) {}
+	constructor(generateIdentifier: (v: T) => string) {
+		this.generateIdentifier = generateIdentifier;
+	}
 
 	register(value: T, identifier?: string): void {
 		let newIdentifier = identifier;

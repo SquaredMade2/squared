@@ -1,5 +1,6 @@
+const svgRegex = /<svg[^>]*>([\s\S]*?)<\/svg>/i;
 export default function createSquaredIcon(name: string, svgContent: string) {
-	const match = svgContent?.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+	const match = svgContent?.match(svgRegex);
 	const svgElement = match ? match[1] : "";
 
 	return `import type { FC } from 'react';

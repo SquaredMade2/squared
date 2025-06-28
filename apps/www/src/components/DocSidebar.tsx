@@ -1,5 +1,14 @@
 "use client";
 
+import { ChevronDown } from "@squaredmade/icons";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@squaredmade/ui/collapsible";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React from "react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -12,15 +21,6 @@ import {
 	SidebarMenuSub,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ChevronDown } from "@squaredmade/icons";
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@squaredmade/ui/collapsible";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
 
 type DocPage = {
 	id: string;
@@ -44,7 +44,7 @@ const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 
 	if (hasChildren) {
 		return (
-			<Collapsible open={isOpen} onOpenChange={setIsOpen}>
+			<Collapsible onOpenChange={setIsOpen} open={isOpen}>
 				<CollapsibleTrigger asChild>
 					<SidebarMenuButton
 						asChild
@@ -52,8 +52,8 @@ const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 						isActive={isActive}
 					>
 						<Link
-							href={`/docs/${page.uid}`}
 							className="flex w-full items-center justify-between"
+							href={`/docs/${page.uid}`}
 						>
 							{page.title}
 							<ChevronDown
@@ -66,7 +66,7 @@ const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 					<SidebarMenuSub>
 						{page.children.map((childPage) => (
 							<SidebarMenuSubItem key={childPage.id}>
-								<DocSidebarItemContent page={childPage} level={level + 1} />
+								<DocSidebarItemContent level={level + 1} page={childPage} />
 							</SidebarMenuSubItem>
 						))}
 					</SidebarMenuSub>
@@ -78,8 +78,8 @@ const DocSidebarItemContent: React.FC<{ page: DocPage; level: number }> = ({
 	return (
 		<SidebarMenuButton asChild isActive={isActive}>
 			<Link
-				href={`/docs/${page.uid}`}
 				className={`h-fit ${isActive && "bg-accent text-accent-foreground"} w-full`}
+				href={`/docs/${page.uid}`}
 			>
 				{page.title}
 			</Link>
@@ -97,7 +97,7 @@ export const DocSidebar: React.FC<DocSidebarProps> = ({ structure }) => {
 						<SidebarMenu>
 							{structure.map((page) => (
 								<SidebarMenuItem key={page.id}>
-									<DocSidebarItemContent page={page} level={0} />
+									<DocSidebarItemContent level={0} page={page} />
 								</SidebarMenuItem>
 							))}
 						</SidebarMenu>

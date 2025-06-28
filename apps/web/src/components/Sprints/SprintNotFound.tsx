@@ -28,7 +28,7 @@ export const SprintNotFound = ({
 							View All Sprints
 						</Link>
 					</Button>
-					<Button variant="outline" asChild>
+					<Button asChild variant="outline">
 						<Link href={`/${workspaceUrl}/team/${teamIdentifier}/all`}>
 							Go to Task Dashboard
 						</Link>

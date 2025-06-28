@@ -1,16 +1,16 @@
 import {
-	type DBClient,
-	type Sprint,
-	type Task,
-	type Team,
-	type TransactionClient,
 	and,
+	type DBClient,
 	desc,
 	eq,
 	inArray,
 	ne,
 	retrospectiveItemsTable,
+	type Sprint,
 	sprintsTable,
+	type Task,
+	type Team,
+	type TransactionClient,
 	tasksTable,
 	teamsTable,
 } from "@squaredmade/db";
@@ -29,13 +29,15 @@ import type {
 
 export class SprintService implements SprintRpc {
 	private logger;
-	constructor(private readonly db: DBClient) {
+	private db: DBClient;
+	constructor(db: DBClient) {
+		this.db = db;
 		this.logger = createCustomLogger("sprint-service");
 	}
 
 	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
 		this.logger.info("Getting sprints for team", { teamId });
-		return this.db
+		return await this.db
 			.select()
 			.from(sprintsTable)
 			.where(eq(sprintsTable.teamId, teamId));
@@ -89,10 +91,10 @@ export class SprintService implements SprintRpc {
 			const sprintDuration = team[0].sprintDuration;
 
 			await tx.insert(sprintsTable).values({
-				name: `Sprint ${allSprints.length + 1}`,
-				status: "ACTIVE",
-				startDate: new Date(),
 				endDate: addWeeks(new Date(), sprintDuration),
+				name: `Sprint ${allSprints.length + 1}`,
+				startDate: new Date(),
+				status: "ACTIVE",
 				teamId,
 			});
 
@@ -133,11 +135,11 @@ export class SprintService implements SprintRpc {
 			await this.completeCurrentSprint(tx, teamSprints);
 
 			const newSprintData = await this.createSprint({
-				tx,
 				sprintData,
 				team: team[0],
-				teamSprints,
 				teamId,
+				teamSprints,
+				tx,
 			});
 
 			if (currentSprint) {
@@ -183,7 +185,7 @@ export class SprintService implements SprintRpc {
 
 	async getSprintTasks({ sprintId }: { sprintId: string }): Promise<Task[]> {
 		this.logger.info("Getting tasks for sprint", { sprintId });
-		return this.db
+		return await this.db
 			.select()
 			.from(tasksTable)
 			.where(eq(tasksTable.sprintId, sprintId));
@@ -210,18 +212,18 @@ export class SprintService implements SprintRpc {
 		const [newItem] = await this.db
 			.insert(retrospectiveItemsTable)
 			.values({
-				content,
-				type,
 				authorId,
+				content,
 				sprintId,
+				type,
 			})
 			.returning({
-				id: retrospectiveItemsTable.id,
-				content: retrospectiveItemsTable.content,
-				type: retrospectiveItemsTable.type,
 				authorId: retrospectiveItemsTable.authorId,
-				likes: retrospectiveItemsTable.likes,
+				content: retrospectiveItemsTable.content,
 				createdAt: retrospectiveItemsTable.createdAt,
+				id: retrospectiveItemsTable.id,
+				likes: retrospectiveItemsTable.likes,
+				type: retrospectiveItemsTable.type,
 			});
 
 		return newItem;
@@ -238,18 +240,18 @@ export class SprintService implements SprintRpc {
 		const [updatedItem] = await this.db
 			.update(retrospectiveItemsTable)
 			.set({
-				type,
 				content,
 				sprintId,
+				type,
 			})
 			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
 			.returning({
-				id: retrospectiveItemsTable.id,
-				content: retrospectiveItemsTable.content,
-				type: retrospectiveItemsTable.type,
 				authorId: retrospectiveItemsTable.authorId,
-				likes: retrospectiveItemsTable.likes,
+				content: retrospectiveItemsTable.content,
 				createdAt: retrospectiveItemsTable.createdAt,
+				id: retrospectiveItemsTable.id,
+				likes: retrospectiveItemsTable.likes,
+				type: retrospectiveItemsTable.type,
 			});
 
 		return updatedItem;
@@ -286,12 +288,12 @@ export class SprintService implements SprintRpc {
 			.set({ likes: updatedLikes })
 			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
 			.returning({
-				id: retrospectiveItemsTable.id,
-				content: retrospectiveItemsTable.content,
-				type: retrospectiveItemsTable.type,
 				authorId: retrospectiveItemsTable.authorId,
-				likes: retrospectiveItemsTable.likes,
+				content: retrospectiveItemsTable.content,
 				createdAt: retrospectiveItemsTable.createdAt,
+				id: retrospectiveItemsTable.id,
+				likes: retrospectiveItemsTable.likes,
+				type: retrospectiveItemsTable.type,
 			});
 
 		return updatedItem;
@@ -309,16 +311,16 @@ export class SprintService implements SprintRpc {
 			.where(eq(retrospectiveItemsTable.sprintId, sprintId));
 
 		return {
-			wentWell: items.filter((ri) => ri.type === "wentWell"),
-			toImprove: items.filter((ri) => ri.type === "toImprove"),
 			actionItems: items.filter((ri) => ri.type === "actionItems"),
+			toImprove: items.filter((ri) => ri.type === "toImprove"),
+			wentWell: items.filter((ri) => ri.type === "wentWell"),
 		};
 	}
 
 	private sendErrorResponse(status: number, message: string): ErrorResponse {
 		return {
-			status,
 			message,
+			status,
 			variant: "destructive",
 		};
 	}
@@ -359,10 +361,10 @@ export class SprintService implements SprintRpc {
 		const [newSprint] = await tx
 			.insert(sprintsTable)
 			.values({
-				name: `Sprint ${newSprintNumber}`,
-				status: "ACTIVE",
-				startDate,
 				endDate,
+				name: `Sprint ${newSprintNumber}`,
+				startDate,
+				status: "ACTIVE",
 				teamId,
 				...sprintData,
 			})

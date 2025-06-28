@@ -1,6 +1,3 @@
-import { high, low, medium } from "@/components/Svg";
-import { complexityScale, effortEstimateOptions } from "@/lib/constants";
-import { useTeamStore } from "@/store";
 import { CircleHelp } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import {
@@ -10,17 +7,30 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@squaredmade/ui/dialog";
+import { high, low, medium } from "@/components/Svg";
+import { complexityScale, effortEstimateOptions } from "@/lib/constants";
+import { useTeamStore } from "@/store";
 
 const EffortModal = () => {
 	const { team } = useTeamStore((state) => state);
+	const svg = (estimateNumber: number) => {
+		switch (estimateNumber) {
+			case 3:
+				return high();
+			case 2:
+				return medium();
+			default:
+				return low();
+		}
+	};
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
 				<Button
-					variant="ghost"
-					size="icon"
-					className="rounded-full hover:bg-transparent"
 					aria-label="help"
+					className="rounded-full hover:bg-transparent"
+					size="icon"
+					variant="ghost"
 				>
 					<CircleHelp className="size-4 text-muted-foreground" />
 				</Button>
@@ -43,11 +53,7 @@ const EffortModal = () => {
 						>
 							<div className="flex flex-row items-center">
 								<span className={`${"h-4 w-4 cursor-pointer"} mr-2`}>
-									{estimateNumber > 3
-										? high()
-										: estimateNumber > 2
-											? medium()
-											: low()}
+									{svg(estimateNumber)}
 								</span>
 								<span className="text-foreground">{effortEstimate.text}</span>
 							</div>

@@ -25,55 +25,54 @@ import { formatUrl, getInitials } from "@/utils/formatting";
 import { StatusIcon } from "../Icons";
 
 export const columns: ColumnDef<
-	Notification & { Task: Task; Workspace: Workspace }
+	Notification & { task: Task; workspace: Workspace }
 >[] = [
 	{
-		id: "select",
 		cell: ({ row }) => (
 			<Checkbox
+				aria-label="Select row"
 				checked={row.getIsSelected()}
 				onCheckedChange={(value) => row.toggleSelected(!!value)}
-				aria-label="Select row"
 			/>
 		),
+		enableHiding: false,
 		enableSorting: false,
-		enableHiding: false,
+		id: "select",
 	},
 	{
+		accessorFn: (row) => row.task.title,
 		accessorKey: "taskTitle",
-		accessorFn: (row) => row.Task.title,
 		enableHiding: false,
 	},
 	{
-		accessorKey: "read",
 		accessorFn: (row) => row.read,
+		accessorKey: "read",
 		enableHiding: false,
 	},
 	{
-		id: "content",
 		cell: ({ row }) => {
 			const router = useRouter();
-			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
+			const { identifier: taskIdentifier, title: taskName } = row.original.task;
 			const { userAvatars } = useUserStore((state) => state);
 
 			const taskId = taskIdentifier.split("-")[1];
-			const { name: workspaceName, url: workspaceUrl } = row.original.Workspace;
+			const { name: workspaceName, url: workspaceUrl } = row.original.workspace;
 			const read = !row.original.read;
 			const type = row.original.type;
 			const avatars = userAvatars.filter(
 				({ id }) =>
-					id === row.original.Task.assigneeId ||
-					id === row.original.Task.authorId,
+					id === row.original.task.assigneeId ||
+					id === row.original.task.authorId,
 			);
 
 			const { mutate: handleMarkAsUnread } = useMutation({
-				mutationKey: ["notification", "markAsUnread", row.original.id],
 				mutationFn: async () => {
 					await client.notification.markAsUnread.$post({
 						notificationIds: [row.original.id],
 					});
 				},
-				onSuccess: async () => {
+				mutationKey: ["notification", "markAsUnread", row.original.id],
+				onSuccess: () => {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 					);
@@ -82,16 +81,16 @@ export const columns: ColumnDef<
 
 			return (
 				<button
-					type="button"
 					className="flex w-full cursor-pointer items-start gap-4 sm:items-center"
 					onClick={() => handleMarkAsUnread()}
+					type="button"
 				>
 					<div className="mt-2 flex h-full items-center sm:mt-0">
-						<StatusIcon status={row.original.Task.status} />
+						<StatusIcon status={row.original.task.status} />
 					</div>
 					<div className="flex w-full flex-col justify-between sm:flex-row">
 						<div
-							className={`flex flex-col ${!read ? "text-muted-foreground" : ""}`}
+							className={`flex flex-col ${read ? "" : "text-muted-foreground"}`}
 						>
 							<div className="flex gap-2 text-xxs">
 								<div>{workspaceName}</div>
@@ -104,7 +103,7 @@ export const columns: ColumnDef<
 							<div className="hidden text-xs lowercase sm:block">{type}</div>
 							<div className="-space-x-6 flex">
 								{avatars?.map((avatar) => (
-									<Avatar key={avatar.id} className="border-2 border-border">
+									<Avatar className="border-2 border-border" key={avatar.id}>
 										<AvatarImage src={avatar.avatarUrl ?? ""} />
 										<AvatarFallback>{getInitials(avatar.name)}</AvatarFallback>
 									</Avatar>
@@ -116,9 +115,9 @@ export const columns: ColumnDef<
 				</button>
 			);
 		},
+		id: "content",
 	},
 	{
-		id: "timestamp",
 		cell: ({ row, table }) => {
 			const date = row.original.createdAt;
 			const formattedDate = formatDistanceToNow(date, {
@@ -139,7 +138,6 @@ export const columns: ColumnDef<
 			);
 
 			const { mutate: handleMarkAsDismissed } = useMutation({
-				mutationKey: ["notification", "markAsDismissed", row.original.id],
 				mutationFn: async () => {
 					return await client.notification.dismiss
 						.$post({
@@ -147,6 +145,7 @@ export const columns: ColumnDef<
 						})
 						.then((res) => res.json());
 				},
+				mutationKey: ["notification", "markAsDismissed", row.original.id],
 				onSuccess: (updatedNotifications) => {
 					const updatedNotificationsArray = notifications.map(
 						(notification) =>
@@ -181,29 +180,25 @@ export const columns: ColumnDef<
 
 			return (
 				<div className="flex h-full items-center justify-end">
-					{!isRowHovered ? (
-						<div className="whitespace-nowrap text-right text-muted-foreground text-xs">
-							{formattedDate}
-						</div>
-					) : (
+					{isRowHovered ? (
 						<div className="flex gap-1">
 							<TooltipProvider>
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
-											onClick={() =>
-												row.original.dismissed
-													? handleDelete()
-													: handleMarkAsDismissed()
-											}
-											variant="secondary"
-											size="icon"
 											aria-label={
 												row.original.dismissed
 													? "Delete notification"
 													: "Dismiss notification"
 											}
 											className="size-8 border border-border bg-accent hover:bg-popover"
+											onClick={() =>
+												row.original.dismissed
+													? handleDelete()
+													: handleMarkAsDismissed()
+											}
+											size="icon"
+											variant="secondary"
 										>
 											{row.original.dismissed ? (
 												<Trash2 className="size-4" />
@@ -221,11 +216,11 @@ export const columns: ColumnDef<
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
-											onClick={toggleSubscribe}
-											variant="secondary"
-											size="icon"
 											aria-label="Unsubscribe"
 											className="size-8 border border-border bg-accent hover:bg-popover"
+											onClick={toggleSubscribe}
+											size="icon"
+											variant="secondary"
 										>
 											<BellOff className="size-4" />
 										</Button>
@@ -235,11 +230,11 @@ export const columns: ColumnDef<
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
-											onClick={handleSave}
-											variant="secondary"
-											size="icon"
 											aria-label="Toggle Bookmark"
 											className="size-8 border border-border bg-accent hover:bg-popover"
+											onClick={handleSave}
+											size="icon"
+											variant="secondary"
 										>
 											{saved ? (
 												<BookmarkMinus className="size-4" />
@@ -254,9 +249,14 @@ export const columns: ColumnDef<
 								</Tooltip>
 							</TooltipProvider>
 						</div>
+					) : (
+						<div className="whitespace-nowrap text-right text-muted-foreground text-xs">
+							{formattedDate}
+						</div>
 					)}
 				</div>
 			);
 		},
+		id: "timestamp",
 	},
 ];

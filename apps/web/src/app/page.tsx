@@ -19,7 +19,7 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const handleRedirect = async () => {
-			if (!userLoaded || !orgLoaded) {
+			if (!(userLoaded && orgLoaded)) {
 				// Wait for both user and organization data to be loaded
 				return;
 			}
@@ -60,7 +60,7 @@ const HomePage = () => {
 	]);
 
 	// Show a loader while the data is loading and the redirect is being determined
-	if (!userLoaded || !orgLoaded) {
+	if (!(userLoaded && orgLoaded)) {
 		return (
 			<div className="h-screen w-full">
 				<div className="flex h-full items-center justify-center">

@@ -1,6 +1,5 @@
-import { setDeep } from "./accessDeep.js";
-
 import { describe, expect, it } from "vitest";
+import { setDeep } from "./accessDeep.js";
 
 describe("setDeep", () => {
 	it("correctly sets values in maps", () => {

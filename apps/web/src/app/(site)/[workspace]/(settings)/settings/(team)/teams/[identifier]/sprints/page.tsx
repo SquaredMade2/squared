@@ -58,9 +58,7 @@ export default function SprintSettings() {
 	const { workspace } = useWorkspaces();
 	const { user } = useUsers();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
-	const [sprintEnabled, setSprintEnabled] = useState(
-		team?.sprintsEnabled || false,
-	);
+	const [sprintEnabled, setSprintEnabled] = useState(team?.sprintsEnabled);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		team?.sprintStartDate || null,
 	);
@@ -73,7 +71,6 @@ export default function SprintSettings() {
 		},
 		refetch: refetchSprints,
 	} = useQuery({
-		queryKey: ["sprint", team?.id],
 		queryFn: async () => {
 			if (!team) return { pending: 0, active: null, allSprints: null };
 			const sprints = await client.sprint.getSprints
@@ -81,17 +78,17 @@ export default function SprintSettings() {
 				.then((res) => res.json());
 
 			return {
-				pending: sprints.filter((s) => s.status === "PLANNED").length,
 				allSprints: sprints.filter(
 					(s) => s.status === "ACTIVE" || s.status === "PLANNED",
 				),
 				active: sprints.find((s) => s.status === "ACTIVE"),
+				pending: sprints.filter((s) => s.status === "PLANNED").length,
 			};
 		},
+		queryKey: ["sprint", team?.id],
 	});
 
 	const { mutate: handleUpdateTeam } = useMutation({
-		mutationKey: ["team", "updateTeam", team?.id],
 		mutationFn: async (
 			data: Partial<
 				Pick<
@@ -105,7 +102,7 @@ export default function SprintSettings() {
 		) => {
 			if (!team) throw new Error("No team found");
 			const updatedTeam = await client.sprint.updateTeamSprints
-				.$post({ teamId: team.id, data })
+				.$post({ data, teamId: team.id })
 				.then((res) => res.json());
 			if (updatedTeam.sprintsEnabled) {
 				await client.sprint.initializeSprints
@@ -116,37 +113,38 @@ export default function SprintSettings() {
 			}
 			return updatedTeam;
 		},
-		onSuccess: async (updatedTeam) => {
+		mutationKey: ["team", "updateTeam", team?.id],
+		onError: (error) => {
+			toast.error("Error updating team sprints", {
+				description: parseError(error),
+			});
+		},
+		onSuccess: (updatedTeam) => {
 			if (!updatedTeam) return;
 			setTeam(updatedTeam);
 			updateTeam(updatedTeam);
 			setSprintEnabled(updatedTeam.sprintsEnabled);
 			refetchSprints();
 		},
-		onError: (error) => {
-			toast.error("Error updating team sprints", {
-				description: parseError(error),
-			});
-		},
 	});
 
 	const { mutate: handleAddTasksToSprint } = useMutation({
-		mutationKey: ["sprint", "addActiveSprintTasks"],
 		mutationFn: async () => {
 			if (!active) throw new Error("No active sprint found");
 			return await client.sprint.addActiveTasks
 				.$post({ sprintId: active.id })
 				.then((res) => res.json());
 		},
-		onSuccess: async () => {
-			toast.success("Active tasks added to sprint", {
-				description:
-					"The tasks have been successfully added to the current sprint.",
-			});
-		},
+		mutationKey: ["sprint", "addActiveSprintTasks"],
 		onError: (error) => {
 			toast.error("Error adding active tasks to sprint", {
 				description: parseError(error),
+			});
+		},
+		onSuccess: () => {
+			toast.success("Active tasks added to sprint", {
+				description:
+					"The tasks have been successfully added to the current sprint.",
 			});
 		},
 	});
@@ -179,14 +177,14 @@ export default function SprintSettings() {
 						What is a Sprint?
 					</CardTitle>
 					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => setIsSprintInfoExpanded(!isSprintInfoExpanded)}
 						aria-label={
 							isSprintInfoExpanded
 								? "Minimize sprint info"
 								: "Expand sprint info"
 						}
+						onClick={() => setIsSprintInfoExpanded(!isSprintInfoExpanded)}
+						size="icon"
+						variant="ghost"
 					>
 						{isSprintInfoExpanded ? (
 							<X className="h-4 w-4" />
@@ -220,7 +218,7 @@ export default function SprintSettings() {
 					)}
 					{isSprintInfoExpanded && (
 						<Link href="www.squaredmade.com/docs/sprints" passHref>
-							<Button variant="link" className="mt-4 h-auto p-0">
+							<Button className="mt-4 h-auto p-0" variant="link">
 								Read more <ChevronRight className="ml-2 h-4 w-4" />
 							</Button>
 						</Link>
@@ -238,19 +236,19 @@ export default function SprintSettings() {
 					</p>
 				</div>
 				<Switch
+					aria-label="Enable sprints"
 					checked={sprintEnabled}
 					onCheckedChange={(checked) =>
 						handleUpdateTeam({
-							sprintsEnabled: checked,
-							sprintDuration: 2,
 							cooldownDuration: 1,
+							sprintDuration: 2,
 							sprintStartDate: addDays(
 								startOfWeek(new Date(), { weekStartsOn: 1 }),
 								7,
 							),
+							sprintsEnabled: checked,
 						})
 					}
-					aria-label="Enable sprints"
 				/>
 			</div>
 
@@ -263,10 +261,10 @@ export default function SprintSettings() {
 									Each sprint lasts (weeks)
 								</Label>
 								<Select
-									value={sprintDuration.toString()}
 									onValueChange={(value) =>
 										handleUpdateTeam({ sprintDuration: Number(value) })
 									}
+									value={sprintDuration.toString()}
 								>
 									<SelectTrigger className="w-60 bg-secondary">
 										<SelectValue placeholder="Select duration" />
@@ -281,17 +279,17 @@ export default function SprintSettings() {
 								</Select>
 							</div>
 							<div className="flex w-full items-start justify-between">
-								<Label htmlFor="sprintStartDate" className="mt-4">
+								<Label className="mt-4" htmlFor="sprintStartDate">
 									Sprints start on
 								</Label>
 								<Popover>
 									<PopoverTrigger asChild>
 										<Button
-											variant={"secondary"}
 											className={cn(
 												"w-60 justify-start pr-3 text-left font-normal",
 												!sprintStartDate && "text-muted-foreground",
 											)}
+											variant="secondary"
 										>
 											<CalendarIcon className="mr-2 h-4 w-4" />
 											{sprintStartDate ? (
@@ -309,13 +307,13 @@ export default function SprintSettings() {
 									</PopoverTrigger>
 									<PopoverContent className="w-auto p-0">
 										<Calendar
+											initialFocus
 											mode="single"
-											selected={sprintStartDate ?? undefined}
 											onSelect={(value) => {
 												setSprintStartDate(value ?? null);
 												handleUpdateTeam({ sprintStartDate: value });
 											}}
-											initialFocus
+											selected={sprintStartDate ?? undefined}
 										/>
 									</PopoverContent>
 								</Popover>
@@ -330,7 +328,7 @@ export default function SprintSettings() {
 						<CardContent className="space-y-4 py-6">
 							<div className="flex items-center justify-between">
 								<div className="flex flex-col items-start">
-									<Label htmlFor="addActiveTasks" className="mb-2">
+									<Label className="mb-2" htmlFor="addActiveTasks">
 										Add active tasks to current sprint
 									</Label>
 									<p className="w-11/12 text-muted-foreground text-sm">

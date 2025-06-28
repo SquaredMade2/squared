@@ -10,52 +10,35 @@ import {
 	FormMessage,
 } from "@squaredmade/ui/form";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { Button } from "./button";
 
 const formSchema = z.object({
-	name: z
-		.string({
-			required_error: "Please enter your name",
-		})
-		.min(1, "Please enter email"),
-	email: z
-		.string({
-			required_error: "Please enter email",
-		})
-		.email("Please enter valid email")
-		.min(1, "Please enter email"),
-	company: z
-		.string({
-			required_error: "Please enter your company's name",
-		})
-		.min(1, "Please enter your company's name"),
-	message: z
-		.string({
-			required_error: "Please enter your message",
-		})
-		.min(1, "Please enter your message"),
+	company: z.string().min(1, "Please enter your company's name"),
+	email: z.email("Please enter valid email").min(1, "Please enter email"),
+	message: z.string().min(1, "Please enter your message"),
+	name: z.string().min(1, "Please enter email"),
 });
 
 type LoginUser = z.infer<typeof formSchema>;
 
 export function ContactForm() {
 	const form = useForm<LoginUser>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: "",
-			email: "",
 			company: "",
+			email: "",
 			message: "",
+			name: "",
 		},
+		resolver: zodResolver(formSchema),
 	});
 
-	async function onSubmit(values: LoginUser) {
+	function onSubmit(values: LoginUser) {
 		// todo submit to actual inbox?
-		try {
-			console.log("submitted form", values);
-		} catch {}
+
+		// biome-ignore lint/suspicious/noConsole: Debugging purposes only
+		console.log("submitted form", values);
 	}
 
 	return (
@@ -81,18 +64,18 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
+												htmlFor={field.name}
 											>
 												Full Name
 											</label>
 											<FormControl>
 												<div className="mt-2">
 													<input
-														id={field.name}
-														type="name"
-														placeholder="Full Name"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
+														id={field.name}
+														placeholder="Full Name"
+														type="name"
 														{...field}
 													/>
 												</div>
@@ -107,18 +90,18 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
+												htmlFor={field.name}
 											>
 												Email address
 											</label>
 											<FormControl>
 												<div className="mt-2">
 													<input
-														id={field.name}
-														type="email"
-														placeholder="Email"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
+														id={field.name}
+														placeholder="Email"
+														type="email"
 														{...field}
 													/>
 												</div>
@@ -133,18 +116,18 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
+												htmlFor={field.name}
 											>
 												Company
 											</label>
 											<FormControl>
 												<div className="mt-2">
 													<input
-														id={field.name}
-														type="company"
-														placeholder="Company"
 														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
+														id={field.name}
+														placeholder="Company"
+														type="company"
 														{...field}
 													/>
 												</div>
@@ -159,18 +142,18 @@ export function ContactForm() {
 									render={({ field }) => (
 										<FormItem>
 											<label
-												htmlFor={field.name}
 												className="block font-medium text-foreground text-sm leading-6"
+												htmlFor={field.name}
 											>
 												Message
 											</label>
 											<FormControl>
 												<div className="mt-2">
 													<textarea
-														rows={5}
+														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
 														id={field.name}
 														placeholder="Enter your message here"
-														className="block w-full rounded-xl border-0 bg-card px-4 py-1.5 text-foreground shadow-aceternity placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring sm:text-sm sm:leading-6"
+														rows={5}
 														{...field}
 													/>
 												</div>

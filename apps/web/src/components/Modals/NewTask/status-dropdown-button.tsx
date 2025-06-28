@@ -1,7 +1,3 @@
-import { StatusIcon } from "@/components/Icons";
-import { statusOptions } from "@/lib/constants";
-import { useModalStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squaredmade/db";
 import { Check } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
@@ -12,6 +8,10 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
+import { StatusIcon } from "@/components/Icons";
+import { statusOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
 
 export const StatusDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
@@ -24,7 +24,7 @@ export const StatusDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="w-full max-w-full">
+				<Button className="w-full max-w-full" variant="outline">
 					<span className="cursor-pointer">
 						<StatusIcon status={newTaskStatus || "todo"} />
 					</span>
@@ -33,16 +33,16 @@ export const StatusDropdownButton = () => {
 					</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent side="left" align="start" className="w-[150px]">
+			<DropdownMenuContent align="start" className="w-[150px]" side="left">
 				<DropdownMenuRadioGroup
-					value={newTaskStatus}
 					onValueChange={(status) => handleSelectStatus(status as Status)}
+					value={newTaskStatus}
 				>
 					{statusOptions.map((status) => (
 						<DropdownMenuItem
+							className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 							key={status}
 							onSelect={() => handleSelectStatus(status as Status)}
-							className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 						>
 							<div className="flex items-center">
 								<StatusIcon status={status} />

@@ -1,6 +1,7 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Have to use any here */
 import { isArray, isPlainObject } from "./is";
 
-type PlainObject = { [key in string | number | symbol]: unknown };
+type PlainObject = { [Key in string | number | symbol]: unknown };
 
 function assignProp(
 	carry: PlainObject,
@@ -15,10 +16,10 @@ function assignProp(
 	if (propType === "enumerable") carry[key as any] = newVal;
 	if (includeNonenumerable && propType === "nonenumerable") {
 		Object.defineProperty(carry, key, {
-			value: newVal,
-			enumerable: false,
-			writable: true,
 			configurable: true,
+			enumerable: false,
+			value: newVal,
+			writable: true,
 		});
 	}
 }

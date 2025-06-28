@@ -1,11 +1,3 @@
-import {
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuSeparator,
-} from "@/components/ui/context-menu";
-import { useTeams } from "@/hooks/useTeams";
-import { useModalStore } from "@/store";
-import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import {
 	// Calendar, Star, // Not used yet
@@ -14,14 +6,23 @@ import {
 import { toast } from "@squaredmade/ui/toast";
 import Link from "next/link";
 import { useState } from "react";
+import {
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuSeparator,
+} from "@/components/ui/context-menu";
+import { config } from "@/config";
+import { useTeams } from "@/hooks/useTeams";
+import { useModalStore } from "@/store";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { DeleteTaskAlertDialog } from "../../DeleteTaskAlertDialog";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
+import type { ContextMenuProps } from "./interfaces";
 import LabelSubContextMenu from "./LabelSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
 import SprintSubContextMenu from "./SprintSubContextMenu";
 import StatusSubContextMenu from "./StatusSubContextMenu";
-import type { ContextMenuProps } from "./interfaces";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -43,7 +44,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	};
 	const copyTaskUrl = async () => {
 		await navigator.clipboard.writeText(
-			`${process.env.NEXT_PUBLIC_URL}/${organization?.slug}/task/${task.identifier}/${formatUrl(task.title)}`,
+			`${config.NEXT_PUBLIC_URL}/${organization?.slug}/task/${task.identifier}/${formatUrl(task.title)}`,
 		);
 		toast.success("Task link copied to clipboard", {
 			description: "Paste it wherever you like",
@@ -121,9 +122,9 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 			</ContextMenuContent>
 
 			<DeleteTaskAlertDialog
-				task={task}
-				showConfirmDelete={showConfirmDelete}
 				setShowConfirmDelete={setShowConfirmDelete}
+				showConfirmDelete={showConfirmDelete}
+				task={task}
 			/>
 		</>
 	);

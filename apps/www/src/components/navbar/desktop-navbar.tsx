@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@squaredmade/ui/cn";
 import {
 	AnimatePresence,
@@ -8,8 +9,9 @@ import {
 } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { useState } from "react";
-import { Logo } from "../Logo";
+import { config } from "@/config";
 import { Button } from "../button";
+import { Logo } from "../Logo";
 import { ModeToggle } from "../mode-toggle";
 import { NavBarItem } from "./navbar-item";
 
@@ -44,13 +46,13 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 			<AnimatePresence>
 				{showBackground && (
 					<motion.div
-						key={String(showBackground)}
-						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
+						className="pointer-events-none absolute inset-0 h-full w-full rounded-3xl bg-neutral-secondary [mask-image:linear-gradient(to_bottom,white,transparent,white)] dark:bg-background-dark-secondary"
+						initial={{ opacity: 0 }}
+						key={String(showBackground)}
 						transition={{
 							duration: 1,
 						}}
-						className="pointer-events-none absolute inset-0 h-full w-full rounded-3xl bg-neutral-secondary [mask-image:linear-gradient(to_bottom,white,transparent,white)] dark:bg-background-dark-secondary"
 					/>
 				)}
 			</AnimatePresence>
@@ -67,13 +69,13 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 			<div className="flex items-center space-x-2">
 				<ModeToggle />
 				<Button
-					variant="simple"
 					as={Link}
-					href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-in`}
+					href={`${config.NEXT_PUBLIC_APP_URL}/sign-in`}
+					variant="simple"
 				>
 					Login
 				</Button>
-				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}>
+				<Button as={Link} href={`${config.NEXT_PUBLIC_APP_URL}/sign-up`}>
 					Sign Up
 				</Button>
 			</div>

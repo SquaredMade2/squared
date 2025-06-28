@@ -1,14 +1,14 @@
 "use client";
 
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
 import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { Button } from "@squaredmade/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
 
 export default function JoinWorkspace() {
 	const router = useRouter();
@@ -22,35 +22,34 @@ export default function JoinWorkspace() {
 	const signup = searchParams.get("signup") === "true";
 
 	const { mutate: joinWorkspaceMutation, isPending } = useMutation({
-		mutationKey: ["workspace", "joinWorkspace", workspaceSlug],
 		mutationFn: async () => {
 			const res = await client.workspace.joinWorkspace
 				.$post({
-					token,
-					workspaceSlug,
 					signup:
 						signup && user
 							? {
 									email: user.emailAddresses[0].emailAddress,
+									id: user.id,
 									name: user.fullName,
 									username: user.username,
-									id: user.id,
 								}
 							: undefined,
+					token,
+					workspaceSlug,
 				})
-				.then((res) => res.json());
+				.then((r) => r.json());
 			return res?.externalId;
 		},
-		onSuccess: (organizationId) => {
-			toast.success("Workspace joined successfully");
-			console.log("organizationId", organizationId);
-			setActive?.({ organization: organizationId });
-			router.push(`/${workspaceSlug}`);
-		},
+		mutationKey: ["workspace", "joinWorkspace", workspaceSlug],
 		onError: (error) => {
 			toast.error("Failed to join workspace", {
 				description: parseError(error),
 			});
+		},
+		onSuccess: (organizationId) => {
+			toast.success("Workspace joined successfully");
+			setActive?.({ organization: organizationId });
+			router.push(`/${workspaceSlug}`);
 		},
 	});
 
@@ -82,9 +81,9 @@ export default function JoinWorkspace() {
 						You've been invited to join a workspace.
 					</p>
 					<Button
-						onClick={() => joinWorkspaceMutation()}
 						className="w-full"
 						disabled={isPending || !token}
+						onClick={() => joinWorkspaceMutation()}
 					>
 						{isPending ? "Joining..." : "Join Workspace"}
 					</Button>

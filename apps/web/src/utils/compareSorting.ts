@@ -1,8 +1,8 @@
-import type { TaskOrder } from "@/store/views";
 import { Priority, Status, type Task, type User } from "@squaredmade/db";
+import type { TaskOrder } from "@/store/views";
 
 const compareNullableStrings = (a: string | null, b: string | null): number => {
-	if (!a && !b) return 0;
+	if (!(a || b)) return 0;
 	if (!a) return 1;
 	if (!b) return -1;
 	return a.localeCompare(b);
@@ -51,18 +51,18 @@ export const orderTasks = (
 		let comparison = 0;
 
 		switch (orderBy) {
-			case "Title":
+			case "title":
 				comparison = a.title.localeCompare(b.title);
 				break;
-			case "Status":
+			case "status":
 				comparison =
 					statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
 				break;
-			case "Priority":
+			case "priority":
 				comparison =
 					priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority);
 				break;
-			case "Assignee": {
+			case "assignee": {
 				const aAssignee =
 					users.find((u) => u.externalId === a.assigneeId)?.name ?? null;
 				const bAssignee =
@@ -70,17 +70,17 @@ export const orderTasks = (
 				comparison = compareNullableStrings(aAssignee, bAssignee);
 				break;
 			}
-			case "Effort":
+			case "effort":
 				comparison = compareNullableNumbers(a.effortEstimate, b.effortEstimate);
 				break;
-			case "Due Date":
+			case "dueDate":
 				comparison = compareNullableDates(a.dueDate, b.dueDate);
 				break;
-			case "Updated":
+			case "updated":
 				comparison =
 					new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
 				break;
-			case "Created":
+			case "created":
 				comparison =
 					new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime();
 				break;

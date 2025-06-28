@@ -36,23 +36,23 @@ const Join = () => {
 
 	const { data: workspaceUrls = [], isLoading: isWorkspacesLoading } = useQuery(
 		{
-			queryKey: ["workspaces", user?.id],
 			queryFn: async () => {
 				const res = await client.workspace.getTakenUrls
 					.$get()
-					.then((res) => res.json());
+					.then((r) => r.json());
 				return res;
 			},
+			queryKey: ["workspaces", user?.id],
 		},
 	);
 
 	const { data: defaultWorkspace } = useQuery({
-		queryKey: ["user", "defaultWorkspace"],
 		queryFn: async () => {
 			return await client.user.getDefaultWorkpace
 				.$get()
 				.then((res) => res.json());
 		},
+		queryKey: ["user", "defaultWorkspace"],
 	});
 
 	const createWorkspaceMutation = useMutation({
@@ -63,6 +63,11 @@ const Join = () => {
 			await setActive?.({ organization: newCreatedWorkspace.externalId });
 			return newWorkspace;
 		},
+		onError: (error) => {
+			toast.error("Failed to create workspace", {
+				description: parseError(error),
+			});
+		},
 		onSuccess: (data) => {
 			if (!data) return;
 			toast.success("Workspace created successfully");
@@ -70,11 +75,6 @@ const Join = () => {
 				router.refresh();
 				router.push(`/${data.url}`);
 			}
-		},
-		onError: (error) => {
-			toast.error("Failed to create workspace", {
-				description: parseError(error),
-			});
 		},
 	});
 
@@ -96,7 +96,7 @@ const Join = () => {
 		return takenUrls.includes(url);
 	};
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		if (inputValue.length === 0) {
@@ -178,11 +178,11 @@ const Join = () => {
 						<div className="relative flex flex-col space-y-1 text-foreground">
 							<Label>Workspace Name</Label>
 							<Input
-								type="text"
 								autoComplete="off"
 								className="relative bg-card xs:pl-0 xs:indent-2"
-								value={inputValue}
 								onChange={(e) => setInputValue(e.target.value)}
+								type="text"
+								value={inputValue}
 							/>
 						</div>
 						<div className="relative flex flex-col space-y-1 text-foreground">
@@ -192,15 +192,15 @@ const Join = () => {
 									app.squaredmade.com/
 								</span>
 								<Input
-									className="relative bg-card pl-44 xs:pl-0 xs:indent-2"
 									autoComplete="off"
-									value={urlInputValue}
+									className="relative bg-card pl-44 xs:pl-0 xs:indent-2"
 									onChange={(e) => setUrlInputValue(e.target.value)}
+									value={urlInputValue}
 								/>
 							</div>
 						</div>
 					</div>
-					<Button type="submit" disabled={createWorkspaceMutation.isPending}>
+					<Button disabled={createWorkspaceMutation.isPending} type="submit">
 						{createWorkspaceMutation.isPending
 							? "Creating..."
 							: "Create workspace"}

@@ -1,6 +1,5 @@
 "use client";
 
-import { useSidebar } from "@/components/ui/sidebar";
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { LogOut, Settings } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
@@ -14,6 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from "@squaredmade/ui/dropdown-menu";
 import Link from "next/link";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface UserProfileProps {
 	onLogout: () => void;
@@ -27,13 +27,13 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
-					variant="ghost"
-					size={state === "collapsed" ? "icon" : "sm"}
 					className={`relative ${
 						state === "collapsed"
 							? "mx-1 justify-center px-3"
 							: "w-full justify-start gap-2"
 					}`}
+					size={state === "collapsed" ? "icon" : "sm"}
+					variant="ghost"
 				>
 					<Avatar className="size-5">
 						<AvatarImage src={user?.imageUrl ?? ""} />

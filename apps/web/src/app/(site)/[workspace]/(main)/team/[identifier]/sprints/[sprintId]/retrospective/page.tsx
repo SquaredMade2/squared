@@ -1,9 +1,5 @@
 "use client";
 
-import { RetroColumn } from "@/components/Sprints";
-import { client } from "@/lib/client";
-import { parseError } from "@/utils/parseError";
-import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import type { RetrospectiveItemType } from "@squaredmade/db";
@@ -12,7 +8,12 @@ import { toast } from "@squaredmade/ui/toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { type Socket, io } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
+import { RetroColumn } from "@/components/Sprints";
+import { config } from "@/config";
+import { client } from "@/lib/client";
+import { parseError } from "@/utils/parseError";
+import { parseParams } from "@/utils/parseParams";
 
 export default function SprintRetrospectivePage() {
 	const router = useRouter();
@@ -24,10 +25,9 @@ export default function SprintRetrospectivePage() {
 	const { identifier, workspace } = params;
 
 	const {
-		data = { actionItems: [], toImprove: [], wentWell: [], likedItems: [] },
+		data = { actionItems: [], likedItems: [], toImprove: [], wentWell: [] },
 		refetch: fetchData,
 	} = useQuery({
-		queryKey: ["sprint", "retrospective", sprintId],
 		queryFn: async () => {
 			try {
 				const response = await client.sprint.getRetro
@@ -53,35 +53,31 @@ export default function SprintRetrospectivePage() {
 				toast.error("Failed to load retrospective data", {
 					description: parseError(error),
 				});
-				return { actionItems: [], toImprove: [], wentWell: [], likedItems: [] };
+				return { actionItems: [], likedItems: [], toImprove: [], wentWell: [] };
 			}
 		},
+		queryKey: ["sprint", "retrospective", sprintId],
 	});
 
 	useEffect(() => {
-		const socketUrl = process.env.NEXT_PUBLIC_SERVER || "http://localhost:5173";
+		const socketUrl = config.NEXT_PUBLIC_SERVER;
 
 		const newSocket = io(socketUrl, {
-			transports: ["websocket"],
 			reconnectionAttempts: 5,
 			reconnectionDelay: 1000,
-			timeout: 10000,
+			timeout: 10_000,
+			transports: ["websocket"],
 		});
 
 		newSocket.on("connect", () => {
 			newSocket.emit("joinRoom", sprintId);
 		});
 
-		newSocket.on("connect_error", (error) => {
-			console.error("Socket.IO connection error:", error);
+		newSocket.on("connect_error", () => {
 			toast.error("Connection error", {
 				description:
 					"Unable to connect to the server. Please try refreshing the page.",
 			});
-		});
-
-		newSocket.on("disconnect", (reason) => {
-			console.log("Disconnected from Socket.IO server:", reason);
 		});
 
 		newSocket.on("itemAdded", () => {
@@ -106,7 +102,6 @@ export default function SprintRetrospectivePage() {
 	}, [sprintId, fetchData]);
 
 	const { mutate: handleAddItem } = useMutation({
-		mutationKey: ["sprint", "retrospective", sprintId],
 		mutationFn: async ({
 			type,
 			content,
@@ -116,12 +111,13 @@ export default function SprintRetrospectivePage() {
 		}) => {
 			return await client.sprint.addRetroItem
 				.$post({
+					content,
 					sprintId,
 					type,
-					content,
 				})
 				.then((res) => res.json());
 		},
+		mutationKey: ["sprint", "retrospective", sprintId],
 		onError: (error) => {
 			toast.error("Failed to add item", {
 				description: parseError(error),
@@ -134,7 +130,6 @@ export default function SprintRetrospectivePage() {
 		},
 	});
 	const { mutate: handleLikeItem } = useMutation({
-		mutationKey: ["sprint", "retrospective", sprintId],
 		mutationFn: async (itemId: string) => {
 			return await client.sprint.likeRetroItem
 				.$post({
@@ -142,6 +137,7 @@ export default function SprintRetrospectivePage() {
 				})
 				.then((res) => res.json());
 		},
+		mutationKey: ["sprint", "retrospective", sprintId],
 		onError: (error) => {
 			toast.error("Failed to like item", {
 				description: parseError(error),
@@ -149,8 +145,8 @@ export default function SprintRetrospectivePage() {
 		},
 		onSuccess: (response) => {
 			socket?.emit("itemLiked", {
-				sprintId,
 				itemId: response.id,
+				sprintId,
 				userId: response.authorId,
 			});
 			fetchData();
@@ -174,8 +170,8 @@ export default function SprintRetrospectivePage() {
 
 			try {
 				const response = await client.sprint.updateRetroItemType.$post({
-					sprintId,
 					retrospectiveItemId: itemId,
+					sprintId,
 					type: destinationType,
 				});
 				if (!response) {
@@ -186,18 +182,19 @@ export default function SprintRetrospectivePage() {
 				fetchData();
 
 				socket?.emit("moveItem", {
-					sprintId,
-					itemId,
-					sourceType,
-					destinationType,
-					sourceIndex,
 					destinationIndex,
+					destinationType,
+					itemId,
+					sourceIndex,
+					sourceType,
+					sprintId,
 				});
 
 				toast.success("Item moved successfully");
 			} catch (error) {
-				console.error("Error moving item:", error);
-				toast.error("Failed to move item");
+				toast.error("Failed to move item", {
+					description: parseError(error, "An unknown error occurred"),
+				});
 			}
 		},
 		[sprintId, socket],
@@ -219,28 +216,28 @@ export default function SprintRetrospectivePage() {
 					</div>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 						<RetroColumn
+							items={data.wentWell}
+							likedItems={data.likedItems}
+							onAddItem={(type, content) => handleAddItem({ content, type })}
+							onLikeItem={(itemId) => handleLikeItem(itemId)}
 							title="What Went Well"
 							type="wentWell"
-							items={data.wentWell}
-							onAddItem={(type, content) => handleAddItem({ type, content })}
-							onLikeItem={(itemId) => handleLikeItem(itemId)}
-							likedItems={data.likedItems}
 						/>
 						<RetroColumn
+							items={data.toImprove}
+							likedItems={data.likedItems}
+							onAddItem={(type, content) => handleAddItem({ content, type })}
+							onLikeItem={(itemId) => handleLikeItem(itemId)}
 							title="To Improve"
 							type="toImprove"
-							items={data.toImprove}
-							onAddItem={(type, content) => handleAddItem({ type, content })}
-							onLikeItem={(itemId) => handleLikeItem(itemId)}
-							likedItems={data.likedItems}
 						/>
 						<RetroColumn
+							items={data.actionItems}
+							likedItems={data.likedItems}
+							onAddItem={(type, content) => handleAddItem({ content, type })}
+							onLikeItem={(itemId) => handleLikeItem(itemId)}
 							title="Action Items"
 							type="actionItems"
-							items={data.actionItems}
-							onAddItem={(type, content) => handleAddItem({ type, content })}
-							onLikeItem={(itemId) => handleLikeItem(itemId)}
-							likedItems={data.likedItems}
 						/>
 					</div>
 				</div>

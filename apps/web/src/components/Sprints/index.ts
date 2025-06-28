@@ -1,7 +1,7 @@
-export * from "./AssignTasksDialog";
-export * from "./SprintTabs";
-export * from "./SprintLoading";
-export * from "./SprintError";
-export * from "./SprintNotFound";
-export * from "./Retrospective/AddRetroItemModal";
-export * from "./Retrospective/RetroColumn";
+export { AssignTasksDialog } from "./AssignTasksDialog";
+export { default as AddRetroItemModal } from "./Retrospective/AddRetroItemModal";
+export { RetroColumn } from "./Retrospective/RetroColumn";
+export { SprintError } from "./SprintError";
+export { SprintLoading } from "./SprintLoading";
+export { SprintNotFound } from "./SprintNotFound";
+export { SprintTabs } from "./SprintTabs";

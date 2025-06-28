@@ -1,8 +1,8 @@
 import {
-	type DBClient,
-	type Team,
 	and,
+	type DBClient,
 	eq,
+	type Team,
 	teamsTable,
 	userTeamsTable,
 } from "@squaredmade/db";
@@ -30,7 +30,7 @@ export class TeamService implements TeamRpc {
 		workspaceId,
 		userId,
 	}: CreateTeamParams): Promise<Team> {
-		this.logger.info("Creating team", { name, identifier, workspaceId });
+		this.logger.info("Creating team", { identifier, name, workspaceId });
 
 		return await this.db.transaction(async (tx) => {
 			// Check if team already exists
@@ -48,8 +48,8 @@ export class TeamService implements TeamRpc {
 			const [createdTeam] = await tx
 				.insert(teamsTable)
 				.values({
-					name,
 					identifier,
+					name,
 					workspaceId,
 				})
 				.returning();
@@ -60,8 +60,8 @@ export class TeamService implements TeamRpc {
 
 			// Create user-team association
 			await tx.insert(userTeamsTable).values({
-				userId,
 				teamId: createdTeam.id,
+				userId,
 			});
 
 			return createdTeam;

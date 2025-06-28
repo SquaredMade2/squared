@@ -1,14 +1,15 @@
-import { rpcHandlers } from "@/services";
 import { createDb } from "@squaredmade/db";
 import createCustomLogger from "@squaredmade/logger";
 import { createErrorHandler, createRequestHandler } from "@squaredmade/rpc";
 import cors from "cors";
 import express from "express";
-import "dotenv/config";
+import config from "@/config";
+import { rpcHandlers } from "@/services";
 
-export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
+export const db = createDb({ databaseUrl: config.databaseUrl });
 
 const logger = createCustomLogger("api");
+const vercelRegex = /^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/;
 
 function createApp() {
 	const app = express();
@@ -17,7 +18,7 @@ function createApp() {
 	const productionServerDomain = "https://api.squaredmade.com";
 	const developmentDomain = "https://app-develop.squaredmade.com";
 	const localDevDomain = "http://localhost:3000";
-	const localServerDomain = `http://localhost:${process.env.PORT || 5173}`;
+	const localServerDomain = `http://localhost:${config.port || 5173}`;
 
 	// Health check route for root path
 	app.get("/", (_, res) => {
@@ -26,10 +27,12 @@ function createApp() {
 
 	app.use(
 		cors({
+			credentials: true,
+			methods: ["GET", "POST", "PUT", "DELETE"],
 			origin: (origin, callback) => {
 				if (
 					!origin ||
-					/^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/.test(origin) ||
+					vercelRegex.test(origin) ||
 					origin === productionDomain ||
 					origin === productionServerDomain ||
 					origin === developmentDomain ||
@@ -41,8 +44,6 @@ function createApp() {
 					callback(new Error("Not allowed by CORS"));
 				}
 			},
-			methods: ["GET", "POST", "PUT", "DELETE"],
-			credentials: true,
 		}),
 	);
 

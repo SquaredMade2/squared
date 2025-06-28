@@ -1,5 +1,8 @@
 "use client";
 
+import { useOrganization } from "@clerk/nextjs";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { useRouter } from "next/navigation";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -11,9 +14,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useModalStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
-import { useOrganization } from "@clerk/nextjs";
-import { DialogTitle } from "@squaredmade/ui/dialog";
-import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
 
 export function TaskSelector() {
@@ -24,7 +24,7 @@ export function TaskSelector() {
 	const { organization } = useOrganization();
 
 	return (
-		<CommandDialog open={open} onOpenChange={setOpen}>
+		<CommandDialog onOpenChange={setOpen} open={open}>
 			<DialogTitle className="sr-only">Open Task</DialogTitle>
 			<CommandInput placeholder="Open task..." />
 			<CommandList>
@@ -33,6 +33,7 @@ export function TaskSelector() {
 					<CommandGroup>
 						{tasks.map((task) => (
 							<CommandItem
+								className="grid grid-cols-[auto_1fr_11fr] gap-x-4 p-2"
 								key={task.id}
 								onSelect={() => {
 									setCurrentTask(task);
@@ -41,7 +42,6 @@ export function TaskSelector() {
 									);
 									setOpen(false);
 								}}
-								className="grid grid-cols-[auto_1fr_11fr] gap-x-4 p-2"
 							>
 								<StatusIcon status={task.status} />
 								<span className="text-nowrap">{task.identifier}</span>

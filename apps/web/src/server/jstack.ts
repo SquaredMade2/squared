@@ -1,3 +1,8 @@
+import { auth } from "@clerk/nextjs/server";
+import { env } from "hono/adapter";
+import { HTTPException } from "hono/http-exception";
+import { jstack } from "jstack";
+import type { config as configEnv } from "@/config";
 import { AuthService } from "@/gen/rpc/auth";
 import { CommentService } from "@/gen/rpc/comment";
 import { EventService } from "@/gen/rpc/event";
@@ -8,13 +13,10 @@ import { TaskService } from "@/gen/rpc/task";
 import { TeamService } from "@/gen/rpc/team";
 import { UserService } from "@/gen/rpc/user";
 import { WorkspaceService } from "@/gen/rpc/workspace";
-import { auth } from "@clerk/nextjs/server";
-import { env } from "hono/adapter";
-import { HTTPException } from "hono/http-exception";
-import { jstack } from "jstack";
 
 interface Env {
-	Bindings: { NEXT_PUBLIC_SERVER: string };
+	// biome-ignore lint/style/useNamingConvention: These are expected by hono
+	Bindings: typeof configEnv;
 }
 
 export const j = jstack.init<Env>();
@@ -39,8 +41,8 @@ const authMiddleware = j.middleware(async ({ next }) => {
 	if (!userId) throw new HTTPException(401, { message: "Unauthorized" });
 
 	return await next({
-		userId,
 		orgId,
+		userId,
 	});
 });
 

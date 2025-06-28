@@ -42,12 +42,11 @@ const EffortEstimateDropdown = () => {
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
 	const { mutate: updateEffortEstimate } = useMutation({
-		mutationKey: ["task", "updateEffort", taskId],
 		mutationFn: async (newEffortEstimate: number) => {
 			if (!taskId) throw new Error("Task not found");
 			const res = await client.task.updateEffort.$post({
-				taskId,
 				effortEstimate: newEffortEstimate,
+				taskId,
 			});
 			const updatedTask = await res.json();
 			setCurrentTask({
@@ -63,6 +62,7 @@ const EffortEstimateDropdown = () => {
 
 			return updatedTask;
 		},
+		mutationKey: ["task", "updateEffort", taskId],
 		onError: (error) => {
 			toast.error("Error updating effort estimate", {
 				description: error.message,
@@ -91,11 +91,11 @@ const EffortEstimateDropdown = () => {
 	const effortEstimate = sidebarEffortEstimate();
 
 	return (
-		<DropdownMenu open={open} onOpenChange={setOpen}>
+		<DropdownMenu onOpenChange={setOpen} open={open}>
 			<DropdownMenuTrigger asChild>
 				<Button
-					variant="outline"
 					className="flex w-full items-center justify-between"
+					variant="outline"
 				>
 					<div className="flex items-center gap-2">
 						{effortEstimate ? showIcon(effortEstimate.value) : medium()}
@@ -108,13 +108,13 @@ const EffortEstimateDropdown = () => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{effortEstimateOptions(team?.effort).map((effortEstimate) => {
-					const estimateNumber = extractNumber(effortEstimate.text);
+				{effortEstimateOptions(team?.effort).map((e) => {
+					const estimateNumber = extractNumber(e.text);
 					return (
 						<DropdownMenuItem
-							key={estimateNumber}
-							onSelect={() => handleSelectEffortEstimate(effortEstimate)}
 							className="flex items-center justify-between"
+							key={estimateNumber}
+							onSelect={() => handleSelectEffortEstimate(e)}
 						>
 							<div className="flex items-center gap-2">
 								<span className="h-4 w-4">{showIcon(estimateNumber)}</span>

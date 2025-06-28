@@ -118,8 +118,8 @@ export default function SprintDashboardPage() {
 
 			return {
 				day: i,
-				tasks: Math.max(0, totalTasks - completedTasksCount),
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
+				tasks: Math.max(0, totalTasks - completedTasksCount),
 			};
 		});
 
@@ -143,25 +143,24 @@ export default function SprintDashboardPage() {
 		);
 
 		const statusColorMap: Record<Status, string> = {
-			todo: "var(--color-blue-500)",
-			inProgress: "var(--color-yellow-500)",
-			inReview: "var(--color-purple-500)",
-			done: "var(--color-green-500)",
+			archived: "var(--color-gray-400)",
 			backlog: "var(--color-gray-500)",
 			canceled: "var(--color-red-500)",
+			done: "var(--color-green-500)",
 			duplicated: "var(--color-indigo-500)",
-			archived: "var(--color-gray-400)",
+			inProgress: "var(--color-yellow-500)",
+			inReview: "var(--color-purple-500)",
+			todo: "var(--color-blue-500)",
 		};
 
 		return Object.entries(statusCounts).map(([status, count]) => ({
+			color: statusColorMap[status as Status],
 			name: formatStatus(status as Status),
 			value: count,
-			color: statusColorMap[status as Status],
 		}));
 	};
 
 	const { mutate: handleBulkAssign } = useMutation({
-		mutationKey: ["sprint", "sprintAssign", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
 			if (isSprintCompleted)
@@ -173,9 +172,10 @@ export default function SprintDashboardPage() {
 				})
 				.then((res: Response) => res.json());
 		},
-		onError: (error) => {
+		mutationKey: ["sprint", "sprintAssign", sprint?.id],
+		onError: (e) => {
 			toast.error("Failed to assign tasks to sprint", {
-				description: parseError(error, "Unknown error"),
+				description: e.message,
 			});
 		},
 		onSuccess: (data) => {
@@ -185,7 +185,6 @@ export default function SprintDashboardPage() {
 	});
 
 	const { mutate: endSprint } = useMutation({
-		mutationKey: ["sprint", "sprintEnd", sprint?.id],
 		mutationFn: async () => {
 			if (!sprint) throw new Error("Sprint not found");
 			if (!isSprintActive) throw new Error("Sprint is not active");
@@ -195,9 +194,10 @@ export default function SprintDashboardPage() {
 				})
 				.then((res: Response) => res.json());
 		},
-		onError: (error) => {
+		mutationKey: ["sprint", "sprintEnd", sprint?.id],
+		onError: (e) => {
 			toast.error("Failed to end the sprint.", {
-				description: parseError(error, "Unknown error"),
+				description: e.message,
 			});
 		},
 		onSuccess: () => {
@@ -206,8 +206,8 @@ export default function SprintDashboardPage() {
 		},
 	});
 
-	const handleEndSprintConfirm = async () => {
-		if (!sprint || !team) return;
+	const handleEndSprintConfirm = () => {
+		if (!(sprint && team)) return;
 		setShowEndSprintDialog(false);
 		if (newSprint) {
 			setShowNextSprint(true);
@@ -229,16 +229,16 @@ export default function SprintDashboardPage() {
 		return (
 			<SprintError
 				error={parseError(error, "Failed to fetch sprint data")}
-				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
+				workspaceUrl={organization?.slug ?? ""}
 			/>
 		);
 	}
 	if (!sprint) {
 		return (
 			<SprintNotFound
-				workspaceUrl={organization?.slug ?? ""}
 				teamIdentifier={team?.identifier}
+				workspaceUrl={organization?.slug ?? ""}
 			/>
 		);
 	}
@@ -256,7 +256,7 @@ export default function SprintDashboardPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Progress value={calculateProgress()} className="w-full" />
+						<Progress className="w-full" value={calculateProgress()} />
 						<p className="mt-2 text-muted-foreground text-sm">
 							{Math.round(calculateProgress())}% Complete
 						</p>
@@ -314,48 +314,48 @@ export default function SprintDashboardPage() {
 						<CardTitle>Burndown Chart</CardTitle>
 					</CardHeader>
 					<CardContent className="h-[300px]">
-						<ResponsiveContainer width="100%" height="100%">
+						<ResponsiveContainer height="100%" width="100%">
 							<LineChart
 								data={burndownData}
-								margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
+								margin={{ bottom: 5, left: 20, right: 20, top: 15 }}
 							>
-								<XAxis dataKey="day" tick={false} axisLine={false} />
-								<YAxis hide={true} />
+								<XAxis axisLine={false} dataKey="day" tick={false} />
+								<YAxis hide />
 								<Tooltip
 									contentStyle={{
 										background: "var(--card)",
 										border: "none",
 										borderRadius: "8px",
 									}}
-									labelStyle={{ color: "var(--muted-foreground)" }}
 									formatter={(value) => Math.floor(Number(value))}
+									labelStyle={{ color: "var(--muted-foreground)" }}
 								/>
 								<Line
-									type="monotone"
 									dataKey="tasks"
-									stroke="var(--primary)"
-									strokeWidth={2}
 									dot={false}
 									name="Actual"
+									stroke="var(--primary)"
+									strokeWidth={2}
+									type="monotone"
 								/>
 								<Line
-									type="monotone"
 									dataKey="ideal"
-									stroke="var(--muted)"
-									strokeWidth={2}
-									strokeDasharray="5 5"
 									dot={false}
 									name="Ideal"
+									stroke="var(--muted)"
+									strokeDasharray="5 5"
+									strokeWidth={2}
+									type="monotone"
 								/>
 								<ReferenceLine
-									x={currentDay}
+									label={{
+										fill: "var(--destructive)",
+										position: "top",
+										value: "Today",
+									}}
 									stroke="var(--destructive)"
 									strokeWidth={1}
-									label={{
-										value: "Today",
-										position: "top",
-										fill: "var(--destructive)",
-									}}
+									x={currentDay}
 								/>
 							</LineChart>
 						</ResponsiveContainer>
@@ -366,24 +366,24 @@ export default function SprintDashboardPage() {
 						<CardTitle>Task Status Distribution</CardTitle>
 					</CardHeader>
 					<CardContent className="h-[300px]">
-						<ResponsiveContainer width="100%" height="100%">
+						<ResponsiveContainer height="100%" width="100%">
 							<PieChart>
 								<Pie
-									data={getTaskStatusData()}
 									cx="50%"
 									cy="50%"
-									labelLine={false}
-									outerRadius={80}
-									fill="#8884d8"
+									data={getTaskStatusData()}
 									dataKey="value"
+									fill="#8884d8"
 									label={({ name, percent }) =>
 										`${name} ${(percent * 100).toFixed(0)}%`
 									}
+									labelLine={false}
+									outerRadius={80}
 								>
 									{getTaskStatusData().map((entry) => (
 										<Cell
-											key={`cell-${entry.name}-${entry.value}`}
 											fill={entry.color}
+											key={`cell-${entry.name}-${entry.value}`}
 										/>
 									))}
 								</Pie>
@@ -396,20 +396,20 @@ export default function SprintDashboardPage() {
 			{isSprintActive && (
 				<div className="flex items-center justify-between space-x-4">
 					<Button
+						className="flex-1 border-destructive"
 						onClick={() => handleButtonClick(false)}
 						variant="outline"
-						className="flex-1 border-destructive"
 					>
 						End Sprint
 					</Button>
 					<Link
-						href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
 						className="flex-1"
+						href={`/${organization?.slug}/team/${team?.identifier}/sprints/${sprintId}/retrospective`}
 						passHref
 					>
 						<Button className="w-full">Start Sprint Retrospective</Button>
 					</Link>
-					<Button onClick={() => handleButtonClick(true)} className="flex-1">
+					<Button className="flex-1" onClick={() => handleButtonClick(true)}>
 						Start Next Sprint
 					</Button>
 				</div>
@@ -429,18 +429,18 @@ export default function SprintDashboardPage() {
 					</div>
 				)}
 			</div>
-			<Tabs defaultValue="all" className="w-full">
+			<Tabs className="w-full" defaultValue="all">
 				<TabsList className="w-full">
-					<TabsTrigger value="all" className="flex-1">
+					<TabsTrigger className="flex-1" value="all">
 						All Tasks
 					</TabsTrigger>
-					<TabsTrigger value="todo" className="flex-1">
+					<TabsTrigger className="flex-1" value="todo">
 						To Do
 					</TabsTrigger>
-					<TabsTrigger value="inProgress" className="flex-1">
+					<TabsTrigger className="flex-1" value="inProgress">
 						In Progress
 					</TabsTrigger>
-					<TabsTrigger value="done" className="flex-1">
+					<TabsTrigger className="flex-1" value="done">
 						Done
 					</TabsTrigger>
 				</TabsList>
@@ -471,7 +471,7 @@ export default function SprintDashboardPage() {
 					</TabsContent>
 				</div>
 			</Tabs>
-
+      
 			<EndSprintDialog
 				dialogOpen={showEndSprintDialog}
 				onOpenChange={setShowEndSprintDialog}
@@ -479,11 +479,11 @@ export default function SprintDashboardPage() {
 			/>
 
 			<NewSprintModal
+				initialSprintName={newSprintName}
 				isOpen={showNextSprint}
 				onClose={() => setShowNextSprint(false)}
-				team={team || null}
-				initialSprintName={newSprintName}
 				redirectUrl={`/${organization?.slug}/team/${team?.identifier}/sprints`}
+				team={team || null}
 			/>
 		</div>
 	);

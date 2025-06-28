@@ -1,9 +1,5 @@
 "use client";
 
-import { useSidebar } from "@/components/ui/sidebar";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { useModalStore } from "@/store";
-import { getInitials } from "@/utils/formatting";
 import { Protect, useOrganization, useOrganizationList } from "@clerk/nextjs";
 import type { OrganizationResource } from "@clerk/types";
 import { ChevronDown, Plus, Settings, UserRoundPlus } from "@squaredmade/icons";
@@ -18,6 +14,10 @@ import {
 } from "@squaredmade/ui/dropdown-menu";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { useModalStore } from "@/store";
+import { getInitials } from "@/utils/formatting";
 
 export function WorkspaceDropdown() {
 	const pathName = usePathname();
@@ -27,7 +27,7 @@ export function WorkspaceDropdown() {
 		userMemberships: true,
 	});
 	const { state } = useSidebar();
-	const { setShowInvite } = useModalStore((state) => state);
+	const { setShowInvite } = useModalStore((s) => s);
 	const { switchWorkspace } = useWorkspaces();
 
 	const updatePathWithWorkspace = (url: string | null) => {
@@ -50,7 +50,11 @@ export function WorkspaceDropdown() {
 	};
 
 	useEffect(() => {
-		if (!organization && userMemberships.data?.length) {
+		if (
+			!organization &&
+			userMemberships.data &&
+			userMemberships.data.length > 0
+		) {
 			updateActiveWorkspace(userMemberships.data[0].organization);
 		}
 	}, [userMemberships.data, organization]);
@@ -63,8 +67,8 @@ export function WorkspaceDropdown() {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
-					variant="outline"
 					className={`w-full items-center gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" ? "justify-center border-none px-0" : "justify-start"}`}
+					variant="outline"
 				>
 					<Avatar className="h-8 w-8 shrink-0">
 						<AvatarImage src={organization?.imageUrl} />
@@ -74,16 +78,10 @@ export function WorkspaceDropdown() {
 					</Avatar>
 					{state === "expanded" && (
 						<>
-							<span
-								className={"truncate transition-all duration-300 ease-in-out"}
-							>
+							<span className="truncate transition-all duration-300 ease-in-out">
 								{organization?.name}
 							</span>
-							<ChevronDown
-								className={
-									"ml-auto h-4 w-4 shrink-0 opacity-50 transition-all duration-300 ease-in-out"
-								}
-							/>
+							<ChevronDown className="ml-auto h-4 w-4 shrink-0 opacity-50 transition-all duration-300 ease-in-out" />
 						</>
 					)}
 				</Button>
@@ -93,11 +91,11 @@ export function WorkspaceDropdown() {
 			>
 				{userMemberships.data?.map(({ organization: org }) => (
 					<DropdownMenuItem
+						className="hover:cursor-pointer"
 						key={org.id}
 						onSelect={() => {
 							updateActiveWorkspace(org);
 						}}
-						className="hover:cursor-pointer"
 					>
 						<Avatar className="mr-2 h-6 w-6">
 							<AvatarImage src={org.imageUrl} />
@@ -108,10 +106,10 @@ export function WorkspaceDropdown() {
 				))}
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
+					className="hover:cursor-pointer"
 					onSelect={() => {
 						router.push("/create");
 					}}
-					className="hover:cursor-pointer"
 				>
 					<Plus className="text-muted-foreground" />
 					<span className="ml-2">Create New</span>
@@ -119,9 +117,9 @@ export function WorkspaceDropdown() {
 				<Protect permission="org:sys_memberships:manage">
 					<DropdownMenuItem asChild>
 						<Button
+							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
 							onClick={() => setShowInvite(true)}
 							variant="ghost"
-							className="flex h-min w-full justify-start ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
 						>
 							<UserRoundPlus className="text-muted-foreground" />
 							<span className="ml-2">Invite People</span>
@@ -129,10 +127,10 @@ export function WorkspaceDropdown() {
 					</DropdownMenuItem>
 				</Protect>
 				<DropdownMenuItem
+					className="hover:cursor-pointer"
 					onSelect={() => {
 						router.push(`/${organization?.slug}/settings`);
 					}}
-					className="hover:cursor-pointer"
 				>
 					<Settings className="text-muted-foreground" />
 					<span className="ml-2">Settings</span>

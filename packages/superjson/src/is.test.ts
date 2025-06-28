@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import {
 	isArray,
 	isBoolean,
@@ -10,11 +11,9 @@ import {
 	isString,
 	isSymbol,
 	isTypedArray,
-	isURL,
 	isUndefined,
+	isURL,
 } from "./is.js";
-
-import { expect, test } from "vitest";
 
 test("Basic true tests", () => {
 	expect(isUndefined(undefined)).toBe(true);
@@ -27,6 +26,7 @@ test("Basic true tests", () => {
 
 	expect(isBoolean(true)).toBe(true);
 	expect(isBoolean(false)).toBe(true);
+	// biome-ignore lint/performance/useTopLevelRegex: This is a test
 	expect(isRegExp(/./)).toBe(true);
 	expect(isRegExp(/./gi)).toBe(true);
 	expect(isNumber(0)).toBe(true);
@@ -68,7 +68,7 @@ test("Primitive tests", () => {
 	expect(isPrimitive(0)).toBe(true);
 	expect(isPrimitive("")).toBe(true);
 	expect(isPrimitive("str")).toBe(true);
-	expect(isPrimitive(Symbol())).toBe(true);
+	expect(isPrimitive(Symbol("symbol"))).toBe(true);
 	expect(isPrimitive(true)).toBe(true);
 	expect(isPrimitive(false)).toBe(true);
 	expect(isPrimitive(null)).toBe(true);
@@ -81,7 +81,7 @@ test("Primitive tests", () => {
 
 	expect(isPrimitive(new Object())).toBe(false);
 	expect(isPrimitive(new Date())).toBe(false);
-	expect(isPrimitive(() => {})).toBe(false);
+	expect(isPrimitive(() => null)).toBe(false);
 });
 
 test("Date exception", () => {

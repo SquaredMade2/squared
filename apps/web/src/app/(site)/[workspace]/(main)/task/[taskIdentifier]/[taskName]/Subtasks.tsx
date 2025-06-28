@@ -1,16 +1,10 @@
 "use client";
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
-import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
-import { formatUrl, getInitials } from "@/utils/formatting";
 import { useOrganization } from "@clerk/nextjs";
 import {
 	DragDropContext,
 	Draggable,
-	type DropResult,
 	Droppable,
+	type DropResult,
 } from "@hello-pangea/dnd";
 import type { Task, User } from "@squaredmade/db";
 import { ChevronDown, ChevronRight, UserSearch } from "@squaredmade/icons";
@@ -24,6 +18,12 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
+import { formatUrl, getInitials } from "@/utils/formatting";
 
 const Subtasks = () => {
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
@@ -31,7 +31,6 @@ const Subtasks = () => {
 	const users = useUserStore((state) => state.users);
 
 	const { mutate: onDragEnd } = useMutation({
-		mutationKey: ["task", "reorderSubtasks"],
 		mutationFn: async (result: DropResult) => {
 			if (!result.destination) return;
 
@@ -41,8 +40,8 @@ const Subtasks = () => {
 
 			const updatedSubtasks = await client.task.updateSubtaskOrder
 				.$post({
-					parentId: subtasks[0].parentId ?? "",
 					newOrder: items.map((item) => item.id),
+					parentId: subtasks[0].parentId ?? "",
 				})
 				.then((res) => res.json());
 
@@ -50,13 +49,14 @@ const Subtasks = () => {
 
 			return updatedSubtasks;
 		},
+		mutationKey: ["task", "reorderSubtasks"],
 	});
 
 	return (
 		<Collapsible
-			open={isSubtasksExpanded}
-			onOpenChange={setIsSubtasksExpanded}
 			className="mt-6 rounded-lg bg-background p-4 shadow-xs"
+			onOpenChange={setIsSubtasksExpanded}
+			open={isSubtasksExpanded}
 		>
 			<CollapsibleTrigger asChild>
 				<div className="mb-2 flex cursor-pointer items-center">
@@ -76,22 +76,22 @@ const Subtasks = () => {
 						{(provided) => (
 							<ul
 								{...provided.droppableProps}
-								ref={provided.innerRef}
 								className="my-4 space-y-2"
+								ref={provided.innerRef}
 							>
 								{subtasks
 									.sort((a, b) => a.order - b.order)
 									.map((subtask, index) => (
 										<Draggable
-											key={subtask.id}
 											draggableId={subtask.id}
 											index={index}
+											key={subtask.id}
 										>
-											{(provided, snapshot) => (
+											{(prov, snapshot) => (
 												<li
-													ref={provided.innerRef}
-													{...provided.draggableProps}
-													{...provided.dragHandleProps}
+													ref={prov.innerRef}
+													{...prov.draggableProps}
+													{...prov.dragHandleProps}
 													className={`transition-all duration-200 ease-in-out ${
 														snapshot.isDragging ? "shadow-lg" : ""
 													}`}
@@ -141,7 +141,7 @@ const SubtaskList = ({ task, user }: SubtaskListProps) => {
 							<span className="xs:hidden min-w-16 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 								{task.identifier}
 							</span>
-							<Button variant="ghost" size="sm" className="mx-1 shrink-0 p-0">
+							<Button className="mx-1 shrink-0 p-0" size="sm" variant="ghost">
 								<StatusIcon status={task.status} />
 							</Button>
 							<span className="min-w-0 truncate">{task.title}</span>

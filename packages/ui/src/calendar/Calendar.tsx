@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "@squaredmade/icons";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
-import * as React from "react";
+import React from "react";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -508,11 +508,11 @@ function addDays(date: Date, amount: number): Date {
  */
 function isDateDisabled(
 	date: Date,
-	disabled?: Date[] | ((date: Date) => boolean),
+	disabled?: Date[] | ((d: Date) => boolean),
 	fromDate?: Date,
 	toDate?: Date,
 ): boolean {
-	if (!disabled && !fromDate && !toDate) return false;
+	if (!(disabled || fromDate || toDate)) return false;
 
 	if (fromDate && date < fromDate) return true;
 	if (toDate && date > toDate) return true;
@@ -598,7 +598,7 @@ function getWeekNumber(date: Date): number {
 	if (target.getDay() !== 4) {
 		target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
 	}
-	return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);
+	return 1 + Math.ceil((firstThursday - target.valueOf()) / 604_800_000);
 }
 
 /**
@@ -675,11 +675,11 @@ const Day: React.FC<DayProps> = ({
 
 	const dayClassNames = cn(
 		{
-			"opacity-50": isOutside,
 			"bg-gray-300 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800":
 				today && !selected,
-			"bg-primary/60": isRangeMiddle && selected,
 			"bg-primary/10 text-primary": isRangeMiddle && !selected,
+			"bg-primary/60": isRangeMiddle && selected,
+			"opacity-50": isOutside,
 			"rounded-l-md": isRangeStart,
 			"rounded-r-md": isRangeEnd,
 		},
@@ -696,8 +696,6 @@ const Day: React.FC<DayProps> = ({
 
 	return (
 		<button
-			ref={dayRef}
-			type="button"
 			className={cn(
 				"h-9 w-9 p-0 font-normal data-[selected]:opacity-100",
 				"flex items-center justify-center rounded-md text-sm transition-colors",
@@ -708,15 +706,17 @@ const Day: React.FC<DayProps> = ({
 					"text-muted-foreground opacity-50 hover:bg-transparent hover:text-muted-foreground",
 				dayClassNames,
 			)}
-			onClick={handleClick}
-			disabled={disabled}
-			tabIndex={isOutside ? -1 : 0}
-			data-selected={selected}
 			data-outside={isOutside || undefined}
-			data-today={today || undefined}
-			data-range-start={isRangeStart || undefined}
-			data-range-middle={isRangeMiddle || undefined}
 			data-range-end={isRangeEnd || undefined}
+			data-range-middle={isRangeMiddle || undefined}
+			data-range-start={isRangeStart || undefined}
+			data-selected={selected}
+			data-today={today || undefined}
+			disabled={disabled}
+			onClick={handleClick}
+			ref={dayRef}
+			tabIndex={isOutside ? -1 : 0}
+			type="button"
 			{...Object.entries(modifiers || {}).reduce(
 				(acc, [name, enabled]) => ({
 					// biome-ignore lint/performance/noAccumulatingSpread: This is a workaround for a bug in React
@@ -760,8 +760,8 @@ const Weekday: React.FC<WeekdayProps> = ({
 
 	return (
 		<th
-			scope="col"
 			className="w-9 py-2 text-center font-medium text-muted-foreground text-xs"
+			scope="col"
 		>
 			{format(date)}
 		</th>
@@ -807,21 +807,21 @@ const Caption: React.FC<CaptionProps> = ({
 	return (
 		<div className="flex items-center justify-between px-2 py-1">
 			<Button
-				variant="ghost"
-				size="icon"
-				onClick={handlePreviousClick}
-				disabled={prevDisabled}
 				aria-label={prevLabel}
+				disabled={prevDisabled}
+				onClick={handlePreviousClick}
+				size="icon"
+				variant="ghost"
 			>
 				{!prevHidden && <ChevronLeft className="h-4 w-4" />}
 			</Button>
 			<div className="font-medium text-sm">{formatMonthCaption(date)}</div>
 			<Button
-				variant="ghost"
-				size="icon"
-				onClick={handleNextClick}
-				disabled={nextDisabled}
 				aria-label={nextLabel}
+				disabled={nextDisabled}
+				onClick={handleNextClick}
+				size="icon"
+				variant="ghost"
 			>
 				{!nextHidden && <ChevronRight className="h-4 w-4" />}
 			</Button>
@@ -904,7 +904,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 		const handleDayClick = (date: Date) => {
 			if (mode === "single") {
 				// We know that onSelect expects a Date parameter
-				(onSelect as ((date?: Date) => void) | undefined)?.(date);
+				(onSelect as ((d?: Date) => void) | undefined)?.(date);
 			} else if (mode === "multiple") {
 				const currentSelected = Array.isArray(selected) ? selected : [];
 				const isAlreadySelected = currentSelected.some(
@@ -928,7 +928,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 			} else if (mode === "range") {
 				const range = selected as DateRange;
 				// We know that onSelect expects a DateRange parameter
-				(onSelect as ((range?: DateRange) => void) | undefined)?.(
+				(onSelect as ((r?: DateRange) => void) | undefined)?.(
 					createDateRange(date, range),
 				);
 			}
@@ -979,7 +979,7 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 		const focusableDate = getFocusableDate();
 
 		return (
-			<div ref={ref} className={cn("p-3", className)} {...rest}>
+			<div className={cn("p-3", className)} ref={ref} {...rest}>
 				<div
 					className={cn(
 						"flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0",
@@ -987,17 +987,17 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 				>
 					{months.map((monthDate, monthIndex) => (
 						<div
-							key={`month-${monthDate.getMonth()}-${monthDate.getFullYear()}`}
 							className={cn("space-y-4", classNames.month)}
+							key={`month-${monthDate.getMonth()}-${monthDate.getFullYear()}`}
 						>
 							<CaptionComponent
 								date={monthDate}
-								onMonthChange={handleMonthChange}
 								nextDisabled={
 									monthIndex < months.length - 1 ||
 									(maxDate && monthDate >= maxDate)
 								}
 								nextHidden={monthIndex < months.length - 1}
+								onMonthChange={handleMonthChange}
 								prevDisabled={
 									monthIndex > 0 || (minDate && monthDate <= minDate)
 								}
@@ -1014,9 +1014,9 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 										)}
 										{weekdays.map((weekday) => (
 											<Weekday
+												format={formatters.formatWeekdayName}
 												key={`weekday-${weekday.getTime()}`}
 												weekday={weekday.getDay()}
-												format={formatters.formatWeekdayName}
 											/>
 										))}
 									</tr>
@@ -1026,8 +1026,8 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 									{getWeeksInMonth(monthDate, firstDayOfWeek, fixedWeeks).map(
 										(week) => (
 											<tr
-												key={`week-${week[0].getTime()}`}
 												className="flex w-full"
+												key={`week-${week[0].getTime()}`}
 											>
 												{showWeekNumber && (
 													<td className="w-9 py-2 text-center font-medium text-muted-foreground text-xs">
@@ -1091,26 +1091,26 @@ const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
 
 													const dayProps: DayProps = {
 														date,
-														displayMonth: monthDate,
-														onClick: handleDayClick,
-														selected: isSelectedDay,
-														disabled: isDisabled,
-														hidden: isOutside && !showOutsideDays,
-														today: isDayToday,
-														isOutside,
-														isRangeStart,
-														isRangeMiddle,
-														isRangeEnd,
-														modifiers: customModifiers,
-														modifiersClassNames,
 														// Pass the ref only to the day that should receive focus
 														dayRef: shouldFocus ? focusableDay : undefined,
+														disabled: isDisabled,
+														displayMonth: monthDate,
+														hidden: isOutside && !showOutsideDays,
+														isOutside,
+														isRangeEnd,
+														isRangeMiddle,
+														isRangeStart,
+														modifiers: customModifiers,
+														modifiersClassNames,
+														onClick: handleDayClick,
+														selected: isSelectedDay,
+														today: isDayToday,
 													};
 
 													return (
 														<td
-															key={`day-${date.getTime()}`}
 															className="relative p-0 text-center"
+															key={`day-${date.getTime()}`}
 														>
 															<DayComponent {...dayProps} />
 														</td>

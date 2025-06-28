@@ -1,31 +1,12 @@
 {
-	"editor.defaultFormatter": "biomejs.biome",
-	"editor.codeActionsOnSave": {
-		"source.organizeImports.biome": "explicit",
-		"source.fixAll.biome": "explicit",
-		"source.removeUnusedImports": "explicit"
-	},
-	"typescript.preferences.preferTypeOnlyAutoImports": true,
-	"[json]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[typescriptreact]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[typescript]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"[jsonc]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
 	"[css]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
-	"[javascript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"[dockerfile]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
-	"[go]": {
-		"editor.defaultFormatter": "golang.go"
+	"[dotenv]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
 	"[go.mod]": {
 		"editor.defaultFormatter": "golang.go"
@@ -33,26 +14,44 @@
 	"[go.sum]": {
 		"editor.defaultFormatter": "golang.go"
 	},
-	"[prisma]": {
-		"editor.defaultFormatter": "Prisma.prisma"
-	},
-	"[markdown]": {
-		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-	},
-	"[dockerfile]": {
-		"editor.defaultFormatter": "foxundermoon.shell-format"
-	},
-	"[properties]": {
-		"editor.defaultFormatter": "foxundermoon.shell-format"
+	"[go]": {
+		"editor.defaultFormatter": "golang.go"
 	},
 	"[ignore]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
-	"[dotenv]": {
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+	},
+	"[properties]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
 	"[shellscript]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
-	"cSpell.words": ["squaredmade", "storysource"]
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"cSpell.words": ["squaredmade", "storysource"],
+	"editor.codeActionsOnSave": {
+		"quickfix.biome": "explicit",
+		"source.action.useSortedAttributes.biome": "explicit",
+		"source.action.useSortedKeys.biome": "explicit",
+		"source.fixAll.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
+	"editor.defaultFormatter": "biomejs.biome",
+	"typescript.preferences.preferTypeOnlyAutoImports": true
 }

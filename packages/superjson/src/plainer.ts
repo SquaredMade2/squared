@@ -4,6 +4,7 @@ import type SuperJSON from "./index.js";
 import {
 	isArray,
 	isEmptyObject,
+	isError,
 	isMap,
 	isPlainObject,
 	isPrimitive,
@@ -26,7 +27,7 @@ export type MinimisedTree<T> = Tree<T> | Record<string, Tree<T>> | undefined;
 
 function traverse<T>(
 	tree: MinimisedTree<T>,
-	walker: (v: T, path: string[]) => void,
+	w: (v: T, path: string[]) => void,
 	origin: string[] = [],
 ): void {
 	if (!tree) {
@@ -35,7 +36,7 @@ function traverse<T>(
 
 	if (!isArray(tree)) {
 		forEach(tree, (subtree, key) =>
-			traverse(subtree, walker, [...origin, ...parsePath(key)]),
+			traverse(subtree, w, [...origin, ...parsePath(key)]),
 		);
 		return;
 	}
@@ -43,11 +44,11 @@ function traverse<T>(
 	const [nodeValue, children] = tree;
 	if (children) {
 		forEach(children, (child, key) => {
-			traverse(child, walker, [...origin, ...parsePath(key)]);
+			traverse(child, w, [...origin, ...parsePath(key)]);
 		});
 	}
 
-	walker(nodeValue, origin);
+	w(nodeValue, origin);
 }
 
 export function applyValueAnnotations(
@@ -99,7 +100,8 @@ const isDeep = (object: any, superJson: SuperJSON): boolean =>
 	isArray(object) ||
 	isMap(object) ||
 	isSet(object) ||
-	isInstanceOfRegisteredClass(object, superJson);
+	isInstanceOfRegisteredClass(object, superJson) ||
+	(isError(object) && superJson.allowedErrorProps.length > 0);
 
 function addIdentity(object: any, path: any[], identities: Map<any, any[][]>) {
 	const existingSet = identities.get(object);
@@ -191,8 +193,8 @@ export const walker = (
 
 		const result: Result = transformed
 			? {
-					transformedValue: transformed.value,
 					annotations: [transformed.type],
+					transformedValue: transformed.value,
 				}
 			: {
 					transformedValue: object,
@@ -250,16 +252,16 @@ export const walker = (
 
 	const result: Result = isEmptyObject(innerAnnotations)
 		? {
-				transformedValue,
 				annotations: transformationResult
 					? [transformationResult.type]
 					: undefined,
+				transformedValue,
 			}
 		: {
-				transformedValue,
 				annotations: transformationResult
 					? [transformationResult.type, innerAnnotations]
 					: innerAnnotations,
+				transformedValue,
 			};
 	if (!primitive) {
 		seenObjects.set(object, result);

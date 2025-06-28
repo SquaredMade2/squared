@@ -1,77 +1,228 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
-	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": true
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on",
+				"useSortedAttributes": "on",
+				"useSortedKeys": "on"
+			}
+		},
+		"enabled": true
 	},
 	"files": {
-		"maxSize": 10000000
+		"ignoreUnknown": false
 	},
 	"formatter": {
+		"enabled": true,
 		"formatWithErrors": true,
-		"includes": ["**", "!**/dist/**", "!**/node_modules/**", "!**/bun.lock"]
+		"includes": [
+			"**",
+			"!**/.turbo/**",
+			"!**/coverage/**",
+			"!**/dist/**",
+			"!**/build/**",
+			"!**/.next/**",
+			"!**/node_modules/**",
+			"!**/bun.lock",
+			"!**/*.md"
+		],
+		"indentStyle": "tab"
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
 	},
 	"linter": {
+		"domains": {
+			"project": "all"
+		},
 		"enabled": true,
+		"includes": [
+			"**",
+			"!**/gen/rpc/**",
+			"!**/.turbo/**",
+			"!**/coverage/**",
+			"!**/dist/**",
+			"!**/build/**",
+			"!**/.next/**",
+			"!**/node_modules/**",
+			"!**/bun.lock",
+			"!**/*.md"
+		],
 		"rules": {
-			"recommended": true,
+			"complexity": {
+				"noForEach": "error",
+				"noVoid": "error",
+				"useOptionalChain": { "fix": "safe", "level": "error" },
+				"useSimplifiedLogicExpression": "error",
+				"useWhile": "error"
+			},
 			"correctness": {
-				"useExhaustiveDependencies": "off",
+				"noUnusedImports": { "fix": "safe", "level": "error" },
 				"noUnusedVariables": "error",
-				"noUnusedImports": {
-					"level": "error",
-					"fix": "safe"
-				}
+				"useImportExtensions": "off"
 			},
 			"nursery": {
-				"useSortedClasses": {
-					"level": "info",
-					"fix": "safe"
-				}
+				"noAwaitInLoop": "error",
+				"noConstantBinaryExpression": "error",
+				"noFloatingPromises": "off",
+				"noImportCycles": "off",
+				"noShadow": "error",
+				"noTsIgnore": "error",
+				"noUnresolvedImports": "off",
+				"useAdjacentGetterSetter": "error",
+				"useConsistentObjectDefinition": "error",
+				"useConsistentResponse": "error",
+				"useIterableCallbackReturn": "error",
+				"useNumericSeparators": "error",
+				"useObjectSpread": "error",
+				"useSingleJsDocAsterisk": "error",
+				"useSymbolDescription": "error"
 			},
+			"performance": {
+				"noDelete": "error",
+				"noNamespaceImport": "error",
+				"noReExportAll": "error",
+				"useTopLevelRegex": "error"
+			},
+			"recommended": true,
 			"style": {
+				"noCommonJs": "error",
+				"noInferrableTypes": "error",
+				"noNamespace": "error",
+				"noNegationElse": "error",
+				"noNestedTernary": "error",
+				"noNonNullAssertion": "error",
 				"noParameterAssign": "error",
+				"noParameterProperties": "error",
+				"noProcessEnv": "error",
+				"noRestrictedGlobals": {
+					"level": "error",
+					"options": {
+						"deniedGlobals": {
+							"event": "Use the event parameter instead",
+							"length": "Use a more descriptive variable name",
+							"name": "Use a more descriptive variable name"
+						}
+					}
+				},
+				"noShoutyConstants": "error",
+				"noSubstr": "error",
+				"noUnusedTemplateLiteral": "error",
+				"noUselessElse": "error",
+				"noYodaExpression": "error",
 				"useAsConstAssertion": "error",
+				"useAtIndex": { "fix": "safe", "level": "error" },
+				"useCollapsedElseIf": "error",
+				"useCollapsedIf": "error",
+				"useConsistentArrayType": {
+					"fix": "safe",
+					"level": "error",
+					"options": { "syntax": "shorthand" }
+				},
+				"useConsistentBuiltinInstantiation": "error",
+				"useConsistentCurlyBraces": { "fix": "safe", "level": "error" },
+				"useConsistentMemberAccessibility": "error",
 				"useDefaultParameterLast": "error",
 				"useEnumInitializers": "error",
-				"useSelfClosingElements": "error",
-				"useSingleVarDeclarator": "error",
-				"noUnusedTemplateLiteral": "error",
+				"useExplicitLengthCheck": { "fix": "safe", "level": "error" },
+				"useFilenamingConvention": "warn",
+				"useForOf": "error",
+				"useFragmentSyntax": "error",
+				"useNamingConvention": {
+					"level": "error",
+					"options": {
+						"requireAscii": true,
+						"strictCase": false
+					}
+				},
+				"useNodeAssertStrict": "error",
 				"useNumberNamespace": "error",
-				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"useSelfClosingElements": "error",
+				"useShorthandAssign": { "fix": "safe", "level": "error" },
+				"useSingleVarDeclarator": "error",
+				"useThrowNewError": "error",
+				"useThrowOnlyError": "error",
+				"useTrimStartEnd": "error"
+			},
+			"suspicious": {
+				"noConsole": { "fix": "safe", "level": "error" },
+				"noEmptyBlockStatements": "error",
+				"noEvolvingTypes": "error",
+				"noSkippedTests": "error",
+				"useAwait": "error",
+				"useErrorMessage": "error",
+				"useGuardForIn": "error",
+				"useNumberToFixedDigitsArgument": "error",
+				"useStrictMode": "error"
 			}
 		}
 	},
 	"overrides": [
 		{
-			"includes": ["**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"],
+			"includes": [
+				"**/*.test.ts",
+				"**/*.test.tsx",
+				"**/*.test.js",
+				"**/*.test.jsx",
+				"**/__tests__/**"
+			],
 			"linter": {
 				"rules": {
+					"nursery": {
+						"noShadow": "off",
+						"useSymbolDescription": "off"
+					},
 					"style": {
-						"noNonNullAssertion": "off"
+						"noProcessEnv": "off",
+						"useNamingConvention": "off",
+						"useThrowOnlyError": "off"
 					},
 					"suspicious": {
+						"noConsole": "off",
 						"noExplicitAny": "off",
-						"noArrayIndexKey": "off"
+						"useAwait": "off"
 					}
 				}
 			}
+		},
+		{
+			"includes": ["**/*.js"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noCommonJs": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": [
+				"**/*.config.ts",
+				"**/*.config.js",
+				"**/*.config.cjs",
+				"**/*.config.mjs"
+			],
+			"linter": {
+				"enabled": false
+			}
+		},
+		{
+			"assist": {
+				"actions": {
+					"source": {
+						"useSortedKeys": "off"
+					}
+				}
+			},
+			"includes": ["**/package.json"]
 		}
 	],
-	"javascript": {
-		"globals": [
-			"$",
-			"_",
-			"externalVariable",
-			"it",
-			"describe",
-			"beforeEach",
-			"jest",
-			"React",
-			"afterEach"
-		]
+	"vcs": {
+		"clientKind": "git",
+		"enabled": true,
+		"useIgnoreFile": true
 	}
 }

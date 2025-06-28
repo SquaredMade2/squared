@@ -38,7 +38,7 @@ function getLuminance(hex: string): number {
 	const rgb = hexToRGB(hex);
 	const [r, g, b] = rgb.map((value) => {
 		const v = value / 255;
-		return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+		return v <= 0.039_28 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
 	});
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }

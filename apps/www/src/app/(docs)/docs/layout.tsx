@@ -1,19 +1,19 @@
-import { DocsLayout } from "@/components/DocsLayout";
-import { NavBar } from "@/components/navbar";
 import type { Metadata } from "next";
 import type React from "react"; // Added import for React
+import { DocsLayout } from "@/components/DocsLayout";
+import { NavBar } from "@/components/navbar";
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://www.squaredmade.com"),
-	title: "Squared Documentation",
 	description:
 		"Documentation for Squared, a platform to help organize software development projects.",
+	metadataBase: new URL("https://www.squaredmade.com"),
 	openGraph: {
 		images: ["/banner.png"],
 	},
+	title: "Squared Documentation",
 };
 
-export default async function Layout(
+export default function Layout(
 	props: Readonly<{
 		children: React.ReactNode;
 		params: { slug?: string[] };

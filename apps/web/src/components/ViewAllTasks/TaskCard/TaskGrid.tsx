@@ -1,12 +1,3 @@
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import { useViewStore } from "@/store";
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import {
-	formatName,
-	formatUrl,
-	getInitials,
-	truncateString,
-} from "@/utils/formatting";
 import { Calendar, UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Card, CardContent } from "@squaredmade/ui/card";
@@ -24,9 +15,18 @@ import {
 } from "@squaredmade/ui/tooltip";
 import { formatDate } from "date-fns";
 import Link from "next/link";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
+import { useViewStore } from "@/store";
+import { checkOverdueDate } from "@/utils/checkOverdueDate";
+import {
+	formatName,
+	formatUrl,
+	getInitials,
+	truncateString,
+} from "@/utils/formatting";
 import { AssigneeBox } from "./AssigneeBox";
-import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
+import TaskCardLabels from "./TaskCardLabels";
 
 const TaskGrid = ({
 	task,
@@ -48,8 +48,8 @@ const TaskGrid = ({
 
 	return (
 		<Link
-			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 			className="cursor-pointer"
+			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<Card className={`w-full ${isSubtask ? "bg-secondary/30" : ""}`}>
 				<CardContent className="space-y-4 p-4">

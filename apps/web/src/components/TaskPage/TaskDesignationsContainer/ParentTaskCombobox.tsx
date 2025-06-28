@@ -19,25 +19,25 @@ const ParentTaskCombobox = () => {
 	const taskId = currentTask?.id ?? "";
 
 	const { data: parentTask } = useQuery({
-		queryKey: ["task", "parentTask", currentTask?.parentId],
-		queryFn: async () => {
+		enabled: !!currentTask?.parentId,
+		queryFn: () => {
 			if (!currentTask?.parentId) return null;
 			return tasks.find((t) => t.id === currentTask?.parentId);
 		},
-		enabled: !!currentTask?.parentId,
+		queryKey: ["task", "parentTask", currentTask?.parentId],
 	});
 
 	const { mutate: updateTaskMutation } = useMutation({
-		mutationKey: ["task", "updateParent", currentTask?.parentId],
 		mutationFn: async (parentId: string | null) => {
-			if (!currentTask || !taskId) throw new Error("Task not found");
+			if (!(currentTask && taskId)) throw new Error("Task not found");
 			const res = await client.task.updateParent.$post({
-				taskId,
 				parentId,
+				taskId,
 			});
 			const updatedTask = await res.json();
 			return updatedTask;
 		},
+		mutationKey: ["task", "updateParent", currentTask?.parentId],
 		onError: (error) => {
 			toast.error("Error updating parent id", {
 				description: error.message,
@@ -66,16 +66,16 @@ const ParentTaskCombobox = () => {
 
 	return (
 		<DesignationCombobox
-			open={open}
-			setOpen={setOpen}
-			triggerText={parentTask?.title ?? "No parent assigned"}
 			emptyText="No tasks found."
+			itemId={(task: Task) => task.id}
+			itemLabel={(task: Task) => task.title}
 			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
+			onItemSelect={handleAssignParentTask}
+			open={open}
 			selectedItemId={parentTask?.id ?? ""}
 			selectedItemLabel={parentTask?.title ?? ""}
-			itemLabel={(task: Task) => task.title}
-			itemId={(task: Task) => task.id}
-			onItemSelect={handleAssignParentTask}
+			setOpen={setOpen}
+			triggerText={parentTask?.title ?? "No parent assigned"}
 		/>
 	);
 };

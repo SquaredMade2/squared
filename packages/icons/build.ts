@@ -37,9 +37,11 @@ fs.writeFileSync(
 // Format the generated code with Biome
 try {
 	execSync("biome format --write ./components", { stdio: "inherit" });
+	// biome-ignore lint/suspicious/noConsole: This is a CLI so we need to use console.log
 	console.log("✅ Code formatted with Biome");
 } catch (error) {
-	console.error("❌ Biome formatting failed:", error);
+	// biome-ignore lint/suspicious/noConsole: This is a CLI so we need to use console.log
+	console.error("Error formatting components: ", error);
 }
 
 build("components/index.ts", ["react", "react-dom"]);

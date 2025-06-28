@@ -26,7 +26,6 @@ export default function WelcomePage() {
 			router.push("/");
 		},
 		onError: (error) => {
-			console.error("Error registering user", error);
 			toast.error("Error registering user");
 		},
 	});
@@ -42,7 +41,6 @@ export default function WelcomePage() {
 					username: user.username,
 				});
 			} else {
-				console.error("Missing required user information");
 				// You might want to handle this case, perhaps by redirecting to a profile completion page
 			}
 		}

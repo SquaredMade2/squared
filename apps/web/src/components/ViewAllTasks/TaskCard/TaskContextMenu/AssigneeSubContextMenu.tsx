@@ -1,5 +1,8 @@
 "use client";
 
+import { Check, UserSearch } from "@squaredmade/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { useMutation } from "@tanstack/react-query";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -11,9 +14,6 @@ import { useUsers } from "@/hooks/useUsers";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { formatName, getInitials } from "@/utils/formatting";
-import { Check, UserSearch } from "@squaredmade/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
@@ -23,18 +23,18 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const assignedUser = users?.find((u) => u.userId === task.assigneeId);
 
 	const { mutate: updateAssignee } = useMutation({
-		mutationKey: ["task", "updateAssignee", taskId],
 		mutationFn: async (userId?: string | null) => {
 			if (!taskId || userId === undefined)
 				throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
-				taskId,
 				assigneeId: userId,
+				taskId,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
 		},
+		mutationKey: ["task", "updateAssignee", taskId],
 	});
 
 	const handleSelectAssignee = (userId?: string | null) => {
@@ -45,13 +45,13 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					{!task.assigneeId ? (
-						<UserSearch className="size-5 text-[#9597AD]" />
-					) : (
+					{task.assigneeId ? (
 						<Avatar className="mr-2 flex size-4 text-xxs">
 							<AvatarImage src={assignedUser?.imageUrl ?? ""} />
 							<AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
 						</Avatar>
+					) : (
+						<UserSearch className="size-5 text-[#9597AD]" />
 					)}
 				</div>
 				Assignee
@@ -70,23 +70,23 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 					</ContextMenuItem>
 					{users
 						?.sort((a, b) => formatName(a).localeCompare(formatName(b)))
-						.map((user) => {
+						.map((u) => {
 							return (
 								<ContextMenuItem
-									key={user.userId}
-									onClick={() => handleSelectAssignee(user.userId)}
 									className="flex justify-between"
+									key={u.userId}
+									onClick={() => handleSelectAssignee(u.userId)}
 								>
 									<div className="flex">
 										<Avatar className="mr-2 flex size-6 text-xxs">
-											<AvatarImage src={user.imageUrl ?? ""} />
+											<AvatarImage src={u.imageUrl ?? ""} />
 											<AvatarFallback>
-												{getInitials(formatName(user))}
+												{getInitials(formatName(u))}
 											</AvatarFallback>
 										</Avatar>
-										{formatName(user)}
+										{formatName(u)}
 									</div>
-									{task.assigneeId === user.userId && (
+									{task.assigneeId === u.userId && (
 										<Check className="ml-2 h-4 w-4" />
 									)}
 								</ContextMenuItem>

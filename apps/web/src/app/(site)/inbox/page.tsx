@@ -1,5 +1,10 @@
 "use client";
 
+import { useOrganization } from "@clerk/nextjs";
+import type { NotificationType } from "@squaredmade/db";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
 	InboxDataTable,
 	InboxSidebar,
@@ -9,11 +14,6 @@ import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { client } from "@/lib/client";
 import { useEventStore, useUserStore, useViewStore } from "@/store";
-import { useOrganization } from "@clerk/nextjs";
-import type { NotificationType } from "@squaredmade/db";
-import { useQuery } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export type NotificationFilter =
 	| NotificationType
@@ -34,18 +34,18 @@ export default function InboxPage() {
 	const pathname = usePathname();
 
 	useQuery({
-		queryKey: ["notification"],
+		enabled: !!organization,
 		queryFn: async () => {
 			if (!organization) throw new Error("No workspace found");
-			const [avatars, notifications] = await Promise.all([
+			const [avatars, n] = await Promise.all([
 				client.user.getWorkspaceAvatars.$get().then((res) => res.json()),
 				client.notification.getNotifications.$get().then((res) => res.json()),
 			]);
-			setNotifications(notifications);
+			setNotifications(n);
 			setUserAvatars(avatars);
-			return notifications;
+			return n;
 		},
-		enabled: !!organization,
+		queryKey: ["notification"],
 	});
 
 	useEffect(() => {
@@ -116,11 +116,11 @@ export default function InboxPage() {
 					<div className="flex">
 						<div className="flex w-full flex-col gap-4">
 							<MobileInboxSwitcher
-								setFilterType={setFilterType}
+								filterRead={filterRead}
 								filterType={filterType}
 								readNotifications={notifications.filter((n) => !n.read)}
-								filterRead={filterRead}
 								setFilterRead={setFilterRead}
+								setFilterType={setFilterType}
 							/>
 							<InboxDataTable
 								data={filteredNotifications
@@ -128,16 +128,16 @@ export default function InboxPage() {
 										...n,
 										user,
 									}))
-									.filter((n) => (!filterRead ? true : n.read))}
+									.filter((n) => (filterRead ? n.read : true))}
 								filterType={filterType}
 							/>
 						</div>
 						<InboxSidebar
-							setFilterType={setFilterType}
 							filterType={filterType}
 							readNotifications={notifications.filter(
-								(n) => !n.read || !n.dismissed,
+								(n) => !(n.read && n.dismissed),
 							)}
+							setFilterType={setFilterType}
 						/>
 					</div>
 				</div>
