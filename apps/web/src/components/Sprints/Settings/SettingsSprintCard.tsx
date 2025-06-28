@@ -56,10 +56,8 @@ const SettingsSprintCard = ({ sprint, team, isActive }: SprintCardProps) => {
 	};
 
 	const handleDateSubmit = () => {
-		if (sprintDate && sprintDate < new Date()) {
-			console.warn(
-				"New end date should not be in the past. Resetting to original value.",
-			);
+		if (isActive && sprintDate && sprintDate < sprint.startDate) {
+			console.warn("End date should be after the start date of the sprint.");
 			setSprintDate(new Date(sprint.endDate));
 			return;
 		}
