@@ -143,6 +143,12 @@ export const taskRouter = j.router({
 				}),
 			);
 		}),
+	greeting: workspaceProcedure
+		.incoming(z.object({ message: z.string() }))
+		.outgoing(z.object({ message: z.string() }))
+		.ws(({ io, c, ctx }) => ({
+			async onConnect({ socket }) {},
+		})),
 	createTask: workspaceProcedure
 		.input(
 			z.object({

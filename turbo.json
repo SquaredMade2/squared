@@ -45,6 +45,10 @@
 			"cache": false,
 			"persistent": true
 		},
+		"dev:wrangler": {
+			"cache": false,
+			"persistent": true
+		},
 		"format": {
 			"dependsOn": ["^format"]
 		},

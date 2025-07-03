@@ -1,3 +1,4 @@
+import "./polyfills.js";
 import { j } from "./jstack";
 import { authRouter } from "./routers/auth-router";
 import { commentRouter } from "./routers/comment-router";
@@ -22,7 +23,6 @@ const api = j
 	.basePath("/api")
 	.use(j.defaults.cors)
 	.onError(j.defaults.errorHandler);
-
 /**
  * This is the primary router for your server.
  *
