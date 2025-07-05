@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/style/noProcessEnv: This is the entry point */
 /** biome-ignore-all lint/style/useNamingConvention: These are env variables */
+import "dotenv/config";
 
 const {
 	NEXT_PUBLIC_SERVER,
