@@ -130,14 +130,14 @@ async function dumpAndRestore() {
 		// Dump the remote database
 		logger.info("Dumping remote database...");
 		await execPromise(
-			`pg_dump --format=c --no-owner --no-acl ${remoteDbUrl} > ${dumpFilePath}`,
+			`pg_dump --format=c --no-owner --no-acl "${remoteDbUrl}" > "${dumpFilePath}"`,
 		);
 		logger.info("Remote database dump completed.");
 
 		// Restore to the local database
 		logger.info("Restoring to local database...");
 		await execPromise(
-			`pg_restore --clean --if-exists --no-owner --no-acl -d ${localDbUrl} ${dumpFilePath}`,
+			`pg_restore --clean --if-exists --no-owner --no-acl -d "${localDbUrl}" "${dumpFilePath}"`,
 		);
 		logger.info("Database restore completed successfully.");
 

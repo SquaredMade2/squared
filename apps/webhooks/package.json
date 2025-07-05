@@ -3,8 +3,8 @@
 	"private": true,
 	"version": "0.0.0",
 	"scripts": {
-		"dev": "make dev",
-		"build": "make build",
+		"devs": "make dev",
+		"builds": "make build",
 		"test": "make test",
 		"clean": "make clean",
 		"type-check": "echo 'Go does not require type checking'",
