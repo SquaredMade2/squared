@@ -68,6 +68,15 @@
 		},
 		"test-ci": {
 			"dependsOn": ["^test-ci", "^test"]
+		},
+		"web#build": {
+			"dependsOn": ["^build"],
+			"env": [
+				"NEXT_PUBLIC_SERVER",
+				"NEXT_PUBLIC_URL",
+				"CLERK_SECRET_KEY",
+				"PORT"
+			]
 		}
 	},
 	"ui": "tui"
