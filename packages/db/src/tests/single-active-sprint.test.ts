@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { createDb, inArray } from "../index";
-import { sprintsTable, teamsTable, workspacesTable } from "../schema";
 import { randomUUID } from "crypto";
 import { eq } from "drizzle-orm";
+import { describe, expect, it } from "vitest";
+import { createDb, inArray } from "../index";
+import { sprintsTable, teamsTable, workspacesTable } from "../schema";
 import "dotenv/config";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -14,44 +14,44 @@ describe("Single active sprint unique index test", () => {
 		const workspaceUrl = `test-workspace-url-${uniqueId}`;
 		const workspaceId = `test-workspace-${uniqueId}`;
 		await db.insert(workspacesTable).values({
-			externalId: workspaceId,
-			name: "Test Workspace",
-			url: workspaceUrl,
-			companySize: 1,
-			tasksCreated: 0,
-			avatarUrl: "",
 			admins: [],
-			defaultView: null,
+			avatarUrl: "",
+			companySize: 1,
 			createdAt: new Date(),
-			labels: [],
-			inviteLinks: [],
 			daysUntilArchive: 14,
+			defaultView: null,
+			externalId: workspaceId,
+			inviteLinks: [],
+			labels: [],
+			name: "Test Workspace",
+			tasksCreated: 0,
+			url: workspaceUrl,
 		});
 
 		const teamId = randomUUID();
 
 		await db.insert(teamsTable).values({
-			id: teamId,
-			name: "Test Team",
-			identifier: "test-team",
-			workspaceId: workspaceId,
-			sprintsEnabled: true,
-			sprintDuration: 2,
 			cooldownDuration: 1,
-			sprintStartDate: new Date(),
-			tasksPerSprint: 10,
 			effort: "LINEAR",
+			id: teamId,
+			identifier: "test-team",
+			name: "Test Team",
+			sprintDuration: 2,
+			sprintStartDate: new Date(),
+			sprintsEnabled: true,
+			tasksPerSprint: 10,
+			workspaceId,
 		});
 
 		const sprint1Id = randomUUID();
 		await db.insert(sprintsTable).values({
+			createdAt: new Date(),
+			endDate: new Date(),
 			id: sprint1Id,
 			name: "Sprint 1",
 			startDate: new Date(),
-			endDate: new Date(),
 			status: "ACTIVE",
 			teamId,
-			createdAt: new Date(),
 			updatedAt: new Date(),
 		});
 
@@ -59,20 +59,19 @@ describe("Single active sprint unique index test", () => {
 		const sprint2Id = randomUUID();
 		try {
 			await db.insert(sprintsTable).values({
+				createdAt: new Date(),
+				endDate: new Date(),
 				id: sprint2Id,
 				name: "Sprint 2",
 				startDate: new Date(),
-				endDate: new Date(),
 				status: "ACTIVE",
 				teamId,
-				createdAt: new Date(),
 				updatedAt: new Date(),
 			});
-		} catch (e) {
+		} catch (_) {
 			errorCaught = true;
 		}
 
-		expect(errorCaught).toBe(true);
 		expect(errorCaught).toBe(true);
 
 		// Clean up the database

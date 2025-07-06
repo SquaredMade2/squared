@@ -471,7 +471,7 @@ export default function SprintDashboardPage() {
 					</TabsContent>
 				</div>
 			</Tabs>
-      
+
 			<EndSprintDialog
 				dialogOpen={showEndSprintDialog}
 				onOpenChange={setShowEndSprintDialog}
