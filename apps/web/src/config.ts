@@ -26,17 +26,36 @@ const {
 	VERCEL_URL = "",
 } = process.env;
 
-// Validation with better error messages
-if (!NEXT_PUBLIC_SERVER) {
-	throw new Error("Missing NEXT_PUBLIC_SERVER environment variable");
-}
-if (!NEXT_PUBLIC_URL) {
-	throw new Error("Missing NEXT_PUBLIC_URL environment variable");
-}
-
-export const config: Record<string, string> = {
+export const rawConfig = {
 	NEXT_PUBLIC_SERVER,
 	NEXT_PUBLIC_URL,
 	VERCEL_TARGET_ENV,
 	VERCEL_URL,
 };
+
+// Validation with better error messages
+// extracted validation logic to a separate function
+export function validateConfig() {
+	const errors: string[] = [];
+
+	if (!rawConfig.NEXT_PUBLIC_SERVER) {
+		errors.push("Missing NEXT_PUBLIC_SERVER environment variable");
+	}
+	if (!rawConfig.NEXT_PUBLIC_URL) {
+		errors.push("Missing NEXT_PUBLIC_URL environment variable");
+	}
+
+	return {
+		config: errors.length === 0 ? (rawConfig as Record<string, string>) : null,
+		errors,
+		isValid: errors.length === 0,
+	};
+}
+
+export const config = (() => {
+	const validationObj = validateConfig();
+	if (!validationObj.isValid) {
+		return {} as Record<string, string>;
+	}
+	return validationObj.config;
+})();

@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 import { config as configEnv } from "@/config";
 
 const getDeploymentUrl = () => {
-	if (configEnv.VERCEL_TARGET_ENV === "preview") {
+	if (configEnv?.VERCEL_TARGET_ENV === "preview") {
 		return `https://${configEnv.VERCEL_URL}`;
 	}
-	return configEnv.NEXT_PUBLIC_URL || "http://localhost:3000";
+	return configEnv?.NEXT_PUBLIC_URL || "http://localhost:3000";
 };
 
 const deploymentUrl = getDeploymentUrl();
