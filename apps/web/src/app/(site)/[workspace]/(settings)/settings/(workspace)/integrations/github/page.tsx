@@ -44,7 +44,7 @@ const GithubSettings: React.FC = () => {
 	);
 
 	const callbackUrl = encodeURIComponent(
-		`${config.NEXT_PUBLIC_URL}/api/callback/github`,
+		`${config?.NEXT_PUBLIC_URL}/api/callback/github`,
 	);
 
 	const clerkHasNoPermission = !membership?.permissions.includes(
