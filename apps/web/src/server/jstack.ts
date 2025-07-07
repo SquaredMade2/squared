@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { env } from "hono/adapter";
 import { HTTPException } from "hono/http-exception";
 import { jstack } from "jstack";
-import type { config as configEnv } from "@/config";
+import { config as configEnv } from "@/config";
 import { AuthService } from "@/gen/rpc/auth";
 import { CommentService } from "@/gen/rpc/comment";
 import { EventService } from "@/gen/rpc/event";
@@ -14,9 +14,11 @@ import { TeamService } from "@/gen/rpc/team";
 import { UserService } from "@/gen/rpc/user";
 import { WorkspaceService } from "@/gen/rpc/workspace";
 
+const envConfig = configEnv ? configEnv : {};
+
 interface Env {
 	// biome-ignore lint/style/useNamingConvention: These are expected by hono
-	Bindings: typeof configEnv;
+	Bindings: typeof envConfig;
 }
 
 export const j = jstack.init<Env>();

@@ -408,7 +408,7 @@ export class CommandSchema {
 			ungrouped3: {
 				"Copy current page URL": {
 					function: async () => {
-						const url = `${config.NEXT_PUBLIC_URL}${this.pathname}`;
+						const url = `${config?.NEXT_PUBLIC_URL}${this.pathname}`;
 						await window.navigator.clipboard.writeText(url);
 						toast.success("URL copied to clipboard");
 					},

@@ -21,7 +21,7 @@ export const TaskSidebarTopRow = () => {
 	const identifier = task?.identifier ?? "";
 	const title = task?.title ?? "";
 
-	const TaskUrl = `${config.NEXT_PUBLIC_URL}/${organization?.slug}/task/${identifier}/${formatUrl(title)}`;
+	const TaskUrl = `${config?.NEXT_PUBLIC_URL}/${organization?.slug}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
 	const copyUrl = async (): Promise<void> => {
