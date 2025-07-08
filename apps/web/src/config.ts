@@ -3,6 +3,7 @@
 
 // Check if we're in a Node.js environment (server-side with Node.js runtime)
 const isNodeRuntime = typeof process !== "undefined" && process.versions?.node;
+const isServer = typeof window === "undefined";
 
 // Only use dotenv in Node.js runtime environments
 if (isNodeRuntime) {
@@ -26,36 +27,19 @@ const {
 	VERCEL_URL = "",
 } = process.env;
 
-export const rawConfig = {
-	NEXT_PUBLIC_SERVER,
-	NEXT_PUBLIC_URL,
+// Validation with better error messages
+if (isServer) {
+	if (!NEXT_PUBLIC_SERVER) {
+		throw new Error("Missing NEXT_PUBLIC_SERVER environment variable");
+	}
+	if (!NEXT_PUBLIC_URL) {
+		throw new Error("Missing NEXT_PUBLIC_URL environment variable");
+	}
+}
+
+export const config: Record<string, string> = {
+	NEXT_PUBLIC_SERVER: NEXT_PUBLIC_SERVER || "",
+	NEXT_PUBLIC_URL: NEXT_PUBLIC_URL || "",
 	VERCEL_TARGET_ENV,
 	VERCEL_URL,
 };
-
-// Validation with better error messages
-// extracted validation logic to a separate function
-export function validateConfig() {
-	const errors: string[] = [];
-
-	if (!rawConfig.NEXT_PUBLIC_SERVER) {
-		errors.push("Missing NEXT_PUBLIC_SERVER environment variable");
-	}
-	if (!rawConfig.NEXT_PUBLIC_URL) {
-		errors.push("Missing NEXT_PUBLIC_URL environment variable");
-	}
-
-	return {
-		config: errors.length === 0 ? (rawConfig as Record<string, string>) : null,
-		errors,
-		isValid: errors.length === 0,
-	};
-}
-
-export const config = (() => {
-	const validationObj = validateConfig();
-	if (!validationObj.isValid) {
-		return {} as Record<string, string>;
-	}
-	return validationObj.config as Record<string, string>;
-})();
