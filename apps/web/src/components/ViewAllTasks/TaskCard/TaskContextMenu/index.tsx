@@ -44,7 +44,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	};
 	const copyTaskUrl = async () => {
 		await navigator.clipboard.writeText(
-			`${config?.NEXT_PUBLIC_URL}/${organization?.slug}/task/${task.identifier}/${formatUrl(task.title)}`,
+			`${config.NEXT_PUBLIC_URL}/${organization?.slug}/task/${task.identifier}/${formatUrl(task.title)}`,
 		);
 		toast.success("Task link copied to clipboard", {
 			description: "Paste it wherever you like",

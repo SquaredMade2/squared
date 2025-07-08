@@ -60,7 +60,7 @@ export default function SprintRetrospectivePage() {
 	});
 
 	useEffect(() => {
-		const socketUrl = config?.NEXT_PUBLIC_SERVER;
+		const socketUrl = config.NEXT_PUBLIC_SERVER;
 
 		const newSocket = io(socketUrl, {
 			reconnectionAttempts: 5,

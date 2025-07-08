@@ -81,7 +81,7 @@ export const InviteModal = () => {
 	}, []);
 
 	const handleCopy = async () => {
-		const url = `${config?.NEXT_PUBLIC_URL}/${organization?.name}/join?token=${link}`;
+		const url = `${config.NEXT_PUBLIC_URL}/${organization?.name}/join?token=${link}`;
 		try {
 			await window.navigator.clipboard.writeText(url);
 			toast.success("URL copied to clipboard");
@@ -172,7 +172,7 @@ export const InviteModal = () => {
 							) : (
 								<p>
 									{link
-										? `${config?.NEXT_PUBLIC_URL}/${organization?.slug}/join?token=${link}`
+										? `${config.NEXT_PUBLIC_URL}/${organization?.slug}/join?token=${link}`
 										: "Create Invite Link"}
 								</p>
 							)}

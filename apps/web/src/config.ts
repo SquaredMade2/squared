@@ -57,5 +57,5 @@ export const config = (() => {
 	if (!validationObj.isValid) {
 		return {} as Record<string, string>;
 	}
-	return validationObj.config;
+	return validationObj.config as Record<string, string>;
 })();
