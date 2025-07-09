@@ -149,17 +149,15 @@ export const TaskPageForm = () => {
 			</div>
 
 			<TextEditor
-				value={updatedDescription.filter(
-					(item) => isCustomElement(item) && item.children.length > 0,
-				)}
-				onChange={handleDescriptionChange}
-				placeholder="Add description..."
 				hasToolbar={false}
 				onBlur={handleSubmit}
 				onChange={handleDescriptionChange}
 				onFocus={() => setIsDescriptionFocused(true)}
 				placeholder="Add description..."
 				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
+				value={updatedDescription.filter(
+					(item) => isCustomElement(item) && item.children.length > 0,
+				)}
 			/>
 		</form>
 	);
