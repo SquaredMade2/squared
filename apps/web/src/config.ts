@@ -2,7 +2,10 @@
 /** biome-ignore-all lint/style/useNamingConvention: These are env variables */
 
 // Check if we're in a Node.js environment (server-side with Node.js runtime)
-const isNodeRuntime = typeof process !== "undefined" && process.versions?.node;
+const isNodeRuntime =
+	typeof process !== "undefined" &&
+	typeof process.versions !== "undefined" &&
+	process.versions.node;
 
 // Only use dotenv in Node.js runtime environments
 if (isNodeRuntime) {
@@ -27,16 +30,18 @@ const {
 } = process.env;
 
 // Validation with better error messages
-if (!NEXT_PUBLIC_SERVER) {
-	throw new Error("Missing NEXT_PUBLIC_SERVER environment variable");
-}
-if (!NEXT_PUBLIC_URL) {
-	throw new Error("Missing NEXT_PUBLIC_URL environment variable");
+if (isNodeRuntime) {
+	if (!NEXT_PUBLIC_SERVER) {
+		throw new Error("Missing NEXT_PUBLIC_SERVER environment variable");
+	}
+	if (!NEXT_PUBLIC_URL) {
+		throw new Error("Missing NEXT_PUBLIC_URL environment variable");
+	}
 }
 
 export const config: Record<string, string> = {
-	NEXT_PUBLIC_SERVER,
-	NEXT_PUBLIC_URL,
+	NEXT_PUBLIC_SERVER: NEXT_PUBLIC_SERVER || "",
+	NEXT_PUBLIC_URL: NEXT_PUBLIC_URL || "",
 	VERCEL_TARGET_ENV,
 	VERCEL_URL,
 };
