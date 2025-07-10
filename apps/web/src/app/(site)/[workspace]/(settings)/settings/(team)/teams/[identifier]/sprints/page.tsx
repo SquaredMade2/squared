@@ -65,23 +65,23 @@ export default function SprintSettings() {
 
 	const {
 		data: { pending, active, allSprints } = {
-			pending: 0,
 			active: null,
 			allSprints: null,
+			pending: 0,
 		},
 		refetch: refetchSprints,
 	} = useQuery({
 		queryFn: async () => {
-			if (!team) return { pending: 0, active: null, allSprints: null };
+			if (!team) return { active: null, allSprints: null, pending: 0 };
 			const sprints = await client.sprint.getSprints
 				.$get({ teamId: team.id })
 				.then((res) => res.json());
 
 			return {
+				active: sprints.find((s) => s.status === "ACTIVE"),
 				allSprints: sprints.filter(
 					(s) => s.status === "ACTIVE" || s.status === "PLANNED",
 				),
-				active: sprints.find((s) => s.status === "ACTIVE"),
 				pending: sprints.filter((s) => s.status === "PLANNED").length,
 			};
 		},
@@ -374,13 +374,14 @@ export default function SprintSettings() {
 									Manage your team's current sprints.
 								</p>
 							</div>
-							{allSprints?.length &&
+							{allSprints &&
+								allSprints.length > 0 &&
 								allSprints.map((sprint) => (
 									<SettingsSprintCard
-										key={sprint.id}
-										team={team}
-										sprint={sprint}
 										isActive={sprint.status === "ACTIVE"}
+										key={sprint.id}
+										sprint={sprint}
+										team={team}
 									/>
 								))}
 						</>
