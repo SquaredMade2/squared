@@ -44,7 +44,10 @@ import { addDays, format, startOfWeek } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import SettingsSprintCard from "@/components/Sprints/Settings/SettingsSprintCard";
 import { useTeams } from "@/hooks/useTeams";
+import { useUsers } from "@/hooks/useUsers";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
@@ -52,6 +55,8 @@ import { parseError } from "@/utils/parseError";
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
 	const { team, loading: teamLoading } = useTeams();
+	const { workspace } = useWorkspaces();
+	const { user } = useUsers();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintEnabled, setSprintEnabled] = useState(team?.sprintsEnabled);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
@@ -59,17 +64,24 @@ export default function SprintSettings() {
 	);
 
 	const {
-		data: { pending, active } = { active: null, pending: 0 },
+		data: { pending, active, allSprints } = {
+			active: null,
+			allSprints: null,
+			pending: 0,
+		},
 		refetch: refetchSprints,
 	} = useQuery({
 		queryFn: async () => {
-			if (!team) return { active: null, pending: 0 };
+			if (!team) return { active: null, allSprints: null, pending: 0 };
 			const sprints = await client.sprint.getSprints
 				.$get({ teamId: team.id })
 				.then((res) => res.json());
 
 			return {
 				active: sprints.find((s) => s.status === "ACTIVE"),
+				allSprints: sprints.filter(
+					(s) => s.status === "ACTIVE" || s.status === "PLANNED",
+				),
 				pending: sprints.filter((s) => s.status === "PLANNED").length,
 			};
 		},
@@ -351,6 +363,29 @@ export default function SprintSettings() {
 							</div>
 						</CardContent>
 					</Card>
+
+					{workspace?.admins.includes(user?.id || "") ? (
+						<>
+							<Separator className="my-6" />
+
+							<div>
+								<h2 className="mb-2 font-semibold text-lg">Current Sprints</h2>
+								<p className="text-muted-foreground">
+									Manage your team's current sprints.
+								</p>
+							</div>
+							{allSprints &&
+								allSprints.length > 0 &&
+								allSprints.map((sprint) => (
+									<SettingsSprintCard
+										isActive={sprint.status === "ACTIVE"}
+										key={sprint.id}
+										sprint={sprint}
+										team={team}
+									/>
+								))}
+						</>
+					) : null}
 				</>
 			)}
 		</div>

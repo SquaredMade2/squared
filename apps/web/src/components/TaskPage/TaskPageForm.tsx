@@ -12,6 +12,7 @@ import {
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
+import { isCustomElement } from "@/utils/isCustomElement";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { StatusIcon } from "../Icons";
@@ -37,10 +38,6 @@ export const TaskPageForm = () => {
 		CustomDescendant[]
 	>(convertMDXToSlate(task?.description ?? ""));
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
-
-	const isElement = (node: CustomDescendant): node is CustomElement => {
-		return "children" in node;
-	};
 
 	const parentTask = tasks.find((t) => t.id === task?.parentId);
 
@@ -159,7 +156,7 @@ export const TaskPageForm = () => {
 				placeholder="Add description..."
 				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
 				value={updatedDescription.filter(
-					(item) => isElement(item) && item.children.length > 0,
+					(item) => isCustomElement(item) && item.children.length > 0,
 				)}
 			/>
 		</form>

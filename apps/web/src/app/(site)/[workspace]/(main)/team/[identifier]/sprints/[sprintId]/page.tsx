@@ -9,15 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@squaredmade/ui/card";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@squaredmade/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { toast } from "@squaredmade/ui/toast";
 import { useMutation } from "@tanstack/react-query";
@@ -43,6 +34,7 @@ import {
 	SprintLoading,
 	SprintNotFound,
 } from "@/components/Sprints";
+import EndSprintDialog from "@/components/Sprints/EndSprintDialog";
 import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
 import { Progress } from "@/components/ui/progress";
 import { useSprints } from "@/hooks/useSprints";
@@ -480,22 +472,11 @@ export default function SprintDashboardPage() {
 				</div>
 			</Tabs>
 
-			<Dialog onOpenChange={setShowEndSprintDialog} open={showEndSprintDialog}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>End Sprint</DialogTitle>
-						<DialogDescription>
-							Are you sure you want to end this sprint?
-						</DialogDescription>
-					</DialogHeader>
-					<DialogFooter>
-						<DialogClose>Cancel</DialogClose>
-						<Button className="mb-3 sm:mb-0" onClick={handleEndSprintConfirm}>
-							End Sprint
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+			<EndSprintDialog
+				dialogOpen={showEndSprintDialog}
+				onOpenChange={setShowEndSprintDialog}
+				onSubmit={handleEndSprintConfirm}
+			/>
 
 			<NewSprintModal
 				initialSprintName={newSprintName}

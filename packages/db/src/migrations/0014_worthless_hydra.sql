@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "Sprint_teamId_active_unique" ON "Sprint" USING btree ("teamId") WHERE "Sprint"."status" = 'ACTIVE';
