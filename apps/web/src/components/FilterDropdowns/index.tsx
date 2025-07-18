@@ -16,6 +16,7 @@ import {
 import { useFilterStore } from "@/store";
 import { PriorityIcon } from "../Icons";
 import AssigneeFilterDropDown from "./assignee-filter";
+import AuthorFilterDropDown from "./author-filter";
 import DueDateFilterDropDown from "./due-date-filter";
 import EffortFilterDropDown from "./effort-filter";
 import type { FilterOption } from "./interfaces";
@@ -77,6 +78,15 @@ const filterOptions: FilterOption[] = [
 			<AssigneeFilterDropDown filterOption={filterOption} />
 		),
 		name: "Assignee",
+		svg: <User className="size-4 cursor-pointer" />,
+	},
+	{
+		group: "Author",
+		id: 7,
+		menuContent: (filterOption) => (
+			<AuthorFilterDropDown filterOption={filterOption} />
+		),
+		name: "Author",
 		svg: <User className="size-4 cursor-pointer" />,
 	},
 	// Future filter options to be implemented:
