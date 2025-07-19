@@ -3,6 +3,7 @@ import {
 	CircleDashed,
 	Clock,
 	Filter,
+	Lightbulb,
 	Tag,
 	User,
 	X,
@@ -15,8 +16,7 @@ import {
 } from "@squaredmade/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
 import { PriorityIcon } from "../Icons";
-import AssigneeFilterDropDown from "./assignee-filter";
-import AuthorFilterDropDown from "./author-filter";
+import AuthorAssigneeFilterDropDown from "./author-assignee-filter";
 import DueDateFilterDropDown from "./due-date-filter";
 import EffortFilterDropDown from "./effort-filter";
 import type { FilterOption } from "./interfaces";
@@ -75,7 +75,10 @@ const filterOptions: FilterOption[] = [
 		group: "Assignee",
 		id: 6,
 		menuContent: (filterOption) => (
-			<AssigneeFilterDropDown filterOption={filterOption} />
+			<AuthorAssigneeFilterDropDown
+				author={false}
+				filterOption={filterOption}
+			/>
 		),
 		name: "Assignee",
 		svg: <User className="size-4 cursor-pointer" />,
@@ -84,14 +87,14 @@ const filterOptions: FilterOption[] = [
 		group: "Author",
 		id: 7,
 		menuContent: (filterOption) => (
-			<AuthorFilterDropDown filterOption={filterOption} />
+			<AuthorAssigneeFilterDropDown author={true} filterOption={filterOption} />
 		),
 		name: "Author",
-		svg: <User className="size-4 cursor-pointer" />,
+		svg: <Lightbulb className="size-4 cursor-pointer" />,
 	},
 	// Future filter options to be implemented:
 	// {
-	//   id: 6,
+	//   id: 8,
 	//   name: 'Project',
 	//   svg: projectFilter(),
 	//   group: 'Project',
