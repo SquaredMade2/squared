@@ -26,26 +26,49 @@ export const PriorityIcon = ({
 	switch (priority) {
 		case Priority.low:
 			return (
-				<ArrowDown className={cn("size-4 shrink-0 text-blue-500", className)} />
+				<ArrowDown
+					className={cn(
+						"size-5 shrink-0 text-blue-500 rounded-lg border-2 hover:border-white",
+						className,
+					)}
+				/>
 			);
 		case Priority.medium:
 			return (
 				<ArrowRight
-					className={cn("size-4 shrink-0 text-yellow-500", className)}
+					className={cn(
+						"size-5 shrink-0 text-yellow-500 rounded-lg border-2 hover:border-white",
+						className,
+					)}
 				/>
 			);
 		case Priority.high:
 			return (
-				<ArrowUp className={cn("size-4 shrink-0 text-orange-500", className)} />
+				<ArrowUp
+					className={cn(
+						"size-5 shrink-0 text-orange-500 rounded-lg border-2 hover:border-white",
+						className,
+					)}
+				/>
 			);
 		case Priority.urgent:
 			return (
 				<TriangleAlert
-					className={cn("size-4 shrink-0 text-destructive", className)}
+					className={cn(
+						"size-5 shrink-0 text-destructive rounded-lg border-2 hover:border-white",
+						className,
+					)}
 				/>
 			);
 		default:
-			return <CircleDot className={cn("size-4 shrink-0", className)} />;
+			return (
+				<CircleDot
+					className={cn(
+						"size-5 shrink-0 rounded-lg border-2 hover:border-white",
+						className,
+					)}
+				/>
+			);
 	}
 };
 

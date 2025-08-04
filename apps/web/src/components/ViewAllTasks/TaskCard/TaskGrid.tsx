@@ -69,7 +69,8 @@ const TaskGrid = ({
 													<Avatar
 														className="size-6"
 														onClick={(e) => {
-															e.preventDefault();
+															// biome-ignore lint: reason
+															console.log("boop");
 														}}
 													>
 														<AvatarImage src={user.imageUrl} />
@@ -103,7 +104,9 @@ const TaskGrid = ({
 											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 												<AssigneeBox task={task} />
 											</DropdownMenuContent>
-											<TooltipContent>Assign task</TooltipContent>
+											<TooltipContent>
+												Assign task;aslkdfja;sldkjf
+											</TooltipContent>
 										</DropdownMenu>
 									</Tooltip>
 								</TooltipProvider>

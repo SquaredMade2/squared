@@ -59,7 +59,11 @@ const TaskList = ({
 								</span>
 							)}
 							{showStatus && (
-								<Button className="mx-1 shrink-0 p-0" size="sm" variant="ghost">
+								<Button
+									className="mx-1 h-6 shrink-0 py-2 px-0.5 border-2 rounded-xl hover:border-white"
+									size="lg"
+									variant="ghost"
+								>
 									<StatusIcon status={task.status} />
 								</Button>
 							)}
@@ -74,7 +78,7 @@ const TaskList = ({
 							{showDueDate && (
 								<div
 									className={cn(
-										"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex",
+										"xs:hidden shrink-0 whitespace-nowrap rounded-md border-2 border-border p-1 sm:hidden md:flex hover:border-white",
 										checkOverdueDate(task.dueDate) &&
 											"border-destructive text-destructive",
 									)}
@@ -92,7 +96,7 @@ const TaskList = ({
 												<DropdownMenuTrigger asChild>
 													<TooltipTrigger asChild>
 														<Avatar
-															className="size-6 shrink-0"
+															className="size-7 shrink-0 border-2 hover:border-white"
 															onClick={(e) => {
 																e.preventDefault();
 															}}
@@ -120,7 +124,7 @@ const TaskList = ({
 												<DropdownMenuTrigger asChild>
 													<TooltipTrigger asChild>
 														<UserSearch
-															className="size-6 shrink-0 text-[#9597AD]"
+															className="size-7 shrink-0 text-[#9597AD] border-2 hover:border-white rounded-2xl"
 															onClick={(e) => {
 																e.preventDefault();
 															}}
