@@ -28,7 +28,7 @@ export const PriorityIcon = ({
 			return (
 				<ArrowDown
 					className={cn(
-						"size-5 shrink-0 text-blue-500 rounded-lg border-2 hover:border-white",
+						"size-4 shrink-0 text-blue-500 rounded-lg hover:border-white",
 						className,
 					)}
 				/>
@@ -37,7 +37,7 @@ export const PriorityIcon = ({
 			return (
 				<ArrowRight
 					className={cn(
-						"size-5 shrink-0 text-yellow-500 rounded-lg border-2 hover:border-white",
+						"size-4 shrink-0 text-yellow-500 rounded-lg hover:border-white",
 						className,
 					)}
 				/>
@@ -46,7 +46,7 @@ export const PriorityIcon = ({
 			return (
 				<ArrowUp
 					className={cn(
-						"size-5 shrink-0 text-orange-500 rounded-lg border-2 hover:border-white",
+						"size-4 shrink-0 text-orange-500 rounded-lg hover:border-white",
 						className,
 					)}
 				/>
@@ -55,7 +55,7 @@ export const PriorityIcon = ({
 			return (
 				<TriangleAlert
 					className={cn(
-						"size-5 shrink-0 text-destructive rounded-lg border-2 hover:border-white",
+						"size-4 shrink-0 text-destructive rounded-lg hover:border-white",
 						className,
 					)}
 				/>
@@ -64,7 +64,7 @@ export const PriorityIcon = ({
 			return (
 				<CircleDot
 					className={cn(
-						"size-5 shrink-0 rounded-lg border-2 hover:border-white",
+						"size-4 shrink-0 rounded-lg hover:border-white",
 						className,
 					)}
 				/>

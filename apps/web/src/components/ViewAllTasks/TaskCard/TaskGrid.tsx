@@ -1,5 +1,6 @@
 import { Calendar, UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import { Card, CardContent } from "@squaredmade/ui/card";
 import { cn } from "@squaredmade/ui/cn";
 import {
@@ -67,10 +68,9 @@ const TaskGrid = ({
 											<DropdownMenuTrigger asChild>
 												<TooltipTrigger asChild>
 													<Avatar
-														className="size-6"
+														className="size-7 shrink-0 border-2 hover:border-white"
 														onClick={(e) => {
-															// biome-ignore lint: reason
-															console.log("boop");
+															e.preventDefault();
 														}}
 													>
 														<AvatarImage src={user.imageUrl} />
@@ -94,7 +94,7 @@ const TaskGrid = ({
 											<DropdownMenuTrigger asChild>
 												<TooltipTrigger asChild>
 													<UserSearch
-														className="size-6 text-[#9597AD]"
+														className="size-7 shrink-0 text-[#9597AD] border-2 hover:border-white rounded-2xl"
 														onClick={(e) => {
 															e.preventDefault();
 														}}
@@ -104,9 +104,7 @@ const TaskGrid = ({
 											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 												<AssigneeBox task={task} />
 											</DropdownMenuContent>
-											<TooltipContent>
-												Assign task;aslkdfja;sldkjf
-											</TooltipContent>
+											<TooltipContent>Assign task</TooltipContent>
 										</DropdownMenu>
 									</Tooltip>
 								</TooltipProvider>
@@ -114,7 +112,13 @@ const TaskGrid = ({
 					</div>
 
 					<div className="flex w-full items-center gap-2 pr-8 text-sm">
-						<StatusIcon status={task.status} />
+						<Button
+							className="h-6 shrink-0 py-3 px-1 border rounded-xl hover:border-white"
+							size="lg"
+							variant="ghost"
+						>
+							<StatusIcon status={task.status} />
+						</Button>
 						{truncateString(task.title, 70)}
 					</div>
 					<div className="-my-1 flex w-full flex-wrap items-center gap-1">
@@ -134,7 +138,7 @@ const TaskGrid = ({
 						)}
 
 						{showPriority && (
-							<div className="mb-1 rounded-md border border-border bg-background p-1">
+							<div className="mb-1 rounded-md border border-border bg-background p-1 hover:border-white">
 								<PriorityIcon priority={task.priority} />
 							</div>
 						)}

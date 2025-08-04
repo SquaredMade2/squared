@@ -52,7 +52,11 @@ const TaskList = ({
 				<div className="col-span-10 text-foreground">
 					<div className="flex w-full justify-between">
 						<div className="flex min-w-0 items-center gap-2 text-base">
-							{showPriority && <PriorityIcon priority={task.priority} />}
+							{showPriority && (
+								<div className="rounded-md border border-border bg-background p-1 hover:border-white">
+									<PriorityIcon priority={task.priority} />
+								</div>
+							)}
 							{showIdentifier && (
 								<span className="xs:hidden min-w-28 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 									{task.identifier}
@@ -60,7 +64,7 @@ const TaskList = ({
 							)}
 							{showStatus && (
 								<Button
-									className="mx-1 h-6 shrink-0 py-2 px-0.5 border-2 rounded-xl hover:border-white"
+									className="mx-1 h-6 shrink-0 py-3 px-1 border rounded-xl hover:border-white"
 									size="lg"
 									variant="ghost"
 								>
@@ -78,7 +82,7 @@ const TaskList = ({
 							{showDueDate && (
 								<div
 									className={cn(
-										"xs:hidden shrink-0 whitespace-nowrap rounded-md border-2 border-border p-1 sm:hidden md:flex hover:border-white",
+										"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex hover:border-white",
 										checkOverdueDate(task.dueDate) &&
 											"border-destructive text-destructive",
 									)}
