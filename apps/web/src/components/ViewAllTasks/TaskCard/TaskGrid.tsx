@@ -25,8 +25,8 @@ import {
 	getInitials,
 	truncateString,
 } from "@/utils/formatting";
-import { AssigneeBox } from "./AssigneeBox";
 import type { TaskGridProps } from "./interfaces";
+import { AssigneeBox, PriorityBox, StatusBox } from "./quickEditBoxes";
 import TaskCardLabels from "./TaskCardLabels";
 
 const TaskGrid = ({
@@ -67,12 +67,7 @@ const TaskGrid = ({
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
 												<TooltipTrigger asChild>
-													<Avatar
-														className="size-7 shrink-0 border-2 hover:border-white"
-														onClick={(e) => {
-															e.preventDefault();
-														}}
-													>
+													<Avatar className="size-7 shrink-0 border-2 hover:border-white">
 														<AvatarImage src={user.imageUrl} />
 														<AvatarFallback className="text-xxs">
 															{getInitials(formatName(user))}
@@ -93,12 +88,9 @@ const TaskGrid = ({
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
 												<TooltipTrigger asChild>
-													<UserSearch
-														className="size-7 shrink-0 text-[#9597AD] border-2 hover:border-white rounded-2xl"
-														onClick={(e) => {
-															e.preventDefault();
-														}}
-													/>
+													<Button className="border-2 hover:border-white rounded-3xl bg-transparent hover:bg-transparent px-1 h-7">
+														<UserSearch className="size-7 shrink-0 text-[#9597AD]" />
+													</Button>
 												</TooltipTrigger>
 											</DropdownMenuTrigger>
 											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
@@ -112,13 +104,27 @@ const TaskGrid = ({
 					</div>
 
 					<div className="flex w-full items-center gap-2 pr-8 text-sm">
-						<Button
-							className="h-6 shrink-0 py-3 px-1 border rounded-xl hover:border-white"
-							size="lg"
-							variant="ghost"
-						>
-							<StatusIcon status={task.status} />
-						</Button>
+						<TooltipProvider>
+							<Tooltip>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<TooltipTrigger asChild>
+											<Button
+												className="h-6 shrink-0 py-3 px-1 border rounded-xl hover:border-white hover:bg-transparent"
+												size="lg"
+												variant="ghost"
+											>
+												<StatusIcon status={task.status} />
+											</Button>
+										</TooltipTrigger>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent onClick={(e) => e.preventDefault()}>
+										<StatusBox task={task} />
+									</DropdownMenuContent>
+									<TooltipContent>Status: {task.status}</TooltipContent>
+								</DropdownMenu>
+							</Tooltip>
+						</TooltipProvider>
 						{truncateString(task.title, 70)}
 					</div>
 					<div className="-my-1 flex w-full flex-wrap items-center gap-1">
@@ -138,9 +144,23 @@ const TaskGrid = ({
 						)}
 
 						{showPriority && (
-							<div className="mb-1 rounded-md border border-border bg-background p-1 hover:border-white">
-								<PriorityIcon priority={task.priority} />
-							</div>
+							<TooltipProvider>
+								<Tooltip>
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<TooltipTrigger asChild>
+												<Button className="mb-1 rounded-md border border-border bg-background p-1 hover:border-white h-7 hover:bg-background">
+													<PriorityIcon priority={task.priority} />
+												</Button>
+											</TooltipTrigger>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent onClick={(e) => e.preventDefault()}>
+											<PriorityBox task={task} />
+										</DropdownMenuContent>
+										<TooltipContent>Priority: {task.priority}</TooltipContent>
+									</DropdownMenu>
+								</Tooltip>
+							</TooltipProvider>
 						)}
 
 						{showLabels && <TaskCardLabels labels={taskLabels} />}

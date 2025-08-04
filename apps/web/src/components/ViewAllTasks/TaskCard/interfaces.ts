@@ -32,6 +32,6 @@ export interface TaskCardLabelsProps {
 	labels: Label[];
 }
 
-export interface AssigneeBoxProps {
+export interface BoxProps {
 	task: Task;
 }
