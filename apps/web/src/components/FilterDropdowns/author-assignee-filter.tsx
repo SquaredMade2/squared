@@ -62,17 +62,6 @@ export default function AuthorAssigneeFilterDropDown({
 	};
 
 	useEffect(() => {
-		removeFilter("authorId");
-		if (selectedAuthors.length > 0) {
-			addFilter({
-				field: "authorId",
-				operator: "arrayIncludesAny",
-				value: selectedAuthors.map((u) => u?.userId || null),
-			});
-		}
-	}, [selectedAuthors]);
-
-	useEffect(() => {
 		removeFilter("assigneeId");
 		if (selectedAssignees.length > 0) {
 			addFilter({
@@ -82,6 +71,17 @@ export default function AuthorAssigneeFilterDropDown({
 			});
 		}
 	}, [selectedAssignees]);
+
+	useEffect(() => {
+		removeFilter("authorId");
+		if (selectedAuthors.length > 0) {
+			addFilter({
+				field: "authorId",
+				operator: "arrayIncludesAny",
+				value: selectedAuthors.map((u) => u?.userId || null),
+			});
+		}
+	}, [selectedAuthors]);
 
 	useEffect(() => {
 		if (
