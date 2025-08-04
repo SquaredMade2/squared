@@ -23,8 +23,8 @@ import type { BoxProps } from "./interfaces";
 
 export const AssigneeBox = ({ task }: BoxProps) => {
 	const { updateTask } = useTaskStore((state) => state);
-	const taskId = task.id;
 	const { users } = useUsers();
+	const taskId = task.id;
 
 	const updateAssignee = async (userId: string | null) => {
 		try {
