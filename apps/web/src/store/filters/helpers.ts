@@ -75,6 +75,19 @@ export function checkCondition(
 					)
 				);
 			}
+			if (condition.field === "authorId") {
+				return (
+					Array.isArray(condition.value) &&
+					condition.value.some(
+						(val) =>
+							(val === null && taskValue === null) ||
+							(val !== null &&
+								taskValue !== null &&
+								val.toString() === taskValue.toString()),
+					)
+				);
+			}
+
 			return (
 				Array.isArray(condition.value) &&
 				condition.value.some(
@@ -116,6 +129,24 @@ export function getFilterAssignees(
 	// the "unassigned" user is just a user who is null
 	const hasUnassigned = assigneeIds.includes(null);
 	return hasUnassigned ? [null, ...assignees] : assignees;
+}
+
+//following the same logic as above due to the similarity in filtering for authors
+export function getFilterAuthors(
+	currentFilters: FilterCondition[],
+	users?: PublicUserData[],
+) {
+	const authorFilter = currentFilters.find((f) => f.field === "authorId");
+	if (!(authorFilter && users)) return [];
+
+	const authorIds = Array.isArray(authorFilter.value)
+		? authorFilter.value
+		: [authorFilter.value];
+
+	const authors = users.filter((u) => u.userId && authorIds.includes(u.userId));
+
+	const hasUnassigned = authorIds.includes(null);
+	return hasUnassigned ? [null, ...authors] : authors;
 }
 
 export function parseFilter(newFilter: SavedFilterType): SavedFilter {

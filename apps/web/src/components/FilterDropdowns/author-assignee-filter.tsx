@@ -3,6 +3,7 @@
 import type { PublicUserData } from "@clerk/types";
 import { Check, UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { cn } from "@squaredmade/ui/cn";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
@@ -21,29 +22,43 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUsers } from "@/hooks/useUsers";
 import { useFilterStore } from "@/store";
-import { getFilterAssignees } from "@/store/filters/helpers";
+import { getFilterAssignees, getFilterAuthors } from "@/store/filters/helpers";
 import { formatName, getInitials } from "@/utils/formatting";
 import type { FilterOption } from "./interfaces";
 
-export default function AssigneeFilterDropDown({
+export default function AuthorAssigneeFilterDropDown({
 	filterOption,
+	author,
 }: {
 	filterOption: FilterOption;
+	author: boolean;
 }) {
 	const { users } = useUsers();
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);
+	const [selectedAuthors, setSelectedAuthors] = useState<
+		(PublicUserData | null)[]
+	>(getFilterAuthors(currentFilters, users));
 	const [selectedAssignees, setSelectedAssignees] = useState<
 		(PublicUserData | null)[]
 	>(getFilterAssignees(currentFilters, users));
-	const [searchQuery, setSearchQuery] = useState("");
+	const [searchQueryAuthor, setSearchQueryAuthor] = useState("");
+	const [searchQueryAssignee, setSearchQueryAssignee] = useState("");
 
-	const handleAssigneeChange = (label: PublicUserData | null) => {
-		setSelectedAssignees((prev) =>
-			prev.some((l) => l?.userId === label?.userId)
-				? prev.filter((l) => l?.userId !== label?.userId)
-				: [...prev, label],
-		);
+	const handleChange = (label: PublicUserData | null) => {
+		if (author) {
+			setSelectedAuthors((prev) =>
+				prev.some((l) => l?.userId === label?.userId)
+					? prev.filter((l) => l?.userId !== label?.userId)
+					: [...prev, label],
+			);
+		} else {
+			setSelectedAssignees((prev) =>
+				prev.some((l) => l?.userId === label?.userId)
+					? prev.filter((l) => l?.userId !== label?.userId)
+					: [...prev, label],
+			);
+		}
 	};
 
 	useEffect(() => {
@@ -58,6 +73,23 @@ export default function AssigneeFilterDropDown({
 	}, [selectedAssignees]);
 
 	useEffect(() => {
+		removeFilter("authorId");
+		if (selectedAuthors.length > 0) {
+			addFilter({
+				field: "authorId",
+				operator: "arrayIncludesAny",
+				value: selectedAuthors.map((u) => u?.userId || null),
+			});
+		}
+	}, [selectedAuthors]);
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("authorId")
+		) {
+			setSelectedAuthors([]);
+		}
 		if (
 			currentFilterTypes.length === 0 ||
 			!currentFilterTypes.includes("assigneeId")
@@ -66,10 +98,18 @@ export default function AssigneeFilterDropDown({
 		}
 	}, [currentFilterTypes]);
 
-	const filteredAssignees =
-		users?.filter((u) =>
-			formatName(u).toLowerCase().includes(searchQuery.toLowerCase()),
-		) || [];
+	let filteredUsers: PublicUserData[] = [];
+	if (author) {
+		filteredUsers =
+			users?.filter((u) =>
+				formatName(u).toLowerCase().includes(searchQueryAuthor.toLowerCase()),
+			) || [];
+	} else {
+		filteredUsers =
+			users?.filter((u) =>
+				formatName(u).toLowerCase().includes(searchQueryAssignee.toLowerCase()),
+			) || [];
+	}
 
 	return (
 		<DropdownMenuSub>
@@ -81,24 +121,40 @@ export default function AssigneeFilterDropDown({
 			</DropdownMenuSubTrigger>
 			<DropdownMenuSubContent className="w-[17.5rem]">
 				<Command>
-					<CommandInput
-						onValueChange={setSearchQuery}
-						placeholder="Search users..."
-						value={searchQuery}
-					/>
+					{author ? (
+						<CommandInput
+							onValueChange={setSearchQueryAuthor}
+							placeholder="Search users..."
+							value={searchQueryAuthor}
+						/>
+					) : (
+						<CommandInput
+							onValueChange={setSearchQueryAssignee}
+							placeholder="Search users..."
+							value={searchQueryAssignee}
+						/>
+					)}
 					<CommandList>
 						<CommandEmpty>No users found.</CommandEmpty>
 						<ScrollArea
-							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"}pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
+							className={cn(
+								"w-full",
+								filteredUsers.length > 12 ? "h-96 pr-6" : "h-fit pr-0",
+							)}
 						>
 							<CommandGroup>
 								<CommandPinnedItem
 									className="flex h-8 cursor-pointer items-center space-x-2"
 									key="unassigned"
-									onSelect={() => handleAssigneeChange(null)}
+									onSelect={() => handleChange(null)}
 								>
 									<div className="flex flex-1 items-center space-x-2">
-										{selectedAssignees.some((l) => l === null) ? (
+										{author && selectedAuthors.some((l) => l === null) ? (
+											<Check className="h-4 w-4" />
+										) : (
+											<div className="h-4 w-4" />
+										)}
+										{!author && selectedAssignees.some((l) => l === null) ? (
 											<Check className="h-4 w-4" />
 										) : (
 											<div className="h-4 w-4" />
@@ -107,16 +163,25 @@ export default function AssigneeFilterDropDown({
 										<span className="w-2/3 truncate">Unassigned</span>
 									</div>
 								</CommandPinnedItem>
-								{filteredAssignees
+								{filteredUsers
 									.sort((a, b) => formatName(a).localeCompare(formatName(b)))
 									.map((user) => (
 										<CommandItem
 											className="flex h-8 cursor-pointer items-center space-x-2"
 											key={user.userId}
-											onSelect={() => handleAssigneeChange(user)}
+											onSelect={() => handleChange(user)}
 										>
 											<div className="flex flex-1 items-center space-x-2">
-												{selectedAssignees.some(
+												{author &&
+												selectedAuthors.some(
+													(l) => l?.userId === user.userId,
+												) ? (
+													<Check className="h-4 w-4" />
+												) : (
+													<div className="h-4 w-4" />
+												)}
+												{!author &&
+												selectedAssignees.some(
 													(l) => l?.userId === user.userId,
 												) ? (
 													<Check className="h-4 w-4" />
