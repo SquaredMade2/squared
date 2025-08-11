@@ -76,13 +76,19 @@ export const PriorityBox = ({ task }: BoxProps) => {
 	type Priority = (typeof priorityOptions)[number];
 
 	const updatePriority = async (priority: Priority) => {
-		const res = await client.task.updatePriority.$post({
-			priority,
-			taskId,
-		});
-		const updatedTask = await res.json();
-		updateTask(updatedTask);
-		return updatedTask;
+		try {
+			const res = await client.task.updatePriority.$post({
+				priority,
+				taskId,
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		} catch (error) {
+			toast.error("Error updating task", {
+				description: `Failed to update priority: ${error}`,
+			});
+		}
 	};
 
 	return (
@@ -113,13 +119,19 @@ export const StatusBox = ({ task }: BoxProps) => {
 	type Status = (typeof statusOptions)[number];
 
 	const updateStatus = async (status: Status) => {
-		const res = await client.task.updateStatus.$post({
-			status,
-			taskId,
-		});
-		const updatedTask = await res.json();
-		updateTask(updatedTask);
-		return updatedTask;
+		try {
+			const res = await client.task.updateStatus.$post({
+				status,
+				taskId,
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		} catch (error) {
+			toast.error("Error updating task", {
+				description: `Failed to update status: ${error}`,
+			});
+		}
 	};
 
 	return (
@@ -149,13 +161,19 @@ export const DateBox = ({ task }: BoxProps) => {
 	const taskId = task.id;
 
 	const changeDate = async (date?: Date) => {
-		const res = await client.task.updateDueDate.$post({
-			dueDate: date ?? null,
-			taskId,
-		});
-		const updatedTask = await res.json();
-		updateTask(updatedTask);
-		return updatedTask;
+		try {
+			const res = await client.task.updateDueDate.$post({
+				dueDate: date ?? null,
+				taskId,
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		} catch (error) {
+			toast.error("Error updating task", {
+				description: `Failed to update due date: ${error}`,
+			});
+		}
 	};
 
 	return (
