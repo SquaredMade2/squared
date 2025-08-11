@@ -1,4 +1,4 @@
-import { UserSearch } from "@squaredmade/icons";
+import { Calendar, UserSearch } from "@squaredmade/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
 import { cn } from "@squaredmade/ui/cn";
@@ -105,11 +105,14 @@ const IconBoxDropdown = ({
 		iconBox = (
 			<Button
 				className={cn(
-					"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex hover:border-white bg-transparent hover:bg-transparent text-white",
+					"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex hover:border-white text-sm gap-2 w-fit text-white",
 					checkOverdueDate(task.dueDate) &&
 						"border-destructive text-destructive",
 				)}
+				variant="ghost"
 			>
+				{" "}
+				<Calendar className="size-4 mb-[3px]" />
 				{task.dueDate
 					? formatDate(new Date(task.dueDate), "MMM dd")
 					: "No Date"}
