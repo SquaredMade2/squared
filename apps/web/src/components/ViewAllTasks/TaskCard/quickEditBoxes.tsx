@@ -32,11 +32,16 @@ export const AssigneeBox = ({ task }: BoxProps) => {
 				assigneeId: userId,
 				taskId,
 			});
+			if (!res.ok) {
+				const msg = await res.text().catch(() => "");
+				throw new Error(msg || `HTTP ${res.status}`);
+			}
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
-		} catch (error) {
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
 			toast.error("Error updating task", {
-				description: `Failed to update assignee: ${error}`,
+				description: `Failed to update assignee: ${message}`,
 			});
 		}
 	};
@@ -77,16 +82,18 @@ export const PriorityBox = ({ task }: BoxProps) => {
 
 	const updatePriority = async (priority: Priority) => {
 		try {
-			const res = await client.task.updatePriority.$post({
-				priority,
-				taskId,
-			});
+			const res = await client.task.updatePriority.$post({ priority, taskId });
+			if (!res.ok) {
+				const msg = await res.text().catch(() => "");
+				throw new Error(msg || `HTTP ${res.status}`);
+			}
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
-		} catch (error) {
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
 			toast.error("Error updating task", {
-				description: `Failed to update priority: ${error}`,
+				description: `Failed to update priority: ${message}`,
 			});
 		}
 	};
@@ -120,16 +127,18 @@ export const StatusBox = ({ task }: BoxProps) => {
 
 	const updateStatus = async (status: Status) => {
 		try {
-			const res = await client.task.updateStatus.$post({
-				status,
-				taskId,
-			});
+			const res = await client.task.updateStatus.$post({ status, taskId });
+			if (!res.ok) {
+				const msg = await res.text().catch(() => "");
+				throw new Error(msg || `HTTP ${res.status}`);
+			}
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
-		} catch (error) {
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
 			toast.error("Error updating task", {
-				description: `Failed to update status: ${error}`,
+				description: `Failed to update status: ${message}`,
 			});
 		}
 	};
@@ -166,12 +175,17 @@ export const DateBox = ({ task }: BoxProps) => {
 				dueDate: date ?? null,
 				taskId,
 			});
+			if (!res.ok) {
+				const msg = await res.text().catch(() => "");
+				throw new Error(msg || `HTTP ${res.status}`);
+			}
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
-		} catch (error) {
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
 			toast.error("Error updating task", {
-				description: `Failed to update due date: ${error}`,
+				description: `Failed to update due date: ${message}`,
 			});
 		}
 	};

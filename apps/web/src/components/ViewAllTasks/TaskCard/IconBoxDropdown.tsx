@@ -13,13 +13,13 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squaredmade/ui/tooltip";
-import { formatDate } from "date-fns";
+import { format as formatDate } from "date-fns";
 import type { ReactElement } from "react";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { checkOverdueDate } from "@/utils/checkOverdueDate";
 import { formatName, getInitials } from "@/utils/formatting";
 import type { IconBoxDropdownsProps } from "./interfaces";
-import { AssigneeBox, DateBox, StatusBox } from "./quickEditBoxes";
+import { AssigneeBox, DateBox, PriorityBox, StatusBox } from "./quickEditBoxes";
 
 const IconBoxDropdown = ({
 	task,
@@ -31,7 +31,7 @@ const IconBoxDropdown = ({
 	date,
 }: IconBoxDropdownsProps) => {
 	let iconBox: ReactElement | null = null;
-	let dropDownBox: ReactElement | null = null;
+	let dropdownBox: ReactElement | null = null;
 
 	if (status) {
 		iconBox = (
@@ -42,7 +42,7 @@ const IconBoxDropdown = ({
 				<StatusIcon status={task.status} />
 			</Button>
 		);
-		dropDownBox = (
+		dropdownBox = (
 			<>
 				<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 					<StatusBox task={task} />
@@ -59,12 +59,12 @@ const IconBoxDropdown = ({
 				<PriorityIcon priority={task.priority} />
 			</Button>
 		);
-		dropDownBox = (
+		dropdownBox = (
 			<>
 				<DropdownMenuContent onClick={(e) => e.preventDefault()}>
-					<StatusBox task={task} />
+					<PriorityBox task={task} />
 				</DropdownMenuContent>
-				<TooltipContent>Status: {task.status}</TooltipContent>
+				<TooltipContent>Priority: {task.priority}</TooltipContent>
 			</>
 		);
 	} else if (avatar) {
@@ -76,7 +76,7 @@ const IconBoxDropdown = ({
 				</AvatarFallback>
 			</Avatar>
 		);
-		dropDownBox = (
+		dropdownBox = (
 			<>
 				<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 					<AssigneeBox task={task} />
@@ -93,7 +93,7 @@ const IconBoxDropdown = ({
 				<UserSearch className="size-7 shrink-0 text-[#9597AD]" />
 			</Button>
 		);
-		dropDownBox = (
+		dropdownBox = (
 			<>
 				<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 					<AssigneeBox task={task} />
@@ -111,14 +111,13 @@ const IconBoxDropdown = ({
 				)}
 				variant="ghost"
 			>
-				{" "}
 				<Calendar className="size-4 mb-[3px]" />
 				{task.dueDate
 					? formatDate(new Date(task.dueDate), "MMM dd")
 					: "No Date"}
 			</Button>
 		);
-		dropDownBox = (
+		dropdownBox = (
 			<>
 				<DropdownMenuContent onClick={(e) => e.preventDefault()}>
 					<DateBox task={task} />
@@ -134,7 +133,7 @@ const IconBoxDropdown = ({
 					<DropdownMenuTrigger asChild>
 						<TooltipTrigger asChild>{iconBox}</TooltipTrigger>
 					</DropdownMenuTrigger>
-					{dropDownBox}
+					{dropdownBox}
 				</DropdownMenu>
 			</Tooltip>
 		</TooltipProvider>
