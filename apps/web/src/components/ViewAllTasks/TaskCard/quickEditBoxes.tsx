@@ -76,7 +76,7 @@ export const AssigneeBox = ({ task }: BoxProps) => {
 };
 
 export const PriorityBox = ({ task }: BoxProps) => {
-	const { updateTask } = useTaskStore((state) => state);
+	const updateTask = useTaskStore((s) => s.updateTask);
 	const taskId = task.id;
 	type Priority = (typeof priorityOptions)[number];
 
@@ -121,7 +121,7 @@ export const PriorityBox = ({ task }: BoxProps) => {
 };
 
 export const StatusBox = ({ task }: BoxProps) => {
-	const { updateTask } = useTaskStore((state) => state);
+	const updateTask = useTaskStore((s) => s.updateTask);
 	const taskId = task.id;
 	type Status = (typeof statusOptions)[number];
 
@@ -166,7 +166,7 @@ export const StatusBox = ({ task }: BoxProps) => {
 };
 
 export const DateBox = ({ task }: BoxProps) => {
-	const { updateTask } = useTaskStore((state) => state);
+	const updateTask = useTaskStore((s) => s.updateTask);
 	const taskId = task.id;
 
 	const changeDate = async (date?: Date) => {
