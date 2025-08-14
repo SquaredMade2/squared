@@ -1,25 +1,7 @@
-import { UserSearch } from "@squaredmade/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { Button } from "@squaredmade/ui/button";
-import { cn } from "@squaredmade/ui/cn";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@squaredmade/ui/tooltip";
-import { formatDate } from "date-fns";
 import Link from "next/link";
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import { formatName, formatUrl, getInitials } from "@/utils/formatting";
-import { AssigneeBox } from "./AssigneeBox";
+import { formatUrl } from "@/utils/formatting";
+import IconBoxDropdown from "./IconBoxDropdown";
 import type { TaskListProps } from "./interfaces";
 import TaskCardLabels from "./TaskCardLabels";
 
@@ -52,17 +34,13 @@ const TaskList = ({
 				<div className="col-span-10 text-foreground">
 					<div className="flex w-full justify-between">
 						<div className="flex min-w-0 items-center gap-2 text-base">
-							{showPriority && <PriorityIcon priority={task.priority} />}
+							{showPriority && <IconBoxDropdown priority={true} task={task} />}
 							{showIdentifier && (
 								<span className="xs:hidden min-w-28 shrink-0 cursor-pointer text-muted-foreground sm:hidden md:flex">
 									{task.identifier}
 								</span>
 							)}
-							{showStatus && (
-								<Button className="mx-1 shrink-0 p-0" size="sm" variant="ghost">
-									<StatusIcon status={task.status} />
-								</Button>
-							)}
+							{showStatus && <IconBoxDropdown status={true} task={task} />}
 							<span className="min-w-0 truncate">
 								{location === "search" && highlightText
 									? highlightText(task.title)
@@ -71,71 +49,12 @@ const TaskList = ({
 						</div>
 						<div className="col-span-4 flex items-center justify-end gap-2 lg:pr-5">
 							{showLabels && <TaskCardLabels labels={taskLabels} />}
-							{showDueDate && (
-								<div
-									className={cn(
-										"xs:hidden shrink-0 whitespace-nowrap rounded-md border border-border p-1 sm:hidden md:flex",
-										checkOverdueDate(task.dueDate) &&
-											"border-destructive text-destructive",
-									)}
-								>
-									{task.dueDate
-										? formatDate(new Date(task.dueDate), "MMM dd")
-										: "No Date"}
-								</div>
-							)}
+							{showDueDate && <IconBoxDropdown date={true} task={task} />}
 							{showAvatar &&
 								(user ? (
-									<TooltipProvider>
-										<Tooltip>
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<TooltipTrigger asChild>
-														<Avatar
-															className="size-6 shrink-0"
-															onClick={(e) => {
-																e.preventDefault();
-															}}
-														>
-															<AvatarImage src={user.imageUrl} />
-															<AvatarFallback className="text-xxs">
-																{getInitials(formatName(user))}
-															</AvatarFallback>
-														</Avatar>
-													</TooltipTrigger>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent
-													onClick={(e) => e.preventDefault()}
-												>
-													<AssigneeBox task={task} />
-												</DropdownMenuContent>
-												<TooltipContent>{formatName(user)}</TooltipContent>
-											</DropdownMenu>
-										</Tooltip>
-									</TooltipProvider>
+									<IconBoxDropdown avatar={true} task={task} user={user} />
 								) : (
-									<TooltipProvider>
-										<Tooltip>
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<TooltipTrigger asChild>
-														<UserSearch
-															className="size-6 shrink-0 text-[#9597AD]"
-															onClick={(e) => {
-																e.preventDefault();
-															}}
-														/>
-													</TooltipTrigger>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent
-													onClick={(e) => e.preventDefault()}
-												>
-													<AssigneeBox task={task} />
-												</DropdownMenuContent>
-												<TooltipContent>Assign task</TooltipContent>
-											</DropdownMenu>
-										</Tooltip>
-									</TooltipProvider>
+									<IconBoxDropdown task={task} userSearch={true} />
 								))}
 						</div>
 					</div>

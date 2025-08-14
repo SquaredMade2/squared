@@ -9,7 +9,6 @@ export interface TaskGridProps {
 	isSubtask?: boolean;
 	isDisabled?: boolean;
 }
-
 export interface TaskListProps {
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
@@ -32,6 +31,15 @@ export interface TaskCardLabelsProps {
 	labels: Label[];
 }
 
-export interface AssigneeBoxProps {
+export interface BoxProps {
 	task: Task;
+}
+export interface IconBoxDropdownsProps {
+	task: Task;
+	user?: PublicUserData;
+	status?: boolean;
+	priority?: boolean;
+	avatar?: boolean;
+	userSearch?: boolean;
+	date?: boolean;
 }

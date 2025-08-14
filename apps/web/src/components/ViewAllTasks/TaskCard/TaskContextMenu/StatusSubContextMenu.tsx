@@ -1,5 +1,8 @@
 "use client";
 
+import type { Status } from "@squaredmade/db";
+import { toast } from "@squaredmade/ui/toast";
+import { useMutation } from "@tanstack/react-query";
 import { StatusIcon } from "@/components/Icons";
 import {
 	ContextMenuItem,
@@ -11,25 +14,22 @@ import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@squaredmade/db";
-import { toast } from "@squaredmade/ui/toast";
-import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updateStatus } = useMutation({
-		mutationKey: ["task", "updateStatus", task.id],
 		mutationFn: async (status: Status) => {
 			const res = await client.task.updateStatus.$post({
-				taskId: task.id,
 				status,
+				taskId: task.id,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
 		},
+		mutationKey: ["task", "updateStatus", task.id],
 		onError: (error) => {
 			toast.error("Error updating task", {
 				description:

@@ -1,5 +1,8 @@
 "use client";
 
+import type { Priority } from "@squaredmade/db";
+import { toast } from "@squaredmade/ui/toast";
+import { useMutation } from "@tanstack/react-query";
 import { PriorityIcon } from "@/components/Icons";
 import {
 	ContextMenuItem,
@@ -11,25 +14,22 @@ import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import type { Priority } from "@squaredmade/db";
-import { toast } from "@squaredmade/ui/toast";
-import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updatePriority } = useMutation({
-		mutationKey: ["task", "updatePriority", task.id],
 		mutationFn: async (priority: Priority) => {
 			const res = await client.task.updatePriority.$post({
-				taskId: task.id,
 				priority,
+				taskId: task.id,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
 			return updatedTask;
 		},
+		mutationKey: ["task", "updatePriority", task.id],
 		onError: (error) => {
 			toast.error("Error updating task", {
 				description:

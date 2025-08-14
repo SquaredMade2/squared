@@ -1,30 +1,8 @@
-import { Calendar, UserSearch } from "@squaredmade/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Card, CardContent } from "@squaredmade/ui/card";
-import { cn } from "@squaredmade/ui/cn";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@squaredmade/ui/tooltip";
-import { formatDate } from "date-fns";
 import Link from "next/link";
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
-import { checkOverdueDate } from "@/utils/checkOverdueDate";
-import {
-	formatName,
-	formatUrl,
-	getInitials,
-	truncateString,
-} from "@/utils/formatting";
-import { AssigneeBox } from "./AssigneeBox";
+import { formatUrl, truncateString } from "@/utils/formatting";
+import IconBoxDropdown from "./IconBoxDropdown";
 import type { TaskGridProps } from "./interfaces";
 import TaskCardLabels from "./TaskCardLabels";
 
@@ -61,80 +39,22 @@ const TaskGrid = ({
 						)}
 						{showAvatar &&
 							(user ? (
-								<TooltipProvider>
-									<Tooltip>
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<TooltipTrigger asChild>
-													<Avatar
-														className="size-6"
-														onClick={(e) => {
-															e.preventDefault();
-														}}
-													>
-														<AvatarImage src={user.imageUrl} />
-														<AvatarFallback className="text-xxs">
-															{getInitials(formatName(user))}
-														</AvatarFallback>
-													</Avatar>
-												</TooltipTrigger>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
-												<AssigneeBox task={task} />
-											</DropdownMenuContent>
-											<TooltipContent>{formatName(user)}</TooltipContent>
-										</DropdownMenu>
-									</Tooltip>
-								</TooltipProvider>
+								<IconBoxDropdown avatar={true} task={task} user={user} />
 							) : (
-								<TooltipProvider>
-									<Tooltip>
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<TooltipTrigger asChild>
-													<UserSearch
-														className="size-6 text-[#9597AD]"
-														onClick={(e) => {
-															e.preventDefault();
-														}}
-													/>
-												</TooltipTrigger>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent onClick={(e) => e.preventDefault()}>
-												<AssigneeBox task={task} />
-											</DropdownMenuContent>
-											<TooltipContent>Assign task</TooltipContent>
-										</DropdownMenu>
-									</Tooltip>
-								</TooltipProvider>
+								<IconBoxDropdown task={task} userSearch={true} />
 							))}
 					</div>
 
 					<div className="flex w-full items-center gap-2 pr-8 text-sm">
-						<StatusIcon status={task.status} />
+						<IconBoxDropdown status={true} task={task} />
 						{truncateString(task.title, 70)}
 					</div>
 					<div className="-my-1 flex w-full flex-wrap items-center gap-1">
 						{showDueDate && task.dueDate && (
-							<div
-								className={cn(
-									"mb-1 flex w-fit items-center gap-2 rounded-md border border-border bg-background p-1 text-sm",
-									checkOverdueDate(task.dueDate) &&
-										"border-destructive text-destructive",
-								)}
-							>
-								<Calendar className="size-4" />
-								{task.dueDate
-									? formatDate(new Date(task.dueDate), "MMM dd")
-									: "No Date Set"}
-							</div>
+							<IconBoxDropdown date={true} task={task} />
 						)}
 
-						{showPriority && (
-							<div className="mb-1 rounded-md border border-border bg-background p-1">
-								<PriorityIcon priority={task.priority} />
-							</div>
-						)}
+						{showPriority && <IconBoxDropdown priority={true} task={task} />}
 
 						{showLabels && <TaskCardLabels labels={taskLabels} />}
 					</div>
