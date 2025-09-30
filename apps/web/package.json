@@ -7,8 +7,8 @@
 		"build:digitalocean": "bun install --production=false && bun run build && rimraf node_modules && bun install --production --frozen-lockfile",
 		"format": "biome format --write .",
 		"format:check": "biome format .",
-		"check-types": "tsc --pretty --noEmit",
 		"dev": "next dev --turbopack",
+		"dev:wrangler": "wrangler dev",
 		"jest": "jest",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
@@ -16,7 +16,13 @@
 		"reset": "rimraf node_modules bun.lock",
 		"start": "next start",
 		"test:watch": "jest --watch",
-		"test:coverage": "jest --coverage"
+		"test:coverage": "jest --coverage",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+		"check-types": "bun run build && tsc --noEmit",
+		"cf:build": "opennextjs-cloudflare build",
+		"deploy": "bun run cf:build && opennextjs-cloudflare deploy",
+		"preview": "bun run cf:build && opennextjs-cloudflare preview",
+		"upload": "bun run cf:build && opennextjs-cloudflare upload"
 	},
 	"dependencies": {
 		"@clerk/nextjs": "^6.22.0",
@@ -60,6 +66,7 @@
 		"superjson": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.8.3",
+		"ua-parser-js": "^2.0.4",
 		"zod": "catalog:",
 		"zustand": "^5.0.5"
 	},

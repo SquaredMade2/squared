@@ -43,6 +43,7 @@ dist/
 .env
 .env.example
 .secrets
+.dev.vars
 
 # debug
 npm-debug.log*

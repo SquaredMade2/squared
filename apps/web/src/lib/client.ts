@@ -9,7 +9,7 @@ const getBaseUrl = () => {
 	}
 
 	if (config.NODE_ENV === "development") {
-		return "http://localhost:3000/";
+		return "http://localhost:8080";
 	}
 
 	// if deployed to vercel, use vercel url

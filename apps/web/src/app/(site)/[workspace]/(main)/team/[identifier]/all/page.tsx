@@ -5,18 +5,20 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { client } from "@/lib/client";
 import { useFilterStore, useViewStore } from "@/store";
-
+const socket = client.task.greeting.$ws();
 export default function AllTasksPage() {
+	console.log(socket);
+
 	const { filterTasks } = useFilterStore((state) => state);
 	const { view, getGridOptions } = useViewStore((state) => state);
 	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
 		useTaskDashboard();
-
 	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } =
 		useGroups(filterTasks);
-
 	if (!workspace) return null;
+
 	return (
 		<TaskPageLayout
 			authorized={authorized}

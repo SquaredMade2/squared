@@ -27,6 +27,7 @@ const {
 	NEXT_PUBLIC_URL,
 	VERCEL_TARGET_ENV = "",
 	VERCEL_URL = "",
+	NODE_ENV = "development",
 } = process.env;
 
 // Validation with better error messages
@@ -44,4 +45,5 @@ export const config: Record<string, string> = {
 	NEXT_PUBLIC_URL: NEXT_PUBLIC_URL || "",
 	VERCEL_TARGET_ENV,
 	VERCEL_URL,
+	NODE_ENV,
 };

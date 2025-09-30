@@ -17,6 +17,7 @@
 		"db:push": "bun --filter=@squaredmade/db db:push",
 		"dev": "turbo run dev",
 		"dev:go": "turbo run dev:go",
+		"dev:wrangler": "bun --filter=web dev:wrangler",
 		"docker:build": "docker compose build",
 		"docker:db": "bun --filter=@squaredmade/seed run docker:db",
 		"docker:db:down": "bun --filter=@squaredmade/seed run docker:db:down",
