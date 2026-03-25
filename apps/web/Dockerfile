@@ -3,7 +3,7 @@ FROM oven/bun:1 AS base
 
 # Builder stage
 FROM base AS builder
-RUN apk add --no-cache libc6-compat
+RUN apt-get update && apt-get install -y --no-install-recommends libc6 && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Install turbo globally
