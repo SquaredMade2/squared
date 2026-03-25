@@ -26,6 +26,7 @@ const productionServerDomain = "https://api.squaredmade.com";
 const developmentDomain = "https://app-develop.squaredmade.com";
 const localDevDomain = "http://localhost:3000";
 const localServerDomain = `http://localhost:${port}`;
+const vercelDomain = "https://squared-web.vercel.app";
 const vercelRegex = /^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/;
 
 // Health check route for root path
@@ -42,6 +43,7 @@ app.use(
 			if (
 				!origin ||
 				vercelRegex.test(origin) ||
+				origin === vercelDomain ||
 				origin === productionDomain ||
 				origin === productionServerDomain ||
 				origin === developmentDomain ||

@@ -1,8 +1,7 @@
 FROM oven/bun:1 AS base
 
 FROM base AS builder
-RUN apk update
-RUN apk add --no-cache libc6-compat python3 make g++
+RUN apt-get update && apt-get install -y --no-install-recommends libc6 python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -12,8 +11,7 @@ RUN turbo prune api --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat python3 make g++ openssl
+RUN apt-get update && apt-get install -y --no-install-recommends libc6 python3 make g++ openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -53,7 +51,7 @@ RUN bun db:migrate
 
 FROM base AS runner
 WORKDIR /app
-RUN apk add --no-cache openssl
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 COPY --from=installer /app .
 WORKDIR /app/apps/api
 
