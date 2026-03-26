@@ -11,7 +11,7 @@
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"start": "tsx src/api/index.ts",
+		"start": "bun src/api/index.ts",
 		"test:watch": "jest --watch --runInBand"
 	},
 	"keywords": [],
