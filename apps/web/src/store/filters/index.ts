@@ -145,10 +145,11 @@ export const createFilterStore = (
 						currentFilters: updatedConditions,
 					});
 				},
-				saveFilter: (filter: SavedFilter): void =>
+				saveFilter: (filter: SavedFilter): void => {
 					set((state) => ({
 						savedFilters: [...state.savedFilters, filter],
-					})),
+					}));
+				},
 				setCurrentFilter: (filter): void => {
 					set({ currentFilters: filter });
 				},
