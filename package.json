@@ -1,32 +1,38 @@
 {
-	"name": "squared",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"build": "turbo run build --filter=api...",
-		"dev": "turbo run dev --filter=api...",
-		"start": "cd apps/api && node --loader tsx src/api/index.ts",
-		"db:generate": "turbo run db:gen",
-		"db:migrate": "npx --filter=@squaredmade/db db:migrate",
-		"db:push": "npx --filter=@squaredmade/db db:push"
-	},
-	"devDependencies": {
-		"rimraf": "^6.0.1",
-		"turbo": "^2.1.0"
-	},
-	"engines": {
-		"node": ">=20.0.0"
-	},
-	"workspaces": [
-		"apps/api",
-		"packages/db",
-		"packages/rpc",
-		"packages/cron-jobs",
-		"packages/logger",
-		"packages/context",
-		"packages/superjson",
-		"packages/builder",
-		"packages/typescript-config"
-	],
-	"packageManager": "npm@10.9.7"
+		"name": "squared",
+		"version": "0.0.0",
+		"private": true,
+		"scripts": {
+					"build": "turbo run build --filter=api...",
+					"dev": "turbo run dev --filter=api...",
+					"start": "cd apps/api && node --loader tsx src/api/index.ts",
+					"db:generate": "turbo run db:gen",
+					"db:migrate": "npx --filter=@squaredmade/db db:migrate",
+					"db:push": "npx --filter=@squaredmade/db db:push"
+		},
+		"devDependencies": {
+					"rimraf": "^6.0.1",
+					"turbo": "^2.1.0"
+		},
+		"engines": {
+					"node": ">=20.0.0"
+		},
+		"workspaces": [
+					"apps/api",
+					"apps/web",
+					"apps/www",
+					"packages/db",
+					"packages/rpc",
+					"packages/rpc-client",
+					"packages/cron-jobs",
+					"packages/logger",
+					"packages/context",
+					"packages/superjson",
+					"packages/builder",
+					"packages/typescript-config",
+					"packages/ui",
+					"packages/icons",
+					"packages/fonts"
+		],
+		"packageManager": "npm@10.9.7"
 }
