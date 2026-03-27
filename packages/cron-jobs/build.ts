@@ -1,4 +1,3 @@
-import pkg from "@squaredmade/builder";
-const { build } = pkg;
+import { build } from "@squaredmade/builder";
 
 build("src/index.ts", ["cron", "@squaredmade/logger"]);
