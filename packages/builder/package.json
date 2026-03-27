@@ -25,7 +25,7 @@
 		"CHANGELOG.md"
 	],
 	"scripts": {
-		"build": "bun ./build.ts",
+		"build": "npx tsx ./build.ts",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist"
 	},

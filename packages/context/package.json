@@ -24,7 +24,7 @@
 		}
 	},
 	"scripts": {
-		"build": "bun ./build.ts",
+		"build": "npx tsx ./build.ts",
 		"check-types": "tsc --noEmit",
 		"clean": "rimraf dist && rimraf node_modules",
 		"prebuild": "rimraf ./dist",

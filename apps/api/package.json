@@ -6,12 +6,12 @@
 	"private": true,
 	"scripts": {
 		"check-types": "tsc --pretty --noEmit",
-		"dev": "nodemon --exec bun src/api/index.ts",
+		"dev": "nodemon --exec tsx src/api/index.ts",
 		"format:check": "biome format .",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"start": "bun src/api/index.ts",
+		"start": "npx tsx src/api/index.ts",
 		"test:watch": "jest --watch --runInBand"
 	},
 	"keywords": [],
