@@ -51,7 +51,7 @@
 		"react-colorful": "^5.6.1",
 		"react-csv": "^2.2.2",
 		"react-dom": "19.1.0",
-		"react-hook-form": "catalog:",
+		"react-hook-form": "7.58.1",
 		"recharts": "^2.15.3",
 		"slate": "^0.117.0",
 		"slate-dom": "^0.116.0",
@@ -60,7 +60,7 @@
 		"superjson": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.8.3",
-		"zod": "catalog:",
+		"zod": "3.25.64",
 		"zustand": "^5.0.5"
 	},
 	"devDependencies": {

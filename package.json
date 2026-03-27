@@ -58,18 +58,9 @@
 	"engines": {
 		"node": ">=23.0.0"
 	},
-	"workspaces": {
-		"packages": [
-			"apps/*",
-			"packages/*"
-		],
-		"catalog": {
-			"react": "19.1.0",
-			"react-dom": "19.1.0",
-			"react-hook-form": "7.58.1",
-			"@hookform/resolvers": "5.1.1",
-			"zod": "3.25.64"
-		}
-	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"packageManager": "bun@1.2.14"
 }

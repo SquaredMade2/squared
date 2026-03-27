@@ -36,7 +36,7 @@
 		"@squaredmade/context": "1.0.1",
 		"@squaredmade/logger": "1.1.2",
 		"@squaredmade/superjson": "1.0.1",
-		"zod": "catalog:"
+		"zod": "3.25.64"
 	},
 	"devDependencies": {
 		"@squaredmade/builder": "^1.0.2",

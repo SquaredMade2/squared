@@ -11,7 +11,7 @@
 		"slicemachine": "start-slicemachine"
 	},
 	"dependencies": {
-		"@hookform/resolvers": "catalog:",
+		"@hookform/resolvers": "5.1.1",
 		"@prismicio/client": "^7.17.3",
 		"@prismicio/next": "^2.0.1",
 		"@prismicio/react": "^3.2.1",
@@ -29,11 +29,11 @@
 		"next-themes": "^0.4.6",
 		"next-view-transitions": "^0.3.4",
 		"postcss-load-config": "^6.0.1",
-		"react": "catalog:",
-		"react-dom": "catalog:",
-		"react-hook-form": "catalog:",
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"react-hook-form": "7.58.1",
 		"react-wrap-balancer": "^1.1.1",
-		"zod": "catalog:"
+		"zod": "3.25.64"
 	},
 	"devDependencies": {
 		"@slicemachine/adapter-next": "^0.3.78",
