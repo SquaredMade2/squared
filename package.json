@@ -62,5 +62,5 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "bun@1.2.14"
+	"packageManager": "npm@10.9.7"
 }
