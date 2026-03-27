@@ -153,7 +153,7 @@ export const createFilterStore = (
 				setCurrentFilter: (filter): void => {
 					set({ currentFilters: filter });
 				},
-				setSavedFilters: (savedFilters): void => set({ savedFilters }),
+				setSavedFilters: (savedFilters): void => { set({ savedFilters }); },
 				setSearchFilter: (input: string): void => {
 					set({ searchFilterValue: input });
 				},
