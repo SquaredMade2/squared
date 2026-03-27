@@ -1,4 +1,4 @@
 {
-	"installCommand": "bun install",
-	"buildCommand": "turbo run build --filter=web"
+		"installCommand": "npm install",
+		"buildCommand": "npx turbo run build --filter=web..."
 }
