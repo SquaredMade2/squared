@@ -5,7 +5,7 @@
 		"scripts": {
 					"build": "turbo run build --filter=api...",
 					"dev": "turbo run dev --filter=api...",
-					"start": "cd apps/api && node --loader tsx src/api/index.ts",
+					"start": "cd apps/api && node --import tsx src/api/index.ts",
 					"db:generate": "turbo run db:gen",
 					"db:migrate": "npx --filter=@squaredmade/db db:migrate",
 					"db:push": "npx --filter=@squaredmade/db db:push"
