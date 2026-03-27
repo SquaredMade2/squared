@@ -1,0 +1,4 @@
+{
+  	"installCommand": "npm install",
+  	"buildCommand": "npx turbo run build --filter=www..."
+}
