@@ -1,8 +1,0 @@
-[phases.install]
-cmds = ["cd ../.. && bun install"]
-
-[phases.build]
-cmds = ["cd ../.. && bun run build --filter=www..."]
-
-[start]
-cmd = "node apps/www/server.js"
